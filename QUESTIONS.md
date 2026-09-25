@@ -51,7 +51,7 @@ Alternatively, can the M02 scan be added?
 ## B. Record conflicts (skills must not state these as fact)
 
 - **DRM snap outcome:** official `overall_pass: false` (max 1.226 > 0.80) vs
-  `golden-examples/README.md:17` "Delivered … p95 0.157". Was the max miss accepted,
+  `golden-examples/README.md:14` "Delivered … p95 0.157". Was the max miss accepted,
   and by whom? The README says the table was excluded, but the gate JSON has
   `exclusions: []`. The gate's sha256 inputs match no manifest file. The gate tool
   and masking script are missing (`analysis/golden/dreame_brush-caps.md` Q1–Q4).
@@ -77,3 +77,20 @@ Alternatively, can the M02 scan be added?
   - scan noise 0.5–0.8 mm vs RANSAC tol 0.05–0.1 mm in the same spec
 - **Facet-film:** code defaults disagree with its own rulings. This only matters as a
   lesson (`analysis/baseline/facet-film-transferable.md` §5).
+
+## C. Evidence gaps found while drafting (Phase 3)
+
+- **Datum-fit acceptance:** RE_SPEC says STOP if the residual "RMS + max" exceeds scan noise
+  (`RE_SPEC.md:126-129`). The DRM screw plane max was 0.055 mm against rms 0.0072
+  (`golden-examples/dreame_brush-caps/report/screw_alignment.json`) and was accepted. The
+  intake skill enforces rms only and reports max.
+- **No threshold exists** for "uniform" scale disagreement (CHK-SCALE) or for an acceptable
+  axis tilt (CHK-TILT). The skills report the values and ask.
+- **B02 caliper window:** the skill's simulated two-jaw window on the full-res B02 scan gives
+  24.99–27.25. The record says 25.99–27.08 (`OOM-B02/6_RE_work/PARAM_TABLE.md:108-115`).
+  F06 = 24.84 is still outside the window, but D-06 = 25.79 (recorded as below the window)
+  falls inside it. The window on the delivered STEP matches exactly (25.617–26.850). The
+  method difference, probably azimuth or z-station selection around the SAF-1 recess, is
+  not recorded.
+- **B02 open-edge count:** the intake records 3561; the skill counts 11,466 on the full-res
+  scan. The counting convention is not recorded.

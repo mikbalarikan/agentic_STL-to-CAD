@@ -266,7 +266,7 @@ Each entry holds:
 
 | Verdict | Meaning | Golden precedent |
 |---|---|---|
-| `APPROVED` | Every gate in the declared band set passes; no mask-dependent passes | DRM screw; M02 (spec regime) |
+| `APPROVED` | Every gate in the declared band set passes; no mask-dependent passes | M02 (spec regime). DRM screw passes its band cleanly but is scan-only, so it is `APPROVED_WITH_LIMITATIONS` under the scan-only rule |
 | `APPROVED_WITH_LIMITATIONS` | Gates pass, but declared limitations exist, each with a re-run trigger | B02 (3 limitations, masked hex); P03 (photo-inferred socket) |
 | `BAND_NOT_MET` | One or more bands missed. Explained per region with options. **Delivery needs an explicit human acceptance, which is recorded.** | OD (p95 0.448); DRM snap (max 1.226) |
 | `REVISE` | Fixable in geometry or measurement; loop back (count toward 3) | P03 it1; B02 it1 |

@@ -46,7 +46,7 @@ routinely stepped outside it.
 | A2 | Decimated working copy for analysis; keep the original; decimation provenance logged | – | – | Y | Y | Y | **RULE** |
 | A3 | Official deviation gate runs on the full-resolution scan | n/a | Y | Y | Y | Y | **RULE** |
 | A4 | Remove scanner furniture and fragments explicitly (largest body; table by z + up-normal) and report the fraction | – | – | Y (bristles, screw) | – | Y (table 9.3 %) | **RULE** |
-| A5 | Weld an unwelded STL; check the volume sign and flip inward normals | – | – | Y | Y (weld) | – | **RULE** |
+| A5 | Weld an unwelded STL; check normal orientation and flip inward normals (on an open scan the volume sign depends on the origin, so use a local ray test instead; found in Phase 3 on the B02 scan, whose normals are outward despite a negative volume) | – | – | Y | Y (weld) | – | **RULE** |
 | A6 | Units/scale check against a measured reference; ONE uniform scale only if the disagreement is uniform, otherwise flag | Y (operator) | L (assumed mm) | Y (non-uniform → none) | Y (1 axis) | L | **RULE** (+ CHK-SCALE) |
 | A7 | Measure the scan noise floor on a clean primitive; use it to set datum and rounding tolerances | – | Y (p95 0.13) | Y (rim rms 0.052) | Y (rim resSD 0.039) | Y (plane rms 0.007 / 0.029) | **RULE** |
 | A8 | Enumerate every feature, including interior, from BOTH the mesh and the profile photos, before building | – | – | Y (intake had errors) | F (stem missed) | – | **RULE** + CHK-ENUM |
