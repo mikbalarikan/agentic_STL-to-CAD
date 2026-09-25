@@ -198,12 +198,18 @@ refuses unless `deliver/MANIFEST.json` still matches every file, and writes
 
 | path in zip | content |
 |---|---|
-| `DELIVERY.md` | index: verdict, regime, iteration, what is where, rebuild command |
+| `DELIVERY.md` | index: verdict, regime, iteration, what is where, and the rebuild command from `repro.json#command`, pointed at `skill_scripts/` (`STL_RE_REBUILD_SCRIPTS` + `PYTHONPATH`) |
 | `deliverables/` | both STEP files, `<part>_cad.stl`, `README.md`, `VERDICT.md`, `gate.json`, `MANIFEST.json`, `overlays/*.png` |
 | `run/` | the whole run folder byte for byte (input, intake, measure, build, qa, deliver, `decisions/`, `DECISIONS.md`, `_itN_SUPERSEDED/`) |
-| `skill_scripts/` | `stl-re-rebuild-build123d/scripts`, which `build/model.py` imports, so the build re-runs from the zip alone |
+| `skill_scripts/` | `stl-re-rebuild-build123d/scripts`, which `build/model.py` imports, so the build re-runs from the zip alone (checked on OD-S03: same faces and volume) |
+| `input/photos/…` | only the files `README.md` links with `../`, so its images resolve inside `deliverables/` |
 
-Then hand the zip to the user as a file they can download (in Claude Code on the web / app:
+Above `--max-mb` (default 29 MiB; the cloud session file hand-off refuses files over 30 MiB, found
+on OD-S03 whose full zip was 87 MiB) it writes `<part>_delivery_partKofN.zip` instead. Each part is
+a normal zip of the same top folder, so extracting all parts into one folder rebuilds the tree;
+`DELIVERY.md` and `deliverables/` go in part 1 and `DELIVERY.md` names every part.
+
+Then hand the zip (every part) to the user as a file they can download (in Claude Code on the web / app:
 `SendUserFile` with the zip path; locally: give the path). Put the zip where the user can open
 it (the session's scratchpad or working directory), never only inside a container path they
 cannot reach. Record the run's small text records under `evals/real-runs/<part>/` in this

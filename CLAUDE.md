@@ -19,8 +19,9 @@ deliverables**. Do not ask again each session:
 1. Finish `stl-re-deliver` (README, repro, MANIFEST).
 2. `python3 skills/stl-re-deliver/scripts/package_zip.py --run <run>` → `<run>/../<part>_delivery.zip`
    (layout: `DELIVERY.md`, `deliverables/`, `run/`, `skill_scripts/`; see
-   `skills/stl-re-deliver/SKILL.md` step 6).
-3. Send the zip to the owner as a downloadable file (`SendUserFile` in cloud sessions).
+   `skills/stl-re-deliver/SKILL.md` step 6). Over 29 MiB it writes `_partKofN.zip` parts
+   (the cloud file hand-off limit is 30 MiB); send every part and say "extract all into one folder".
+3. Send the zip(s) to the owner as downloadable files (`SendUserFile` in cloud sessions).
 4. Copy the run's small text records (README, VERDICT, DECISIONS, gate.json, builder report,
    one overlay) to `evals/real-runs/<part>/`, add `evals/real-runs/<part>.md` (inputs,
    decisions, result, skill defects found), then commit and push. The scan, STEP files and the

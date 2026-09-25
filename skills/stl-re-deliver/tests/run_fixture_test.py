@@ -119,6 +119,13 @@ def main() -> int:
          rz[0].stderr.strip()[-300:])
     case("package_zip deterministic", all(z.is_file() for z in zips)
          and zips[0].read_bytes() == zips[1].read_bytes())
+    rs = sh("package_zip.py", run, "--out", str(work / "split.zip"), "--max-mb", "0.3")
+    split = sorted(work.glob("split_part*of*.zip"))
+    union = sorted(n for z in split for n in zipfile.ZipFile(z).namelist())
+    case("package_zip splits under --max-mb into parts that add up to the single zip",
+         rs.returncode == 0 and len(split) > 1 and union == sorted(names)
+         and all(z.stat().st_size <= 0.3 * 1024 * 1024 for z in split[:-1]),
+         f"rc={rs.returncode} parts={len(split)} {rs.stderr.strip()[-200:]}")
     (run / "build" / "stray.txt").write_text("x")
     r = sh("package_zip.py", run, "--out", str(work / "pkg3.zip"))
     case("package_zip refuses a stale manifest", r.returncode == 2 and "stale" in r.stderr, r.stderr.strip()[-200:])
