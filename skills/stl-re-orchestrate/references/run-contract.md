@@ -8,13 +8,18 @@ Evidence: `analysis/SKILL_ARCHITECTURE.md` §3–§4, `analysis/SYNTHESIS.md`.
 
 ```
 <run>/
+  DECISIONS.md      append-only log of human decisions (§10)
   input/            scan.stl (never modified), photos/, MEASUREMENTS.md (filled by a human), INPUT_HASHES.json
-  intake/           INTAKE_CARD.md, intake.json, MEASUREMENTS.md (request), alignment.json, work.stl, aligned_work.stl
+  intake/           INTAKE_CARD.md, intake.json, regime.json (§12), coverage.json, MEASUREMENTS.md (request),
+                     alignment.json, work.stl, aligned_work.stl
   measure/          params.json, PARAM_TABLE.md, figures/
-  build/            MODELING_PLAN.md, model.py, build_log.txt, <part>_datum.step, <part>.step, <part>_cad.stl, export_check.json
-  qa/               gate.json, VERDICT.md, masks.json, overlays/
+  build/            MODELING_PLAN.md, model.py, build_log.txt, <part>_datum.step, <part>.step, <part>_cad.stl,
+                     export_check.json, fillets.json, face_stats.json
+  qa/               gate.json, regime.json (copy of intake/regime.json, §12), review.json, VERDICT.md,
+                     masks.json, overlays/
   deliver/          README.md, MANIFEST.json, repro.json          (only after qa/VERDICT.md exists)
-  _itN_SUPERSEDED/  the previous iteration's measure/ build/ qa/, moved intact
+  _itN_SUPERSEDED/  the previous iteration's measure/ build/ qa/ (and intake/ for a --route datum REVISE,
+                     §10), moved intact
 ```
 
 The six skills are installed side by side (`~/.claude/skills/stl-re-*`). A skill may call
@@ -76,8 +81,8 @@ For each of `datum` and `scan` frame: `solids`, `valid`, `closed`, `faces`,
 
 ## 6. `qa/gate.json`
 
-- `regime`: `{"name": "RE_SPEC|baseline-skill|project-spec", "source": "<path:line>", "bands": {...}}`
-- `hash_frozen`: STEP sha256 before and after QA.
+- `regime`: see §12 (canonical shape and file).
+- `hash_frozen`: see §12 (canonical shape).
 - `datum_audit`: `{"angle_deg", "origin_offset_mm", "point_disagreement_p95_mm", "reference_band": "≤0.3° / ≤0.15 mm (RE_SPEC.md:241)", "blocking": false}`.
 - `validity`, `surface_census`: reported only.
 - `tier1`: per-dim `{caliper, cad, delta, pass}`.
@@ -86,7 +91,16 @@ For each of `datum` and `scan` frame: `solids`, `valid`, `closed`, `faces`,
   - `stats` = `{n, rms, p50, p95, p99, max}` in mm, plus the sampling and seed.
   - `scan` names the file used; `full_res: true|false`.
 - `checks`: `{"CHK-...": {"ran": true, "result": "pass|finding|fail", "note": ""}}`.
-- `verdict`: one of §7.
+- `verdict`: one of §7, or `null` when `assemble` refused to produce one.
+- `errors`: list of strings, non-empty exactly when `assemble` exited non-zero (a refused
+  verdict). `allowed_verdicts`, when present, lists the verdict words the refusal still
+  permits (e.g. a band fail may still become `REVISE`, `stl-re-verify/SKILL.md:227`).
+  **A verdict is trustworthy only if `errors` is empty and, when `allowed_verdicts` is
+  present, `verdict` is a member of it (O-1).** `stl-re-verify/scripts/verdict.py` writes
+  `gate.json` with the refused verdict and its `errors` before returning a non-zero exit, so
+  a reader that checks only `#verdict` would act on a rejected result; every consumer
+  (`init_run.py status`, deliver's preflight, this SKILL's §4) must check `errors` and
+  `allowed_verdicts` before treating `verdict` as final.
 
 ## 7. Verdict vocabulary
 
@@ -123,15 +137,25 @@ CHK-PUBLISH, CHK-LIKE4LIKE, CHK-NUMBERS, CHK-INDEP. Definitions and evidence:
   in `build/`), `scan_resolution` (`full | decimated | unknown`) and `files`
   (`[{path, role, sha256, bytes, source, mode}]`). Input files are copied read-only
   (or symlinked with `--link`). Verify can check `inputs` to prove that the evidence
-  is unchanged.
-- **`intake/intake.json#regime`**: the regime declared at intake, the same shape as
-  `qa/gate.json#regime`. Verify copies it and does not choose its own.
+  is unchanged. A filled `input/MEASUREMENTS.md` handed to the human gate after `init` is
+  not covered by this file until it is registered: run `init_run.py rehash <run>
+  [--measurements <file>]` to place/hash it into `INPUT_HASHES.json#inputs` (O-2). Until
+  then, `status` reports a finding that the sheet is un-hashed; once hashed, a later edit
+  is caught the same way any other tampered input is.
+- ~~**`intake/intake.json#regime`**: the regime declared at intake, the same shape as
+  `qa/gate.json#regime`. Verify copies it and does not choose its own.~~ **Superseded by
+  §12: the regime lives at `intake/regime.json`, not `intake/intake.json#regime`.**
 - **`deliver/` is not created by init.** Its existence before a deliverable verdict is a
   CHK-PUBLISH finding (`init_run.py status` reports it).
 - **Iteration number** = number of `_itN_SUPERSEDED/` folders + 1. `init_run.py supersede`
-  moves `measure/ build/ qa/` into `_itN_SUPERSEDED/`, then copies `measure/`,
-  `build/MODELING_PLAN.md` and `build/model.py` forward (copies, so the superseded folder
-  stays intact). It refuses when iteration = 3 (exit 3, HALT; `RE_SPEC.md:250`).
+  requires `--route {measure,geometry,datum}` (O-7): the route names the stage the REVISE
+  is re-entering and decides what carries forward, so a wrong stage is never masked as
+  already complete. It moves `measure/ build/ qa/` into `_itN_SUPERSEDED/` (also `intake/`
+  for `--route datum`), then, unless `--no-carry`, copies forward only what that route
+  says: `measure` and `datum` carry nothing (the stage being redone must not look done);
+  `geometry` copies `measure/`, `build/MODELING_PLAN.md` and `build/model.py` forward
+  (copies, so the superseded folder stays intact). It refuses when iteration = 3 (exit 3,
+  HALT; `RE_SPEC.md:250`).
 
 ## 11. Clarifications added by the orchestrator session (2026-09-25)
 
@@ -150,10 +174,12 @@ CHK-PUBLISH, CHK-LIKE4LIKE, CHK-NUMBERS, CHK-INDEP. Definitions and evidence:
 ## 12. Integration decisions (orchestrator session, after Phase 3 drafts)
 
 - **Regime file.** The canonical declaration is **`intake/regime.json`**, written at intake
-  with the same shape as `qa/gate.json#regime`: `{"name", "source", "bands", "why"}`. It
-  replaces the `intake/intake.json#regime` key in §10. Verify copies it to
-  `qa/regime.json` and never edits it. Deliver checks `gate.json#regime.name ==
-  intake/regime.json#name`. `DECISIONS.md` carries the matching `REGIME` line.
+  with the same shape as `qa/gate.json#regime`: `{"name", "source", "bands", "why",
+  "declared_in"?}` (`declared_in` is optional and set by `verdict.py` when it copies the
+  regime in, `stl-re-verify/scripts/verdict.py:277`). It replaces the
+  `intake/intake.json#regime` key in §10. Verify copies it to `qa/regime.json` and never
+  edits it. Deliver checks `gate.json#regime.name == intake/regime.json#name`.
+  `DECISIONS.md` carries the matching `REGIME` line.
 - **What the baseline-skill band applies to.** p95 and max apply to scan→CAD and to the
   *observable* part of CAD→scan. Raw CAD→scan is reported, not gated. Evidence: the DRM
   official gate applied the limits in both directions
@@ -170,3 +196,14 @@ CHK-PUBLISH, CHK-LIKE4LIKE, CHK-NUMBERS, CHK-INDEP. Definitions and evidence:
   the OD golden shape `{"exports": {...}}`.
 - **ICP iteration cap.** Golden B02 used 60 (`q20_tier2.py`, converged at 48). This is a
   parameter, not a threshold. Non-convergence is reported and makes the Tier-2 gate invalid.
+- **`export_check.json` fillets.** `fillets[].status` ∈ `OK | REDUCED | FAILED | NO_EDGES |
+  SELECTOR_ERROR`; anything but `OK` is a CHK-FILLET finding. `face_stats` also reports
+  `plane_face_count` and `plane_face_median_area_mm2` (reported, not gated).
+- **Band keys (canonical, fixed after review V1).** `regime.json#bands` is one flat object with
+  exactly these keys, all in mm, and `null` when the regime has no such band:
+  `{"p95_mm", "max_mm", "tier1_abs_mm", "interface_max_mm"}`. RE_SPEC fills
+  `p95_mm=1.6, max_mm=4.0, tier1_abs_mm=0.15, interface_max_mm=0.8` (`RE_SPEC.md:170-175`).
+  baseline-skill picks one material class at intake, records it as `regime.json#material_class`
+  (`plastic|machined`), and fills only `p95_mm`/`max_mm` from `stl2step-build123d/SKILL.md:87`.
+  A consumer that finds no gated band key (all `null`) or an unknown key must refuse to grade
+  (non-zero exit). A missing regime never falls back to a default.

@@ -12,8 +12,12 @@ enforces are cited below:
 
 Subcommands
   init       create <run>/ layout, copy (or --link) inputs, write input/INPUT_HASHES.json
-  status     print the run state (stage reached, iteration, verdict) as JSON
-  supersede  move measure/ build/ qa/ to _itN_SUPERSEDED/ (REVISE); refuses past loop 3
+  status     print the run state (stage reached, iteration, verdict) as JSON; only trusts
+             qa/gate.json#verdict when errors is empty and verdict is in allowed_verdicts (O-1)
+  rehash     hash a human-filled input/MEASUREMENTS.md into INPUT_HASHES.json (O-2)
+  supersede  --route {measure,geometry,datum} (required): move measure/ build/ qa/ (and
+             intake/ for --route datum) to _itN_SUPERSEDED/ (REVISE); the route decides what
+             carries forward (O-7); refuses past loop 3
   doctor     check python deps and that the six stl-re-* skills sit side by side
   --selftest run all of the above on a temporary directory
 
@@ -37,6 +41,8 @@ import tempfile
 from pathlib import Path
 from typing import Any
 
+IMAGE_SUFFIXES = {".jpg", ".jpeg", ".png", ".heic", ".tif", ".tiff", ".bmp", ".webp"}
+
 TOOL = "init_run.py"
 TOOL_VERSION = "stl-re-orchestrate@1"
 MAX_LOOPS = 3  # baseline/oomwoo-re-pipeline/RE_SPEC.md:250 (per-part breaker)
@@ -58,13 +64,17 @@ LAYOUT = ("input/photos", "intake", "measure/figures", "build", "qa/overlays")
 
 # Stage exit artefacts (run-contract.md §1). "<part>" is substituted.
 STAGE_EXIT: dict[str, tuple[str, ...]] = {
-    "intake": ("intake/INTAKE_CARD.md", "intake/intake.json", "intake/MEASUREMENTS.md",
-               "intake/alignment.json", "intake/work.stl", "intake/aligned_work.stl"),
+    # O-5: intake/regime.json (verify stops without it) and qa/masks.json (SKILL.md §2
+    # exit table) are hard requirements the next stage checks; a run must not be reported
+    # complete without them.
+    "intake": ("intake/INTAKE_CARD.md", "intake/intake.json", "intake/regime.json",
+               "intake/MEASUREMENTS.md", "intake/alignment.json", "intake/work.stl",
+               "intake/aligned_work.stl"),
     "measure": ("measure/params.json", "measure/PARAM_TABLE.md"),
     "rebuild": ("build/MODELING_PLAN.md", "build/model.py", "build/build_log.txt",
                 "build/<part>_datum.step", "build/<part>.step", "build/<part>_cad.stl",
                 "build/export_check.json"),
-    "verify": ("qa/gate.json", "qa/VERDICT.md"),
+    "verify": ("qa/gate.json", "qa/VERDICT.md", "qa/masks.json"),
     "deliver": ("deliver/README.md", "deliver/MANIFEST.json", "deliver/repro.json"),
 }
 STAGES = tuple(STAGE_EXIT)
@@ -135,7 +145,17 @@ def cmd_init(run: Path, part: str, scan: Path, photos: list[Path], measurements:
     plan: list[tuple[Path, str, str]] = [(scan, "input/scan.stl", "scan")]
     photo_files: list[Path] = []
     for p in photos:
-        photo_files.extend(sorted(x for x in p.iterdir() if x.is_file()) if p.is_dir() else [p])
+        if p.is_dir():
+            # O-15: a reference folder mixes photos with other files (e.g. B02's
+            # 5_reference/MEASUREMENTS.md); only ingest actual images as role "photo".
+            entries = sorted(x for x in p.iterdir() if x.is_file())
+            for x in entries:
+                if x.suffix.lower() in IMAGE_SUFFIXES:
+                    photo_files.append(x)
+                else:
+                    print(f"skipping non-image file in --photos dir: {x}", file=sys.stderr)
+        else:
+            photo_files.append(p)
     names: set[str] = set()
     for p in sorted(photo_files, key=lambda x: x.name):
         if p.name in names:
@@ -170,22 +190,96 @@ def cmd_init(run: Path, part: str, scan: Path, photos: list[Path], measurements:
     return doc
 
 
+# -------------------------------------------------------------------------- rehash
+def cmd_rehash(run: Path, measurements: Path | None) -> dict[str, Any]:
+    """O-2: hash a human-filled `input/MEASUREMENTS.md` into INPUT_HASHES.json. The sheet
+    is normally never hashed: intake writes `intake/MEASUREMENTS.md` (a request) and the
+    human gate fills `input/MEASUREMENTS.md` *after* `init` runs, so CHK "inputs unchanged"
+    cannot see edits to it unless it is registered here. Refuses to re-hash a path already
+    covered (an edit to an already-hashed sheet is a tamper finding in `status`, not a
+    rehash)."""
+    hashes = run / "input" / "INPUT_HASHES.json"
+    if not hashes.is_file():
+        raise FileNotFoundError(f"{run} is not an initialised run (no input/INPUT_HASHES.json)")
+    meta = json.loads(hashes.read_text(encoding="utf-8"))
+    rel = "input/MEASUREMENTS.md"
+    target = run / rel
+    if rel in meta["inputs"]:
+        raise RuntimeError(f"{rel} is already hashed; an edit to it is a tamper finding, "
+                           "not a rehash")
+    if measurements is not None:
+        if target.exists():
+            raise FileExistsError(f"{target} already exists; place it by hand, then rehash "
+                                  "with no --measurements")
+        digest = sha256_file(measurements)
+        place(measurements, target, link=False)
+        if sha256_file(target) != digest:
+            raise IOError(f"hash mismatch after placing {measurements} -> {target}")
+    if not target.is_file():
+        raise FileNotFoundError(f"{target} does not exist: fill it, or pass --measurements")
+    digest = sha256_file(target)
+    meta["inputs"][rel] = digest
+    meta.setdefault("files", []).append({"path": rel, "role": "measurements", "sha256": digest,
+                                         "bytes": target.stat().st_size,
+                                         "source": str(target.resolve()), "mode": "copy"})
+    write_json(hashes, meta)
+    dec = run / "DECISIONS.md"
+    entry = f"- {created_stamp()[:10]} | orchestrator | MEASUREMENTS | filled sheet hashed via `init_run.py rehash` | {rel}\n"
+    with dec.open("a", encoding="utf-8") as fh:
+        fh.write(entry)
+    return meta
+
+
 # --------------------------------------------------------------------------- status
-def read_verdict(run: Path) -> str | None:
+def _load_gate(run: Path) -> dict[str, Any] | None:
     gate = run / "qa" / "gate.json"
-    if gate.is_file():
-        try:
-            v = json.loads(gate.read_text(encoding="utf-8")).get("verdict")
-            if isinstance(v, str) and v in VERDICTS:
-                return v
-        except (json.JSONDecodeError, OSError):
-            pass
+    if not gate.is_file():
+        return None
+    try:
+        doc = json.loads(gate.read_text(encoding="utf-8"))
+    except (json.JSONDecodeError, OSError):
+        return None
+    return doc if isinstance(doc, dict) else None
+
+
+def gate_refusal(run: Path) -> str | None:
+    """O-1: `verdict.py assemble` writes gate.json with the refused verdict and its
+    `errors` before returning a non-zero exit, so `#verdict` alone is not trustworthy.
+    Return a human-readable reason when the gate was refused, else None."""
+    doc = _load_gate(run)
+    if doc is None:
+        return None
+    errors = doc.get("errors") or []
+    v = doc.get("verdict")
+    allowed = doc.get("allowed_verdicts")
+    bad_word = v is not None and v not in VERDICTS
+    bad_allowed = isinstance(v, str) and isinstance(allowed, list) and v not in allowed
+    if errors or bad_word or bad_allowed:
+        return (f"qa/gate.json verdict refused by verify (errors: {errors!r}); "
+                "re-run stl-re-verify")
+    return None
+
+
+def read_verdict(run: Path) -> str | None:
+    """Return the verdict only if it is trustworthy (O-1): `qa/gate.json` parses, has no
+    `errors`, and (when `allowed_verdicts` is given) `verdict` is a member of it. A refused
+    gate.json is never authoritative, even if `qa/VERDICT.md` prose also exists."""
+    doc = _load_gate(run)
+    if doc is not None:
+        if gate_refusal(run) is not None:
+            return None
+        v = doc.get("verdict")
+        return v if isinstance(v, str) and v in VERDICTS else None
     vmd = run / "qa" / "VERDICT.md"
     if vmd.is_file():
         text = vmd.read_text(encoding="utf-8", errors="replace")
-        for v in VERDICTS:  # longest first so APPROVED_WITH_LIMITATIONS wins over APPROVED
-            if re.search(rf"\b{v}\b", text):
-                return v
+        # O-16: match only the headline (a line with VERDICT in it), never any mention of a
+        # verdict word buried in prose ("cannot be APPROVED", "it1: REVISE").
+        headline = next((ln for ln in text.splitlines() if re.match(r"^#+.*VERDICT", ln)), None)
+        if headline is not None:
+            for v in VERDICTS:  # longest first so APPROVED_WITH_LIMITATIONS wins over APPROVED
+                if re.search(rf"\b{v}\b", headline):
+                    return v
     return None
 
 
@@ -211,18 +305,42 @@ def cmd_status(run: Path) -> dict[str, Any]:
     for st in STAGES:
         need = [r.replace("<part>", part) for r in STAGE_EXIT[st]]
         missing = [r for r in need if not (run / r).exists()]
+        if st == "intake" and not missing:
+            # O-5: the intake exit needs a *passing* alignment, not merely a present file
+            # (stl-re-intake-datum/SKILL.md:21 gates measure on alignment.json#status == "OK").
+            try:
+                align_status = json.loads((run / "intake" / "alignment.json")
+                                          .read_text(encoding="utf-8")).get("status")
+            except (json.JSONDecodeError, OSError):
+                align_status = None
+            if align_status != "OK":
+                missing = missing + ["intake/alignment.json#status==OK"]
         stages[st] = {"complete": not missing, "missing": missing}
         if not missing and reached == (STAGES[STAGES.index(st) - 1] if STAGES.index(st) else "init"):
             reached = st
     verdict = read_verdict(run)
     findings: list[str] = []
+    if stages["intake"]["complete"] and not re.search(r"\|\s*REGIME\s*\|",
+                                                       (run / "DECISIONS.md").read_text(encoding="utf-8")
+                                                       if (run / "DECISIONS.md").is_file() else ""):
+        findings.append("DECISIONS.md has no REGIME entry: the regime must be declared, "
+                        "never defaulted (run-contract.md §9)")
     if tampered:
         findings.append("input files changed or missing since init: " + ", ".join(tampered))
     if (run / "deliver").exists() and verdict not in DELIVERABLE:
         findings.append("CHK-PUBLISH: deliver/ exists without a deliverable verdict")
-    if not (run / "input" / "MEASUREMENTS.md").is_file():
+    refusal = gate_refusal(run)
+    if refusal is not None:
+        findings.append(refusal)
+    meas = run / "input" / "MEASUREMENTS.md"
+    if not meas.is_file():
         findings.append("no filled input/MEASUREMENTS.md: calipers missing, scan-only needs a "
                         "MEASUREMENTS decision in DECISIONS.md")
+    elif "input/MEASUREMENTS.md" not in meta["inputs"]:
+        # O-2: a filled sheet placed after init is not covered by INPUT_HASHES.json until
+        # it is registered, so a silent edit to it would otherwise go undetected.
+        findings.append("input/MEASUREMENTS.md exists but is not hashed in "
+                        "INPUT_HASHES.json: run `init_run.py rehash <run>`")
     its = superseded(run)
     return {"run": str(run), "part": part, "iteration": len(its) + 1, "max_loops": MAX_LOOPS,
             "superseded": [f"_it{n}_SUPERSEDED" for n in its], "last_complete_stage": reached,
@@ -230,7 +348,22 @@ def cmd_status(run: Path) -> dict[str, Any]:
 
 
 # ------------------------------------------------------------------------ supersede
-def cmd_supersede(run: Path, carry: bool) -> dict[str, Any]:
+ROUTES = ("measure", "geometry", "datum")
+
+# O-7: the route decides what a REVISE inherits, so the stage a finding was routed to is
+# never masked as already complete by a blanket carry-forward. `measure` and `datum` carry
+# nothing forward (the stage being redone must not look done); `geometry` carries the
+# measurement and modeling-plan base forward as a diffable edit. run-contract.md §10.
+CARRY_FORWARD: dict[str, tuple[str, ...]] = {
+    "measure": (),
+    "geometry": ("measure", "build/MODELING_PLAN.md", "build/model.py"),
+    "datum": (),
+}
+
+
+def cmd_supersede(run: Path, route: str, carry: bool) -> dict[str, Any]:
+    if route not in ROUTES:
+        raise ValueError(f"--route must be one of {ROUTES}, got {route!r}")
     st = cmd_status(run)
     if st["verdict"] != "REVISE":
         raise RuntimeError(f"supersede needs verdict REVISE, found {st['verdict']!r}")
@@ -245,7 +378,8 @@ def cmd_supersede(run: Path, carry: bool) -> dict[str, Any]:
         raise FileExistsError(f"{dest} already exists")
     dest.mkdir()
     moved = []
-    for d in ITERATED:
+    iterated = ("intake",) + ITERATED if route == "datum" else ITERATED
+    for d in iterated:
         if (run / d).exists():
             shutil.move(str(run / d), str(dest / d))
             moved.append(d)
@@ -253,7 +387,7 @@ def cmd_supersede(run: Path, carry: bool) -> dict[str, Any]:
         (run / d).mkdir(parents=True, exist_ok=True)
     carried = []
     if carry:  # copies, so the superseded folder stays intact and diffable
-        for rel in ("measure", "build/MODELING_PLAN.md", "build/model.py"):
+        for rel in CARRY_FORWARD[route]:
             src = dest / rel
             if src.is_dir():
                 shutil.copytree(src, run / rel, dirs_exist_ok=True)
@@ -261,20 +395,26 @@ def cmd_supersede(run: Path, carry: bool) -> dict[str, Any]:
             elif src.is_file():
                 shutil.copy2(src, run / rel)
                 carried.append(rel)
-    return {"superseded_to": dest.name, "moved": moved, "carried_forward": carried,
-            "iteration_now": n + 1, "max_loops": MAX_LOOPS}
+    return {"superseded_to": dest.name, "route": route, "moved": moved,
+            "carried_forward": carried, "iteration_now": n + 1, "max_loops": MAX_LOOPS}
 
 
 # --------------------------------------------------------------------------- doctor
+DOCTOR_DEPS = ("numpy", "scipy", "trimesh", "build123d", "rtree", "shapely", "fast_simplification")
+
+
 def cmd_doctor(skills_root: Path) -> dict[str, Any]:
+    # O-17: rtree (intake datum fitting), shapely (measure) and fast_simplification (intake
+    # decimation) are all required by sibling skills; doctor must catch their absence too,
+    # not just numpy/scipy/trimesh/build123d.
     deps: dict[str, str | None] = {}
-    for mod in ("numpy", "scipy", "trimesh", "build123d"):
+    for mod in DOCTOR_DEPS:
         try:
             deps[mod] = str(getattr(importlib.import_module(mod), "__version__", "present"))
         except Exception:  # noqa: BLE001 - any import failure means missing
             deps[mod] = None
     skills = {s: (skills_root / s / "SKILL.md").is_file() for s in SKILLS}
-    ok = all(v is not None for k, v in deps.items() if k in ("trimesh", "build123d")) and all(skills.values())
+    ok = all(v is not None for v in deps.values()) and all(skills.values())
     return {"python": sys.version.split()[0], "deps": deps, "skills_root": str(skills_root),
             "skills": skills, "ok": ok}
 
@@ -318,38 +458,122 @@ def selftest() -> int:
                 for rel in STAGE_EXIT[st_name]:
                     p = run / rel.replace("<part>", "cap")
                     p.parent.mkdir(parents=True, exist_ok=True)
-                    p.write_text("x", encoding="utf-8")
+                    if p.name == "alignment.json":
+                        write_json(p, {"status": "OK"})
+                    elif p.name == "regime.json":
+                        write_json(p, {"name": "RE_SPEC", "source": "x", "bands": {}, "why": "t"})
+                    else:
+                        p.write_text("x", encoding="utf-8")
+            write_json(run / "qa" / "masks.json", {})
             write_json(run / "qa" / "gate.json", {"verdict": verdict})
             (run / "qa" / "VERDICT.md").write_text(f"# VERDICT: {verdict}\n", encoding="utf-8")
+            with (run / "DECISIONS.md").open("a", encoding="utf-8") as fh:
+                fh.write("- 2026-01-01 | test | REGIME | RE_SPEC | x\n")
 
         fake_iteration("REVISE")
         st = cmd_status(run)
         assert st["last_complete_stage"] == "verify" and st["verdict"] == "REVISE", st
-        r1 = cmd_supersede(run, carry=True)
+        assert not any("REGIME" in f for f in st["findings"]), st["findings"]
+
+        # O-7: --route decides what carries forward, and a wrong route must be rejected.
+        try:
+            cmd_supersede(run, route="bogus", carry=True)
+            raise AssertionError("an unknown --route must be rejected")
+        except ValueError:
+            pass
+        r1 = cmd_supersede(run, route="geometry", carry=True)
         assert r1["superseded_to"] == "_it1_SUPERSEDED" and r1["iteration_now"] == 2
+        assert r1["route"] == "geometry"
         assert (run / "_it1_SUPERSEDED" / "qa" / "gate.json").is_file()
-        assert (run / "measure" / "params.json").is_file(), "carry-forward failed"
+        assert (run / "measure" / "params.json").is_file(), "geometry route must carry measure/ forward"
+        assert (run / "build" / "model.py").is_file(), "geometry route must carry model.py forward"
         assert not (run / "qa" / "gate.json").exists()
+        assert cmd_status(run)["last_complete_stage"] == "measure", \
+            "geometry route: measure/ carried, so resume must land past it, at rebuild"
         fake_iteration("REVISE")
-        cmd_supersede(run, carry=False)
+        cmd_supersede(run, route="geometry", carry=False)
         fake_iteration("REVISE")
         try:
-            cmd_supersede(run, carry=True)
+            cmd_supersede(run, route="geometry", carry=True)
             raise AssertionError("loop 3 REVISE must HALT")
         except HaltError:
             pass
         assert cmd_status(run)["iteration"] == MAX_LOOPS
 
-        (run / "qa" / "VERDICT.md").write_text("APPROVED_WITH_LIMITATIONS\n", encoding="utf-8")
+        # O-7, separate runs (so the 3-loop bound above does not interfere): a REVISE routed
+        # to `measure` or `datum` must not carry the stage being redone forward, so `status`
+        # resumes at that stage rather than skipping past it as "already complete".
+        for route, want_resume in (("measure", "intake"), ("datum", "init")):
+            rr = t / f"run_route_{route}"
+            cmd_init(rr, "cap", src / "part.stl", [], None, "unknown", link=False)
+            saved_run, run = run, rr
+            try:
+                fake_iteration("REVISE")
+            finally:
+                run = saved_run
+            res = cmd_supersede(rr, route=route, carry=True)
+            assert res["carried_forward"] == [], \
+                f"O-7: --route {route} must not carry anything forward, got {res['carried_forward']}"
+            if route == "datum":
+                assert "intake" in res["moved"], "O-7: --route datum must also supersede intake/"
+                assert (rr / f"{res['superseded_to']}" / "intake" / "regime.json").is_file()
+                assert not (rr / "intake" / "regime.json").exists()
+            assert cmd_status(rr)["last_complete_stage"] == want_resume, \
+                f"--route {route}: resume must land at {want_resume!r}, not skip past it"
+
+        (run / "qa" / "VERDICT.md").write_text("# VERDICT: APPROVED_WITH_LIMITATIONS\n", encoding="utf-8")
         (run / "qa" / "gate.json").unlink()
         assert read_verdict(run) == "APPROVED_WITH_LIMITATIONS"
+        # O-16: a verdict word buried in prose, not on the headline, must not match.
+        (run / "qa" / "VERDICT.md").write_text(
+            "# Notes\nThis cannot be APPROVED yet; it1 was a REVISE.\n", encoding="utf-8")
+        assert read_verdict(run) is None, "O-16: prose mentions must not be read as a verdict"
         (run / "qa" / "VERDICT.md").unlink()
         (run / "deliver").mkdir()
         assert any("CHK-PUBLISH" in f for f in cmd_status(run)["findings"])
+        (run / "deliver").rmdir()
+
+        # O-1: a gate.json refused by verify's own `assemble` must never be trusted, even
+        # though it still carries a verdict word and a VERDICT.md exists.
+        write_json(run / "qa" / "gate.json", {"verdict": "APPROVED", "errors": ["Tier-1 missing"],
+                                              "allowed_verdicts": ["BAND_NOT_MET", "HALT", "REVISE"]})
+        (run / "qa" / "VERDICT.md").write_text("# VERDICT: APPROVED\n", encoding="utf-8")
+        assert read_verdict(run) is None, "O-1: a refused gate.json must not be trusted"
+        st_refused = cmd_status(run)
+        assert st_refused["verdict"] is None
+        assert any("refused" in f for f in st_refused["findings"]), st_refused["findings"]
+        (run / "qa" / "gate.json").unlink()
+        (run / "qa" / "VERDICT.md").unlink()
 
         os.chmod(t / "run2" / "input" / "scan.stl", 0o644)
         (t / "run2" / "input" / "scan.stl").write_bytes(b"tampered")
         assert any("changed" in f for f in cmd_status(t / "run2")["findings"])
+
+        # O-2: a filled MEASUREMENTS.md placed after init is not hashed until `rehash` runs,
+        # and once hashed, a later edit is caught like any other tampered input.
+        run4 = t / "run4"
+        cmd_init(run4, "cap", src / "part.stl", [], None, "unknown", link=False)
+        assert any("no filled" in f for f in cmd_status(run4)["findings"])
+        (run4 / "input" / "MEASUREMENTS.md").write_text("| ID | caliper |\n| ENV-X | 10.0 |\n",
+                                                         encoding="utf-8")
+        st4 = cmd_status(run4)
+        assert any("not hashed" in f for f in st4["findings"]), st4["findings"]
+        try:
+            cmd_rehash(run4, src / "MEAS.md")  # target already exists: must be refused
+            raise AssertionError("rehash must refuse to overwrite an already-placed sheet")
+        except FileExistsError:
+            pass
+        cmd_rehash(run4, None)
+        st4b = cmd_status(run4)
+        assert not any("not hashed" in f for f in st4b["findings"]), st4b["findings"]
+        try:
+            cmd_rehash(run4, None)
+            raise AssertionError("re-hashing an already-hashed sheet must be refused")
+        except RuntimeError:
+            pass
+        (run4 / "input" / "MEASUREMENTS.md").write_text("tampered", encoding="utf-8")
+        assert any("changed" in f for f in cmd_status(run4)["findings"]), \
+            "O-2: an edit to an already-hashed MEASUREMENTS.md must be a tamper finding"
 
         lk = cmd_init(t / "run3", "cap", src / "part.stl", [], None, "full", link=True)
         assert (t / "run3" / "input" / "scan.stl").is_symlink() and lk["scan_resolution"] == "full"
@@ -374,10 +598,20 @@ def main(argv: list[str] | None = None) -> int:
     pi.add_argument("--link", action="store_true", help="symlink inputs instead of copying")
     ps = sub.add_parser("status", help="print run state as JSON")
     ps.add_argument("run", type=Path)
-    pv = sub.add_parser("supersede", help="move measure/ build/ qa/ to _itN_SUPERSEDED/ after REVISE")
+    pr = sub.add_parser("rehash", help="hash a filled input/MEASUREMENTS.md into "
+                                        "INPUT_HASHES.json (O-2)")
+    pr.add_argument("run", type=Path)
+    pr.add_argument("--measurements", type=Path,
+                    help="filled MEASUREMENTS.md to place at input/MEASUREMENTS.md, if not "
+                         "already there")
+    pv = sub.add_parser("supersede", help="move measure/ build/ qa/ (and intake/ for "
+                                           "--route datum) to _itN_SUPERSEDED/ after REVISE")
     pv.add_argument("run", type=Path)
+    pv.add_argument("--route", required=True, choices=ROUTES,
+                    help="the stage the REVISE re-enters; decides what carries forward (O-7)")
     pv.add_argument("--no-carry", action="store_true",
-                    help="do not copy measure/ and build/model.py forward into the new iteration")
+                    help="do not copy anything forward into the new iteration, "
+                         "regardless of --route")
     pd = sub.add_parser("doctor", help="check dependencies and sibling skills")
     pd.add_argument("--skills-root", type=Path, default=Path(__file__).resolve().parents[2])
     args = ap.parse_args(argv)
@@ -390,8 +624,10 @@ def main(argv: list[str] | None = None) -> int:
                            args.scan_resolution, args.link)
         elif args.cmd == "status":
             out = cmd_status(args.run)
+        elif args.cmd == "rehash":
+            out = cmd_rehash(args.run, args.measurements)
         elif args.cmd == "supersede":
-            out = cmd_supersede(args.run, carry=not args.no_carry)
+            out = cmd_supersede(args.run, route=args.route, carry=not args.no_carry)
         elif args.cmd == "doctor":
             out = cmd_doctor(args.skills_root)
             print(json.dumps(out, indent=2, sort_keys=True))

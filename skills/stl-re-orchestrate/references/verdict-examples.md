@@ -24,10 +24,10 @@ Paths: `GE/` = `golden-examples/`.
   (`GE/dreame_brush-caps/README.md:81`).
 - **Verdict here:** the gates pass with no masks. Under §6 of the orchestrator SKILL, a
   scan-only run carries "Tier-1 not run" and "absolute scale not caliper-verified" as
-  declared limitations. That gives **`APPROVED_WITH_LIMITATIONS`**.
-  `analysis/SKILL_ARCHITECTURE.md` §4 lists this part as the `APPROVED` precedent. That
-  holds only if the scan-only authority is treated as a claim boundary, not a limitation
-  (open question; see the end).
+  declared limitations. That gives **`APPROVED_WITH_LIMITATIONS`**. Consistent with
+  `SKILL_ARCHITECTURE.md` §4, which lists this part's scan-only status as exactly the
+  reason it is `APPROVED_WITH_LIMITATIONS` rather than the flat `APPROVED` it gives M02
+  (`analysis/SKILL_ARCHITECTURE.md:269`).
 - **Next:** deliver.
 
 ## 2. DRM snap cap: official gate FAILED on max
@@ -176,9 +176,5 @@ Paths: `GE/` = `golden-examples/`.
 
 ## Open questions carried from these examples
 
-- **DRM screw: `APPROVED` or `APPROVED_WITH_LIMITATIONS`?** `SKILL_ARCHITECTURE.md` §4
-  lists it as `APPROVED`. The scan-only rule in the orchestrator SKILL §6 makes it
-  `APPROVED_WITH_LIMITATIONS`. The owner has not ruled on whether scan-only authority is a
-  limitation or a claim boundary.
 - **DRM snap: who accepted the max miss?** The acceptance is not recorded, and the gate's
   `exclusions: []` conflicts with the README's "table excluded" (`QUESTIONS.md` B).

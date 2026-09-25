@@ -45,6 +45,97 @@ Counts: BLOCKER 0 · MAJOR 7 · MINOR 9 · NIT 3.
 - Owner decisions: regime declared at intake with no silent default (§3) ✓; datum audit report-only ✓; census reported, not gated ✓.
 - Removed the `__pycache__` created by py_compile and the `/tmp/rv_orch` run.
 
+## Fixes applied (round 1)
+
+Applied by `stl-re-orchestrate`'s owning agent, per the orchestrator's decisions on O-1,
+O-2 and O-7 (which narrow or restate the reviewer's concrete fix). `init_run.py --selftest`
+and `doctor` both pass after these changes; the selftest now also exercises O-1, O-2 and O-7.
+
+- **O-1 — Fixed.** `init_run.py`: added `gate_refusal()`; `read_verdict()` now returns
+  `None` whenever `qa/gate.json#errors` is non-empty or `verdict` is not a member of
+  `allowed_verdicts` (when present), never falling back to `VERDICT.md` prose in that case.
+  `cmd_status` adds the refusal as a finding. Documented in `run-contract.md` §6 and
+  `SKILL.md` §4 (new paragraph before the verdict table).
+- **O-2 — Fixed.** Added `init_run.py rehash <run> [--measurements <file>]`: hashes a
+  human-filled `input/MEASUREMENTS.md` into `INPUT_HASHES.json`, refuses to re-hash an
+  already-hashed path (a later edit is then caught by the existing tamper check), and logs
+  a `MEASUREMENTS` `DECISIONS.md` entry. `cmd_status` reports a finding when the file exists
+  but is not yet hashed. Documented in `SKILL.md` §1/§2 and `run-contract.md` §10.
+- **O-3 — Fixed.** `SKILL.md` §2: added the `intake*` re-entry step after the human gate
+  (CHK-SCALE against the filled sheet, re-datum if a scale applies), with its own exit row,
+  and added the corresponding HALT/ask table row in §6.
+- **O-4 — Fixed.** `SKILL.md` §5.1 hand-off list rewritten: added `intake/regime.json`,
+  `build/export_check.json`, `build/MODELING_PLAN.md`; `build/model.py` may be read-only
+  grepped for CHK-PATCHWORK but never imported/executed/used as an "expected" source
+  (matches `stl-re-verify/SKILL.md:14,96-97`, and the orchestrator's wording for "Tier-1
+  feature lookup" was replaced with the more precise CHK-PATCHWORK grep the verify skill
+  actually documents).
+- **O-5 — Fixed.** `init_run.py`: `STAGE_EXIT["intake"]` now requires `intake/regime.json`;
+  `STAGE_EXIT["verify"]` now requires `qa/masks.json`; `cmd_status` additionally requires
+  `intake/alignment.json#status == "OK"` for the intake stage to count complete, and flags
+  a finding when no `REGIME` entry exists in `DECISIONS.md` once intake is otherwise
+  complete. `SKILL.md` §2 exit table updated to match.
+- **O-6 — Fixed (doc only, as the reviewer noted no script change is needed).** `SKILL.md`
+  §4 `BAND_NOT_MET` row now spells out option (b): record an `OTHER` `DECISIONS.md` entry,
+  ask verify to re-run `assemble` with `review.json#verdict = "REVISE"`, then `supersede`.
+- **O-7 — Fixed.** Added required `--route {measure,geometry,datum}` to `supersede`.
+  `CARRY_FORWARD` now makes `measure`/`datum` carry nothing forward and `geometry` carry
+  `measure/` + `build/MODELING_PLAN.md` + `build/model.py`, so `status`'s "first incomplete
+  stage" naturally resumes at the right stage without a separate resume pointer.
+  `--route datum` also moves `intake/` into `_itN_SUPERSEDED/`. Documented in `SKILL.md` §4
+  and §7, and `run-contract.md` §10.
+- **O-8 — Fixed.** `run-contract.md` §10: the `intake/intake.json#regime` bullet is struck
+  through and marked "Superseded by §12". §1 folder tree extended with `intake/regime.json`,
+  `intake/coverage.json`, `qa/regime.json`, `qa/review.json`, `build/fillets.json` and
+  `<run>/DECISIONS.md`.
+- **O-9 — Fixed.** `run-contract.md` §6 now points `regime` and `hash_frozen` at §12 instead
+  of restating a shorter, stale shape. §12's `regime` shape gained the optional
+  `declared_in` key, with the citation corrected to `verdict.py:277` (the reviewer's
+  `:188` no longer matches the current file; `declared_in` is set at `verdict.py:277`).
+- **O-10 — Skipped.** This is a `stl-re-verify` wording change (delete "the regime decides"
+  from its SKILL.md); out of scope for this agent, which owns only `stl-re-orchestrate`.
+- **O-11 — Fixed.** `verdict-examples.md`: corrected the citation — `SKILL_ARCHITECTURE.md`
+  §4 (`:269`) lists the DRM screw as `APPROVED_WITH_LIMITATIONS` specifically *because* it
+  is scan-only, matching this document's own verdict, not as an `APPROVED` precedent.
+  Removed the now-answered "open question" bullet at the end of the file.
+- **O-12 — Fixed.** `SKILL.md` §2: reworded the "3 attempts" line to correctly cite
+  `RE_SPEC.md:248-249` as a per-feature, cross-loop REVISE count, and named the rebuild
+  skill's own 3-build-attempt heuristic as a distinct, unevidenced rule.
+- **O-13 — Partially fixed.** Added HALT/ask rows for: intake datum `STOP`
+  (`stl-re-intake-datum/SKILL.md:279`, corrected from the reviewer's stale `:258`),
+  non-full `scan_resolution`, a CHK-SCALE uniform-scale limitation, calipers arriving after
+  intake (routes to the new `intake*` step), and deliver's `repro_check` failure. Skipped
+  the reviewer's `--scan-resolution` "make it required" argparse change: not named in the
+  orchestrator's narrowed instructions for this round, and it changes existing CLI
+  behavior beyond what was authorized; likewise skipped giving `supersede` a `--reason
+  repro` bypass for the non-REVISE deliver-failure case (also not in the authorized list) —
+  the new HALT row instead describes the manual `DECISIONS.md`-recorded workaround.
+- **O-14 — Fixed.** `SKILL.md` §3: appended the condition for a legitimate post-hoc regime
+  change (a reason independent of the gate numbers) and cross-referenced
+  `verdict-examples.md:73-74` (corrected from the reviewer's `:73`) for the forbidden case.
+- **O-15 — Fixed.** `init_run.py cmd_init`: `--photos <dir>` now only ingests files whose
+  suffix is a known image type; other files (e.g. a `MEASUREMENTS.md` sitting in the same
+  reference folder) are skipped with a stderr notice instead of being copied in as a photo.
+- **O-16 — Fixed.** `read_verdict()`'s `VERDICT.md` fallback now matches only a headline
+  line (`^#+.*VERDICT`) and searches for the verdict word within that line only, so prose
+  like "cannot be APPROVED" or "it1: REVISE" is never picked up.
+- **O-17 — Fixed.** `doctor` now probes `rtree`, `shapely` and `fast_simplification` in
+  addition to `numpy`/`scipy`/`trimesh`/`build123d`, and requires all of them for `ok`.
+- **O-18 — Fixed.** `SKILL.md` §6: corrected `OD-H12 README.md:67-68` to `:66-67` (this
+  skill's own citation; the same fix in the rebuild skill is out of scope here).
+- **O-19 — Skipped.** Reviewer marked it "Optional"; not in the orchestrator's authorized
+  list for this round, and `doctor` scanning `~/.claude/skills` / `./.claude/skills` for
+  stray same-named skill copies is a larger, separate change than the other NIT fixes.
+
+**Rebuild-review additions (n3, n4), applied to `run-contract.md` (owned here):**
+- §1 `build/` line now also lists `face_stats.json` (alongside the already-present
+  `fillets.json`).
+- §12 gained a bullet: `export_check.json#fillets[].status` ∈
+  `OK | REDUCED | FAILED | NO_EDGES | SELECTOR_ERROR` (anything but `OK` is a CHK-FILLET
+  finding), and `face_stats` reports `plane_face_count` /
+  `plane_face_median_area_mm2` (reported, not gated). The "Band keys (canonical)" bullet at
+  the end of §12 was left untouched, as instructed.
+
 ## Strengths
 
 - The ownership split is sharp, and the orchestrator does no geometry. The six-skill layout matches `SKILL_ARCHITECTURE.md` §1.
