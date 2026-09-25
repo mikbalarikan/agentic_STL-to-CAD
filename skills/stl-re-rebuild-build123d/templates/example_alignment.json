@@ -1,0 +1,71 @@
+{
+ "schema": "stl-re/alignment@1",
+ "tool": "hand-written template example",
+ "tool_version": "stl-re-rebuild-build123d@1",
+ "inputs": {},
+ "seed": 0,
+ "created": "1970-01-01T00:00:00+00:00",
+ "note": "TEMPLATE EXAMPLE ONLY: a 30 deg rotation about Z plus a translation, so the scan-frame export visibly differs from the datum frame.",
+ "matrix_4x4": [
+  [
+   0.866025403784,
+   -0.5,
+   0.0,
+   10.0
+  ],
+  [
+   0.5,
+   0.866025403784,
+   0.0,
+   -5.0
+  ],
+  [
+   0.0,
+   0.0,
+   1.0,
+   100.0
+  ],
+  [
+   0.0,
+   0.0,
+   0.0,
+   1.0
+  ]
+ ],
+ "scale_factor": 1.0,
+ "scan_noise_mm": {
+  "value": null,
+  "method": "template example"
+ },
+ "primary": {
+  "type": "plane",
+  "mesh_region_desc": "flange underside (example)",
+  "fit_rms_mm": null,
+  "fit_max_mm": null,
+  "why": "example"
+ },
+ "secondary": {
+  "type": "axis",
+  "mesh_region_desc": "bore (example)",
+  "fit_rms_mm": null,
+  "fit_max_mm": null,
+  "why": "example"
+ },
+ "clock": {
+  "rule": "hole_theta_1 on +X (example)",
+  "angle_deg": 30.0
+ },
+ "tilt_deg": {
+  "value": null,
+  "method": "template example"
+ },
+ "origin": {
+  "definition": "bore axis ∩ flange underside (example)"
+ },
+ "sanity_landmarks": [],
+ "removed": {
+  "fragments_pct": 0.0,
+  "table_pct": 0.0,
+  "method": "none"
+ }
+}
