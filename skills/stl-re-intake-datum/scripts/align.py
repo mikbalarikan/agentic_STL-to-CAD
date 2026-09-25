@@ -117,29 +117,98 @@ def wall_face_stations(m: trimesh.Trimesh, spec: dict[str, Any], c0: np.ndarray)
     return out
 
 
-def tilt_from_stations(st: list[dict[str, float]]) -> dict[str, Any]:
-    """Tilt of the axis through circle centres relative to frame Z (least-squares line
-    cx = a + b z, cy = c + d z) with a 1-sigma standard error from the centre scatter.
-    Needs >= 3 distinct stations; else not measured (CHK-TILT finding)."""
-    zs = np.array([s["z"] for s in st])
-    nz = len(np.unique(zs.round(6)))
-    if nz < 3:
-        return {"value": None, "method": f"not measured: {nz} distinct stations (<3)"}
+def _line_tilt(zs: np.ndarray, cx: np.ndarray, cy: np.ndarray) -> dict[str, float]:
+    """Least-squares line cx = a + b z, cy = c + d z, with a 1-sigma standard error from the
+    residual scatter. Shared by the pooled and the per-feature fits."""
     A = np.c_[np.ones(len(zs)), zs]
-    cx = np.array([s["cx"] for s in st])
-    cy = np.array([s["cy"] for s in st])
     (ax_, bx), *_ = np.linalg.lstsq(A, cx, rcond=None)
     (ay_, by), *_ = np.linalg.lstsq(A, cy, rcond=None)
     sxx = float(((zs - zs.mean()) ** 2).sum())
     dof = max(len(zs) - 2, 1)
     rx = cx - (ax_ + bx * zs)
     ry = cy - (ay_ + by * zs)
-    se = math.sqrt(((rx ** 2).sum() + (ry ** 2).sum()) / (2 * dof) / sxx)
+    se = math.sqrt(((rx ** 2).sum() + (ry ** 2).sum()) / (2 * dof) / max(sxx, 1e-12))
     return {"value": float(math.degrees(math.atan(math.hypot(bx, by)))),
             "stderr_deg": float(math.degrees(math.atan(se))),
             "direction_deg": float(math.degrees(math.atan2(by, bx))),
-            "method": f"line through {len(st)} circle centres over z {zs.min():.3f}..{zs.max():.3f} vs frame Z",
             "z_span_mm": float(zs.max() - zs.min())}
+
+
+def tilt_from_stations(st: list[dict[str, float]]) -> dict[str, Any]:
+    """Tilt of the axis through circle centres relative to frame Z.
+
+    review M2: pooling every station into ONE line with one shared intercept reads
+    between-feature centre bias (a genuine offset, or shape error on a non-circular
+    feature) as tilt. The pooled fit here instead uses a COMMON slope with a
+    PER-FEATURE intercept (design matrix = one-hot(feature) | z), so a constant
+    per-feature offset is absorbed into that feature's intercept, not into the slope.
+    Each feature with >= 3 of its own stations is ALSO fit independently
+    (`per_feature`), and `resolvable` is set False - the CHK-TILT note says
+    "not resolvable" - when two per-feature tilt vectors differ by more than their
+    combined 1-sigma stderr (a heuristic disagreement test, not a calibrated one).
+    Needs >= 3 distinct stations overall; else not measured (CHK-TILT finding)."""
+    zs_all = np.array([s["z"] for s in st])
+    nz = len(np.unique(zs_all.round(6)))
+    if nz < 3:
+        return {"value": None, "method": f"not measured: {nz} distinct stations (<3)",
+                "per_feature": [], "resolvable": None}
+    feats = sorted({s.get("feature", "") for s in st})
+    fidx = {f: i for i, f in enumerate(feats)}
+    onehot = np.zeros((len(st), len(feats)))
+    for i, s in enumerate(st):
+        onehot[i, fidx[s.get("feature", "")]] = 1.0
+    A = np.c_[onehot, zs_all]
+    cx = np.array([s["cx"] for s in st])
+    cy = np.array([s["cy"] for s in st])
+    solx, *_ = np.linalg.lstsq(A, cx, rcond=None)
+    soly, *_ = np.linalg.lstsq(A, cy, rcond=None)
+    bx, by = float(solx[-1]), float(soly[-1])
+    sxx = float(((zs_all - zs_all.mean()) ** 2).sum())
+    dof = max(len(zs_all) - len(feats) - 2, 1)
+    rx = cx - A @ solx
+    ry = cy - A @ soly
+    se = math.sqrt(((rx ** 2).sum() + (ry ** 2).sum()) / (2 * dof) / max(sxx, 1e-12))
+    pooled: dict[str, Any] = {
+        "value": float(math.degrees(math.atan(math.hypot(bx, by)))),
+        "stderr_deg": float(math.degrees(math.atan(se))),
+        "direction_deg": float(math.degrees(math.atan2(by, bx))),
+        "method": f"common slope, per-feature intercept, {len(st)} stations over "
+                  f"{len(feats)} feature(s), z {zs_all.min():.3f}..{zs_all.max():.3f} vs frame Z",
+        "z_span_mm": float(zs_all.max() - zs_all.min())}
+    # per-feature independent fits (own slope AND intercept), to test agreement
+    per_feature: list[dict[str, Any]] = []
+    for f in feats:
+        rows = [s for s in st if s.get("feature", "") == f]
+        zf = np.array([s["z"] for s in rows])
+        if len(np.unique(zf.round(6))) < 3:
+            continue
+        fit = _line_tilt(zf, np.array([s["cx"] for s in rows]), np.array([s["cy"] for s in rows]))
+        per_feature.append({"feature": f, "n_stations": len(rows), **fit})
+    resolvable: bool | None = None
+    disagreement = ""
+    if len(per_feature) >= 2:
+        resolvable = True
+        for i in range(len(per_feature)):
+            for j in range(i + 1, len(per_feature)):
+                fi, fj = per_feature[i], per_feature[j]
+                vi = fi["value"] * np.array([math.cos(math.radians(fi["direction_deg"])),
+                                             math.sin(math.radians(fi["direction_deg"]))])
+                vj = fj["value"] * np.array([math.cos(math.radians(fj["direction_deg"])),
+                                             math.sin(math.radians(fj["direction_deg"]))])
+                gap = float(np.linalg.norm(vi - vj))
+                combined = fi["stderr_deg"] + fj["stderr_deg"]
+                if gap > combined:
+                    resolvable = False
+                    disagreement = (f"{fi['feature']!r} ({fi['value']:.2f} deg @ "
+                                    f"{fi['direction_deg']:.1f} deg) vs {fj['feature']!r} "
+                                    f"({fj['value']:.2f} deg @ {fj['direction_deg']:.1f} deg) "
+                                    f"differ by {gap:.2f} deg > combined stderr {combined:.2f} deg")
+    pooled["per_feature"] = per_feature
+    pooled["resolvable"] = resolvable
+    if disagreement:
+        pooled["disagreement"] = disagreement
+        pooled["method"] += "; NOT RESOLVABLE (heuristic): " + disagreement
+    return pooled
 
 
 # ----------------------------------------------------------------------------- clock
@@ -247,6 +316,10 @@ def run(spec: dict[str, Any], spec_path: Path) -> tuple[int, dict[str, Any]]:
     sf = float(spec.get("scale_factor", 1.0))
     S = np.eye(4)
     S[:3, :3] *= sf
+    # review M1: keep a small sample of the RAW (pre-scale) vertices to self-check that
+    # matrix_4x4 (= T @ S, folded below) actually maps raw -> the datum frame.
+    check_idx = np.linspace(0, len(m.vertices) - 1, min(20, len(m.vertices))).astype(int)
+    raw_check_pts = m.vertices[check_idx].copy()
     m.apply_transform(S)
 
     P = spec["primary"]
@@ -269,19 +342,29 @@ def run(spec: dict[str, Any], spec_path: Path) -> tuple[int, dict[str, Any]]:
         primary = {"type": "plane", "mesh_region_desc": P["desc"], "why": P["why"],
                    "fit_rms_mm": pl["fit_rms_mm"], "fit_max_mm": pl["fit_max_mm"],
                    "fit_p95_mm": pl["fit_p95_mm"], "n_faces": pl["n_faces"], "area_mm2": pl["area_mm2"],
+                   # review m1: the gated rms/max above are trimmed to |d| < 2*tol around the
+                   # RANSAC plane, which structurally caps fit_max_mm; the untrimmed residual
+                   # over the whole peak offset bin is reported alongside it (STOP still gates
+                   # rms only, RE_SPEC's "RMS + max" vs QUESTIONS SS C).
+                   "fit_untrimmed": pl["fit_untrimmed"], "inlier_frac": pl["inlier_frac"],
                    "normal_raw": n.tolist(), "centroid_raw": pl["centroid"].tolist(),
                    "material_side": side, "ransac": pl["ransac"]}
         res["primary_inlier_z_median"] = None
         prim_faces = pl["faces"]
     elif P["type"] == "axis":
+        # review B1: crop to ONE clean cylinder is required, because the STOP-check
+        # residual below is a radial residual about the fitted axis, which is only
+        # meaningful for a single, non-mixed cylindrical crop.
+        if "crop_radius" not in P or "crop_point" not in P:
+            raise SpecError("axis primary requires crop_point and crop_radius (crop to one "
+                            "clean cylinder; the radial residual is meaningless on a mixed crop)")
         ax = unit(P["approx_axis"])
         sel = np.zeros(len(m.faces), bool)
-        for _ in range(int(P.get("iters", 3))):
+        for _ in range(max(1, int(P.get("iters", 3)))):  # review n2: iters=0 must not skip the fit
             sel = np.abs(m.face_normals @ ax) < P.get("perp_max", 0.30)
-            if "crop_radius" in P and "crop_point" in P:
-                q = m.triangles_center - np.asarray(P["crop_point"], float)
-                dist = np.linalg.norm(q - np.outer(q @ ax, ax), axis=1)
-                sel &= dist < P["crop_radius"]
+            q = m.triangles_center - np.asarray(P["crop_point"], float)
+            dist = np.linalg.norm(q - np.outer(q @ ax, ax), axis=1)
+            sel &= dist < P["crop_radius"]
             if sel.sum() < 10:
                 raise SpecError("axis primary: fewer than 10 faces perpendicular to approx_axis")
             af = axis_from_normals(m.triangles_center[sel], m.face_normals[sel], m.area_faces[sel])
@@ -293,16 +376,45 @@ def run(spec: dict[str, Any], spec_path: Path) -> tuple[int, dict[str, Any]]:
         T2[0, 3], T2[1, 3] = -pt[0], -pt[1]
         T = T2 @ T1
         ld = af["line_dist"] or {"rms": float("nan"), "max": float("nan")}
+        # review B1: the STOP-checked residual is the RADIAL residual of the cropped
+        # cylinder faces about the fitted axis (rad = |(C - a) - ((C - a).d) d|, then
+        # rad - median(rad)) - comparable to a circle noise floor. `line_dist` (the
+        # normal-line distance from the fitted axis) is roughly radius x normal-angle
+        # noise, a different metric; it is kept only as a diagnostic.
+        a_pt, d_ax = af["point"], af["direction"]
+        qc = m.triangles_center[sel] - a_pt
+        rad = np.linalg.norm(qc - np.outer(qc @ d_ax, d_ax), axis=1)
+        rres = rad - np.median(rad)
+        axis_rms = float(np.sqrt((rres ** 2).mean()))
+        axis_max = float(np.max(np.abs(rres)))
         primary = {"type": "axis", "mesh_region_desc": P["desc"], "why": P["why"],
-                   "fit_rms_mm": ld["rms"], "fit_max_mm": ld["max"],
-                   "fit_metric": "distance of face-normal lines from the fitted axis",
+                   "fit_rms_mm": axis_rms, "fit_max_mm": axis_max,
+                   "fit_metric": "radial residual of the cropped cylinder faces about the "
+                                 "fitted axis, vs the median radius (review B1)",
+                   "normal_line_dist": ld,
                    "eig_ratio": af["eig_ratio"], "n_faces": int(sel.sum()),
                    "direction_raw": ax.tolist(), "point_raw": af["point"].tolist()}
         prim_faces = None
     else:
         raise SpecError(f"primary.type must be plane|axis, got {P['type']!r}")
-    if primary["fit_rms_mm"] > noise["value"]:
-        stop.append(f"primary fit rms {primary['fit_rms_mm']:.4f} > noise floor {noise['value']:.4f}")
+    if P["type"] == "plane":
+        if primary["mesh_region_desc"] and primary["mesh_region_desc"] in noise.get("method", ""):
+            findings.append("primary STOP check is self-referential (noise measured on the "
+                            "primary itself)")
+        if primary["fit_rms_mm"] > noise["value"]:
+            stop.append(f"primary fit rms {primary['fit_rms_mm']:.4f} > noise floor {noise['value']:.4f}")
+    else:
+        # review B1: an axis-primary's radial residual is a circle-type residual, so it is
+        # compared with the circle noise floor (noise_secondary), never the flat noise floor.
+        ns_primary = spec.get("noise_secondary")
+        if ns_primary:
+            if primary["fit_rms_mm"] > ns_primary["value"]:
+                stop.append(f"primary fit rms {primary['fit_rms_mm']:.4f} > secondary (circle) "
+                            f"noise floor {ns_primary['value']:.4f} ({ns_primary['method']})")
+        else:
+            findings.append("axis-primary radial residual not compared: no noise_secondary "
+                            "(circle noise) measured on a clean circle (plane noise is not "
+                            "comparable to a radial residual)")
 
     mc = apply(T, m)
     # ---- origin
@@ -416,16 +528,32 @@ def run(spec: dict[str, Any], spec_path: Path) -> tuple[int, dict[str, Any]]:
     tilt_ref = float(spec.get("tilt_reference_deg", 0.3))  # RE_SPEC.md:241 audit angle, report-only (Q2)
     if tilt["value"] is None:
         tilt_res = "finding"
+    elif tilt.get("resolvable") is False:
+        tilt_res = "finding"
     else:
         tilt_res = "pass" if tilt["value"] <= tilt_ref else "finding"
-    checks = {"CHK-TILT": {"ran": tilt["value"] is not None, "result": tilt_res,
-                           "note": f"{tilt['method']}; reference {tilt_ref} deg (RE_SPEC.md:241, report-only)"},
+    tilt_note = f"{tilt['method']}; reference {tilt_ref} deg (RE_SPEC.md:241, report-only)"
+    if tilt.get("resolvable") is False:
+        tilt_note = ("not resolvable: per-feature tilt vectors disagree beyond their combined "
+                    "stderr (heuristic, review M2); " + tilt_note)
+    checks = {"CHK-TILT": {"ran": tilt["value"] is not None, "result": tilt_res, "note": tilt_note},
               "CHK-SCALE": spec.get("chk_scale", {"ran": False, "result": "finding",
                                                   "note": "no CHK-SCALE record passed in spec"})}
     status = "STOP" if stop else ("CHECK_LANDMARKS" if not all(l["ok"] for l in lms) else "OK")
+    # review M1: matrix_4x4 folds scale_factor in (T @ S), so it maps the RAW scan directly
+    # to the datum frame (run-contract SS11), matching what consumers like
+    # stl-re-measure-intent/scripts/common.py apply to the raw scan. scale_factor stays a
+    # recorded field. Self-check on a sample of raw vertices vs the aligned mesh (mc).
+    TS = T @ S
+    homog = np.c_[raw_check_pts, np.ones(len(raw_check_pts))]
+    predicted = (TS @ homog.T).T[:, :3]
+    check_err = float(np.abs(predicted - mc.vertices[check_idx]).max()) if len(check_idx) else 0.0
+    if check_err > 1e-6:
+        raise SpecError(f"internal error: apply(matrix_4x4, raw) disagrees with aligned_work.stl "
+                        f"by {check_err:.3g} mm (review M1 self-check)")
     doc = {**json_header("alignment", "align.py", inputs, seed),
            "status": status, "stop_reasons": stop, "findings": findings,
-           "matrix_4x4": T.tolist(),
+           "matrix_4x4": TS.tolist(),
            "scale_factor": sf,
            "scan_noise_mm": {"value": noise["value"], "method": noise["method"]},
            "primary": primary,
@@ -440,7 +568,9 @@ def run(spec: dict[str, Any], spec_path: Path) -> tuple[int, dict[str, Any]]:
            "extents_aligned": ext,
            "aligned_mesh": {"path": str(aligned), "sha256": sha256_file(aligned)},
            "checks": checks,
-           "note": "matrix_4x4 maps the RAW scan (scaled by scale_factor) to the datum frame, row-major."}
+           "note": "matrix_4x4 maps the RAW scan to the datum frame, row-major; scale_factor is "
+                   "folded in (T @ S, run-contract SS11). aligned_work.stl is exported at the "
+                   "scaled size (unchanged)."}
     if "origin_z_plane" in res:
         doc["origin"]["z_plane_fit"] = res["origin_z_plane"]
     (out_dir / "alignment.json").write_text(json.dumps(doc, indent=1, default=lambda o: o.tolist()))

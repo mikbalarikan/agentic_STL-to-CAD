@@ -295,25 +295,46 @@ def cmd_scale(a: argparse.Namespace) -> int:
 
 
 # ----------------------------------------------------------------------------- regime
-RE_SPEC_BANDS = {"tier1_abs_mm": 0.15, "tier2_p95_mm": 1.6, "tier2_max_mm": 4.0, "interface_max_mm": 0.8}
+# Canonical band keys (run-contract SS12, fixed after review V1): one flat object with
+# exactly these keys, in mm, null when the regime has no such band. A gated consumer that
+# finds every key null, or an unknown key, must refuse to grade rather than fall back.
+BAND_KEYS = ("p95_mm", "max_mm", "tier1_abs_mm", "interface_max_mm")
+
+
+def _normalize_bands(bands: dict[str, Any]) -> dict[str, Any]:
+    unknown = set(bands) - set(BAND_KEYS)
+    if unknown:
+        raise SystemExit(f"regime: unknown band key(s) {sorted(unknown)}; canonical keys are "
+                         f"{BAND_KEYS} (run-contract SS12)")
+    return {k: bands.get(k) for k in BAND_KEYS}
+
+
+RE_SPEC_BANDS = _normalize_bands({"p95_mm": 1.6, "max_mm": 4.0, "tier1_abs_mm": 0.15,
+                                  "interface_max_mm": 0.8})
 RE_SPEC_SOURCE = "baseline/oomwoo-re-pipeline/RE_SPEC.md:170-175"
-BASELINE_SKILL_BANDS = {"plastic": {"p95_mm": 0.30, "max_mm": 0.80}, "machined": {"p95_mm": 0.15, "max_mm": 0.50}}
+# baseline-skill only gates p95/max; it has no tier1 or interface band (both null).
+BASELINE_SKILL_BANDS = {"plastic": _normalize_bands({"p95_mm": 0.30, "max_mm": 0.80}),
+                        "machined": _normalize_bands({"p95_mm": 0.15, "max_mm": 0.50})}
 BASELINE_SKILL_SOURCE = "baseline/skills/stl2step-build123d/SKILL.md:87"
 
 
 def cmd_regime(a: argparse.Namespace) -> int:
     """Write intake/regime.json (run-contract §12): the canonical band-regime declaration."""
-    bands = json.loads(a.bands) if a.bands else None
+    bands = _normalize_bands(json.loads(a.bands)) if a.bands else None
     source = a.source
+    material_class = None
     if a.name == "RE_SPEC":
         if bands is None:
             bands = dict(RE_SPEC_BANDS)
             source = source or RE_SPEC_SOURCE
     elif a.name == "baseline-skill":
+        # baseline-skill always picks ONE material class at intake (run-contract SS12),
+        # even when --bands overrides the numbers, so the class is recorded either way.
+        if a.klass is None and bands is None:
+            ap_error = "baseline-skill without --bands requires --class plastic|machined"
+            raise SystemExit(ap_error)
+        material_class = a.klass
         if bands is None:
-            if a.klass is None:
-                ap_error = "baseline-skill without --bands requires --class plastic|machined"
-                raise SystemExit(ap_error)
             bands = dict(BASELINE_SKILL_BANDS[a.klass])
             source = source or BASELINE_SKILL_SOURCE
     else:  # project-spec
@@ -327,6 +348,7 @@ def cmd_regime(a: argparse.Namespace) -> int:
     rep["name"] = a.name
     rep["source"] = source
     rep["bands"] = bands
+    rep["material_class"] = material_class
     rep["why"] = a.why or ""
     txt = _dump(rep)
     (out / "regime.json").write_text(txt)

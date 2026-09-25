@@ -183,9 +183,18 @@ def level_plane(m: trimesh.Trimesh, approx_normal: Sequence[float], cone_deg: fl
     nn = vt[2] if vt[2] @ an >= 0 else -vt[2]
     d = (P - cc) @ nn
     st = residual_stats(d)
+    # review m1: also report the UNTRIMMED residual (all faces in the peak offset bin,
+    # before the |d| < 2*tol widen/refine), so the trimming is visible next to the gated
+    # trimmed rms (RE_SPEC.md's "RMS + max" vs the noise floor; the trimmed max is
+    # structurally small, see QUESTIONS SS C).
+    d_all = (c[sel] - cc) @ nn
+    st_all = residual_stats(d_all)
     return {"normal": nn, "centroid": cc, "faces": sel2, "n_faces": int(len(sel2)),
             "area_mm2": float(a[sel2].sum()), "offset_peak_bin": peak,
             "fit_rms_mm": st["rms"], "fit_p95_mm": st["p95"], "fit_max_mm": st["max"],
+            "fit_untrimmed": {"rms": st_all["rms"], "p95": st_all["p95"], "max": st_all["max"],
+                              "n_faces": st_all["n"]},
+            "inlier_frac": r["inlier_frac"],
             "ransac": {"tol_mm": tol, "iters": iters, "seed": seed,
                        "inlier_frac": r["inlier_frac"]}}
 
@@ -238,8 +247,9 @@ def axis_from_normals(pts: np.ndarray, nrm: np.ndarray,
         A = np.eye(3) - np.outer(n, n)
         M += wi * A
         b += wi * (A @ p)
-    # M is singular along d (every normal is perpendicular to d); regularise on that
-    # direction only by pinning the along-axis component to the centroid.
+    # the along-axis component of M is weakly determined (every normal is perpendicular
+    # to d, so M is not literally singular there, but it carries no information along d);
+    # pin that component to the weighted centroid (review n1).
     cen = (pts * w[:, None]).sum(0) / w.sum()
     M2 = M + np.outer(d, d) * w.sum()
     b2 = b + d * (d @ cen) * w.sum()

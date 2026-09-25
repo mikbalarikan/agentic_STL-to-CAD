@@ -44,7 +44,9 @@ the scripts' JSON summaries (facet-film T1, `analysis/baseline/facet-film-transf
    (golden `align.py:82` silently used the bbox centre) and measures tilt (golden hard-coded 0, CHK-TILT).
 5. **STOP when a datum fit residual exceeds the measured noise floor** (RE_SPEC.md:126-129).
    `align.py` writes `status: "STOP"` and exits 2. Do not force the datum onto warp, wear or
-   artefact. Pick a cleaner region or report.
+   artefact. Pick a cleaner region or report. rms is gated, max is reported (RE_SPEC says
+   "RMS + max"; see QUESTIONS §C): a plane primary's `fit_untrimmed` stats show the residual
+   before the |d| < 2·tol widen/refine, next to the trimmed (gated) rms/max.
 6. **Record, don't grade, on decimated copies.** The repo's `*_scan_decimated.stl` copies deviate up to
    0.028 mm (`golden-examples/README.md`). Official gates run on the full-resolution original
    (SYNTHESIS A3).
@@ -185,6 +187,11 @@ python scripts/intake.py regime --name project-spec --bands '{"p95_mm": 0.5, "ma
     --source "<path:line>" --out-dir intake --why "..."
 ```
 
+`regime.json#bands` is always the canonical flat object `{p95_mm, max_mm, tier1_abs_mm,
+interface_max_mm}` (run-contract §12), `null` for a band the regime does not gate: RE_SPEC
+fills all four, baseline-skill only `p95_mm`/`max_mm` and records the chosen class as
+`regime.json#material_class` (`plastic|machined`).
+
 Then append a `REGIME` line to `DECISIONS.md` (run-contract §10) recording the choice and its
 evidence path.
 
@@ -205,7 +212,11 @@ Worked specs and golden numbers are in `references/datum-cookbook.md`. Rules:
      RANSAC (tol 0.05, 300 iterations), widen to 2·tol, SVD refine. `material_side` says where
      the material is relative to the outward normal.
    - Axis-primary parts (turned bodies with no functional flat, e.g. OD): normals-eigen axis over
-     faces nearly perpendicular to the approximate axis. Crop to one clean cylinder.
+     faces nearly perpendicular to the approximate axis. Crop to one clean cylinder
+     (`crop_point`/`crop_radius` are required). The gated residual is the RADIAL residual of the
+     cropped cylinder faces about the fitted axis vs the median radius, compared with
+     `noise_secondary` (a circle noise floor) — not the normal-line distance vs the flat noise
+     floor, which is a different metric (review B1; `normal_line_dist` is kept as a diagnostic).
    - Record `why` for every datum (RE_SPEC.md:124).
 2. **Secondary / origin X-Y.** Circle fits on a true circle:
    - Kåsa on closed section loops, or IRLS (Cauchy, golden scale 0.30) when outliers are present.
@@ -223,18 +234,28 @@ Worked specs and golden numbers are in `references/datum-cookbook.md`. Rules:
    - P03 never recorded its clock (B6).
 4. **Origin.** A named intersection ("bore axis ∩ top face"), never "the centre".
 5. **CHK-TILT.**
-   - `align.py` fits a line through the circle centres and reports `tilt_deg.value ± stderr_deg`
-     over `z_span_mm`. Use ≥ 3 stations over the longest clean coaxial span; a list of coaxial
-     features is allowed. Fewer than 3 stations = "not measured" = a finding.
-   - The result is `finding` above the 0.3° audit reference (RE_SPEC.md:241). That band is
-     report-only (owner decision Q2).
+   - `align.py` fits a COMMON slope with a PER-FEATURE intercept through the circle centres
+     (so a constant offset between features is not read as tilt) and reports
+     `tilt_deg.value ± stderr_deg` over `z_span_mm`. Use ≥ 3 stations over the longest clean
+     coaxial span; a list of coaxial features is allowed. Fewer than 3 stations = "not measured"
+     = a finding.
+   - Every feature with its own ≥ 3 stations also gets an independent fit in
+     `tilt_deg.per_feature` (`value`, `stderr_deg`, `direction_deg`). When two per-feature tilt
+     vectors differ by more than their combined 1σ stderr, `tilt_deg.resolvable` is `false` and
+     the CHK-TILT note reads "not resolvable" (a heuristic disagreement test, review M2) —
+     record it rather than reporting the pooled number as a single fact.
+   - The result is `finding` above the 0.3° audit reference (RE_SPEC.md:241), or when it is
+     not resolvable. That band is report-only (owner decision Q2).
    - **When CHK-TILT flags a finding:**
      - If the stderr is comparable to the value, or the span is short, or the arcs are partial,
        re-measure on a longer clean span.
      - If it persists, record it. Decide from function whether the bore or the plane is primary,
        and tell measure/rebuild. Never silently re-level.
-     - DRM screw measured 0.72° ± 0.11° where the golden assumed 0. On B02, partial coverage made
-       tilt unresolvable (2.9°–9.2° depending on the features used). Report it as such.
+     - DRM screw: fit independently, double-D 0.72° ± 0.11° (dir 117°) vs counterbore F08
+       2.8° ± 0.56° (dir −111°) — about 10× the combined stderr apart, so tilt is **not
+       resolvable** from these two features (`reviews/stl-re-intake-datum.md` M2; the golden
+       assumed 0). On B02, partial coverage similarly made tilt unresolvable (2.9°–9.2°
+       depending on the features used). Report it as such, never as a single measured value.
 6. **Sanity landmarks (B11; facet-film T3).**
    - `align.py` checks automatically that the primary lands at z = 0 within the noise floor.
    - Add 3–5 landmarks from the photos or the card, e.g. B02 dome apex z = 10.97 (observed 10.96),

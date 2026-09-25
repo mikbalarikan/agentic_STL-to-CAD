@@ -55,6 +55,80 @@ Counts: 1 BLOCKER, 2 MAJOR, 8 MINOR, 2 NIT.
 - Size: SKILL.md is 286 lines. The progressive disclosure to the cookbook and templates is sensible.
 - I deleted the `__pycache__` I created in `skills/stl-re-intake-datum/scripts/`. No repo files were edited.
 
+## Fixes applied (round 1)
+
+- **B1 — fixed.** `align.py` axis-primary path now requires `crop_point`/`crop_radius`
+  (SpecError otherwise), computes the RADIAL residual of the cropped cylinder faces about the
+  fitted axis (`rad = |(C-a) - ((C-a).d)d|`, `res = rad - median(rad)`) as `primary.fit_rms_mm`/
+  `fit_max_mm` with `fit_metric` naming it, and gates it against `noise_secondary` (a circle
+  noise floor) instead of the plane `noise` floor. When `noise_secondary` is absent it appends
+  the same "not compared" finding used for the secondary. The old normal-line distance is kept
+  as the diagnostic `primary.normal_line_dist`, never gated. `references/datum-cookbook.md` §3
+  and the spec-reference table, and `SKILL.md` step 8.1, are updated to match. Verified with a
+  synthetic tilted cylinder (r=10, vertex noise sigma=0.01 mm, tilt 11.5°): the old metric
+  (`normal_line_dist.rms` = 0.217) would still STOP against a 0.02 mm floor, but the new radial
+  residual (rms 0.0061) correctly passes; a forced-low `noise_secondary` still STOPs, and a
+  missing `crop_point`/`crop_radius` correctly raises `SpecError` (exit 3).
+- **M1 — fixed.** `align.py` now writes `matrix_4x4 = (T @ S).tolist()` (raw scan -> datum
+  frame, scale folded in per run-contract §11) and keeps `scale_factor` as its own recorded
+  field. A one-line self-check compares `T @ S` applied to a sample of RAW (pre-scale) vertices
+  against the corresponding vertices of `aligned_work.stl`; a mismatch > 1e-6 mm raises
+  `SpecError` rather than writing a silently-wrong matrix. `note` states the folding explicitly.
+  Verified on the DRM screw replay (scale_factor 1.0, no change) and on the same spec with
+  `scale_factor: 1.05` injected: the rotation block of `matrix_4x4` scales to row-norm 1.05 as
+  expected and the self-check passes (no internal-error abort).
+- **M2 — fixed.** `tilt_from_stations` now fits a COMMON slope with a PER-FEATURE intercept
+  (design matrix = one-hot(feature) | z) for the pooled `tilt_deg.value`, and additionally fits
+  every feature with >= 3 of its own stations independently, reported in `tilt_deg.per_feature`
+  (`feature`, `value`, `stderr_deg`, `direction_deg`, `z_span_mm`, `n_stations`). When two
+  per-feature tilt vectors (as 2-D vectors) differ by more than their combined 1-sigma stderr,
+  `tilt_deg.resolvable` is set `false` (heuristic, stated as such) and `checks.CHK-TILT.note`
+  reads "not resolvable" with the disagreement spelled out; `align.py`'s CHK-TILT result is then
+  `finding` regardless of the 0.3° reference. `SKILL.md` step 8.5 and non-negotiable text, and
+  `datum-cookbook.md` §2.1 (table row + lessons), replace the stated-as-fact "DRM screw measured
+  0.72°" with the per-feature disagreement (double-D 0.72° ± 0.11° @ 117° vs counterbore F08
+  2.8° ± 0.56° @ -111°, review M2) as an example of a not-resolvable case. Verified on the DRM
+  screw replay: the single-feature (double-D only) spec reproduces `0.716° ± 0.109°` at
+  `116.7°` (matches the review's own replay to 3 decimals); adding a second feature
+  (counterbore F08, spec built from `README.md:38`'s stated r/z window, since the review's own
+  exact counterbore spec is not recorded — see m9, not fixed) reproduces the qualitative
+  disagreement: pooled tilt is flagged `resolvable: false`, with per-feature values pointing in
+  different directions or magnitudes than the double-D-only fit.
+- **m1 (untrimmed fit stats) — fixed** (the part of this finding the orchestrator asked for).
+  `level_plane` (`datum_fit.py`) now also returns `fit_untrimmed: {rms, p95, max, n_faces}` over
+  the peak-offset-bin band (`sel`, before the `|d| < 2*tol` widen/refine) and `inlier_frac`, and
+  `align.py`'s plane-primary dict carries both alongside the existing trimmed/gated
+  `fit_rms_mm`/`fit_max_mm`. The STOP rule is unchanged (rms only, vs the noise floor).
+  `align.py` also appends the "primary STOP check is self-referential" finding when
+  `noise.method` mentions the primary's own `mesh_region_desc`. `SKILL.md` non-negotiable 5 now
+  states "rms is gated, max is reported". Verified on the DRM replay: `fit_untrimmed.max`
+  (0.143 mm) is well above the trimmed, gated `fit_max_mm` (0.047 mm), and the
+  self-referential finding appears in `findings` for the single-primary-noise spec, as expected.
+  The rest of m1 (rewording the `datum_fit.py:178-190` docstring block beyond what's above) was
+  left as originally worded; it was not requested for this round.
+- **n1 — fixed.** Reworded the `axis_from_normals` comment: the along-axis component of `M` is
+  weakly determined, not literally singular, matching the review's algebra note.
+- **n2 — fixed.** `align.py` axis-primary loop now uses `max(1, int(P.get("iters", 3)))` so
+  `iters: 0` in a spec can no longer leave `af` undefined (previously a `NameError`, not the
+  documented exit 3).
+- **V1 (cross-skill, from the orchestrator's message mid-review) — fixed.** `intake.py`'s
+  `regime` subcommand now writes `bands` as one flat object with exactly
+  `{p95_mm, max_mm, tier1_abs_mm, interface_max_mm}` (`null` when the regime does not gate that
+  band), rejecting any other key (`_normalize_bands`). RE_SPEC fills all four
+  (1.6 / 4.0 / 0.15 / 0.8, unchanged values, `RE_SPEC.md:170-175`); baseline-skill fills only
+  `p95_mm`/`max_mm` (the two existing per-class values, unchanged) and records the chosen class
+  as the new top-level `regime.json#material_class` (`plastic|machined`), never nested inside
+  `bands`. `SKILL.md` step 7 states the canonical shape. Verified: `RE_SPEC`, `baseline-skill
+  --class plastic`, `baseline-skill` with no `--class`/`--bands` (correctly refused), and an
+  explicit `--bands` payload using an old key name (`tier2_p95_mm`, correctly refused) all
+  behave as specified.
+- **m2, m3, m4, m5, m6, m7, m8, m9 — not fixed this round.** Out of the accepted scope for round
+  1 (procedure reordering, `SpecError` on missing landmarks/`intake_json`/secondary, the
+  `chk_scale` decision-string mapping, the trigger-sentence overlap with the orchestrator, the
+  origin X/Y `z=0` intercept method, and giving every cookbook replay row its exact spec).
+  None of them block B1/M1/M2/the STOP-rule change, and none were listed in the orchestrator's
+  accepted set for this pass.
+
 ## Strengths
 
 - The plane-primary replay reproduces the golden DRM datum to 0.02° / 0.014 mm, with measured tilt and no bbox fallback.

@@ -59,18 +59,20 @@ Replay with this skill on the decimated inspection copy
 | Origin stations, r_mean | 10, 1.873 | 25, 1.886 (z window differs; golden window not recorded) |
 | Clock | −34.23° | −34.25° (z = −1.5); −34.75° at z = −1.0 (chamfer/fillet zone; pick a z on straight flats) |
 | Matrix vs golden | — | rotation 0.020°, point disagreement max 0.014 mm (60k seeded pts) |
-| Tilt | 0 (not measured) | **0.72° ± 0.11°** (double-D, 25 stations over 2.4 mm); 0.71° ± 0.12° (counterbore F08 + double-D, 19 stations over 4.6 mm) |
+| Tilt | 0 (not measured) | double-D alone **0.72° ± 0.11°** (dir 117°, 25 stations over 2.4 mm); counterbore F08 alone **2.82° ± 0.56°** (dir −111°, span 0.8 mm) — the vectors differ by ~1.1°, over 10× the combined stderr, so **not resolvable** from these two features (review M2). Do not pool them into one number. |
 
 Lessons:
 - The DRM origin feature is not a circle: the double-D Kåsa residual is ~0.11 mm median. The
   centre is right by symmetry, but the residual is shape error, not noise. With a clean-circle
   noise reference (counterbore F08 IRLS rms 0.031 mm) `align.py` STOPs on it. Use a true circle
   (counterbore) for the residual check, or use the double-D only for the centre and say so.
-- The measured bore tilt (~0.7°) is above the 0.3° audit reference (RE_SPEC.md:241, report-only).
-  A 0.7° tilt over the 5.12 mm part height is ~0.06 mm lateral: small, but it was assumed 0 in
-  the golden. Record it; do not re-level the part on it unless the bore is the functional primary.
-- Tilt from a short span is noisy: the counterbore alone (0.8 mm span) gave 2.8° ± 0.56°.
-  Use the longest clean coaxial span.
+- The two independent tilt estimates (double-D 0.72°, counterbore 2.82°) disagree by more than
+  their combined stderr, so CHK-TILT reports `resolvable: false`, not a single measured value.
+  A 0.7°–2.8° tilt over the 5.12 mm part height is 0.06–0.25 mm lateral: small, but it was
+  assumed 0 in the golden. Record the disagreement; do not re-level the part on it unless the
+  bore is the functional primary, and do not silently pool short and long spans into one number.
+- Tilt from a short span is noisy: the counterbore alone (0.8 mm span) gave 2.82° ± 0.56°.
+  Prefer the longest clean coaxial span, and always report per-feature, not pooled-only.
 
 ### 2.2 B02 side brush (plane primary with material in +Z)
 
@@ -149,11 +151,15 @@ datum numbers to compare against):
            "desc": "sheet-frame side plate normal -> +X", "why": "frame plates carry the mounting screws"}}
 ```
 
-For an axis primary, `primary.fit_rms_mm` is the rms distance of the face-normal lines from the
-fitted axis, and `eig_ratio` (smallest/second eigenvalue) near 0 means a well-defined axis. The
-`origin.xy` circle stations then give CHK-TILT as the angle between the normals-axis and the line
-through the section centres (two independent estimators). Crop to one clean cylinder when the
-part has several coaxial ones; a mixed crop still gives one direction but a worse line distance.
+For an axis primary, `crop_point`/`crop_radius` are required (crop to ONE clean cylinder; a
+mixed crop makes the residual below meaningless). `primary.fit_rms_mm` is the RADIAL residual of
+the cropped cylinder faces about the fitted axis (each face centre's distance from the axis,
+minus the median radius), gated against `noise_secondary` (a circle noise floor) — never the
+flat `noise` floor, which is a different metric (review B1). `normal_line_dist` (the distance of
+the face-normal lines from the fitted axis, roughly radius × normal-angle noise) is kept only as
+a diagnostic, not gated. `eig_ratio` (smallest/second eigenvalue) near 0 means a well-defined
+axis. The `origin.xy` circle stations then give CHK-TILT as the angle between the normals-axis
+and the line through the section centres (two independent estimators).
 
 ## 4. Normal orientation (correction to SYNTHESIS A5)
 
@@ -176,7 +182,7 @@ open question for the owner.)
 | `chk_scale` | `{"ran", "result", "note"}` copied into `checks` |
 | `noise` | `{"value", "method"}` or `{"from": "<datum_fit noise JSON>"}` — **required** |
 | `noise_secondary` | same, measured on a clean circle; enables the STOP check on circle residuals |
-| `primary` | `plane`: `approx_normal`, `material_side` (`-z`: material behind the outward normal), `cone_deg` 10, `tol` 0.05, `bin_mm` 0.1, `halfwidth_mm` 0.15, `offset_range` · `axis`: `approx_axis`, `perp_max` 0.30, `crop_point`/`crop_radius`, `iters` 3 |
+| `primary` | `plane`: `approx_normal`, `material_side` (`-z`: material behind the outward normal), `cone_deg` 10, `tol` 0.05, `bin_mm` 0.1, `halfwidth_mm` 0.15, `offset_range` · `axis`: `approx_axis`, `perp_max` 0.30, `crop_point`/`crop_radius` (required, review B1), `iters` 3 |
 | `origin.xy` | one feature or a list: `method` `kasa`/`irls` (sections, `allow_open_arcs`) or `wall_faces` (`wall` inner/outer, `r_min`, `r_max`, `perp_max`); `r_hint`, `r_tol`, `rms_max`, `z_range`, `stations` |
 | `origin.z` | axis primary only: `plane` (`approx_normal_datum`, `offset_range`) or `extreme` (`which` min/max) |
 | `origin.definition` | the named intersection |
