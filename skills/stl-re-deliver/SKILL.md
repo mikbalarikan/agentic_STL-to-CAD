@@ -1,6 +1,6 @@
 ---
 name: stl-re-deliver
-description: Packages a verified STL→CAD (STEP) reverse-engineering run. Renders README.md from the gate and parameter JSON, writes MANIFEST.json with sha256 and roles, and re-runs the build in fresh processes. Use only after stl-re-verify has written qa/VERDICT.md and qa/gate.json, when asked to deliver, package, document or hand off the result.
+description: Packages a verified STL→CAD (STEP) reverse-engineering run. Renders README.md from the gate and parameter JSON, writes MANIFEST.json with sha256 and roles, re-runs the build in fresh processes, and hands everything over as one downloadable zip (sources + deliverables). Use only after stl-re-verify has written qa/VERDICT.md and qa/gate.json, when asked to deliver, package, document or hand off the result.
 ---
 
 # stl-re-deliver
@@ -27,7 +27,8 @@ layout, the JSON keys, the verdicts, `DECISIONS.md` and the check ids used below
 | `qa/gate.json`, `qa/VERDICT.md` (required, CHK-PUBLISH) | `deliver/limitations.json` (you write it, step 2) |
 | `measure/params.json`, `build/export_check.json`, `intake/alignment.json`, `intake/regime.json` | `deliver/repro.json` (`scripts/repro_check.py`) |
 | `build/model.py`, `build/*.step`, `input/INPUT_HASHES.json`, `DECISIONS.md` | `deliver/README.md` (`scripts/make_readme.py`) |
-| `_itN_SUPERSEDED/` | `deliver/MANIFEST.json` (`scripts/make_manifest.py`, always last) |
+| `_itN_SUPERSEDED/` | `deliver/MANIFEST.json` (`scripts/make_manifest.py`, last file in the run) |
+| `deliver/MANIFEST.json` | `<run>/../<part>_delivery.zip` (`scripts/package_zip.py`, outside the run, step 6) |
 
 Scripts live in `scripts/`. All take `--run <run folder>`. Exit 0 means done, 2 means
 refused (the message names the check and the next action), 1 means `repro_check.py`
@@ -184,9 +185,33 @@ the golden `MANIFEST.json` shape (`golden-examples/*/MANIFEST.json`) and facet-f
 - If any role is `unclassified`, look at the file. It may be a stray intermediate that
   belongs in a stage folder.
 
-### 6. Report to the user
+### 6. Package the zip (standing owner request)
 
-Give the path to `deliver/README.md` and then state:
+```
+python scripts/package_zip.py --run <run> [--out <path outside the run>.zip]
+```
+
+Every finished job is handed over as **one downloadable zip** with all source files and all
+deliverables (owner instruction, 2026-09-25; do not ask again each session). The script
+refuses unless `deliver/MANIFEST.json` still matches every file, and writes
+`<run>/../<part>_delivery.zip` (deterministic bytes) with one top folder `<part>_delivery/`:
+
+| path in zip | content |
+|---|---|
+| `DELIVERY.md` | index: verdict, regime, iteration, what is where, rebuild command |
+| `deliverables/` | both STEP files, `<part>_cad.stl`, `README.md`, `VERDICT.md`, `gate.json`, `MANIFEST.json`, `overlays/*.png` |
+| `run/` | the whole run folder byte for byte (input, intake, measure, build, qa, deliver, `decisions/`, `DECISIONS.md`, `_itN_SUPERSEDED/`) |
+| `skill_scripts/` | `stl-re-rebuild-build123d/scripts`, which `build/model.py` imports, so the build re-runs from the zip alone |
+
+Then hand the zip to the user as a file they can download (in Claude Code on the web / app:
+`SendUserFile` with the zip path; locally: give the path). Put the zip where the user can open
+it (the session's scratchpad or working directory), never only inside a container path they
+cannot reach. Record the run's small text records under `evals/real-runs/<part>/` in this
+repo (as for OD-H22), not the zip or the scan.
+
+### 7. Report to the user
+
+Give the zip, the path to `deliver/README.md`, and then state:
 - the verdict word;
 - the regime;
 - the iteration (n of 3);
@@ -231,8 +256,8 @@ cases for every check above (a missing re-run trigger, literal decimals includin
 uncovered `auto_limitations` entry, and three ACCEPT-BAND shapes: none, evidence under `qa/`,
 and evidence that does not cite the current gate), BAND_NOT_MET with a valid ACCEPT-BAND entry,
 a `model.py` using the rebuild skill's run-root-relative "library use" pattern under
-`repro_check.py`'s default `--cwd run`, and a non-deterministic model. That is 31 assertions in
-total.
+`repro_check.py`'s default `--cwd run`, and a non-deterministic model. It then packs the zip twice (same bytes) and refuses a stale manifest. That is 36 assertions
+in total.
 
 ```
 python tests/run_fixture_test.py            # needs build123d; prints N/N passed

@@ -3,7 +3,7 @@
 
 It copies the fixture to a scratch folder, plays the upstream stages it needs (rebuild: run
 build/model.py and write build/export_check.json; verify: fill qa/gate.json#hash_frozen), then runs
-preflight -> repro_check -> make_readme -> make_manifest and eight refusal cases.
+preflight -> repro_check -> make_readme -> make_manifest -> package_zip and the refusal cases.
 
 Usage: python tests/run_fixture_test.py [--workdir DIR] [--keep]
 Exit 0 when every case behaves as expected.
@@ -17,6 +17,7 @@ import shutil
 import subprocess
 import sys
 import tempfile
+import zipfile
 from pathlib import Path
 from typing import Callable
 
@@ -106,6 +107,22 @@ def main() -> int:
     case("make_manifest lists every file", r.returncode == 0 and listed == all_files, r.stderr.strip()[-300:])
     case("excluded entry carries a reason", all(x.get("reason") for x in man.get("excluded", [])) and len(man.get("excluded", [])) == 1)
     case("manifest CHK-SUPERSEDED pass", man.get("checks", {}).get("CHK-SUPERSEDED", {}).get("result") == "pass")
+    zips = [work / "pkg1.zip", work / "pkg2.zip"]
+    rz = [sh("package_zip.py", run, "--out", str(z)) for z in zips]
+    names = zipfile.ZipFile(zips[0]).namelist() if rz[0].returncode == 0 else []
+    case("package_zip holds DELIVERY.md, deliverables, full run and skill scripts",
+         all(x.returncode == 0 for x in rz)
+         and any(n.endswith("/DELIVERY.md") for n in names)
+         and any("/deliverables/" in n and n.endswith(".step") for n in names)
+         and any(n.endswith("/run/build/model.py") for n in names)
+         and any("/skill_scripts/" in n and n.endswith("export_frames.py") for n in names),
+         rz[0].stderr.strip()[-300:])
+    case("package_zip deterministic", all(z.is_file() for z in zips)
+         and zips[0].read_bytes() == zips[1].read_bytes())
+    (run / "build" / "stray.txt").write_text("x")
+    r = sh("package_zip.py", run, "--out", str(work / "pkg3.zip"))
+    case("package_zip refuses a stale manifest", r.returncode == 2 and "stale" in r.stderr, r.stderr.strip()[-200:])
+    (run / "build" / "stray.txt").unlink()
 
     # ---- refusals ----------------------------------------------------------------------------
     def neg(name: str, mutate: Callable[[Path], None], script: str, expect: int, needle: str,

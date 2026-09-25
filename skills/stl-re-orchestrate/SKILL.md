@@ -74,7 +74,7 @@ does not hand off.
 | measure | `stl-re-measure-intent` | human gate passed (or `intake*` exit if calipers arrived) | `measure/params.json`, `measure/PARAM_TABLE.md` (rendered from JSON), `measure/figures/`; every param has `source` and `rule`; CHK-COUNT, CHK-ACHIEVABLE, CHK-CLUSTER, CHK-FRAME run |
 | rebuild | `stl-re-rebuild-build123d` | measure exit | `build/MODELING_PLAN.md`, `model.py`, `build_log.txt`, `<part>_datum.step`, `<part>.step`, `<part>_cad.stl`, `export_check.json` showing one valid closed solid in both frames; CHK-FILLET, CHK-PATCHWORK run |
 | verify | `stl-re-verify` (fresh context, §5) | rebuild exit | `qa/gate.json` (with `regime`, `checks`, `verdict`, and `errors: []` / `verdict` in `allowed_verdicts` — §4), `qa/VERDICT.md`, `qa/masks.json`, `qa/overlays/` |
-| deliver | `stl-re-deliver` | `qa/VERDICT.md` exists, verdict deliverable (§4) | `deliver/README.md`, `deliver/MANIFEST.json`, `deliver/repro.json` |
+| deliver | `stl-re-deliver` | `qa/VERDICT.md` exists, verdict deliverable (§4) | `deliver/README.md`, `deliver/MANIFEST.json`, `deliver/repro.json`, then `<run>/../<part>_delivery.zip` sent to the user |
 
 Per feature: 3 `REVISE` verdicts on the same feature (across verify loops) → HALT
 (`RE_SPEC.md:248-249`). The rebuild skill also stops after 3 failed build attempts on one
@@ -227,7 +227,9 @@ states that the comparison is not like-for-like (CHK-LIKE4LIKE; B02 `VERDICT.md`
 
 ## 8. Report to the user
 
-At every stop (deliver done, BAND_NOT_MET awaiting acceptance, HALT) tell the user: the
+A delivered job is handed over as one downloadable zip with all source files and
+deliverables (`stl-re-deliver/scripts/package_zip.py`, deliver step 6; standing owner
+request, do not ask each time). At every stop (deliver done, BAND_NOT_MET awaiting acceptance, HALT) tell the user: the
 regime and its source, the verdict word, the numbers as read from `qa/gate.json` (never
 retyped: CHK-NUMBERS), the declared limitations with re-run triggers, the loop count
 (n of 3), and whether verify was independent. Never call a masked, circular or partial

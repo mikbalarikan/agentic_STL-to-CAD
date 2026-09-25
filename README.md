@@ -13,7 +13,7 @@ traced to evidence in `golden-examples/` or to the RE_SPEC in `baseline/`.
 | [`stl-re-measure-intent`](skills/stl-re-measure-intent/SKILL.md) | Sections, primitive fits, R(θ) maps, pattern counts, caliper/photo authority with achievability checks (STRIKE/UNPROVEN), noise-bounded rounding → `params.json` + `PARAM_TABLE.md`. | After intake, before modelling, or to re-measure a flagged feature. |
 | [`stl-re-rebuild-build123d`](skills/stl-re-rebuild-build123d/SKILL.md) | Modelling plan, build123d strategies, logged fillets, anti-patchwork census, single-solid validation, datum- and scan-frame STEP export. | Once `params.json` exists, or when a verdict sends the CAD back. |
 | [`stl-re-verify`](skills/stl-re-verify/SKILL.md) | Independent QA: hash freeze, datum audit (report-only), Tier-1 on the STEP, own ICP, two-way full-res deviation with zones and named masks, observability, overlays, verdict under the declared regime. | After a rebuild, before delivery, ideally in a fresh agent. |
-| [`stl-re-deliver`](skills/stl-re-deliver/SKILL.md) | README from the gate and params JSON, `MANIFEST.json` with hashes and roles, fresh-process reproducibility check. Refuses stale or untrusted verdicts. | Only after verify wrote a trusted `qa/gate.json` and `VERDICT.md`. |
+| [`stl-re-deliver`](skills/stl-re-deliver/SKILL.md) | README from the gate and params JSON, `MANIFEST.json` with hashes and roles, fresh-process reproducibility check, then one downloadable zip of sources + deliverables (`package_zip.py`). Refuses stale or untrusted verdicts. | Only after verify wrote a trusted `qa/gate.json` and `VERDICT.md`. |
 
 Verdicts: `APPROVED`, `APPROVED_WITH_LIMITATIONS`, `BAND_NOT_MET` (delivery needs a recorded
 human `ACCEPT-BAND`), `REVISE`, `HALT`. The band regime (RE_SPEC, baseline-skill or a project
@@ -41,6 +41,8 @@ Then ask Claude to convert a scan (for example "turn scan.stl into a STEP, calip
 MEASUREMENTS.md"), and `stl-re-orchestrate` takes it from there.
 
 ## Repository layout
+
+- `CLAUDE.md`: standing instructions for sessions in this repo, including the zip delivery format.
 
 - `skills/`: the six skills (this is what you install).
 - `evals/`: per-skill eval cases (`evals/cases/`) and the blind replays against the baseline
