@@ -41,14 +41,14 @@ allowed (`analysis/SYNTHESIS.md` §4); everything else is "the golden used X".
 ## 3. Photo-transcribed caliper readings
 
 A caliper value read off a photo of the display is a real reading only when **all** of these hold
-(`analysis/golden/OOM-B02.md` §12.3; `OOM-B02/5_reference/MEASUREMENTS.md:10,19-24`):
+(`analysis/golden/OOM-B02.md` §12.3; `OOM-B02/5_reference/MEASUREMENTS.md:19-24`):
 
 - `source: caliper-photo`, and `evidence` holds the photo id (P03 lists one per value:
   `golden-examples/OOM-P03_mop-pad-bracket/5_reference/MEASUREMENTS.md:78-98`).
 - `attribution` names who confirmed which feature and jaw placement. Without it the reading is
   unused. B02 kept D-09/10/12 unused (`MEASUREMENTS.md:91-116`).
 - `uncertainty_mm ≥ 0.1` (effective, screen parallax plus inferred jaw placement), never the
-  instrument's ±0.02 (`MEASUREMENTS.md:10`; `baseline/oomwoo-re-pipeline/TRACKER.md:13`). P03 did
+  instrument's ±0.02 (`MEASUREMENTS.md:24`; `baseline/oomwoo-re-pipeline/TRACKER.md:13`). P03 did
   not state its uncertainty; that is a record gap, not a precedent (`analysis/golden/OOM-P03.md`
   Questions).
 - It passed CHK-ACHIEVABLE (§4).
@@ -63,19 +63,38 @@ the impossibility and applied the value anyway "per the rebuild brief"
 (`analysis/golden/OOM-B02.md` §8). **A flagged impossibility is a stop, not a note.**
 
 Procedure: run `scripts/sim_caliper.py` on the aligned scan at the reading's station, in the
-jaw mode the photo shows (outside or inside).
+jaw mode the photo shows (outside or inside). Inside-jaw mode needs `--r-band` to isolate the
+bore section: an open scan section has no single closed "innermost loop" to pick, so the
+script pools the in-band points and builds an inner (min-radius) envelope, the dual of the
+outer envelope, with its own real angular coverage (orchestrator decision B1, 2026-09-25 —
+inside-jaw mode previously picked the smallest-max-radius polyline fragment and assumed full
+coverage, which struck the golden-accepted B02 F03 = 20.75; the fixed mode reports it
+achievable, `window_min`/`window_max` computed on the full-res scan).
+
+A caliper reading can also sit legitimately below the scan window when the scan itself reads
+oversize at that station: B02 F10 arm width, caliper 5.33 vs scan mean 5.89 at the same
+station (`MEASUREMENTS.md:61`, `PARAM_TABLE.md:41`, "Scanner dilation on thin sections
+(intake R6)"). `--scan-offset d` carries that **measured, per-scan** dilation — the largest
+scan-minus-caliper gap among the *other* calipered dims of the same scan — into the
+classification (orchestrator decision B2, 2026-09-25). `d` is never a constant and is never
+invented: omit it when no other caliper exists on this scan.
 
 | Result | Action |
 |---|---|
 | reading ∈ [min − u, max + u] | Use it (`caliper-direct`). |
-| reading < min − u | **Strike.** Add a `struck[]` entry with the window, the proof, and a re-measure hook. Build the feature from the scan (`source: scan`). The proof holds even with occlusion gaps, because a partial outline can only under-read widths. |
-| reading > max + u, full coverage | Strike, as above. |
+| reading < min − u − d | **Strike.** Add a `struck[]` entry with the window, the proof, and a re-measure hook. Build the feature from the scan (`source: scan`). The proof holds even with occlusion gaps, because a partial outline can only under-read widths. |
+| min − u − d ≤ reading < min − u | **Unproven (within the measured scan dilation).** Do not build to it, do not strike it. Ask for a jaw-placement photo or re-measure. If `d` is unknown (no other calipers on this scan), any below-window reading is unproven, not struck. |
+| reading > max + u, full coverage | Strike, as above (`d` does not apply on this side: dilation only explains an under-reading caliper, not an over-reading one). |
 | reading > max + u, coverage < 1 | **Unproven.** The missing arc may hold the extreme. Ask for a re-measure or a jaw-placement photo; do not build to it yet. |
 
 The B02 it2 ruling is the template: "F06 is STRUCK from Tier-1 and `SKIRT_R_FLAT` reverts to
 scan authority 12.550 … re-measure hook: if 24.84 was a real skirt dimension taken some other
 way … this must be re-run" (`PARAM_TABLE.md:117-121`). Exactly one parameter changed between
-iterations (`analysis/golden/OOM-B02.md` §8).
+iterations (`analysis/golden/OOM-B02.md` §8). On the reproduction here (`references/
+validation.md`), F06's margin below the full-res-scan window is only 0.148 mm — smaller than
+the measured F10 dilation of 0.56 mm on the same scan — so a fresh run of this skill on that
+scan would classify F06 as **unproven**, not struck; see `references/validation.md` for the
+open question this leaves about how the golden computed its own (narrower) scan window.
 
 ## 5. Symmetry, equal pitch, identical instances
 

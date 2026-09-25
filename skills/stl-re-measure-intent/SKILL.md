@@ -37,7 +37,7 @@ datum here, and never fit it to your own CAD (CHK-CIRCULAR, P03: `analysis/golde
 |---|---|---|
 | `scan_noise_mm` (measured per scan) | the only rounding allowance for scan values | `intake/alignment.json`; SYN C8, A7 |
 | ±0.1 mm | standard-size snap window, caliper values only | `baseline/oomwoo-re-pipeline/RE_SPEC.md:92` |
-| ±0.1 mm effective | photo-transcribed caliper reading uncertainty | `golden-examples/OOM-B02_side-brush-3-arm/5_reference/MEASUREMENTS.md:10` |
+| ±0.1 mm effective | photo-transcribed caliper reading uncertainty | `golden-examples/OOM-B02_side-brush-3-arm/5_reference/MEASUREMENTS.md:24` |
 | ±0.15 mm | Tier-1 band that a struck reading would have failed (context only; verify owns it) | `RE_SPEC.md:170` |
 | 0.05–0.1 mm | RANSAC plane tolerance ≈ scan noise | `RE_SPEC.md:127` |
 | ≥3 stations | minimum for any pattern count | SYN C3 / CHK-COUNT |
@@ -156,15 +156,24 @@ python scripts/pattern_count.py --mesh <scan> --alignment A --signal mass --stat
 
 For every width or diameter reading:
 
-`python scripts/sim_caliper.py --mesh <scan> --alignment A --z <station> --mode outside|inside [--r-band lo,hi] --reading <value> --reading-unc <u> --out measure/figures/cal_<ID>.json`
+`python scripts/sim_caliper.py --mesh <scan> --alignment A --z <station> --mode outside|inside --r-band lo,hi --reading <value> --reading-unc <u> [--scan-offset d] --out measure/figures/cal_<ID>.json`
 
-- The script builds the section, the outer envelope and the two-jaw support width over jaw
-  azimuth, then classifies the reading against the window. Code lifted from
-  `OOM-B02/6_RE_work/qa/q10_solid_tess_tier1.py:jaws`.
+- The script builds the section, the outer (or, `--mode inside`, inner/bore) envelope and the
+  two-jaw support width over jaw azimuth, then classifies the reading against the window.
+  Code lifted from `OOM-B02/6_RE_work/qa/q10_solid_tess_tier1.py:jaws`. `--r-band` is required
+  in `--mode inside`: an open scan section has no single closed "innermost loop" to pick, so
+  the script pools the in-band points instead (B1, 2026-09-25).
+- `d` (`--scan-offset`) is the measured, per-scan dilation: the largest scan-minus-caliper gap
+  among the *other* calipered dims of the *same* scan (B02 F10: caliper 5.33 vs scan mean
+  5.89, `MEASUREMENTS.md:61`/`PARAM_TABLE.md:41`). Compute it from those other rows before
+  running this step; never invent it, and omit it when this scan has no other caliper.
 - **Within the window** → use it.
-  **Below min − u** → **strike**: add a `struck[]` entry with the window, the proof and a
+  **Below min − u − d** → **strike**: add a `struck[]` entry with the window, the proof and a
   re-measure hook, and build that feature from the scan. The proof holds even with gaps,
   because a partial outline only under-reads.
+  **Below min − u but within d of it** (or `d` unknown) → **unproven**: within the measured
+  scan dilation, do not build to it and do not strike it; ask for a re-measure or a
+  jaw-placement photo (B2, 2026-09-25).
   **Above max + u with gaps** → unproven: ask for a re-measure or a jaw-placement photo.
 - For depths and heights, compare against the scan-predicted value from the measurement
   request (`RE_SPEC.md:197-202`). If they differ by more than u + noise, investigate the
@@ -251,7 +260,7 @@ miss at verify, as OD's p95 0.448 shows.
 | Check | Fails when | Do |
 |---|---|---|
 | **CHK-COUNT** | <3 stations; stations disagree; the FFT-dominant order is not a residual local minimum; exact-CAD residual method and FFT disagree | Add or move stations (strictly interior), narrow the `--r-band`/`--z-half` to the feature, check coverage gaps. If it still disagrees, record `finding`, keep the count open, and ask for an operator count. Never fall back to crest peaks. P03 tread gives FFT 49/49/51 on the partial scan (`references/validation.md`). |
-| **CHK-ACHIEVABLE** | A reading lies outside the simulated two-jaw window | Strike it (proof + hook), build from the scan, and record the check as `finding` with the struck id. Above the window with gaps: mark it unproven and ask. |
+| **CHK-ACHIEVABLE** | A reading lies outside the simulated two-jaw window, beyond the measured scan offset `d` | Strike it (proof + hook), build from the scan, and record the check as `finding` with the struck id. Below the window but within `d` (or `d` unknown), or above the window with gaps: mark it unproven and ask. |
 | **CHK-CLUSTER** | A coherent cluster is not in the feature list | Treat it as a feature: measure it, add it, and send CHK-ENUM back to intake. |
 | **CHK-FRAME** | An angle comes from another frame or sign, or no frame is stated | Re-measure in the datum frame and record both values. |
 | param_table errors | Missing provenance; rounding beyond noise; a snap on a critical scan value; a scan count without order/FFT | Fix the row. Never hand-edit PARAM_TABLE.md. |
@@ -281,16 +290,21 @@ Golden-number reproduction and its discrepancies: `references/validation.md`.
 
 - Gear parameter handling (heuristic, n=1: M02): `references/gears.md`.
 - IRLS Cauchy scale 0.30 mm (heuristic, n=1: B02 audit).
-- Scan dilation on thin sections treated as a local offset (heuristic, n=1: B02).
+- Scan dilation on thin sections treated as a local offset, measured per scan and passed to
+  `sim_caliper.py --scan-offset` (heuristic, n=1: B02 F10, orchestrator decision B2).
 - Standard-size snap (doctrine, n=0 goldens).
 
 ## Open questions (do not resolve silently)
 
 - **B02 scan window.** This skill's port reproduces the CAD window exactly (25.617–26.850).
-  On the full-res scan it gives 24.99–27.25, not the recorded 25.99–27.08: the minimum
-  comes from the wide SAF-1 recess at 59°. F06 is still struck, but by 0.15 mm, not 1.15.
-  D-06 = 25.79, recorded as "below the window" (A3), falls inside this window. The golden's
-  scan method is not recorded (`references/validation.md`).
+  On the full-res scan it gives 24.99–27.25, not the recorded 25.99–27.08. The explanation:
+  the golden applied the analytic lobe+flat argument (`VERDICT.md:64-66`) and left the SAF-1
+  recess (G-5) out of it; the support-function window with the recess included, which is what
+  a real caliper section sees, is 24.99 (`references/validation.md`). F06's margin below this
+  window is 0.148 mm — smaller than the measured F10 scan dilation on the same scan (0.56 mm,
+  `MEASUREMENTS.md:61`) — so per orchestrator decision B2 this reproduction classifies F06 as
+  **unproven**, not struck. D-06 = 25.79, recorded as "below the window" (A3), falls inside
+  this window and combined with B2 is "use/ask", not "below window".
 - Photo-transcribed uncertainty for P03 is not stated (`analysis/golden/OOM-P03.md`
   Questions). This skill applies B02's ±0.1 to all photo readings.
 - No golden recorded a residual tolerance for counting on **scans**. The scan rule (FFT

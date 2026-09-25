@@ -31,7 +31,7 @@ REQUIRED = ["value", "unit", "measured", "rule", "source", "estimator", "uncerta
 MEASURED_SOURCES = {"caliper", "caliper-photo", "operator-spec", "scan"}
 CHECKS = ["CHK-COUNT", "CHK-ACHIEVABLE", "CHK-CLUSTER", "CHK-FRAME"]
 STD_SNAP_WINDOW = 0.1        # RE_SPEC.md:92 (baseline/oomwoo-re-pipeline)
-PHOTO_UNC = 0.1              # OOM-B02 5_reference/MEASUREMENTS.md:10; TRACKER.md:13
+PHOTO_UNC = 0.1              # OOM-B02 5_reference/MEASUREMENTS.md:24; TRACKER.md:13
 
 
 def _num(x: Any) -> Optional[float]:
@@ -41,6 +41,13 @@ def _num(x: Any) -> Optional[float]:
         return float(x)
     if isinstance(x, list) and x and all(isinstance(v, (int, float)) for v in x):
         return sum(x) / len(x)
+    return None
+
+
+def _numlist(x: Any) -> Optional[list[float]]:
+    """x as a list[float] iff it IS a list and every element is a plain number; else None."""
+    if isinstance(x, list) and x and all(isinstance(v, (int, float)) and not isinstance(v, bool) for v in x):
+        return [float(v) for v in x]
     return None
 
 
@@ -84,53 +91,115 @@ def validate(doc: dict[str, Any], noise: Optional[float]) -> tuple[list[str], li
         if not str(p["estimator"]).strip():
             E.append(f"{tag} empty estimator (C13: every value records how it was measured)")
         v, meas, src, rule = p["value"], _num(p["measured"]), p["source"], p["rule"]
+        raw_meas = p["measured"]
+        is_list_value = isinstance(v, list)
         if src in MEASURED_SOURCES and p["measured"] is None and rule not in ("assumed",):
             E.append(f"{tag} source '{src}' but measured is null")
         if src in ("photo-inferred", "assumed", "standard") and rule in ("caliper-direct", "round-within-noise", "mean-of-n"):
             E.append(f"{tag} rule '{rule}' needs a measurement, but source is '{src}' (C11: never call unscanned geometry measured)")
+        if rule in ("assumed", "photo-inferred") and src in MEASURED_SOURCES:
+            E.append(f"{tag} rule '{rule}' but source '{src}' is a measured source (C11: never tag "
+                     "unscanned/unmeasured geometry as measured; e.g. a scan source can't also be 'assumed')")
+        if src in ("photo-inferred", "assumed", "standard") and p["measured"] is not None:
+            E.append(f"{tag} source '{src}' but measured is not null (C11: unscanned/unmeasured geometry "
+                     "keeps measured: null)")
         if rule == "caliper-direct" and src not in ("caliper", "caliper-photo", "operator-spec"):
             E.append(f"{tag} caliper-direct with source '{src}'")
-        if (rule == "caliper-direct" and meas is not None and _num(v) is not None and abs(_num(v) - meas) > 1e-9
-                and not p.get("derivation")):
-            E.append(f"{tag} caliper-direct but value {v} != measured {p['measured']} and no 'derivation' (e.g. 'radius = D/2')")
         if src == "caliper-photo":
             if not str(p["evidence"]).strip():
                 E.append(f"{tag} caliper-photo needs the photo id in evidence (C5)")
             if not str(p.get("attribution", "")).strip():
                 E.append(f"{tag} caliper-photo needs 'attribution' = who confirmed which feature/jaw placement (C5; B02 D-09/10/12 unconfirmed -> unused)")
             if (p["uncertainty_mm"] or 0) < PHOTO_UNC:
-                E.append(f"{tag} caliper-photo uncertainty {p['uncertainty_mm']} < {PHOTO_UNC} mm effective (B02 MEASUREMENTS.md:10)")
+                E.append(f"{tag} caliper-photo uncertainty {p['uncertainty_mm']} < {PHOTO_UNC} mm effective (B02 MEASUREMENTS.md:24)")
+        if rule == "std-size-snap" and src not in ("caliper", "caliper-photo", "operator-spec"):
+            E.append(f"{tag} std-size-snap only for caliper values (RE_SPEC.md:92); source is '{src}'" +
+                     (" - C9: never snap an uncalipered critical interface (B02 hex AF 7.358)" if p["critical"] else ""))
         if rule == "std-size-snap":
-            if src not in ("caliper", "caliper-photo", "operator-spec"):
-                E.append(f"{tag} std-size-snap only for caliper values (RE_SPEC.md:92); source is '{src}'" +
-                         (" - C9: never snap an uncalipered critical interface (B02 hex AF 7.358)" if p["critical"] else ""))
-            elif meas is not None and abs(float(v) - meas) > STD_SNAP_WINDOW + 1e-9:
-                E.append(f"{tag} std-size-snap moves {meas} -> {v}, outside +/-{STD_SNAP_WINDOW} mm (RE_SPEC.md:92)")
             W.append(f"{tag} std-size-snap is a heuristic: no golden applied it (SYNTHESIS §6)")
-        if rule == "round-within-noise":
-            if noise is None:
-                E.append(f"{tag} round-within-noise but no scan noise floor (alignment.json scan_noise_mm) was supplied (C8)")
-            elif _range(p["measured"]) is not None and _num(v) is not None:
-                lo, hi = _range(p["measured"])  # type: ignore[misc]
-                if not (lo - noise - 1e-9 <= _num(v) <= hi + noise + 1e-9):  # type: ignore[operator]
-                    E.append(f"{tag} rounding moves {p['measured']} -> {v}: outside measured range +/- noise {noise} "
-                             "(C8: no fixed 0.1/0.5/1.0 step)")
-            else:
-                W.append(f"{tag} round-within-noise but 'measured' is not numeric/range: cannot verify the move")
+        if rule == "round-within-noise" and noise is None:
+            E.append(f"{tag} round-within-noise but no scan noise floor (alignment.json scan_noise_mm) was supplied (C8)")
         if rule == "symmetry":
             sc = p.get("scatter_mm")
             if sc is None:
-                W.append(f"{tag} symmetry without 'scatter_mm' (C10: enforce only when measured scatter is within noise)")
-            elif p["unit"] != "mm" and p.get("scatter_note") is None:
-                W.append(f"{tag} symmetry on a {p['unit']} value: scatter cannot be compared with the mm noise floor; "
-                         "add 'scatter_note' (design-intent reason + residual it leaves)")
-            elif p["unit"] == "mm" and noise is not None and sc > noise and p.get("scatter_note") is None:
-                E.append(f"{tag} symmetry enforced with scatter {sc} > noise {noise}: keep measured and declare, "
-                         "or give 'scatter_note' with the design-intent reason and its deviation cost (C10)")
-        if rule == "keep-measured" and _range(p["measured"]) is not None and _num(v) is not None:
-            lo, hi = _range(p["measured"])  # type: ignore[misc]
-            if not (lo - 1e-9 <= _num(v) <= hi + 1e-9):  # type: ignore[operator]
-                E.append(f"{tag} keep-measured but value {v} is outside measured {p['measured']}")
+                E.append(f"{tag} symmetry without 'scatter_mm' (C10: enforce only when measured scatter is "
+                         "within noise; scatter_mm is required for this rule, param-table-schema.md §2)")
+            if raw_meas is not None and _numlist(raw_meas) is None:
+                E.append(f"{tag} symmetry needs a per-instance 'measured' list (the raw reads), not a "
+                         f"scalar/prose value ({raw_meas!r})")
+            if sc is not None:
+                if p["unit"] != "mm" and p.get("scatter_note") is None:
+                    W.append(f"{tag} symmetry on a {p['unit']} value: scatter cannot be compared with the mm noise floor; "
+                             "add 'scatter_note' (design-intent reason + residual it leaves)")
+                elif p["unit"] == "mm" and noise is not None and sc > noise and p.get("scatter_note") is None:
+                    E.append(f"{tag} symmetry enforced with scatter {sc} > noise {noise}: keep measured and declare, "
+                             "or give 'scatter_note' with the design-intent reason and its deviation cost (C10)")
+        if rule == "mean-of-n":
+            if is_list_value:
+                E.append(f"{tag} mean-of-n needs a scalar 'value' (the mean), not a list")
+            else:
+                mnums = _numlist(raw_meas)
+                if mnums is None or len(mnums) < 2:
+                    E.append(f"{tag} mean-of-n needs 'measured' as a list of >=2 numbers (the reads); got {raw_meas!r}")
+                elif _num(v) is not None:
+                    mean_ = sum(mnums) / len(mnums)
+                    tol = noise if (src == "scan" and noise is not None) else p.get("uncertainty_mm")
+                    if tol is None:
+                        E.append(f"{tag} mean-of-n: no tolerance (uncertainty_mm, or scan noise) to verify the mean")
+                    elif abs(_num(v) - mean_) > float(tol) + 1e-9:
+                        E.append(f"{tag} mean-of-n: value {v} != mean of measured {raw_meas} ({mean_:g}) "
+                                 f"within +/-{tol}")
+        if is_list_value and rule not in ("symmetry", "mean-of-n"):
+            # Element-wise checks for a per-instance list value (run-contract §11), e.g. DRM legs
+            # at unequal angles. Never reduce a list to its mean here (M2).
+            vnums = _numlist(v)
+            if vnums is None:
+                E.append(f"{tag} list value must be all-numeric")
+            else:
+                mnums = _numlist(raw_meas)
+                if mnums is None or len(mnums) != len(vnums):
+                    E.append(f"{tag} list value needs 'measured' as a same-length list of numbers "
+                             f"(run-contract §11); value has {len(vnums)}, measured is {raw_meas!r}")
+                else:
+                    for i, (vi, mi) in enumerate(zip(vnums, mnums)):
+                        itag = f"{tag}[{i}]"
+                        if rule == "keep-measured" and abs(vi - mi) > 1e-9:
+                            E.append(f"{itag} keep-measured but value {vi:g} != measured {mi:g}")
+                        if rule == "caliper-direct" and abs(vi - mi) > 1e-9 and not p.get("derivation"):
+                            E.append(f"{itag} caliper-direct but value {vi:g} != measured {mi:g} and no 'derivation'")
+                        if rule == "round-within-noise" and noise is not None and abs(vi - mi) > noise + 1e-9:
+                            E.append(f"{itag} rounding moves {mi:g} -> {vi:g}: outside +/-{noise} noise (C8)")
+                        if (rule == "std-size-snap" and src in ("caliper", "caliper-photo", "operator-spec")
+                                and abs(vi - mi) > STD_SNAP_WINDOW + 1e-9):
+                            E.append(f"{itag} std-size-snap moves {mi:g} -> {vi:g}, outside "
+                                     f"+/-{STD_SNAP_WINDOW} mm (RE_SPEC.md:92)")
+                        if p["critical"] and src == "scan" and noise is not None and abs(vi - mi) > noise + 1e-9:
+                            E.append(f"{itag} critical scan-authority value moved {mi:g} -> {vi:g}, beyond "
+                                     f"scan noise {noise} (C9): rule '{rule}' does not license this")
+        elif not is_list_value:
+            # Scalar value: the original range/mean checks, restricted to rules where they apply.
+            if rule == "round-within-noise" and noise is not None:
+                if _range(raw_meas) is not None and _num(v) is not None:
+                    lo, hi = _range(raw_meas)  # type: ignore[misc]
+                    if not (lo - noise - 1e-9 <= _num(v) <= hi + noise + 1e-9):  # type: ignore[operator]
+                        E.append(f"{tag} rounding moves {raw_meas} -> {v}: outside measured range +/- noise {noise} "
+                                 "(C8: no fixed 0.1/0.5/1.0 step)")
+                else:
+                    E.append(f"{tag} round-within-noise but 'measured' is not numeric/range: cannot verify the move")
+            if rule == "caliper-direct" and meas is not None and _num(v) is not None and abs(_num(v) - meas) > 1e-9 \
+                    and not p.get("derivation"):
+                E.append(f"{tag} caliper-direct but value {v} != measured {raw_meas} and no 'derivation' (e.g. 'radius = D/2')")
+            if rule == "std-size-snap" and src in ("caliper", "caliper-photo", "operator-spec") \
+                    and meas is not None and _num(v) is not None and abs(_num(v) - meas) > STD_SNAP_WINDOW + 1e-9:
+                E.append(f"{tag} std-size-snap moves {meas} -> {v}, outside +/-{STD_SNAP_WINDOW} mm (RE_SPEC.md:92)")
+            if rule == "keep-measured" and _range(raw_meas) is not None and _num(v) is not None:
+                lo, hi = _range(raw_meas)  # type: ignore[misc]
+                if not (lo - 1e-9 <= _num(v) <= hi + 1e-9):  # type: ignore[operator]
+                    E.append(f"{tag} keep-measured but value {v} is outside measured {raw_meas}")
+            if p["critical"] and src == "scan" and noise is not None and meas is not None and _num(v) is not None \
+                    and abs(_num(v) - meas) > noise + 1e-9:
+                E.append(f"{tag} critical scan-authority value moved {meas:g} -> {_num(v):g}, beyond scan "
+                         f"noise {noise} (C9): rule '{rule}' does not license this, even with a scatter_note")
         if p["critical"] and src == "scan" and rule not in ("keep-measured", "round-within-noise", "mean-of-n", "symmetry"):
             E.append(f"{tag} critical scan-authority value with rule '{rule}': hold the scan fit (C9)")
         if p["critical"] and src in ("scan", "photo-inferred", "assumed") and not p.get("rerun_trigger"):

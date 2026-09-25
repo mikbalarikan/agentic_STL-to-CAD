@@ -80,10 +80,14 @@ re-measure, re-count), then record the check as `finding` with a note on what wa
 | `round-within-noise` without a noise floor, or moved outside measured range ± noise | error | C8 |
 | `keep-measured` value outside the measured range | error | C7 |
 | `symmetry` with `scatter_mm` > noise and no `scatter_note` | error | C10 |
+| `symmetry` without `scatter_mm`, or with a scalar/prose `measured` instead of a per-instance list | error | C10 (round 1, M1) |
 | Critical `scan` value with a snapping rule | error | C9 |
+| Critical `scan` value moved beyond the scan noise floor by ANY rule, `scatter_note` included | error | C9 (round 1, M1: closes the symmetry/`scatter_note` bypass — B02 hex AF 7.358) |
 | Critical and uncalipered without `rerun_trigger` | warning | B02 limitation 3 |
 | `count` from scan whose estimator doesn't name rotational order/FFT | error | CHK-COUNT |
-| `photo-inferred`/`assumed`/`standard` source with a measuring rule | error | C11 |
+| `photo-inferred`/`assumed`/`standard` source with a measuring rule, **or** `assumed`/`photo-inferred` rule with a measured source (e.g. `source: scan, rule: assumed`), **or** an unmeasured source with non-null `measured` | error | C11 (round 1, M4: enforced both ways) |
+| `mean-of-n` without a `measured` list of ≥2 numbers, or `value` not within uncertainty/noise of their mean | error | C7 (round 1, M3) |
+| A list `value` (run-contract §11) checked against a `measured` of a different length, or reduced to a mean instead of compared element-wise | error | run-contract §11 (round 1, M2) |
 | `struck` entry without window/proof/trigger; simplification without cost | error | CHK-ACHIEVABLE, C14 |
 | Missing CHK-COUNT/ACHIEVABLE/CLUSTER/FRAME record | warning | this skill's checks |
 

@@ -24,18 +24,38 @@ normalisation and signal are not recorded. Compare only which order is dominant.
 | Case | Result | Golden |
 |---|---|---|
 | B02 delivered STEP (`4_STEP/OOM-B02.step`, tess 0.005 mm), z = 1.00, outside jaws | window **25.617 … 26.850**, min jaws @ 59.00°, max @ 30.00° | CAD 25.617 @ 59.00°, 26.850 (`OOM-B02/6_RE_work/PARAM_TABLE.md:154-155`): **exact** |
-| B02 full-res scan `2_mesh_cleaned/OOM-B02.stl` + `alignment.json`, z = 1.00, r-band 12–14 | window **24.988 … 27.246**, min jaws @ 59.0°; coverage 0.878, gaps 96–107° and 109–143° (the recorded occlusion 96–140°) | "25.99 … 27.08" (`PARAM_TABLE.md:111`) |
-| Reading 24.84 ± 0.1 against the scan window | **STRIKE** (0.148 below the min) | struck, "1.15 mm below" |
+| B02 full-res scan `2_mesh_cleaned/OOM-B02.stl` + `alignment.json`, z = 1.00, r-band 12–14, outside jaws | window **24.988 … 27.246**, min jaws @ 59.0°; coverage 0.878, gaps 96–107° and 109–143° (the recorded occlusion 96–140°) | "25.99 … 27.08" (`PARAM_TABLE.md:111`) |
+| Reading 24.84 ± 0.1 against the scan window, no `--scan-offset` | **UNPROVEN** (0.148 below the min; `d` not measured on this scan) | struck, "1.15 mm below" |
+| Reading 24.84 ± 0.1, `--scan-offset 0.56` (B02 F10: scan mean 5.89 − caliper 5.33, `MEASUREMENTS.md:61`/`PARAM_TABLE.md:41`) | **UNPROVEN, within the measured scan offset** (margin 0.148 < d 0.56) | — |
+| B02 full-res scan, z = 1.00, r-band 9.5–11 (cup bore), inside jaws, reading 20.75 ± 0.1 | window **18.388 … 21.024**, coverage 0.692 (two gaps: −35.75…39.75° and 43.75…79°) — **20.75 is achievable, PASS** | `CUP_BORE_D` (F03) used directly at 20.750, PASS at Tier-1 (`PARAM_TABLE.md:36,153`) |
 
-**Discrepancy (open):** on the scan the window minimum sits at jaw azimuth 59°. That is the
-SAF-1 skirt recess, which the scan shows as a broad, gradual flattening over θ 42–78°
-(R ≈ 12.26–12.41 at z = 1, `sections.py rtheta`). It lies opposite the arm-3 flat at −121°
-(R 12.53). The CAD recess is narrow (flat half-width 7° + 7° ramp,
-`build_OOM-B02.py:79-81`), so flat jaws bridge it and the CAD minimum stays at 25.617. The
-golden's scan minimum 25.99 matches a flat-to-lobe diametral pair (≈12.55 + 13.44) with the
-SAF-1 sector left out. How the golden computed its scan window is not recorded. The strike
-decision is the same either way. But the margin is 0.15 mm, not 1.15 mm, and D-06 = 25.79
-(A3, "also below the achievable window") falls **inside** this reproduction's scan window.
+**Round-1 fixes applied here (orchestrator decisions B1, B2 — `reviews/stl-re-measure-intent.md`):**
+inside-jaw mode now requires `--r-band`, pools the in-band points from every polyline of the
+open scan section, and builds an inner (min-radius) envelope with its own real angular
+coverage instead of picking one polyline and assuming full coverage. This is what fixes the
+cup bore case above: the old inside-jaw code struck the golden-accepted F03 (20.75). Below
+the outside-jaw window, a reading is only struck when the margin exceeds a measured, per-scan
+`--scan-offset d`; within `d` (or when `d` is unknown) it is unproven, not struck. This is why
+F06 (24.84) now reads UNPROVEN above rather than STRUCK: F10's dilation on the same scan
+(0.56 mm) exceeds F06's window margin (0.148 mm).
+
+**Explained (was "not recorded"): the B02 caliper window.** On this reproduction's scan the
+outside-jaw window minimum sits at jaw azimuth 59°, opposite the arm-3 flat at −121° (R
+12.53). The golden's own analysis gives the method: "minimum achievable diametral reading is
+*lobe + flat*", R(θ) + R(θ+180°) (`OOM-B02/6_RE_work/VERDICT.md:64-66`). Evaluating that
+analytic pair — R(30°) = 13.444 (a lobe crest) + R(−121°) = 12.530 (the arm-3 flat) = **25.97
+≈ the golden's 25.99** (`PARAM_TABLE.md:108-111` and §G-5) — reproduces the golden's window
+almost exactly. That argument leaves out the SAF-1 recess (§G-5 in the golden's own notes: a
+36°-wide, ~1.05 mm deep dip in the skirt wall at θ ≈ 59°, R(59°) ≈ 12.28). The CAD recess is
+narrow (flat half-width 7° + 7° ramp, `build_OOM-B02.py:79-81`), so flat jaws bridge it and
+the CAD minimum stays at 25.617; but on the real scan section the support-function window
+(what a physical two-jaw caliper actually reads, recess included) is 24.99, not 25.99. So:
+the golden's recorded window used the analytic lobe+flat argument and excluded the SAF-1
+recess; this skill's full support-function window includes it. Both give the same STRIKE/
+UNPROVEN call region-wise, but the margin differs (0.15 mm vs 1.15 mm before B2, now UNPROVEN
+either way once F10's 0.56 mm dilation is applied). D-06 = 25.79 (A3, "also below the
+achievable window") falls **inside** both windows; combined with B2 it is "use/ask", not
+"below window".
 
 ## sections.py cluster (CHK-CLUSTER)
 
