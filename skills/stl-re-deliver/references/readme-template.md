@@ -67,7 +67,7 @@ Rules the renderer enforces:
   pass, a partial Tier-1, a grey-zone reading, a decimated scan, ...) must be covered by some
   limitation's `text` or `evidence` mentioning its keyword (the phrase before the first `:`).
 - `claim_boundary.not_fit_for` must not be empty.
-- No literal decimal in any prose field, including `Ø8.00`-, `AF7.358`- and `M3.5`-style
+- No literal decimal in any prose field, including `Ø8.00`-, `AF12.34`- and `M3.5`-style
   tokens. Use a placeholder: `{{gate:<dotted.path>}}`, `{{params:<name>.<key>}}`,
   `{{export:<frame>.<key>}}`, `{{align:<dotted.path>}}`, `{{repro:<dotted.path>}}`. List items
   use numeric indices (`{{gate:deviation.masks.0.fraction}}`). An unresolvable placeholder fails.

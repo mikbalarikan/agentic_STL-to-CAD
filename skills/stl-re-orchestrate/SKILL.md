@@ -39,9 +39,11 @@ key the stages exchange. Worked verdicts: `references/verdict-examples.md`.
   Continue at the first incomplete stage. Artefacts are the state: never trust a remembered
   state over the folder. After a `supersede`, the route already decided what carried
   forward (§4), so "first incomplete stage" lands correctly without a separate pointer.
-- Official deviation gates run on the full-resolution scan. A decimated scan is for
-  inspection only; never grade a part on it (`golden-examples/README.md` "What was left
-  out"; `analysis/SYNTHESIS.md` A3).
+- Official deviation gates run on the full-resolution scan. A decimated scan is inspection
+  only, not a full official grade: with a declared limitation, the verdict can still reach
+  `APPROVED_WITH_LIMITATIONS` (never plain `APPROVED`), re-run trigger "full-res scan
+  available" — see the `scan_resolution` row in §6 (`golden-examples/README.md` "What was
+  left out"; `analysis/SYNTHESIS.md` A3).
 - Every human decision goes into `<run>/DECISIONS.md` (append-only, format in the file):
   regime, calipers/scan-only, part class, band acceptance, HALT, independence.
 
@@ -57,7 +59,7 @@ init → intake → [human: MEASUREMENTS + REGIME] → intake* → measure → r
 
 `intake*`: after the human gate, intake re-runs once more to apply CHK-SCALE to the now-filled
 sheet (≥3 `ENV-*` dims) and, if a uniform scale is applied, to re-run the datum fit under it
-(`stl-re-intake-datum/SKILL.md:83`; `RE_SPEC.md:98-101`). Skip `intake*` only when the run is
+(`stl-re-intake-datum/SKILL.md:84-86`; `RE_SPEC.md:98-101`). Skip `intake*` only when the run is
 scan-only (no calipers, `DECISIONS.md` has a `MEASUREMENTS` scan-only entry).
 
 Run each stage by invoking its skill. Check the exit artefacts before moving on;
@@ -77,7 +79,7 @@ does not hand off.
 Per feature: 3 `REVISE` verdicts on the same feature (across verify loops) → HALT
 (`RE_SPEC.md:248-249`). The rebuild skill also stops after 3 failed build attempts on one
 feature inside a single iteration and reports a plan mismatch
-(`stl-re-rebuild-build123d/SKILL.md:248-250`) — a heuristic with no golden precedent, and
+(`stl-re-rebuild-build123d/SKILL.md:287-289`) — a heuristic with no golden precedent, and
 distinct from the per-feature REVISE count above. Neither kind of rebuild-internal retry
 counts as a loop; a loop is a post-verify REVISE (`RE_SPEC.md:250`).
 
@@ -127,9 +129,19 @@ otherwise send the run back to verify to re-run `assemble`.
 |---|---|
 | `APPROVED` | Go to deliver. |
 | `APPROVED_WITH_LIMITATIONS` | Go to deliver. Check each limitation has a re-run trigger (e.g. "one caliper reading on F01 should trigger a re-run", `golden-examples/OOM-B02_side-brush-3-arm/6_RE_work/VERDICT.md:30`). If one lacks a trigger, send it back to verify to add one. |
-| `BAND_NOT_MET` | Show the user the missed band with its number, the per-region explanation and the options from `VERDICT.md`: (a) accept for delivery — record `ACCEPT-BAND` in `DECISIONS.md` (who, date, which band, the number), no entry → no `deliver/`; (b) REVISE if a geometric or measurement cause is named and loops remain — append an `OTHER` `DECISIONS.md` entry recording who chose REVISE and why, then ask verify to re-run `verdict.py assemble` with `review.json#verdict = "REVISE"` (a band fail is allowed to become REVISE, `stl-re-verify/SKILL.md:227`), then run `supersede --route <...>` as below (no script change needed: `supersede` already only requires verdict `REVISE`); (c) supply calipers/photos and re-run; (d) HALT. |
+| `BAND_NOT_MET` | Show the user the missed band with its number, the per-region explanation and the options from `VERDICT.md`: (a) accept for delivery — record `ACCEPT-BAND` in `DECISIONS.md` meeting all three of deliver's rules (`references/run-contract.md` §10), no entry → no `deliver/`; (b) REVISE if a geometric or measurement cause is named and loops remain — append an `OTHER` `DECISIONS.md` entry recording who chose REVISE and why, then ask verify to re-run `verdict.py assemble` with `review.json#verdict = "REVISE"` (a band fail is allowed to become REVISE, `stl-re-verify/SKILL.md:262`), then run `supersede --route <...>` as below (no script change needed: `supersede` already only requires verdict `REVISE`); (c) supply calipers/photos and re-run; (d) HALT. |
 | `REVISE` | If iteration < 3: `python3 scripts/init_run.py supersede <run> --route {measure,geometry,datum}` (CHK-SUPERSEDED), then route by finding (below). If iteration = 3: the script exits 3 → HALT. |
 | `HALT` | Stop. Append a `HALT` entry to `DECISIONS.md` (reason, evidence path, options). Do not create `deliver/`. Resume only on a human decision. |
+
+**ACCEPT-BAND (R2-O2) must satisfy all three of deliver's rules exactly** (`references/run-contract.md`
+§10; `stl-re-deliver/scripts/_common.py check_acceptance`), or delivery is refused: (1) the evidence
+file lives outside `qa/`, `build/`, `measure/`, `intake/`, `deliver/` and any `_itN_SUPERSEDED/` —
+put it under `decisions/` or the run root; (2) the decision line or its evidence file cites the
+first 12 hex characters of the current `qa/gate.json`'s sha256 (or its `created` timestamp); (3) it
+names at least one entry from `gate.json#band_fails`. Example: `- 2026-09-25 | J. Owner |
+ACCEPT-BAND | accept tier1 F01 plate_x miss, gate 8dcbdc487808 | decisions/accept_band_miss.md`.
+"Who, date, which band, the number" is necessary but not sufficient — recording only that, with no
+gate-hash citation or evidence outside the run's own stage folders, is refused.
 
 **Route a REVISE to the stage that owns the cause** (every golden REVISE began in intake
 or measurement, not CAD code: `analysis/SKILL_ARCHITECTURE.md` §1). `--route` is required
@@ -138,7 +150,7 @@ and decides what `supersede` carries forward into the new iteration (O-7): `meas
 must not masquerade as done); `geometry` carries `measure/` and `build/MODELING_PLAN.md` +
 `build/model.py` forward as a diffable base. `--route datum` additionally moves `intake/`
 into `_itN_SUPERSEDED/` (never edited in place — the same loss CHK-SUPERSEDED prevents for
-`measure/build/qa`, `stl-re-intake-datum/SKILL.md:245-246`).
+`measure/build/qa`, `stl-re-intake-datum/SKILL.md:274`).
 
 | Finding | `--route` | Re-enter at | Golden precedent |
 |---|---|---|---|
@@ -186,11 +198,11 @@ states that the comparison is not like-for-like (CHK-LIKE4LIKE; B02 `VERDICT.md`
 | REVISE at loop 3 | HALT | `RE_SPEC.md:250` |
 | Same feature fails 3 times in rebuild | HALT with images and options | `RE_SPEC.md:248-249` |
 | Input hash changed (`status` finding) | HALT: evidence was modified | `analysis/SYNTHESIS.md` A1; facet-film T4 |
-| Datum `STOP` from `align.py` (no clean datum region) | Ask the user for a cleaner region, or HALT if none exists | `stl-re-intake-datum/SKILL.md:279` |
+| Datum `STOP` from `align.py` (no clean datum region) | Ask the user for a cleaner region, or HALT if none exists | `stl-re-intake-datum/SKILL.md:289` |
 | `scan_resolution` is `decimated` or `unknown` at intake | Ask for the full-resolution scan before verify runs. If the user records that none exists (`DECISIONS.md` `OTHER`: "inspection-only, no full-res scan"), verify grades it as inspection-only: the verdict is at most `APPROVED_WITH_LIMITATIONS`, with the re-run trigger "full-res scan available". Plain `APPROVED` needs a full-res scan. Without that entry, do not grade; wait for the scan | `golden-examples/README.md` "What was left out"; `analysis/SKILL_ARCHITECTURE.md` verdict table (DRM screw, scan-only); `init_run.py init --scan-resolution`; DRM replay (`evals/replay/dreame_screw.md`) |
 | CHK-SCALE applies a uniform `scale_factor ≠ 1` | Record an `OTHER` `DECISIONS.md` entry; only the datum-frame STEP is delivered, `export_frames.py` aborts on the scan-frame STEP | `references/run-contract.md` §11 |
-| Filled `input/MEASUREMENTS.md` arrives after intake (calipers) | Re-run intake (`intake*`, §2) for CHK-SCALE before measure, not straight to measure | `stl-re-intake-datum/SKILL.md:83`; `RE_SPEC.md:98-101` |
-| `deliver`'s `repro_check` fails | Send back to rebuild, then re-verify. `supersede` only accepts verdict `REVISE`, and a `repro_check` failure is not itself a verdict change, so move `qa/` and `build/` into a manually-named `_itN_SUPERSEDED/` yourself and record an `OTHER` `DECISIONS.md` entry before re-running rebuild; this does not count as a loop unless the STEP itself changes | `stl-re-deliver/SKILL.md:118-119` |
+| Filled `input/MEASUREMENTS.md` arrives after intake (calipers) | Re-run intake (`intake*`, §2) for CHK-SCALE before measure, not straight to measure | `stl-re-intake-datum/SKILL.md:84-86`; `RE_SPEC.md:98-101` |
+| `deliver`'s `repro_check` fails | Send back to rebuild, then re-verify. Run `python3 scripts/init_run.py supersede <run> --route repro` (R2-O1): it is accepted without a REVISE verdict (it checks `deliver/repro.json#reproducible == false` itself; pass `--confirm-repro-failure` only for a documented override), moves only `qa/` and `build/` into `_itN_SUPERSEDED/`, carries `build/MODELING_PLAN.md` and `build/model.py` forward, and does **not** count toward the 3-loop limit. Record an `OTHER` `DECISIONS.md` entry before re-running rebuild | `stl-re-deliver/SKILL.md:131-133`; `references/run-contract.md` §10 |
 | Evidence conflicts you cannot resolve | Ask; do not pick a number | `analysis/SYNTHESIS.md` §0 (OPEN) |
 
 ## 7. CHK-PUBLISH and CHK-SUPERSEDED

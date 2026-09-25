@@ -222,14 +222,14 @@ def main() -> int:
          p.returncode == 0 and repro_lib.get("reproducible") is True and repro_lib.get("cwd") == "run",
          p.stderr.strip()[-300:])
 
-    # D7: Ø8.00 / AF7.358-style tokens must be caught, not just a plain decimal.
+    # D7: Ø8.00 / AF12.34-style tokens must be caught, not just a plain decimal.
     neg("Ø-diameter literal in limitations", lambda r: edit_json(
         r / "deliver" / "limitations.json",
         lambda d: d["limitations"][0].update(text=d["limitations"][0]["text"] + " Bore Ø8.00 mm.")),
         "make_readme.py", 2, "CHK-NUMBERS", with_repro=True)
     neg("AF-hex literal in limitations", lambda r: edit_json(
         r / "deliver" / "limitations.json",
-        lambda d: d["limitations"][0].update(text=d["limitations"][0]["text"] + " Hex AF7.358.")),
+        lambda d: d["limitations"][0].update(text=d["limitations"][0]["text"] + " Hex AF12.34.")),
         "make_readme.py", 2, "CHK-NUMBERS", with_repro=True)
 
     # D9: --runs 0 must be refused, not silently reported as reproducible.
@@ -257,6 +257,25 @@ def main() -> int:
     neg("auto_limitations not covered", lambda r: edit_json(
         r / "qa" / "gate.json", lambda d: d["auto_limitations"].append("mask-dependent pass: whole part scan_to_cad")),
         "make_readme.py", 2, "auto_limitations", with_repro=True)
+
+    # R2-O1: a --route repro superseded folder (init_run.py supersede --route repro, after a
+    # repro_check.py failure) is accepted by CHK-SUPERSEDED without qa/gate.json#verdict ==
+    # REVISE, and does not push the reported iteration past the 3-loop bound.
+    rr = prepare(work / "repro_route_superseded")
+    dest = rr / "_it2_SUPERSEDED"
+    shutil.copytree(rr / "_it1_SUPERSEDED", dest)
+    (dest / "ROUTE").write_text("repro\n")
+    edit_json(dest / "qa" / "gate.json", lambda d: d.update(verdict="APPROVED_WITH_LIMITATIONS"))
+    (dest / "qa" / "VERDICT.md").write_text("**VERDICT: APPROVED_WITH_LIMITATIONS** (fixture repro)\n")
+    p = sh("preflight.py", rr)
+    pf = json.loads(p.stdout) if p.returncode == 0 else {}
+    case("repro-route superseded folder accepted without REVISE",
+         p.returncode == 0 and pf.get("checks", {}).get("CHK-SUPERSEDED", {}).get("result") in
+         ("pass", "finding"),
+         f"rc={p.returncode} {p.stderr.strip()[-200:]}")
+    case("repro-route folder excluded from the loop count",
+         pf.get("checks", {}).get("CHK-SUPERSEDED", {}).get("iteration") == 2,
+         str(pf.get("checks", {}).get("CHK-SUPERSEDED")))
 
     failed = [n for n, ok, _ in results if not ok]
     print(f"\n{len(results) - len(failed)}/{len(results)} passed; workdir {work}")

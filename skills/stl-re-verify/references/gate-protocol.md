@@ -188,4 +188,4 @@ Zone and mask names must not contain `:` (`verdict.py`'s `regime.gated` entries 
 | Observability split | Surfaces a scanner could see but that the scan still missed (low coverage). It is a CAD-only line-of-sight test. |
 | Overlays | Everything between the panels. A panel with no scan proves nothing (CHK-OVERLAY). |
 | A project validator with scan-derived expected values | Anything. It is a consistency check (OD 13/13, CHK-CIRCULAR). |
-| Decimated-scan runs | Nothing is graded. They are inspection only. |
+| Decimated-scan runs | An official full grade. Not a blocker: with the decimated-scan limitation declared (§3), the verdict can still be `APPROVED_WITH_LIMITATIONS`, never plain `APPROVED`. |

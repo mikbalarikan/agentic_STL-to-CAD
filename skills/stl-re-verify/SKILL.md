@@ -210,8 +210,9 @@ python $S/tier2_icp.py --scan input/scan.stl --scan-kind full --align intake/ali
         findings.
    5. **Zones.** Every functional interface passes or misses on its own. A zone passing does not
       excuse the whole part, and the reverse also holds.
-5. `label` must read `OFFICIAL (full-res)` for a grade. `INSPECTION ONLY` (decimated) or
-   `INVALID` (unconverged ICP) means no grade.
+5. `label` must read `OFFICIAL (full-res)` for a full grade. `INSPECTION ONLY` (decimated):
+   not an official grade; at most `APPROVED_WITH_LIMITATIONS` with the decimated-scan
+   limitation declared (§0.2). `INVALID` (unconverged ICP) means no grade.
 
 ## 7. Overlays (CHK-OVERLAY)
 

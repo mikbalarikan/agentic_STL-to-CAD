@@ -101,8 +101,7 @@ def mesh_stats(m: trimesh.Trimesh) -> dict[str, Any]:
 def orientation_vote(m: trimesh.Trimesh, n: int = 500, seed: int = 0) -> dict[str, Any]:
     """Local normal-orientation test for OPEN meshes. On a non-watertight scan the signed
     volume depends on the coordinate origin and can be negative with outward normals
-    (measured on B02: raw normals outward - dome top n_z +0.93, rim n_z -0.99 in the
-    datum frame - while volume is -2434 mm^3). Cast a ray from just off each sampled
+    (seen on a golden open scan; analysis/SYNTHESIS.md A5). Cast a ray from just off each sampled
     face centre along +n and along -n; outward normals hit the part less often along +n."""
     rng = np.random.default_rng(seed)
     idx = rng.choice(len(m.faces), min(n, len(m.faces)), replace=False)

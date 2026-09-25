@@ -34,7 +34,7 @@ from _common import (MAX_LOOPS, DeliverError, check_repro_fresh, fail, load_json
 
 PLACEHOLDER = re.compile(r"\{\{(gate|params|export|align|repro):([A-Za-z0-9_.\-\[\] ]+)\}\}")
 # D7: the old lookbehind `(?<![\w.])` treated letters, digits and the diameter sign as "word"
-# characters, so `Ø8.00`, `AF7.358`, `M3.5` and `x8.5` slipped through uncaught. Only a
+# characters, so `Ø8.00`, `AF12.34`, `M3.5` and `x8.5` slipped through uncaught. Only a
 # preceding digit or '.' should suppress a match now (that is what protects a placeholder's own
 # digits and a number already flagged by an earlier match), so any decimal reachable through a
 # letter, `Ø`, `x`, whitespace or punctuation is still caught.

@@ -94,7 +94,7 @@ For each of `datum` and `scan` frame: `solids`, `valid`, `closed`, `faces`,
 - `verdict`: one of §7, or `null` when `assemble` refused to produce one.
 - `errors`: list of strings, non-empty exactly when `assemble` exited non-zero (a refused
   verdict). `allowed_verdicts`, when present, lists the verdict words the refusal still
-  permits (e.g. a band fail may still become `REVISE`, `stl-re-verify/SKILL.md:227`).
+  permits (e.g. a band fail may still become `REVISE`, `stl-re-verify/SKILL.md:262`).
   **A verdict is trustworthy only if `errors` is empty and, when `allowed_verdicts` is
   present, `verdict` is a member of it (O-1).** `stl-re-verify/scripts/verdict.py` writes
   `gate.json` with the refused verdict and its `errors` before returning a non-zero exit, so
@@ -147,15 +147,49 @@ CHK-PUBLISH, CHK-LIKE4LIKE, CHK-NUMBERS, CHK-INDEP. Definitions and evidence:
   §12: the regime lives at `intake/regime.json`, not `intake/intake.json#regime`.**
 - **`deliver/` is not created by init.** Its existence before a deliverable verdict is a
   CHK-PUBLISH finding (`init_run.py status` reports it).
-- **Iteration number** = number of `_itN_SUPERSEDED/` folders + 1. `init_run.py supersede`
-  requires `--route {measure,geometry,datum}` (O-7): the route names the stage the REVISE
-  is re-entering and decides what carries forward, so a wrong stage is never masked as
-  already complete. It moves `measure/ build/ qa/` into `_itN_SUPERSEDED/` (also `intake/`
-  for `--route datum`), then, unless `--no-carry`, copies forward only what that route
-  says: `measure` and `datum` carry nothing (the stage being redone must not look done);
-  `geometry` copies `measure/`, `build/MODELING_PLAN.md` and `build/model.py` forward
-  (copies, so the superseded folder stays intact). It refuses when iteration = 3 (exit 3,
-  HALT; `RE_SPEC.md:250`).
+- **Iteration number** = number of `_itN_SUPERSEDED/` folders that were a REVISE loop, plus
+  1 (a `--route repro` folder, below, is excluded from this count). `init_run.py supersede`
+  requires `--route {measure,geometry,datum,repro}` (O-7): the route names the stage the
+  REVISE is re-entering and decides what carries forward, so a wrong stage is never masked as
+  already complete. For `measure`/`geometry`/`datum` it moves `measure/ build/ qa/` into
+  `_itN_SUPERSEDED/` (also `intake/` for `--route datum`), then, unless `--no-carry`, copies
+  forward only what that route says: `measure` and `datum` carry nothing (the stage being
+  redone must not look done); `geometry` copies `measure/`, `build/MODELING_PLAN.md` and
+  `build/model.py` forward (copies, so the superseded folder stays intact). It refuses when
+  iteration = 3 (exit 3, HALT; `RE_SPEC.md:250`).
+- **`--route repro` (R2-O1, `deliver`'s `repro_check.py` failure).** A `repro_check` failure
+  is a rebuild-fidelity problem, not a verdict change, so this route is accepted **without**
+  `qa/gate.json#verdict == REVISE` -- but only when `deliver/repro.json#reproducible` is
+  `false` (the failure it is meant to fix), or the human passes `--confirm-repro-failure` (a
+  documented override, never a silent default). It moves only `qa/` and `build/` into
+  `_itN_SUPERSEDED/` (never `measure/` or `intake/`: the reproducibility problem is in
+  `build/model.py`, not in what was measured), writes `_itN_SUPERSEDED/ROUTE` recording
+  `repro` (so `init_run.py status` and `stl-re-deliver`'s CHK-SUPERSEDED can tell it apart
+  from an ordinary loop), and, unless `--no-carry`, copies `build/MODELING_PLAN.md` and
+  `build/model.py` forward as a diffable base (`measure/` was never moved, so it needs no
+  carry-forward). **It does not count toward the 3-loop limit**: the iteration number above
+  excludes it. Folder numbering itself (`_itN_SUPERSEDED`) is still monotonic and is never
+  reused or renumbered, so a repro folder and a later ordinary REVISE folder never collide.
+  CHK-SUPERSEDED accepts a `repro`-routed folder even though its `qa/gate.json#verdict` is
+  not `REVISE`.
+- **ACCEPT-BAND (R2-O2, matches `stl-re-deliver/scripts/_common.py check_acceptance`
+  exactly).** A `BAND_NOT_MET` delivery needs a `DECISIONS.md` `ACCEPT-BAND` entry whose
+  evidence satisfies all three:
+  1. **Evidence lives outside the pipeline folders.** The evidence path is a file inside the
+     run, but not under `qa/`, `build/`, `measure/`, `intake/`, `deliver/` or any
+     `_itN_SUPERSEDED/` (those are pipeline output, not the owner's own written acceptance).
+     Use `decisions/` or the run root.
+  2. **The entry cites the current `qa/gate.json` by hash.** The decision text or the
+     evidence file must contain the first 12 hex characters of the current
+     `qa/gate.json`'s sha256, or its `created` timestamp -- so an acceptance can never
+     survive into a later, different gate.
+  3. **The entry names a missed band from `gate.json#band_fails`.** At least one
+     `band_fails` entry's name (the text before its first `:`) must appear in the decision
+     or its evidence.
+  Example line: `- 2026-09-25 | J. Owner | ACCEPT-BAND | accept tier1 F01 plate_x miss, gate
+  8dcbdc487808 | decisions/accept_band_miss.md`, where `decisions/accept_band_miss.md`
+  itself also states the gate hash. Missing any of the three is refused, not merely a
+  finding: none of "who, date, which band, the number" alone satisfies the check.
 
 ## 11. Clarifications added by the orchestrator session (2026-09-25)
 

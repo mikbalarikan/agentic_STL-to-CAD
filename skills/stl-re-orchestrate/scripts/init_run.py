@@ -15,9 +15,12 @@ Subcommands
   status     print the run state (stage reached, iteration, verdict) as JSON; only trusts
              qa/gate.json#verdict when errors is empty and verdict is in allowed_verdicts (O-1)
   rehash     hash a human-filled input/MEASUREMENTS.md into INPUT_HASHES.json (O-2)
-  supersede  --route {measure,geometry,datum} (required): move measure/ build/ qa/ (and
+  supersede  --route {measure,geometry,datum,repro} (required): move measure/ build/ qa/ (and
              intake/ for --route datum) to _itN_SUPERSEDED/ (REVISE); the route decides what
-             carries forward (O-7); refuses past loop 3
+             carries forward (O-7); refuses past loop 3. --route repro (R2-O1) instead moves
+             only qa/ and build/, needs no REVISE verdict (deliver/repro.json#reproducible ==
+             false, or --confirm-repro-failure), writes a ROUTE marker in the superseded
+             folder, and is excluded from the 3-loop count (folder numbering stays monotonic)
   doctor     check python deps and that the six stl-re-* skills sit side by side
   --selftest run all of the above on a temporary directory
 
@@ -292,6 +295,27 @@ def superseded(run: Path) -> list[int]:
     return sorted(out)
 
 
+def superseded_route(run: Path, n: int) -> str:
+    """The route recorded for `_itN_SUPERSEDED` in its `ROUTE` marker (round-2 R2-O1).
+
+    A folder with no marker (written before this route existed, or moved by hand) is
+    treated as an ordinary loop iteration, which is the safe default: it still counts
+    toward the 3-loop bound rather than silently being excused."""
+    marker = run / f"_it{n}_SUPERSEDED" / "ROUTE"
+    if marker.is_file():
+        route = marker.read_text(encoding="utf-8").strip()
+        if route in ROUTES:
+            return route
+    return "measure"
+
+
+def loop_iterations(run: Path) -> list[int]:
+    """Superseded folders that count toward MAX_LOOPS. A `--route repro` folder is a
+    reproducibility re-run, not a REVISE loop, so it is excluded (round-2 R2-O1); folder
+    numbering itself (`superseded()`) stays monotonic and is never renumbered."""
+    return [n for n in superseded(run) if superseded_route(run, n) != "repro"]
+
+
 def cmd_status(run: Path) -> dict[str, Any]:
     hashes = run / "input" / "INPUT_HASHES.json"
     if not hashes.is_file():
@@ -342,47 +366,88 @@ def cmd_status(run: Path) -> dict[str, Any]:
         findings.append("input/MEASUREMENTS.md exists but is not hashed in "
                         "INPUT_HASHES.json: run `init_run.py rehash <run>`")
     its = superseded(run)
-    return {"run": str(run), "part": part, "iteration": len(its) + 1, "max_loops": MAX_LOOPS,
+    loop_its = loop_iterations(run)
+    # R2-O1: `iteration` (and the 3-loop bound it feeds) excludes `--route repro` folders;
+    # `superseded` still lists every folder, so folder numbering stays monotonic.
+    return {"run": str(run), "part": part, "iteration": len(loop_its) + 1, "max_loops": MAX_LOOPS,
             "superseded": [f"_it{n}_SUPERSEDED" for n in its], "last_complete_stage": reached,
             "stages": stages, "verdict": verdict, "findings": findings}
 
 
 # ------------------------------------------------------------------------ supersede
-ROUTES = ("measure", "geometry", "datum")
+ROUTES = ("measure", "geometry", "datum", "repro")
 
 # O-7: the route decides what a REVISE inherits, so the stage a finding was routed to is
 # never masked as already complete by a blanket carry-forward. `measure` and `datum` carry
 # nothing forward (the stage being redone must not look done); `geometry` carries the
 # measurement and modeling-plan base forward as a diffable edit. run-contract.md §10.
+# `repro` (R2-O1) carries the prior plan/model forward too, since only qa/ and build/ were
+# superseded; measure/ is never moved for this route, so it needs no carry-forward entry --
+# it was never taken away.
 CARRY_FORWARD: dict[str, tuple[str, ...]] = {
     "measure": (),
     "geometry": ("measure", "build/MODELING_PLAN.md", "build/model.py"),
     "datum": (),
+    "repro": ("build/MODELING_PLAN.md", "build/model.py"),
+}
+
+# R2-O1: `repro` supersedes only qa/ and build/ (a repro_check failure is a rebuild-fidelity
+# problem, not a re-measure or a re-datum), and it does so without a REVISE verdict and
+# without disturbing deliver/, which is exactly where the repro.json that triggered it lives.
+ROUTE_MOVES: dict[str, tuple[str, ...]] = {
+    "measure": ITERATED,
+    "geometry": ITERATED,
+    "datum": ("intake",) + ITERATED,
+    "repro": ("qa", "build"),
 }
 
 
-def cmd_supersede(run: Path, route: str, carry: bool) -> dict[str, Any]:
+def cmd_supersede(run: Path, route: str, carry: bool, confirm_repro_failure: bool = False) -> dict[str, Any]:
     if route not in ROUTES:
         raise ValueError(f"--route must be one of {ROUTES}, got {route!r}")
     st = cmd_status(run)
-    if st["verdict"] != "REVISE":
-        raise RuntimeError(f"supersede needs verdict REVISE, found {st['verdict']!r}")
-    if (run / "deliver").exists():
-        raise RuntimeError("deliver/ exists; a delivered iteration is not superseded silently")
-    n = st["iteration"]
-    if n >= MAX_LOOPS:
-        raise HaltError(f"HALT: iteration {n} of {MAX_LOOPS} ended in REVISE "
+    if route == "repro":
+        # R2-O1: accepted without a REVISE verdict, but only when deliver/repro.json already
+        # says the rebuild is not reproducible, or the human explicitly overrides with
+        # --confirm-repro-failure (a documented flag, never a silent default).
+        repro_path = run / "deliver" / "repro.json"
+        reproducible_false = False
+        if repro_path.is_file():
+            try:
+                reproducible_false = json.loads(
+                    repro_path.read_text(encoding="utf-8")).get("reproducible") is False
+            except json.JSONDecodeError:
+                reproducible_false = False
+        if not reproducible_false and not confirm_repro_failure:
+            raise RuntimeError(
+                "supersede --route repro needs deliver/repro.json#reproducible == false "
+                "(run `scripts/repro_check.py` first), or pass --confirm-repro-failure to "
+                "record a documented override (run-contract.md §10)")
+    else:
+        if st["verdict"] != "REVISE":
+            raise RuntimeError(f"supersede needs verdict REVISE, found {st['verdict']!r}")
+        if (run / "deliver").exists():
+            raise RuntimeError("deliver/ exists; a delivered iteration is not superseded silently")
+    all_its = superseded(run)
+    # Folder numbering is monotonic across every route, repro included, so two supersedes
+    # never collide; the loop count used for MAX_LOOPS excludes repro folders (R2-O1).
+    folder_n = (max(all_its) if all_its else 0) + 1
+    loop_n = st["iteration"]
+    if route != "repro" and loop_n >= MAX_LOOPS:
+        raise HaltError(f"HALT: iteration {loop_n} of {MAX_LOOPS} ended in REVISE "
                             "(RE_SPEC.md:250). Record HALT in DECISIONS.md and ask the human.")
-    dest = run / f"_it{n}_SUPERSEDED"
+    dest = run / f"_it{folder_n}_SUPERSEDED"
     if dest.exists():
         raise FileExistsError(f"{dest} already exists")
     dest.mkdir()
     moved = []
-    iterated = ("intake",) + ITERATED if route == "datum" else ITERATED
-    for d in iterated:
+    for d in ROUTE_MOVES[route]:
         if (run / d).exists():
             shutil.move(str(run / d), str(dest / d))
             moved.append(d)
+    # R2-O1: record which route produced this folder, so a reader (this script, deliver's
+    # CHK-SUPERSEDED) can tell a repro re-run apart from an ordinary REVISE loop.
+    (dest / "ROUTE").write_text(route + "\n", encoding="utf-8")
     for d in LAYOUT:
         (run / d).mkdir(parents=True, exist_ok=True)
     carried = []
@@ -395,8 +460,11 @@ def cmd_supersede(run: Path, route: str, carry: bool) -> dict[str, Any]:
             elif src.is_file():
                 shutil.copy2(src, run / rel)
                 carried.append(rel)
+    # A repro re-run does not consume a loop, so the loop count is unchanged (R2-O1).
     return {"superseded_to": dest.name, "route": route, "moved": moved,
-            "carried_forward": carried, "iteration_now": n + 1, "max_loops": MAX_LOOPS}
+            "carried_forward": carried,
+            "iteration_now": loop_n if route == "repro" else loop_n + 1,
+            "max_loops": MAX_LOOPS}
 
 
 # --------------------------------------------------------------------------- doctor
@@ -523,6 +591,73 @@ def selftest() -> int:
             assert cmd_status(rr)["last_complete_stage"] == want_resume, \
                 f"--route {route}: resume must land at {want_resume!r}, not skip past it"
 
+        # R2-O1: --route repro supersedes only qa/ and build/, without a REVISE verdict, and
+        # must not count toward the 3-loop limit; folder numbering still stays monotonic.
+        run_repro = t / "run_repro"
+        cmd_init(run_repro, "cap", src / "part.stl", [], None, "unknown", link=False)
+        saved_run, run = run, run_repro
+        try:
+            fake_iteration("APPROVED_WITH_LIMITATIONS")
+        finally:
+            run = saved_run
+        try:
+            cmd_supersede(run_repro, route="repro", carry=True)
+            raise AssertionError("--route repro must refuse without a repro.json failure "
+                                 "or --confirm-repro-failure")
+        except RuntimeError:
+            pass
+        before_measure = (run_repro / "measure" / "params.json").read_bytes()
+        (run_repro / "deliver").mkdir()
+        write_json(run_repro / "deliver" / "repro.json", {"reproducible": False, "inputs": {}})
+        res_repro = cmd_supersede(run_repro, route="repro", carry=True)
+        assert res_repro["superseded_to"] == "_it1_SUPERSEDED" and res_repro["route"] == "repro"
+        assert res_repro["moved"] == ["qa", "build"], \
+            f"--route repro must move only qa/ and build/, got {res_repro['moved']}"
+        assert res_repro["iteration_now"] == 1, "a repro re-run must not consume a loop"
+        assert {"build/MODELING_PLAN.md", "build/model.py"} <= set(res_repro["carried_forward"])
+        route_marker = run_repro / "_it1_SUPERSEDED" / "ROUTE"
+        assert route_marker.is_file() and route_marker.read_text(encoding="utf-8").strip() == "repro"
+        assert not (run_repro / "_it1_SUPERSEDED" / "measure").exists(), \
+            "--route repro must not supersede measure/"
+        assert (run_repro / "measure" / "params.json").read_bytes() == before_measure, \
+            "--route repro must leave measure/ untouched"
+        assert (run_repro / "build" / "model.py").is_file(), \
+            "--route repro must carry model.py forward"
+        assert (run_repro / "deliver" / "repro.json").is_file(), \
+            "--route repro must not disturb deliver/"
+        st_repro = cmd_status(run_repro)
+        assert st_repro["iteration"] == 1, \
+            "R2-O1: a repro-route superseded folder must not count toward the loop limit"
+        assert st_repro["superseded"] == ["_it1_SUPERSEDED"]
+
+        # Folder numbering is monotonic across routes even though the loop count is not: a
+        # genuine REVISE loop afterward becomes _it2_SUPERSEDED, never a collision with it1.
+        # (The stale deliver/ from the abandoned repro attempt is cleared first, as a human
+        # would once the rebuild it pointed at has itself been superseded.)
+        shutil.rmtree(run_repro / "deliver")
+        saved_run, run = run, run_repro
+        try:
+            fake_iteration("REVISE")
+        finally:
+            run = saved_run
+        res_repro2 = cmd_supersede(run_repro, route="measure", carry=False)
+        assert res_repro2["superseded_to"] == "_it2_SUPERSEDED", res_repro2
+        assert res_repro2["iteration_now"] == 2, \
+            "the loop count must advance for an ordinary route after a repro folder"
+        assert cmd_status(run_repro)["iteration"] == 2
+
+        # --confirm-repro-failure: a documented override proceeds without repro.json.
+        run_repro_ov = t / "run_repro_override"
+        cmd_init(run_repro_ov, "cap", src / "part.stl", [], None, "unknown", link=False)
+        saved_run, run = run, run_repro_ov
+        try:
+            fake_iteration("APPROVED")
+        finally:
+            run = saved_run
+        res_override = cmd_supersede(run_repro_ov, route="repro", carry=False,
+                                     confirm_repro_failure=True)
+        assert res_override["route"] == "repro" and res_override["iteration_now"] == 1
+
         (run / "qa" / "VERDICT.md").write_text("# VERDICT: APPROVED_WITH_LIMITATIONS\n", encoding="utf-8")
         (run / "qa" / "gate.json").unlink()
         assert read_verdict(run) == "APPROVED_WITH_LIMITATIONS"
@@ -610,10 +745,16 @@ def main(argv: list[str] | None = None) -> int:
                                            "--route datum) to _itN_SUPERSEDED/ after REVISE")
     pv.add_argument("run", type=Path)
     pv.add_argument("--route", required=True, choices=ROUTES,
-                    help="the stage the REVISE re-enters; decides what carries forward (O-7)")
+                    help="the stage the REVISE re-enters; decides what carries forward (O-7). "
+                         "--route repro (R2-O1) supersedes only qa/ and build/ after a "
+                         "repro_check failure, without a REVISE verdict, and does not count "
+                         "toward the 3-loop limit")
     pv.add_argument("--no-carry", action="store_true",
                     help="do not copy anything forward into the new iteration, "
                          "regardless of --route")
+    pv.add_argument("--confirm-repro-failure", action="store_true",
+                    help="--route repro only: proceed even though deliver/repro.json does not "
+                         "say reproducible=false (a documented human override)")
     pd = sub.add_parser("doctor", help="check dependencies and sibling skills")
     pd.add_argument("--skills-root", type=Path, default=Path(__file__).resolve().parents[2])
     args = ap.parse_args(argv)
@@ -629,7 +770,8 @@ def main(argv: list[str] | None = None) -> int:
         elif args.cmd == "rehash":
             out = cmd_rehash(args.run, args.measurements)
         elif args.cmd == "supersede":
-            out = cmd_supersede(args.run, route=args.route, carry=not args.no_carry)
+            out = cmd_supersede(args.run, route=args.route, carry=not args.no_carry,
+                               confirm_repro_failure=args.confirm_repro_failure)
         elif args.cmd == "doctor":
             out = cmd_doctor(args.skills_root)
             print(json.dumps(out, indent=2, sort_keys=True))

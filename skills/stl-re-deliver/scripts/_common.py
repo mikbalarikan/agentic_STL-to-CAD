@@ -215,17 +215,41 @@ def check_acceptance(run: Path, verdict: str, gate: dict[str, Any]) -> dict[str,
 
 
 # ---------------------------------------------------------------------- CHK-SUPERSEDED
+def _superseded_route(run: Path, n: int) -> str:
+    """The route recorded in `_itN_SUPERSEDED/ROUTE` by `init_run.py supersede` (R2-O1). A
+    folder with no marker (pre-dates the marker, or was moved by hand) counts as an ordinary
+    REVISE loop, which is the safe default."""
+    marker = run / f"_it{n}_SUPERSEDED" / "ROUTE"
+    if marker.is_file():
+        route = marker.read_text(encoding="utf-8").strip()
+        if route:
+            return route
+    return "measure"
+
+
 def check_superseded(run: Path) -> dict[str, Any]:
-    """Every earlier iteration must be kept intact in _itN_SUPERSEDED/ (N = 1..k, contiguous)."""
+    """Every earlier iteration must be kept intact in _itN_SUPERSEDED/ (N = 1..k, contiguous).
+
+    R2-O1: a `--route repro` folder (`init_run.py supersede --route repro`, after a
+    `repro_check.py` failure) is accepted without `qa/gate.json#verdict == REVISE` -- it was
+    never a REVISE loop -- and does not count toward the 3-loop bound. Folder numbering
+    (`its`) still includes it, since `init_run.py` never renumbers folders."""
     its = sorted(int(m.group(1)) for p in run.iterdir()
                  if p.is_dir() and (m := re.fullmatch(r"_it(\d+)_SUPERSEDED", p.name)))
     problems: list[str] = []
     notes: list[str] = []
     if its != list(range(1, len(its) + 1)):
         problems.append(f"superseded folders are not contiguous from 1: {its}")
+    loop_its = []
     for n in its:
         d = run / f"_it{n}_SUPERSEDED"
-        for rel in ("qa/VERDICT.md", "qa/gate.json", "build/model.py"):
+        route = _superseded_route(run, n)
+        is_repro = route == "repro"
+        if not is_repro:
+            loop_its.append(n)
+        required = ("qa/VERDICT.md", "qa/gate.json") if is_repro else \
+            ("qa/VERDICT.md", "qa/gate.json", "build/model.py")
+        for rel in required:
             if not (d / rel).is_file():
                 problems.append(f"_it{n}_SUPERSEDED/{rel} missing")
         if (d / "qa" / "gate.json").is_file():
@@ -233,11 +257,11 @@ def check_superseded(run: Path) -> dict[str, Any]:
                 v = json.loads((d / "qa" / "gate.json").read_text(encoding="utf-8")).get("verdict")
             except json.JSONDecodeError:
                 v = None
-            if v != "REVISE":
+            if not is_repro and v != "REVISE":
                 problems.append(f"_it{n}_SUPERSEDED/qa/gate.json verdict is {v!r}, expected REVISE")
         if not list((d / "build").glob("*.step")) if (d / "build").is_dir() else True:
             notes.append(f"_it{n}_SUPERSEDED has no STEP (finding, not a failure: the build may have aborted)")
-    iteration = len(its) + 1
+    iteration = len(loop_its) + 1
     if iteration > MAX_LOOPS:
         problems.append(f"iteration {iteration} exceeds the {MAX_LOOPS}-loop bound (RE_SPEC.md:248-250)")
     return {"ran": True, "result": "fail" if problems else ("finding" if notes else "pass"),

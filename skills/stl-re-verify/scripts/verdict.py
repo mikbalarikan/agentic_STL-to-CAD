@@ -14,7 +14,7 @@ Provenance: NEW CODE. Rules it enforces and their evidence:
   - verdict vocabulary (run-contract §7; analysis/SKILL_ARCHITECTURE.md §4)
   - a miss is never loosened: any failed band => APPROVED* is refused (analysis/SYNTHESIS.md F1;
     facet-film T13/T16, analysis/baseline/facet-film-transferable.md)
-  - mask-dependent pass => not APPROVED (CHK-MASK; OOM-B02 hex 1.624 unmasked)
+  - mask-dependent pass => not APPROVED (CHK-MASK; B02 hex-pocket mask, see `analysis/golden/OOM-B02.md`)
   - every limitation carries a re-run trigger (SYNTHESIS F10; B02 "one caliper reading on F01")
   - decimated scan / unconverged ICP / changed hash => no official grade (golden-examples/README.md;
     re-qa-verifier ICP rule; M02 hash freeze)
