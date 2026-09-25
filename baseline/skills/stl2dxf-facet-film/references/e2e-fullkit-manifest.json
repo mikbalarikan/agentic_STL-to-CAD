@@ -1,0 +1,1560 @@
+{
+ "kit": "full_kit.dxf",
+ "n_pieces": 77,
+ "sheet_mm": [
+  118.07,
+  83.22
+ ],
+ "validate": {
+  "n_loops": 79,
+  "problems": [],
+  "extents": [
+   [
+    0.0,
+    0.0
+   ],
+   [
+    118.06987716078852,
+    83.14362017149253
+   ]
+  ],
+  "min_segment_mm": 0.060504623291196,
+  "min_gap_mm": 0.36988726573418756,
+  "nested_or_tight_pairs": 1,
+  "narrow_features": [
+   {
+    "loop": 23,
+    "area_below_min_width_mm2": 0.552
+   },
+   {
+    "loop": 24,
+    "area_below_min_width_mm2": 0.548
+   },
+   {
+    "loop": 25,
+    "area_below_min_width_mm2": 0.999
+   },
+   {
+    "loop": 26,
+    "area_below_min_width_mm2": 0.997
+   },
+   {
+    "loop": 27,
+    "area_below_min_width_mm2": 9.892
+   },
+   {
+    "loop": 28,
+    "area_below_min_width_mm2": 7.514
+   },
+   {
+    "loop": 29,
+    "area_below_min_width_mm2": 10.082
+   },
+   {
+    "loop": 30,
+    "area_below_min_width_mm2": 9.3
+   },
+   {
+    "loop": 68,
+    "area_below_min_width_mm2": 1.186
+   },
+   {
+    "loop": 69,
+    "area_below_min_width_mm2": 0.866
+   },
+   {
+    "loop": 70,
+    "area_below_min_width_mm2": 0.626
+   }
+  ],
+  "ok": true
+ },
+ "sanity_fixes": [],
+ "regularisations": [
+  "CRYSTAL scaled dia 29.30->29.26 (-0.14%) so polygonized nested gap >= 0.35",
+  "FLANK_3C_12/outer: fillet closing-microseg fix: resampled 400->395 pts",
+  "LUG_UNDER_6C/outer: fillet closing-microseg fix: resampled 134->135 pts",
+  "LUG_INNER_12C/outer: fillet closing-microseg fix: resampled 200->195 pts",
+  "LUG_INNER_6B/outer: fillet closing-microseg fix: ring start rolled by 1",
+  "LUG_SIDE_6B/outer: fillet closing-microseg fix: resampled 252->247 pts",
+  "CLASP_SIDE_6B/outer: fillet closing-microseg fix: ring start rolled by 101",
+  "CLASP_CRESC_6C/outer: fillet closing-microseg fix: resampled 126->121 pts"
+ ],
+ "pieces": {
+  "BEZ_TOP": {
+   "family": "discs",
+   "recipe": "A",
+   "area_mm2": 475.46,
+   "bbox_mm": [
+    38.8,
+    38.8
+   ],
+   "gates": {
+    "K_abs_mean": null,
+    "iso_strain_pct": null,
+    "dim_check": "typed \u00d838.80/\u00d830.00; mesh rim \u00d838.76\u00b10.08 (sector silhouette z -2.5..-2.0), bore \u00d829.97\u00b10.05 (silhouette z -0.5..0) \u2014 delta -0.1% both; catalogue \u00d838.80/\u00d830.00 delta 0%"
+   },
+   "nest_xy_min": [
+    50.5,
+    0.925
+   ],
+   "flags": []
+  },
+  "CRYSTAL": {
+   "family": "discs",
+   "recipe": "A",
+   "area_mm2": 674.12,
+   "bbox_mm": [
+    29.26,
+    29.26
+   ],
+   "gates": {
+    "K_abs_mean": null,
+    "iso_strain_pct": null,
+    "dim_check": "\u00d829.30 = declared bore 30.00 - 2x0.35 (bore not fittable, scanner-bridged; verified: no separate crystal loop, blend r14.56-15.0); catalogue \u00d829.30 delta 0%; mesh crystal-flat r99 14.10 vs catalogue-record 14.65 (-3.8%, scan difference)"
+   },
+   "nest_xy_min": [
+    55.27,
+    5.695
+   ],
+   "flags": []
+  },
+  "CASEBACK": {
+   "family": "discs",
+   "recipe": "A",
+   "area_mm2": 592.54,
+   "bbox_mm": [
+    27.47,
+    27.47
+   ],
+   "gates": {
+    "K_abs_mean": null,
+    "iso_strain_pct": null,
+    "dim_check": "measured \u00d827.47 (flat-boundary R13.935 by dep>0.1mm from 0.07-reject plane fit z=-12.194, -0.2 inset) vs catalogue \u00d826.54: +3.5% (this scan reads large/small vs record elsewhere too)"
+   },
+   "nest_xy_min": [
+    90.6,
+    6.59
+   ],
+   "flags": []
+  },
+  "PUSHER_RECT_12C": {
+   "family": "discs",
+   "recipe": "A",
+   "area_mm2": 21.56,
+   "bbox_mm": [
+    5.75,
+    3.75
+   ],
+   "gates": {
+    "K_abs_mean": null,
+    "iso_strain_pct": null,
+    "dim_check": "typed 5.75x3.75 vs catalogue 5.75x3.75 delta 0%; mesh pusher cap \u00d85.46/5.40, end-flat 3.67x3.84 (12C) -> 5.75 vs cap\u00d8 -5%, 3.75 vs flat -2%"
+   },
+   "nest_xy_min": [
+    65.381,
+    61.126
+   ],
+   "flags": []
+  },
+  "PUSHER_RECT_6C": {
+   "family": "discs",
+   "recipe": "A",
+   "area_mm2": 21.56,
+   "bbox_mm": [
+    5.75,
+    3.75
+   ],
+   "gates": {
+    "K_abs_mean": null,
+    "iso_strain_pct": null,
+    "dim_check": "typed 5.75x3.75 vs catalogue 5.75x3.75 delta 0%; mesh pusher cap \u00d85.46/5.40, end-flat 3.67x3.84 (6C) -> 5.75 vs cap\u00d8 -5%, 3.75 vs flat -2%"
+   },
+   "nest_xy_min": [
+    72.431,
+    61.126
+   ],
+   "flags": []
+  },
+  "CROWN_FLANK": {
+   "family": "discs",
+   "recipe": "A",
+   "area_mm2": 35.93,
+   "bbox_mm": [
+    8.5,
+    6.85
+   ],
+   "gates": {
+    "K_abs_mean": null,
+    "iso_strain_pct": null,
+    "dim_check": "chosen 8.50x6.85 (measured lever-top facet 9.36x6.84 at dep>-0.2mm, 0.3 side/front margin, back edge at wall brow y=-88.0) vs catalogue 8.3x5.7: W +2.4%, L +20.2% FLAGGED; net area 35.9 vs 28.7 +25% FLAGGED; logo hole 5.6x5.8 (22.3 mm^2) itself exceeds catalogue 5.7 piece width - record scan/piece smaller than this mesh's facet"
+   },
+   "nest_xy_min": [
+    79.481,
+    59.576
+   ],
+   "flags": []
+  },
+  "LINK_C_12_1": {
+   "family": "links",
+   "recipe": "D",
+   "area_mm2": 64.01,
+   "bbox_mm": [
+    8.75,
+    7.315
+   ],
+   "gates": {
+    "K_abs_mean": 3.594e-07,
+    "iso_strain_pct": 0.0002,
+    "dim_check": "measured 7.16x8.79 (profile-arc x median groove-span; per-cell span unreliable, grooves scanner-bridged) vs catalogue 7.315x8.75, dL -2.2%, dW +0.5%"
+   },
+   "nest_xy_min": [
+    0.125,
+    12.36
+   ],
+   "flags": []
+  },
+  "LINK_C_12_2": {
+   "family": "links",
+   "recipe": "D",
+   "area_mm2": 64.01,
+   "bbox_mm": [
+    8.75,
+    7.315
+   ],
+   "gates": {
+    "K_abs_mean": 1.627e-06,
+    "iso_strain_pct": 0.0011,
+    "dim_check": "measured 7.36x8.79 (profile-arc x median groove-span; per-cell span unreliable, grooves scanner-bridged) vs catalogue 7.315x8.75, dL +0.6%, dW +0.5%"
+   },
+   "nest_xy_min": [
+    10.3,
+    12.36
+   ],
+   "flags": []
+  },
+  "LINK_C_12_3": {
+   "family": "links",
+   "recipe": "D",
+   "area_mm2": 64.01,
+   "bbox_mm": [
+    8.75,
+    7.315
+   ],
+   "gates": {
+    "K_abs_mean": 1.779e-06,
+    "iso_strain_pct": 0.0011,
+    "dim_check": "measured 7.30x8.79 (profile-arc x median groove-span; per-cell span unreliable, grooves scanner-bridged) vs catalogue 7.315x8.75, dL -0.2%, dW +0.5%"
+   },
+   "nest_xy_min": [
+    20.35,
+    12.36
+   ],
+   "flags": []
+  },
+  "LINK_C_12_4": {
+   "family": "links",
+   "recipe": "D",
+   "area_mm2": 64.01,
+   "bbox_mm": [
+    8.75,
+    7.315
+   ],
+   "gates": {
+    "K_abs_mean": 4.194e-06,
+    "iso_strain_pct": 0.0027,
+    "dim_check": "measured 7.46x8.79 (profile-arc x median groove-span; per-cell span unreliable, grooves scanner-bridged) vs catalogue 7.315x8.75, dL +1.9%, dW +0.5%"
+   },
+   "nest_xy_min": [
+    30.4,
+    12.36
+   ],
+   "flags": []
+  },
+  "LINK_C_12_5": {
+   "family": "links",
+   "recipe": "D",
+   "area_mm2": 64.01,
+   "bbox_mm": [
+    8.75,
+    7.315
+   ],
+   "gates": {
+    "K_abs_mean": 1.298e-05,
+    "iso_strain_pct": 0.0082,
+    "dim_check": "measured 7.46x8.79 (profile-arc x median groove-span; per-cell span unreliable, grooves scanner-bridged) vs catalogue 7.315x8.75, dL +1.9%, dW +0.5%"
+   },
+   "nest_xy_min": [
+    40.45,
+    12.36
+   ],
+   "flags": []
+  },
+  "LINK_O_12C_1": {
+   "family": "links",
+   "recipe": "D",
+   "area_mm2": 43.92,
+   "bbox_mm": [
+    9.0,
+    4.88
+   ],
+   "gates": {
+    "K_abs_mean": 2.69e-06,
+    "iso_strain_pct": 0.0004,
+    "dim_check": "measured 9.04x4.71 (full-cell arc case-junction->gap1 x tiling width (Wtot-centre)/2; raw top-facet width 4.68) vs catalogue 9.0x4.88, dL +0.4%, dW -3.6%"
+   },
+   "nest_xy_min": [
+    0.0,
+    6.18
+   ],
+   "flags": []
+  },
+  "LINK_O_12C_2": {
+   "family": "links",
+   "recipe": "D",
+   "area_mm2": 31.7,
+   "bbox_mm": [
+    7.46,
+    4.25
+   ],
+   "gates": {
+    "K_abs_mean": 6.954e-06,
+    "iso_strain_pct": 0.0008,
+    "dim_check": "measured 7.60x4.01 (top-face profile arc x tiling width (Wtot-centre)/2; raw top-facet width 4.04) vs catalogue 7.46x4.25, dL +1.9%, dW -5.8%"
+   },
+   "nest_xy_min": [
+    10.945,
+    6.495
+   ],
+   "flags": []
+  },
+  "LINK_O_12C_3": {
+   "family": "links",
+   "recipe": "D",
+   "area_mm2": 28.31,
+   "bbox_mm": [
+    7.43,
+    3.81
+   ],
+   "gates": {
+    "K_abs_mean": 2.368e-06,
+    "iso_strain_pct": 0.0002,
+    "dim_check": "measured 7.65x3.37 (top-face profile arc x tiling width (Wtot-centre)/2; raw top-facet width 3.48) vs catalogue 7.43x3.81, dL +2.9%, dW -11.7% FLAG (see REPORT)"
+   },
+   "nest_xy_min": [
+    21.01,
+    6.715
+   ],
+   "flags": []
+  },
+  "LINK_O_12C_4": {
+   "family": "links",
+   "recipe": "D",
+   "area_mm2": 24.49,
+   "bbox_mm": [
+    7.42,
+    3.3
+   ],
+   "gates": {
+    "K_abs_mean": 4.978e-06,
+    "iso_strain_pct": 0.0003,
+    "dim_check": "measured 7.70x3.07 (top-face profile arc x tiling width (Wtot-centre)/2; raw top-facet width 3.24) vs catalogue 7.42x3.3, dL +3.8%, dW -7.1%"
+   },
+   "nest_xy_min": [
+    31.065,
+    6.97
+   ],
+   "flags": []
+  },
+  "LINK_O_12C_5": {
+   "family": "links",
+   "recipe": "D",
+   "area_mm2": 24.49,
+   "bbox_mm": [
+    7.42,
+    3.3
+   ],
+   "gates": {
+    "K_abs_mean": 9.094e-05,
+    "iso_strain_pct": 0.0061,
+    "dim_check": "measured 7.70x3.01 (top-face profile arc x tiling width (Wtot-centre)/2; raw top-facet width 3.36) vs catalogue 7.42x3.3, dL +3.8%, dW -8.9% FLAG (see REPORT)"
+   },
+   "nest_xy_min": [
+    41.115,
+    6.97
+   ],
+   "flags": []
+  },
+  "LINK_O_12B_1": {
+   "family": "links",
+   "recipe": "D",
+   "area_mm2": 43.92,
+   "bbox_mm": [
+    9.0,
+    4.88
+   ],
+   "gates": {
+    "K_abs_mean": 7.081e-07,
+    "iso_strain_pct": 0.0001,
+    "dim_check": "measured 8.86x4.71 (full-cell arc case-junction->gap1 x tiling width (Wtot-centre)/2; raw top-facet width 4.12) vs catalogue 9.0x4.88, dL -1.6%, dW -3.6%"
+   },
+   "nest_xy_min": [
+    0.0,
+    0.0
+   ],
+   "flags": []
+  },
+  "LINK_O_12B_2": {
+   "family": "links",
+   "recipe": "D",
+   "area_mm2": 31.7,
+   "bbox_mm": [
+    7.46,
+    4.25
+   ],
+   "gates": {
+    "K_abs_mean": 2.5e-06,
+    "iso_strain_pct": 0.0002,
+    "dim_check": "measured 7.65x4.01 (top-face profile arc x tiling width (Wtot-centre)/2; raw top-facet width 3.36) vs catalogue 7.46x4.25, dL +2.6%, dW -5.8%"
+   },
+   "nest_xy_min": [
+    10.945,
+    0.315
+   ],
+   "flags": []
+  },
+  "LINK_O_12B_3": {
+   "family": "links",
+   "recipe": "D",
+   "area_mm2": 28.31,
+   "bbox_mm": [
+    7.43,
+    3.81
+   ],
+   "gates": {
+    "K_abs_mean": 5.743e-06,
+    "iso_strain_pct": 0.0002,
+    "dim_check": "measured 7.59x3.37 (top-face profile arc x tiling width (Wtot-centre)/2; raw top-facet width 2.64) vs catalogue 7.43x3.81, dL +2.2%, dW -11.7% FLAG (see REPORT)"
+   },
+   "nest_xy_min": [
+    21.01,
+    0.535
+   ],
+   "flags": []
+  },
+  "LINK_O_12B_4": {
+   "family": "links",
+   "recipe": "D",
+   "area_mm2": 24.49,
+   "bbox_mm": [
+    7.42,
+    3.3
+   ],
+   "gates": {
+    "K_abs_mean": 1.646e-07,
+    "iso_strain_pct": 0.0,
+    "dim_check": "measured 7.70x3.07 (top-face profile arc x tiling width (Wtot-centre)/2; raw top-facet width 2.28) vs catalogue 7.42x3.3, dL +3.8%, dW -7.1%"
+   },
+   "nest_xy_min": [
+    31.065,
+    0.79
+   ],
+   "flags": []
+  },
+  "LINK_O_12B_5": {
+   "family": "links",
+   "recipe": "D",
+   "area_mm2": 24.49,
+   "bbox_mm": [
+    7.42,
+    3.3
+   ],
+   "gates": {
+    "K_abs_mean": 2.834e-06,
+    "iso_strain_pct": 0.0,
+    "dim_check": "measured 7.70x3.01 (top-face profile arc x tiling width (Wtot-centre)/2; raw top-facet width 2.04) vs catalogue 7.42x3.3, dL +3.8%, dW -8.9% FLAG (see REPORT)"
+   },
+   "nest_xy_min": [
+    41.115,
+    0.79
+   ],
+   "flags": []
+  },
+  "LINK_C_6_1": {
+   "family": "links",
+   "recipe": "D",
+   "area_mm2": 64.01,
+   "bbox_mm": [
+    8.75,
+    7.315
+   ],
+   "gates": {
+    "K_abs_mean": 1.034e-07,
+    "iso_strain_pct": 0.0001,
+    "dim_check": "measured 7.11x8.79 (profile-arc x median groove-span; per-cell span unreliable, grooves scanner-bridged) vs catalogue 7.315x8.75, dL -2.8%, dW +0.5%"
+   },
+   "nest_xy_min": [
+    0.125,
+    20.975
+   ],
+   "flags": []
+  },
+  "LINK_C_6_2": {
+   "family": "links",
+   "recipe": "D",
+   "area_mm2": 64.01,
+   "bbox_mm": [
+    8.75,
+    7.315
+   ],
+   "gates": {
+    "K_abs_mean": 4.031e-07,
+    "iso_strain_pct": 0.0003,
+    "dim_check": "measured 7.20x8.79 (profile-arc x median groove-span; per-cell span unreliable, grooves scanner-bridged) vs catalogue 7.315x8.75, dL -1.5%, dW +0.5%"
+   },
+   "nest_xy_min": [
+    10.3,
+    20.975
+   ],
+   "flags": []
+  },
+  "LINK_C_6_3": {
+   "family": "links",
+   "recipe": "D",
+   "area_mm2": 64.01,
+   "bbox_mm": [
+    8.75,
+    7.315
+   ],
+   "gates": {
+    "K_abs_mean": 6.999e-07,
+    "iso_strain_pct": 0.0004,
+    "dim_check": "measured 7.46x8.79 (profile-arc x median groove-span; per-cell span unreliable, grooves scanner-bridged) vs catalogue 7.315x8.75, dL +1.9%, dW +0.5%"
+   },
+   "nest_xy_min": [
+    20.35,
+    20.975
+   ],
+   "flags": []
+  },
+  "LINK_C_6_4": {
+   "family": "links",
+   "recipe": "D",
+   "area_mm2": 64.01,
+   "bbox_mm": [
+    8.75,
+    7.315
+   ],
+   "gates": {
+    "K_abs_mean": 2.542e-06,
+    "iso_strain_pct": 0.0016,
+    "dim_check": "measured 7.50x8.79 (profile-arc x median groove-span; per-cell span unreliable, grooves scanner-bridged) vs catalogue 7.315x8.75, dL +2.6%, dW +0.5%"
+   },
+   "nest_xy_min": [
+    30.4,
+    20.975
+   ],
+   "flags": []
+  },
+  "LINK_C_6_5": {
+   "family": "links",
+   "recipe": "D",
+   "area_mm2": 64.01,
+   "bbox_mm": [
+    8.75,
+    7.315
+   ],
+   "gates": {
+    "K_abs_mean": 8.008e-07,
+    "iso_strain_pct": 0.0005,
+    "dim_check": "measured 7.40x8.79 (profile-arc x median groove-span; per-cell span unreliable, grooves scanner-bridged) vs catalogue 7.315x8.75, dL +1.2%, dW +0.5%"
+   },
+   "nest_xy_min": [
+    40.45,
+    20.975
+   ],
+   "flags": []
+  },
+  "LINK_O_6C_1": {
+   "family": "links",
+   "recipe": "D",
+   "area_mm2": 43.92,
+   "bbox_mm": [
+    9.0,
+    4.88
+   ],
+   "gates": {
+    "K_abs_mean": 2.196e-06,
+    "iso_strain_pct": 0.0003,
+    "dim_check": "measured 9.10x4.80 (full-cell arc case-junction->gap1 x tiling width (Wtot-centre)/2; raw top-facet width 4.36) vs catalogue 9.0x4.88, dL +1.1%, dW -1.5%"
+   },
+   "nest_xy_min": [
+    0.0,
+    29.59
+   ],
+   "flags": []
+  },
+  "LINK_O_6C_2": {
+   "family": "links",
+   "recipe": "D",
+   "area_mm2": 31.7,
+   "bbox_mm": [
+    7.46,
+    4.25
+   ],
+   "gates": {
+    "K_abs_mean": 1.347e-06,
+    "iso_strain_pct": 0.0001,
+    "dim_check": "measured 7.50x4.12 (top-face profile arc x tiling width (Wtot-centre)/2; raw top-facet width 3.68) vs catalogue 7.46x4.25, dL +0.5%, dW -2.9%"
+   },
+   "nest_xy_min": [
+    10.945,
+    29.905
+   ],
+   "flags": []
+  },
+  "LINK_O_6C_3": {
+   "family": "links",
+   "recipe": "D",
+   "area_mm2": 28.31,
+   "bbox_mm": [
+    7.43,
+    3.81
+   ],
+   "gates": {
+    "K_abs_mean": 4.217e-06,
+    "iso_strain_pct": 0.0002,
+    "dim_check": "measured 7.80x3.39 (top-face profile arc x tiling width (Wtot-centre)/2; raw top-facet width 3.04) vs catalogue 7.43x3.81, dL +4.9%, dW -11.2% FLAG (see REPORT)"
+   },
+   "nest_xy_min": [
+    21.01,
+    30.125
+   ],
+   "flags": []
+  },
+  "LINK_O_6C_4": {
+   "family": "links",
+   "recipe": "D",
+   "area_mm2": 24.49,
+   "bbox_mm": [
+    7.42,
+    3.3
+   ],
+   "gates": {
+    "K_abs_mean": 8.434e-06,
+    "iso_strain_pct": 0.0004,
+    "dim_check": "measured 7.55x3.09 (top-face profile arc x tiling width (Wtot-centre)/2; raw top-facet width 2.96) vs catalogue 7.42x3.3, dL +1.7%, dW -6.5%"
+   },
+   "nest_xy_min": [
+    31.065,
+    30.38
+   ],
+   "flags": []
+  },
+  "LINK_O_6C_5": {
+   "family": "links",
+   "recipe": "D",
+   "area_mm2": 24.49,
+   "bbox_mm": [
+    7.42,
+    3.3
+   ],
+   "gates": {
+    "K_abs_mean": 6.256e-06,
+    "iso_strain_pct": 0.0004,
+    "dim_check": "measured 7.56x3.11 (top-face profile arc x tiling width (Wtot-centre)/2; raw top-facet width 3.16) vs catalogue 7.42x3.3, dL +1.9%, dW -5.9%"
+   },
+   "nest_xy_min": [
+    41.115,
+    30.38
+   ],
+   "flags": []
+  },
+  "LINK_O_6B_1": {
+   "family": "links",
+   "recipe": "D",
+   "area_mm2": 43.92,
+   "bbox_mm": [
+    9.0,
+    4.88
+   ],
+   "gates": {
+    "K_abs_mean": 6.052e-06,
+    "iso_strain_pct": 0.001,
+    "dim_check": "measured 9.33x4.80 (full-cell arc case-junction->gap1 x tiling width (Wtot-centre)/2; raw top-facet width 4.64) vs catalogue 9.0x4.88, dL +3.7%, dW -1.5%"
+   },
+   "nest_xy_min": [
+    0.0,
+    35.77
+   ],
+   "flags": []
+  },
+  "LINK_O_6B_2": {
+   "family": "links",
+   "recipe": "D",
+   "area_mm2": 31.7,
+   "bbox_mm": [
+    7.46,
+    4.25
+   ],
+   "gates": {
+    "K_abs_mean": 2.228e-07,
+    "iso_strain_pct": 0.0,
+    "dim_check": "measured 7.55x4.12 (top-face profile arc x tiling width (Wtot-centre)/2; raw top-facet width 3.96) vs catalogue 7.46x4.25, dL +1.2%, dW -2.9%"
+   },
+   "nest_xy_min": [
+    10.945,
+    36.085
+   ],
+   "flags": []
+  },
+  "LINK_O_6B_3": {
+   "family": "links",
+   "recipe": "D",
+   "area_mm2": 28.31,
+   "bbox_mm": [
+    7.43,
+    3.81
+   ],
+   "gates": {
+    "K_abs_mean": 3.918e-06,
+    "iso_strain_pct": 0.0002,
+    "dim_check": "measured 7.80x3.39 (top-face profile arc x tiling width (Wtot-centre)/2; raw top-facet width 3.12) vs catalogue 7.43x3.81, dL +5.0%, dW -11.2% FLAG (see REPORT)"
+   },
+   "nest_xy_min": [
+    21.01,
+    36.305
+   ],
+   "flags": []
+  },
+  "LINK_O_6B_4": {
+   "family": "links",
+   "recipe": "D",
+   "area_mm2": 24.49,
+   "bbox_mm": [
+    7.42,
+    3.3
+   ],
+   "gates": {
+    "K_abs_mean": 3.691e-06,
+    "iso_strain_pct": 0.0001,
+    "dim_check": "measured 7.65x3.09 (top-face profile arc x tiling width (Wtot-centre)/2; raw top-facet width 2.60) vs catalogue 7.42x3.3, dL +3.1%, dW -6.5%"
+   },
+   "nest_xy_min": [
+    31.065,
+    36.56
+   ],
+   "flags": []
+  },
+  "LINK_O_6B_5": {
+   "family": "links",
+   "recipe": "D",
+   "area_mm2": 24.49,
+   "bbox_mm": [
+    7.42,
+    3.3
+   ],
+   "gates": {
+    "K_abs_mean": 5.892e-06,
+    "iso_strain_pct": 0.0001,
+    "dim_check": "measured 7.55x3.11 (top-face profile arc x tiling width (Wtot-centre)/2; raw top-facet width 2.44) vs catalogue 7.42x3.3, dL +1.7%, dW -5.9%"
+   },
+   "nest_xy_min": [
+    41.115,
+    36.56
+   ],
+   "flags": []
+  },
+  "FLANK_9": {
+   "family": "flanks",
+   "recipe": "C",
+   "area_mm2": 252.82,
+   "bbox_mm": [
+    48.877,
+    7.789
+   ],
+   "gates": {
+    "K_abs_mean": 0.000293,
+    "iso_strain_pct": 0.0334,
+    "dim_check": "measured 48.88x7.79 A252.8 vs catalogue 49.0x7.4 A247.5; dW -0.3% dH +5.3% dA +2.1% [ok]"
+   },
+   "nest_xy_min": [
+    0.0,
+    41.95
+   ],
+   "flags": []
+  },
+  "FLANK_3C_12": {
+   "family": "flanks",
+   "recipe": "C",
+   "area_mm2": 63.15,
+   "bbox_mm": [
+    14.315,
+    7.165
+   ],
+   "gates": {
+    "K_abs_mean": 0.002014,
+    "iso_strain_pct": 0.2068,
+    "dim_check": "measured 14.32x7.17 A63.2 vs catalogue 14.98x6.48 A66.7; dW -4.4% dH +10.6% dA -5.3% [FLAG] | vs method-synthesis DXF bbox 13.9x7.7: dW +3.0% dH -6.9% [ok]"
+   },
+   "nest_xy_min": [
+    50.177,
+    42.262
+   ],
+   "flags": []
+  },
+  "FLANK_3C_6": {
+   "family": "flanks",
+   "recipe": "C",
+   "area_mm2": 63.15,
+   "bbox_mm": [
+    14.315,
+    7.165
+   ],
+   "gates": {
+    "K_abs_mean": 0.001153,
+    "iso_strain_pct": 0.1157,
+    "dim_check": "measured 14.51x7.24 A64.0 vs catalogue 14.98x6.48 A66.7; dW -3.2% dH +11.7% dA -4.1% [FLAG] | emitted as mirror of _12 (own-region area delta +1.3%) | vs method-synthesis DXF bbox 13.9x7.7: dW +3.0% dH -6.9% [ok]"
+   },
+   "nest_xy_min": [
+    65.792,
+    42.262
+   ],
+   "flags": []
+  },
+  "GUARD_A_12": {
+   "family": "flanks",
+   "recipe": "C",
+   "area_mm2": 23.58,
+   "bbox_mm": [
+    5.395,
+    6.43
+   ],
+   "gates": {
+    "K_abs_mean": 0.003331,
+    "iso_strain_pct": 0.5285,
+    "dim_check": "measured 5.40x6.43 A23.6 vs catalogue 10.44x4.86 A22.8; dW -48.3% dH +32.3% dA +3.4% [FLAG]"
+   },
+   "nest_xy_min": [
+    81.408,
+    42.629
+   ],
+   "flags": [
+    "GATE_FAILED_SOURCE"
+   ]
+  },
+  "GUARD_A_6": {
+   "family": "flanks",
+   "recipe": "C",
+   "area_mm2": 23.58,
+   "bbox_mm": [
+    5.395,
+    6.43
+   ],
+   "gates": {
+    "K_abs_mean": 0.002659,
+    "iso_strain_pct": 0.4664,
+    "dim_check": "measured 6.44x7.44 A25.9 vs catalogue 10.44x4.86 A22.8; dW -38.3% dH +53.0% dA +13.8% [FLAG] | emitted as mirror of _12"
+   },
+   "nest_xy_min": [
+    88.103,
+    42.629
+   ],
+   "flags": [
+    "GATE_FAILED_SOURCE"
+   ]
+  },
+  "GUARD_B_12": {
+   "family": "flanks",
+   "recipe": "C",
+   "area_mm2": 13.28,
+   "bbox_mm": [
+    6.633,
+    4.529
+   ],
+   "gates": {
+    "K_abs_mean": 0.0008776,
+    "iso_strain_pct": 0.0477,
+    "dim_check": "measured 6.63x4.53 A13.3 vs catalogue 5.94x4.51 A13.9; dW +11.7% dH +0.4% dA -4.4% [FLAG]"
+   },
+   "nest_xy_min": [
+    94.798,
+    43.58
+   ],
+   "flags": []
+  },
+  "GUARD_B_6": {
+   "family": "flanks",
+   "recipe": "C",
+   "area_mm2": 13.28,
+   "bbox_mm": [
+    6.633,
+    4.529
+   ],
+   "gates": {
+    "K_abs_mean": 0.003669,
+    "iso_strain_pct": 0.0623,
+    "dim_check": "measured 6.86x4.67 A13.8 vs catalogue 5.94x4.51 A13.9; dW +15.4% dH +3.5% dA -0.8% [FLAG] | emitted as mirror of _12"
+   },
+   "nest_xy_min": [
+    102.731,
+    43.58
+   ],
+   "flags": []
+  },
+  "LUG_END_6": {
+   "family": "lugs",
+   "recipe": "B",
+   "area_mm2": 55.72,
+   "bbox_mm": [
+    7.7,
+    7.236
+   ],
+   "gates": {
+    "K_abs_mean": 2.483e-14,
+    "iso_strain_pct": 0.0,
+    "dim_check": "measured 7.70x7.24 A=55.7 vs catalogue 7.70x7.00 A=53.9; dL +0.0% dW +3.4% dA +3.4%"
+   },
+   "nest_xy_min": [
+    91.905,
+    51.039
+   ],
+   "flags": []
+  },
+  "LUG_END_12": {
+   "family": "lugs",
+   "recipe": "B",
+   "area_mm2": 55.72,
+   "bbox_mm": [
+    7.7,
+    7.236
+   ],
+   "gates": {
+    "K_abs_mean": 2.483e-14,
+    "iso_strain_pct": 0.0,
+    "dim_check": "measured 7.70x7.24 A=55.7 vs catalogue 7.70x7.00 A=53.9; dL +0.0% dW +3.4% dA +3.4% (unified to 6-end class)"
+   },
+   "nest_xy_min": [
+    82.905,
+    51.039
+   ],
+   "flags": []
+  },
+  "LUG_UNDER_12C": {
+   "family": "lugs",
+   "recipe": "C",
+   "area_mm2": 6.39,
+   "bbox_mm": [
+    4.094,
+    2.027
+   ],
+   "gates": {
+    "K_abs_mean": 4.298e-13,
+    "iso_strain_pct": 0.0,
+    "dim_check": "measured 4.09x2.03 A=6.4 vs catalogue 4.29x2.11 A=6.6; dL -4.6% dW -3.9% dA -3.1%"
+   },
+   "nest_xy_min": [
+    44.024,
+    61.987
+   ],
+   "flags": []
+  },
+  "LUG_UNDER_12B": {
+   "family": "lugs",
+   "recipe": "C",
+   "area_mm2": 7.04,
+   "bbox_mm": [
+    4.176,
+    2.183
+   ],
+   "gates": {
+    "K_abs_mean": 4.024e-13,
+    "iso_strain_pct": 0.0,
+    "dim_check": "measured 4.18x2.18 A=7.0 vs catalogue 4.29x2.11 A=6.6; dL -2.7% dW +3.4% dA +6.7%"
+   },
+   "nest_xy_min": [
+    49.418,
+    61.909
+   ],
+   "flags": []
+  },
+  "LUG_UNDER_6C": {
+   "family": "lugs",
+   "recipe": "C",
+   "area_mm2": 6.73,
+   "bbox_mm": [
+    4.019,
+    2.209
+   ],
+   "gates": {
+    "K_abs_mean": 4.3e-13,
+    "iso_strain_pct": 0.0,
+    "dim_check": "measured 4.02x2.21 A=6.7 vs catalogue 4.29x2.11 A=6.6; dL -6.3% dW +4.7% dA +2.0%"
+   },
+   "nest_xy_min": [
+    54.894,
+    61.896
+   ],
+   "flags": []
+  },
+  "LUG_UNDER_6B": {
+   "family": "lugs",
+   "recipe": "C",
+   "area_mm2": 6.01,
+   "bbox_mm": [
+    3.868,
+    2.178
+   ],
+   "gates": {
+    "K_abs_mean": 4.834e-13,
+    "iso_strain_pct": 0.0,
+    "dim_check": "measured 3.87x2.18 A=6.0 vs catalogue 4.29x2.11 A=6.6; dL -9.8% dW +3.2% dA -9.0% FLAG>8%"
+   },
+   "nest_xy_min": [
+    60.213,
+    61.912
+   ],
+   "flags": []
+  },
+  "LUG_INNER_12C": {
+   "family": "lugs",
+   "recipe": "C",
+   "area_mm2": 25.55,
+   "bbox_mm": [
+    7.801,
+    6.424
+   ],
+   "gates": {
+    "K_abs_mean": 1.32e-13,
+    "iso_strain_pct": 0.0,
+    "dim_check": "measured 7.80x6.42 A=25.5 vs catalogue 7.80x4.70 A=30.7; dL +0.0% dW +36.7% dA -16.8% FLAG>8%"
+   },
+   "nest_xy_min": [
+    49.404,
+    51.446
+   ],
+   "flags": []
+  },
+  "LUG_INNER_12B": {
+   "family": "lugs",
+   "recipe": "C",
+   "area_mm2": 21.26,
+   "bbox_mm": [
+    5.521,
+    6.496
+   ],
+   "gates": {
+    "K_abs_mean": 1.785e-13,
+    "iso_strain_pct": 0.0,
+    "dim_check": "measured 6.50x5.52 A=21.3 vs catalogue 7.80x4.70 A=30.7; dL -16.7% dW +17.5% dA -30.7% FLAG>8%"
+   },
+   "nest_xy_min": [
+    58.505,
+    51.409
+   ],
+   "flags": []
+  },
+  "LUG_INNER_6C": {
+   "family": "lugs",
+   "recipe": "C",
+   "area_mm2": 25.82,
+   "bbox_mm": [
+    7.976,
+    6.268
+   ],
+   "gates": {
+    "K_abs_mean": 1.323e-13,
+    "iso_strain_pct": 0.0,
+    "dim_check": "measured 7.98x6.27 A=25.8 vs catalogue 7.80x4.70 A=30.7; dL +2.3% dW +33.4% dA -15.9% FLAG>8%"
+   },
+   "nest_xy_min": [
+    65.326,
+    51.523
+   ],
+   "flags": []
+  },
+  "LUG_INNER_6B": {
+   "family": "lugs",
+   "recipe": "C",
+   "area_mm2": 24.3,
+   "bbox_mm": [
+    7.003,
+    6.356
+   ],
+   "gates": {
+    "K_abs_mean": 1.571e-13,
+    "iso_strain_pct": 0.0,
+    "dim_check": "measured 7.00x6.36 A=24.3 vs catalogue 7.80x4.70 A=30.7; dL -10.2% dW +35.2% dA -20.9% FLAG>8%"
+   },
+   "nest_xy_min": [
+    74.602,
+    51.479
+   ],
+   "flags": []
+  },
+  "HORN_12B": {
+   "family": "lugs",
+   "recipe": "C",
+   "area_mm2": 10.34,
+   "bbox_mm": [
+    10.391,
+    1.969
+   ],
+   "gates": {
+    "K_abs_mean": 0.0006683,
+    "iso_strain_pct": 0.008,
+    "dim_check": "measured 10.39x1.97 A=10.3 vs catalogue 11.80x6.60 A=25.3; dL -11.9% dW -70.2% dA -59.1% FLAG>8%"
+   },
+   "nest_xy_min": [
+    9.565,
+    62.016
+   ],
+   "flags": []
+  },
+  "HORN_6C": {
+   "family": "lugs",
+   "recipe": "C",
+   "area_mm2": 9.63,
+   "bbox_mm": [
+    10.192,
+    1.783
+   ],
+   "gates": {
+    "K_abs_mean": 0.004615,
+    "iso_strain_pct": 0.0624,
+    "dim_check": "measured 10.19x1.78 A=9.6 vs catalogue 11.80x6.60 A=25.3; dL -13.6% dW -73.0% dA -62.0% FLAG>8%"
+   },
+   "nest_xy_min": [
+    21.256,
+    62.109
+   ],
+   "flags": []
+  },
+  "HORN_6B": {
+   "family": "lugs",
+   "recipe": "C",
+   "area_mm2": 10.08,
+   "bbox_mm": [
+    9.976,
+    2.099
+   ],
+   "gates": {
+    "K_abs_mean": 0.0007494,
+    "iso_strain_pct": 0.0061,
+    "dim_check": "measured 9.98x2.10 A=10.1 vs catalogue 11.80x6.60 A=25.3; dL -15.5% dW -68.2% dA -60.1% FLAG>8%"
+   },
+   "nest_xy_min": [
+    32.748,
+    61.951
+   ],
+   "flags": []
+  },
+  "HORN_12C": {
+   "family": "lugs",
+   "recipe": "C",
+   "area_mm2": 7.81,
+   "bbox_mm": [
+    8.265,
+    1.569
+   ],
+   "gates": {
+    "K_abs_mean": 0.0006107,
+    "iso_strain_pct": 0.0058,
+    "dim_check": "measured 8.27x1.57 A=7.8 vs catalogue 11.80x6.60 A=25.3; dL -30.0% dW -76.2% dA -69.1% FLAG>8%"
+   },
+   "nest_xy_min": [
+    0.0,
+    62.216
+   ],
+   "flags": []
+  },
+  "LUG_SIDE_12C": {
+   "family": "lugs",
+   "recipe": "C",
+   "area_mm2": 33.64,
+   "bbox_mm": [
+    11.472,
+    5.893
+   ],
+   "gates": {
+    "K_abs_mean": 0.001797,
+    "iso_strain_pct": 0.3365,
+    "dim_check": "measured 11.47x5.89 A=33.6 vs catalogue 13.93x5.02 A=31.6; dL -17.6% dW +17.4% dA +6.5% FLAG>8%"
+   },
+   "nest_xy_min": [
+    0.0,
+    51.711
+   ],
+   "flags": []
+  },
+  "LUG_SIDE_12B": {
+   "family": "lugs",
+   "recipe": "C",
+   "area_mm2": 32.06,
+   "bbox_mm": [
+    10.619,
+    6.053
+   ],
+   "gates": {
+    "K_abs_mean": 0.001748,
+    "iso_strain_pct": 0.2731,
+    "dim_check": "measured 10.62x6.05 A=32.1 vs catalogue 13.93x5.02 A=31.6; dL -23.8% dW +20.6% dA +1.5% FLAG>8%"
+   },
+   "nest_xy_min": [
+    12.772,
+    51.631
+   ],
+   "flags": []
+  },
+  "LUG_SIDE_6C": {
+   "family": "lugs",
+   "recipe": "C",
+   "area_mm2": 33.77,
+   "bbox_mm": [
+    11.016,
+    6.103
+   ],
+   "gates": {
+    "K_abs_mean": 0.001772,
+    "iso_strain_pct": 0.394,
+    "dim_check": "measured 11.02x6.10 A=33.8 vs catalogue 13.93x5.02 A=31.6; dL -20.9% dW +21.6% dA +6.9% FLAG>8%"
+   },
+   "nest_xy_min": [
+    24.691,
+    51.606
+   ],
+   "flags": []
+  },
+  "LUG_SIDE_6B": {
+   "family": "lugs",
+   "recipe": "C",
+   "area_mm2": 33.59,
+   "bbox_mm": [
+    11.097,
+    6.023
+   ],
+   "gates": {
+    "K_abs_mean": 0.002373,
+    "iso_strain_pct": 0.3692,
+    "dim_check": "measured 11.10x6.02 A=33.6 vs catalogue 13.93x5.02 A=31.6; dL -20.3% dW +20.0% dA +6.3% FLAG>8%"
+   },
+   "nest_xy_min": [
+    37.008,
+    51.646
+   ],
+   "flags": []
+  },
+  "CLASP_COVER_6": {
+   "family": "clasp",
+   "recipe": "B",
+   "area_mm2": 168.79,
+   "bbox_mm": [
+    22.392,
+    7.601
+   ],
+   "gates": {
+    "K_abs_mean": 2.935e-14,
+    "iso_strain_pct": 0.0,
+    "dim_check": "measured 22.39x7.60 vs catalogue 23.20x7.60, dL -3.5% dW +0.0%"
+   },
+   "nest_xy_min": [
+    0.0,
+    67.726
+   ],
+   "flags": []
+  },
+  "CLASP_TONGUE_6": {
+   "family": "clasp",
+   "recipe": "B",
+   "area_mm2": 45.36,
+   "bbox_mm": [
+    8.3,
+    5.465
+   ],
+   "gates": {
+    "K_abs_mean": 2.466e-13,
+    "iso_strain_pct": 0.0,
+    "dim_check": "measured 8.30x5.47 vs catalogue 8.25x5.44, dL +0.6% dW +0.5%"
+   },
+   "nest_xy_min": [
+    23.692,
+    68.794
+   ],
+   "flags": []
+  },
+  "CLASP_SIDE_6B": {
+   "family": "clasp",
+   "recipe": "C",
+   "area_mm2": 45.97,
+   "bbox_mm": [
+    11.166,
+    4.539
+   ],
+   "gates": {
+    "K_abs_mean": 5.405e-06,
+    "iso_strain_pct": 0.001,
+    "dim_check": "measured 11.17x4.54 vs catalogue 10.97x4.21, dL +1.8% dW +7.8%"
+   },
+   "nest_xy_min": [
+    33.292,
+    69.257
+   ],
+   "flags": []
+  },
+  "CLASP_SIDE_6C": {
+   "family": "clasp",
+   "recipe": "C",
+   "area_mm2": 47.35,
+   "bbox_mm": [
+    11.444,
+    4.652
+   ],
+   "gates": {
+    "K_abs_mean": 4.388e-06,
+    "iso_strain_pct": 0.0011,
+    "dim_check": "measured 11.44x4.65 vs catalogue 10.97x4.21, dL +4.3% dW +10.5% FLAG(>8%)"
+   },
+   "nest_xy_min": [
+    45.758,
+    69.2
+   ],
+   "flags": []
+  },
+  "CLASP_PAD_6B": {
+   "family": "clasp",
+   "recipe": "C",
+   "area_mm2": 13.16,
+   "bbox_mm": [
+    3.62,
+    4.877
+   ],
+   "gates": {
+    "K_abs_mean": 0.00059,
+    "iso_strain_pct": 0.0659,
+    "dim_check": "measured 4.88x3.62 vs catalogue 4.84x2.80, dL +0.8% dW +29.3% FLAG(>8%)"
+   },
+   "nest_xy_min": [
+    0.0,
+    77.482
+   ],
+   "flags": []
+  },
+  "CLASP_PAD_6C": {
+   "family": "clasp",
+   "recipe": "C",
+   "area_mm2": 9.55,
+   "bbox_mm": [
+    2.633,
+    3.736
+   ],
+   "gates": {
+    "K_abs_mean": 0.0001445,
+    "iso_strain_pct": 0.0117,
+    "dim_check": "measured 3.74x2.63 vs catalogue 4.84x2.80, dL -22.8% dW -6.0% FLAG(>8%)"
+   },
+   "nest_xy_min": [
+    4.92,
+    78.053
+   ],
+   "flags": []
+  },
+  "CLASP_CRESC_6B": {
+   "family": "clasp",
+   "recipe": "C",
+   "area_mm2": 22.61,
+   "bbox_mm": [
+    5.278,
+    6.589
+   ],
+   "gates": {
+    "K_abs_mean": 1.381e-06,
+    "iso_strain_pct": 0.0002,
+    "dim_check": "measured 6.59x5.28 vs catalogue 5.94x3.67, dL +10.9% dW +43.8% FLAG(>8%)"
+   },
+   "nest_xy_min": [
+    8.853,
+    76.627
+   ],
+   "flags": []
+  },
+  "CLASP_RECT1_6B": {
+   "family": "clasp",
+   "recipe": "C",
+   "area_mm2": 28.48,
+   "bbox_mm": [
+    7.94,
+    4.431
+   ],
+   "gates": {
+    "K_abs_mean": 3.177e-07,
+    "iso_strain_pct": 0.0001,
+    "dim_check": "measured 7.94x4.43 vs catalogue 7.54x4.66, dL +5.3% dW -4.9%"
+   },
+   "nest_xy_min": [
+    58.502,
+    69.311
+   ],
+   "flags": []
+  },
+  "CLASP_RECT2_6B": {
+   "family": "clasp",
+   "recipe": "C",
+   "area_mm2": 28.85,
+   "bbox_mm": [
+    7.858,
+    4.257
+   ],
+   "gates": {
+    "K_abs_mean": 1.642e-07,
+    "iso_strain_pct": 0.0,
+    "dim_check": "measured 7.86x4.26 vs catalogue 7.54x4.66, dL +4.2% dW -8.6% FLAG(>8%)"
+   },
+   "nest_xy_min": [
+    67.742,
+    69.398
+   ],
+   "flags": []
+  },
+  "CLASP_CRESC_6C": {
+   "family": "clasp",
+   "recipe": "C",
+   "area_mm2": 23.66,
+   "bbox_mm": [
+    5.002,
+    6.407
+   ],
+   "gates": {
+    "K_abs_mean": 2.706e-06,
+    "iso_strain_pct": 0.0005,
+    "dim_check": "measured 6.41x5.00 vs catalogue 5.94x3.67, dL +7.9% dW +36.3% FLAG(>8%)"
+   },
+   "nest_xy_min": [
+    15.43,
+    76.717
+   ],
+   "flags": []
+  },
+  "CLASP_RECT1_6C": {
+   "family": "clasp",
+   "recipe": "C",
+   "area_mm2": 29.91,
+   "bbox_mm": [
+    8.132,
+    4.831
+   ],
+   "gates": {
+    "K_abs_mean": 6.221e-07,
+    "iso_strain_pct": 0.0001,
+    "dim_check": "measured 8.13x4.83 vs catalogue 7.54x4.66, dL +7.8% dW +3.7%"
+   },
+   "nest_xy_min": [
+    76.9,
+    69.111
+   ],
+   "flags": []
+  },
+  "CLASP_RECT2_6C": {
+   "family": "clasp",
+   "recipe": "C",
+   "area_mm2": 29.35,
+   "bbox_mm": [
+    7.839,
+    4.467
+   ],
+   "gates": {
+    "K_abs_mean": 1.441e-06,
+    "iso_strain_pct": 0.0003,
+    "dim_check": "measured 7.84x4.47 vs catalogue 7.55x4.56, dL +3.8% dW -2.0%"
+   },
+   "nest_xy_min": [
+    86.332,
+    69.293
+   ],
+   "flags": []
+  },
+  "CLASP_SLIVER_12C": {
+   "family": "clasp",
+   "recipe": "A",
+   "area_mm2": 7.74,
+   "bbox_mm": [
+    3.676,
+    2.175
+   ],
+   "gates": {
+    "K_abs_mean": null,
+    "iso_strain_pct": null,
+    "dim_check": "measured 3.68x2.17 vs catalogue 3.68x2.17, dL -0.1% dW +0.2%"
+   },
+   "nest_xy_min": [
+    21.733,
+    78.834
+   ],
+   "flags": [
+    "RECONSTRUCTED/UNLOCATED"
+   ]
+  },
+  "CLASP_SLIVER_12B": {
+   "family": "clasp",
+   "recipe": "A",
+   "area_mm2": 7.74,
+   "bbox_mm": [
+    3.676,
+    2.175
+   ],
+   "gates": {
+    "K_abs_mean": null,
+    "iso_strain_pct": null,
+    "dim_check": "measured 3.68x2.17 vs catalogue 3.68x2.17, dL -0.1% dW +0.2%"
+   },
+   "nest_xy_min": [
+    26.708,
+    78.834
+   ],
+   "flags": [
+    "RECONSTRUCTED/UNLOCATED"
+   ]
+  },
+  "CLASP_SLIVER_6C": {
+   "family": "clasp",
+   "recipe": "A",
+   "area_mm2": 7.74,
+   "bbox_mm": [
+    3.676,
+    2.175
+   ],
+   "gates": {
+    "K_abs_mean": null,
+    "iso_strain_pct": null,
+    "dim_check": "measured 3.68x2.17 vs catalogue 3.68x2.17, dL -0.1% dW +0.2%"
+   },
+   "nest_xy_min": [
+    31.684,
+    78.834
+   ],
+   "flags": [
+    "RECONSTRUCTED/UNLOCATED"
+   ]
+  },
+  "CLASP_SLIVER_6B": {
+   "family": "clasp",
+   "recipe": "A",
+   "area_mm2": 7.74,
+   "bbox_mm": [
+    3.676,
+    2.175
+   ],
+   "gates": {
+    "K_abs_mean": null,
+    "iso_strain_pct": null,
+    "dim_check": "measured 3.68x2.17 vs catalogue 3.68x2.17, dL -0.1% dW +0.2%"
+   },
+   "nest_xy_min": [
+    36.659,
+    78.834
+   ],
+   "flags": [
+    "RECONSTRUCTED/UNLOCATED"
+   ]
+  }
+ }
+}
