@@ -111,3 +111,38 @@ CHK-PUBLISH, CHK-LIKE4LIKE, CHK-NUMBERS, CHK-INDEP. Definitions and evidence:
 - The datum audit is **report-only**.
 - The face count and surface census are **reported, not gated**. The rules against ruled
   lofts and polyline stacks still apply.
+
+## 10. Clarifications added by `stl-re-orchestrate` (additions only; nothing above renamed)
+
+- **`<run>/DECISIONS.md`** (run root, created by `scripts/init_run.py init`): append-only
+  log of human decisions, one line each:
+  `- <date> | <who> | <id> | <decision> | <evidence path>`, where `<id>` is one of
+  `REGIME`, `MEASUREMENTS`, `PART-CLASS`, `ACCEPT-BAND`, `HALT`, `INDEP`, `OTHER`.
+  A `BAND_NOT_MET` result reaches `deliver/` only with an `ACCEPT-BAND` entry.
+- **`input/INPUT_HASHES.json`** carries the §2 header plus `part` (the `<part>` name used
+  in `build/`), `scan_resolution` (`full | decimated | unknown`) and `files`
+  (`[{path, role, sha256, bytes, source, mode}]`). Input files are copied read-only
+  (or symlinked with `--link`). Verify can check `inputs` to prove that the evidence
+  is unchanged.
+- **`intake/intake.json#regime`**: the regime declared at intake, the same shape as
+  `qa/gate.json#regime`. Verify copies it and does not choose its own.
+- **`deliver/` is not created by init.** Its existence before a deliverable verdict is a
+  CHK-PUBLISH finding (`init_run.py status` reports it).
+- **Iteration number** = number of `_itN_SUPERSEDED/` folders + 1. `init_run.py supersede`
+  moves `measure/ build/ qa/` into `_itN_SUPERSEDED/`, then copies `measure/`,
+  `build/MODELING_PLAN.md` and `build/model.py` forward (copies, so the superseded folder
+  stays intact). It refuses when iteration = 3 (exit 3, HALT; `RE_SPEC.md:250`).
+
+## 11. Clarifications added by the orchestrator session (2026-09-25)
+
+- **List values in `params.json`.** `value` and `measured` may be a number or a list of
+  numbers. Use a list for placements measured at unequal angles (DRM legs at 60°/150°/−60°,
+  `golden-examples/dreame_brush-caps/report/snap_params.json`). Numbered keys
+  (`leg_theta_1`, …) are also valid. A consumer must accept both.
+- **Scale correction.** When CHK-SCALE applies one uniform `scale_factor ≠ 1`, it is folded
+  into `matrix_4x4` (raw scan → scaled datum frame), so the CAD is built in true mm
+  (`RE_SPEC.md:98-101`). The scan-frame STEP then needs the inverse *similarity*, which
+  cannot be a rigid OCP transform. Until a reviewed script supports it, `export_frames.py`
+  aborts on `scale_factor ≠ 1`, and the run records a limitation in `DECISIONS.md`
+  (`OTHER`): only the datum-frame STEP is delivered. No golden applied a scale, so there is
+  no evidence to follow.
