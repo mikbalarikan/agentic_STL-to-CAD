@@ -1,0 +1,280 @@
+{
+ "schema": "stl-re/alignment@1",
+ "tool": "align.py",
+ "tool_version": "stl-re-intake-datum/1.0",
+ "inputs": {
+  "/tmp/claude-0/-home-claude-agentic-STL-to-CAD/e9b63eb2-e22a-58ba-b94b-93d549e885a7/scratchpad/replay/DRM/new_run/intake/work.stl": "4947081a4cbcdde08eb4b6d789a08314ca150888276e3957f13f9ea5446109f2",
+  "/tmp/claude-0/-home-claude-agentic-STL-to-CAD/e9b63eb2-e22a-58ba-b94b-93d549e885a7/scratchpad/replay/DRM/new_run/intake/datum_spec.json": "78a102106102fcd3883c87e783425ceab57b5d12371cef97e918aa41eb1f9833",
+  "/tmp/claude-0/-home-claude-agentic-STL-to-CAD/e9b63eb2-e22a-58ba-b94b-93d549e885a7/scratchpad/replay/DRM/new_run/input/scan.stl": "d3b88dd33a873241277393c372ad7ea8dde39845f93a542d995bbfa1f891fa2b",
+  "/tmp/claude-0/-home-claude-agentic-STL-to-CAD/e9b63eb2-e22a-58ba-b94b-93d549e885a7/scratchpad/replay/DRM/new_run/intake/intake.json": "5d2154a92b5d6326db7c6fb4fbece8d58f48ec6167112e0e173e998ae668bab5"
+ },
+ "seed": 0,
+ "created": "2026-09-25T08:04:03+00:00",
+ "status": "OK",
+ "stop_reasons": [],
+ "findings": [],
+ "matrix_4x4": [
+  [
+   0.78752584327239,
+   0.6135512084098654,
+   -0.057947914862445146,
+   -16.23851987490368
+  ],
+  [
+   -0.6159654812032581,
+   0.7866459584286328,
+   -0.04212673799306629,
+   4.71035933656307
+  ],
+  [
+   0.019737582023897637,
+   0.06886981012527602,
+   0.9974303870993497,
+   175.57051955856764
+  ],
+  [
+   0.0,
+   0.0,
+   0.0,
+   1.0
+  ]
+ ],
+ "scale_factor": 1.0,
+ "scan_noise_mm": {
+  "value": 0.0071494553991465586,
+  "method": "rms of RANSAC+SVD plane on top flat face (z max, ~34 mm2) (18450 faces)"
+ },
+ "primary": {
+  "type": "plane",
+  "mesh_region_desc": "top face of the round boss (flat annulus around the drive hole, ~34 mm2)",
+  "why": "largest clean moulded flat; axial face of the cap perpendicular to the drive axis; the only flat with rms at the noise floor. Functional mating face not proven (no photos)",
+  "fit_rms_mm": 0.0071494553991465586,
+  "fit_max_mm": 0.04719126245403726,
+  "fit_p95_mm": 0.014805982448784056,
+  "n_faces": 18450,
+  "area_mm2": 33.1197384750258,
+  "normal_raw": [
+   0.01973758202389755,
+   0.068869810125276,
+   0.9974303870993495
+  ],
+  "centroid_raw": [
+   12.692836283707003,
+   -6.046526458722118,
+   -175.85650547182723
+  ],
+  "material_side": "-z",
+  "ransac": {
+   "tol_mm": 0.05,
+   "iters": 300,
+   "seed": 0,
+   "inlier_frac": 0.9999458023955341
+  }
+ },
+ "secondary": {
+  "type": "axis",
+  "mesh_region_desc": "bottom bore ID",
+  "why": "cleanest true circle (rms at circle noise), coaxial with the double-D drive hole within 0.03 mm",
+  "fit_rms_mm": 0.028804060808653047,
+  "fit_max_mm": 0.09096831389633375,
+  "fit_metric": "median / worst circle residual over stations (kasa)",
+  "stations": 9,
+  "r_by_feature": {
+   "bottom bore ID": {
+    "n": 9,
+    "r_mean": 2.0439336648046127,
+    "r_std": 0.007111616810946814
+   }
+  },
+  "centre_std_mm": [
+   0.00488571343081388,
+   0.009543840283749834
+  ],
+  "station_detail": [
+   {
+    "z": -4.95,
+    "cx": 16.09682,
+    "cy": 5.22509,
+    "r": 2.05495,
+    "rms": 0.01833,
+    "max": 0.06301,
+    "n": 548,
+    "feature": "bottom bore ID"
+   },
+   {
+    "z": -4.85,
+    "cx": 16.09689,
+    "cy": 5.20741,
+    "r": 2.04192,
+    "rms": 0.02483,
+    "max": 0.08425,
+    "n": 577,
+    "feature": "bottom bore ID"
+   },
+   {
+    "z": -4.75,
+    "cx": 16.09136,
+    "cy": 5.20222,
+    "r": 2.04022,
+    "rms": 0.02745,
+    "max": 0.09097,
+    "n": 597,
+    "feature": "bottom bore ID"
+   },
+   {
+    "z": -4.65,
+    "cx": 16.09048,
+    "cy": 5.19924,
+    "r": 2.04335,
+    "rms": 0.03032,
+    "max": 0.08461,
+    "n": 586,
+    "feature": "bottom bore ID"
+   },
+   {
+    "z": -4.55,
+    "cx": 16.08901,
+    "cy": 5.19815,
+    "r": 2.04598,
+    "rms": 0.0297,
+    "max": 0.07859,
+    "n": 600,
+    "feature": "bottom bore ID"
+   },
+   {
+    "z": -4.45,
+    "cx": 16.0879,
+    "cy": 5.19643,
+    "r": 2.0481,
+    "rms": 0.03141,
+    "max": 0.07904,
+    "n": 610,
+    "feature": "bottom bore ID"
+   },
+   {
+    "z": -4.35,
+    "cx": 16.08724,
+    "cy": 5.1934,
+    "r": 2.04861,
+    "rms": 0.03031,
+    "max": 0.07161,
+    "n": 616,
+    "feature": "bottom bore ID"
+   },
+   {
+    "z": -4.25,
+    "cx": 16.08285,
+    "cy": 5.19541,
+    "r": 2.0448,
+    "rms": 0.0288,
+    "max": 0.07124,
+    "n": 622,
+    "feature": "bottom bore ID"
+   },
+   {
+    "z": -4.15,
+    "cx": 16.08242,
+    "cy": 5.19228,
+    "r": 2.02746,
+    "rms": 0.02832,
+    "max": 0.06872,
+    "n": 567,
+    "feature": "bottom bore ID"
+   }
+  ],
+  "noise_ref": {
+   "value": 0.03060976514532745,
+   "p95_mm": 0.06401882845887502,
+   "max_mm": 0.08303734668446161,
+   "method": "rms of IRLS circle on bottom bore ID section z=-4.5 at z=-4.5 (n=612)",
+   "circle": {
+    "cx": -0.004476618581183458,
+    "cy": 0.008495830155140105,
+    "r": 2.0461440455328472,
+    "rms": 0.03060976514532745,
+    "max": 0.08303734668446161,
+    "p95": 0.06401882845887502,
+    "n": 612,
+    "iterations": 7
+   }
+  }
+ },
+ "clock": {
+  "rule": "polygon_flat: pentagon flat centre -> +X",
+  "angle_deg": -34.080990787072906,
+  "why": "the 5-fold hex-like pentagon body is the only non-axisymmetric external feature; flat normal chosen as +X",
+  "detail": {
+   "corner_phase_deg": -1.9190092129270901,
+   "n": 5,
+   "z": -2.5
+  }
+ },
+ "tilt_deg": {
+  "value": 2.078979223266359,
+  "stderr_deg": 0.3087592866388515,
+  "direction_deg": -120.49985310078685,
+  "method": "line through 9 circle centres over z -4.950..-4.150 vs frame Z",
+  "z_span_mm": 0.7999999999999998
+ },
+ "origin": {
+  "definition": "bottom bore axis \u2229 top face plane"
+ },
+ "sanity_landmarks": [
+  {
+   "name": "primary plane at z=0",
+   "expected": 0.0,
+   "observed": -0.0002745928607339465,
+   "tol": 0.0071494553991465586,
+   "tol_source": "measured noise floor",
+   "ok": true
+  },
+  {
+   "name": "part bottom z",
+   "stat": "zmin",
+   "expected": -5.12,
+   "tol": 0.05,
+   "observed": -5.150723666935761,
+   "ok": true,
+   "tol_source": "own pre-alignment section survey (work/explore2.py bounds -5.117 in approx frame)"
+  }
+ ],
+ "removed": {
+  "fragments_pct": 1.9767,
+  "table_pct": 0.0,
+  "method": "kept largest of 1017 bodies (931220 faces)"
+ },
+ "bounds_aligned": [
+  [
+   -5.496348330516499,
+   -5.297952051341634,
+   -5.150723666935761
+  ],
+  [
+   4.640259065114322,
+   5.174616599310184,
+   0.025456554304639667
+  ]
+ ],
+ "extents_aligned": [
+  10.136607395630822,
+  10.472568650651818,
+  5.176180221240401
+ ],
+ "aligned_mesh": {
+  "path": "/tmp/claude-0/-home-claude-agentic-STL-to-CAD/e9b63eb2-e22a-58ba-b94b-93d549e885a7/scratchpad/replay/DRM/new_run/intake/aligned_work.stl",
+  "sha256": "6cf2d64e371e7a023020e5f1e0880a5e8a5da0a05e77f9c8a2cc483307806d9b"
+ },
+ "checks": {
+  "CHK-TILT": {
+   "ran": true,
+   "result": "finding",
+   "note": "line through 9 circle centres over z -4.950..-4.150 vs frame Z; reference 0.3 deg (RE_SPEC.md:241, report-only)"
+  },
+  "CHK-SCALE": {
+   "ran": true,
+   "result": "finding",
+   "note": "no calipers / operator dims (BRIEF.md: scan is sole authority); units assumed mm, scale unverified, none applied (FLAG)"
+  }
+ },
+ "note": "matrix_4x4 maps the RAW scan (scaled by scale_factor) to the datum frame, row-major."
+}
