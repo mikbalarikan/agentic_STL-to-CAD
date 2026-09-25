@@ -1,0 +1,143 @@
+{
+  "project": "OD-H12_delonghi-dedica-pump",
+  "source_path": "H:\\My Drive\\Coffee Garage\\DELONGHI DEDICA\\SCANs\\OD-H12-Pump_RE",
+  "note": "Golden example imported verbatim except 'excluded' files; excluded originals stay at source_path (Google Drive).",
+  "included": [
+    {
+      "path": "OD-H12-Pump.log",
+      "bytes": 6641,
+      "sha256": "5ae021914ab0667c8a8aa0c19c822d83f5983b7c3494f9802c2be68091971a5e"
+    },
+    {
+      "path": "OD-H12-Pump.step",
+      "bytes": 825930,
+      "sha256": "d18833192e9a6022b071d88e39cc3e61bc3db8de7dcf68161b0044d6079cff54"
+    },
+    {
+      "path": "OD-H12-Pump_cad.stl",
+      "bytes": 2135184,
+      "sha256": "2691aa123cb0548f489a659570369c4bc6177325a32ff62cb695697c5e1d0616"
+    },
+    {
+      "path": "OD-H12-Pump_datum.step",
+      "bytes": 824150,
+      "sha256": "734517bab844ebd618f7860a10c0e8403b3ee54b2713dc61b64851d9e671e916"
+    },
+    {
+      "path": "OD-H12-Pump_datum.stl",
+      "bytes": 2008384,
+      "sha256": "3d4b3efca7fce9e8d175401631ed2bebc387d12ef575165ce145f85d8784d507"
+    },
+    {
+      "path": "README.md",
+      "bytes": 6026,
+      "sha256": "471f0845ee709faa3b1ff0fedd8acd56fe7f9289e526baaa1e4f31a715432b8f"
+    },
+    {
+      "path": "report/alignment_T1.json",
+      "bytes": 410,
+      "sha256": "342dfaf6cfb70fd2139953e422511c0866ae400f0aeb19b972dbdf5c46a00c88"
+    },
+    {
+      "path": "report/deviation_gate.json",
+      "bytes": 2566,
+      "sha256": "24abb538f3d30192b092b5aada50ce3a101bc6b461c74ba860e4101b12bd7ab5"
+    },
+    {
+      "path": "report/deviation_map.png",
+      "bytes": 633775,
+      "sha256": "2dc7930a78333d1e7dd2329786d87cd496c7a713c6d832f908b2e7d885e7bc52"
+    },
+    {
+      "path": "report/expected.json",
+      "bytes": 1019,
+      "sha256": "752907be9ea4cced726a4fdf8f7386624fc2073d30faa40cb133377f75ef037b"
+    },
+    {
+      "path": "report/export_check.json",
+      "bytes": 1143,
+      "sha256": "6470fabcaea05a0f88678e7a1fec47d29b144e1b08d82b8aa6100cdb5c8713d1"
+    },
+    {
+      "path": "report/overlay_axial.png",
+      "bytes": 85405,
+      "sha256": "09b81ce385f104b227c941d0737cbf28af5be845a471a8a501f02d271ff649f3"
+    },
+    {
+      "path": "report/overlay_radial.png",
+      "bytes": 220162,
+      "sha256": "853e94d3ce9c3b8aabce63ba033c5a16784f65be666934797076c401cbb6af2a"
+    },
+    {
+      "path": "report/params.json",
+      "bytes": 2141,
+      "sha256": "cc3175e00bc4f509fb2a3a8fb2ed09e08bfc2e4e17f04dd0d52551db63e481d2"
+    },
+    {
+      "path": "report/src/build_pump.py",
+      "bytes": 12959,
+      "sha256": "53774a6462d46050bd3a9af0438d1f6a0513e4437e5011f40bf66807f16accd1"
+    },
+    {
+      "path": "report/src/export_final.py",
+      "bytes": 1913,
+      "sha256": "13238a1708a0784997947f3685377979406fcfe1efebabc4ea55a1d5427809b5"
+    },
+    {
+      "path": "report/src/gate.py",
+      "bytes": 4897,
+      "sha256": "18aedf413c95e3d64160eea32e90552ecf7adc0b76d681b7e7f083c1a298fbce"
+    },
+    {
+      "path": "report/src/ovl.py",
+      "bytes": 1231,
+      "sha256": "903814444723962813e9f7c5acba0c76c58aaa0ea39d9368468a03f943eddc15"
+    },
+    {
+      "path": "report/src/render.py",
+      "bytes": 1510,
+      "sha256": "18e93684dccd247141311213d85c335a238f5745cccd817ada720258b0f3c8d6"
+    },
+    {
+      "path": "report/src/T1.npy",
+      "bytes": 256,
+      "sha256": "4bb709c176a16eaad29c645261c5cb734a8d9226fd7ceb1402b1c14a0964527b"
+    },
+    {
+      "path": "report/validator_report.json",
+      "bytes": 2838,
+      "sha256": "d233442631023fac119a908689af584a6f37eb4668f47d3861d29b7819b34a9f"
+    },
+    {
+      "path": "report/views_cad.png",
+      "bytes": 484813,
+      "sha256": "f8c846ac2f9e64dbf72aba4c04beb54a717269c75ddce2e8d4e58a91bd72fe3c"
+    },
+    {
+      "path": "report/views_scan.png",
+      "bytes": 683612,
+      "sha256": "0101d6da2364e6da944dd9be7e9b8af65e1cb2a06f20ac429c6e9bd79bcd44b4"
+    },
+    {
+      "path": "0_input/OD-H12-Pump.stl",
+      "bytes": 48991034,
+      "sha256": "40d856bb0d1204914a8fda9dab6455e0804a200e948d5d8c59b09d75bc31bcc6",
+      "source": "H:\\My Drive\\Coffee Garage\\DELONGHI DEDICA\\SCANs\\OD-H12-Pump.stl",
+      "note": "scan input (sibling of source_path; README calls it pipeline/tasks/OD-H12-Pump.stl)"
+    }
+  ],
+  "excluded": [
+    {
+      "path": "COMPOUND.prt",
+      "bytes": 350098,
+      "sha256": "64a09f88654ee8cf4187204865d247e52348d4140d1ff893818df88a7c111f5d",
+      "reason": "Siemens NX native part (binary, needs NX) - STEP export is the portable record"
+    },
+    {
+      "path": "OD-H12-Pump_step.prt",
+      "bytes": 21576380,
+      "sha256": "6c02125ad32525317f423683ad5120f2d922ccd1146876c103d75f6ef73bad0f",
+      "reason": "Siemens NX native part (binary, needs NX) - STEP export is the portable record"
+    }
+  ]
+}

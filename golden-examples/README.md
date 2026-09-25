@@ -8,6 +8,7 @@ renders, final STEP). Do not edit them — they are evidence, not templates.
 | Project | Part | Toolchain | Outcome | Record depth |
 |---|---|---|---|---|
 | [`M02-02-03_watertight-design-intent`](M02-02-03_watertight-design-intent/) | Compound spur gear 30T/17T | build123d (`model.py`) | Independent QA **PASS** | full: spec, params, QA + reproducibility reports |
+| [`OD-H12_delonghi-dedica-pump`](OD-H12_delonghi-dedica-pump/) | ULKA-type vibration pump (DeLonghi Dedica), single-solid assembly | trimesh + build123d (`stl2step-build123d`); NX | Operator: good result. Validator 13/13; deviation band **not met** (scan→CAD p95 0.448 vs ≤0.30 band), gap explained per region | full: README method + honest verdict, 104 params, gates, src, scan input |
 | [`OOM-B02_side-brush-3-arm`](OOM-B02_side-brush-3-arm/) | Robot-vacuum side brush, 3 arms | build123d + trimesh; NX | **APPROVED** it2/3, 3 declared limitations | full: intake, calipers, params, QA scripts, verdict, iteration 1 kept |
 | [`OOM-P03_mop-pad-bracket`](OOM-P03_mop-pad-bracket/) | Mop pad bracket | build123d + trimesh; NX | **APPROVED** it2/3 (it1 REVISE) | full: intake, calipers, params, sections, PDF report |
 | [`dreame_brush-caps`](dreame_brush-caps/) | Brush screw cap + snap cap | trimesh + build123d; NX | Delivered: screw p95 0.085 PASS, snap p95 0.157 | full: source, gates, alignment, deviation maps |
