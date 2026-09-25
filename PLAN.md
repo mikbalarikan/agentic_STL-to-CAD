@@ -37,6 +37,14 @@ designated branch. Rename at PR time if wanted).
 | 24 | 4 | apply accepted review fixes | Sonnet | edits |
 | 25 | 5 | eval cases + README index | Sonnet | `evals/`, `README.md` |
 
+**Actual use (end of Phase 5): about 34 agents, over the ≈25 guide.** Phase 1 used 8 (as
+planned). Phase 3 used 6 authors plus a Sonnet contract-integration pass. Phase 4 used 6
+reviewers (Opus), 1 lint (Haiku), 3 replays (Opus: baseline skill on both parts, new skills
+on B02, new skills on the DRM screw), 6 fixers (Sonnet, one per skill, round 1), 1 replay
+report writer (Sonnet) and 1 answer-key scrub (Sonnet). Phase 5 used 1 eval-case writer
+(Sonnet). The overrun came from splitting fixes per skill so they could run in parallel, and
+from the scrub pass, which the replays showed was needed (answer leakage, `evals/replay/`).
+
 The OOM-E01 stub is ignored for method. Pure inventory was done by the
 orchestrator with `find`/`stat` (`analysis/INVENTORY.md`) instead of spending
 an agent on it.
