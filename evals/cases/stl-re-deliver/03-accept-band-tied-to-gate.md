@@ -35,6 +35,9 @@ preflight for BAND_NOT_MET" — i.e. an acceptance entry that cites the verifier
 acceptance recorded against one iteration's miss could carry over to a later, different gate.
 
 ## Last observed result
+**Run 2026-09-25 after deliver round-1 fixes:** `python3 skills/stl-re-deliver/tests/run_fixture_test.py` → 31/31 passed, including "refuse: ACCEPT-BAND evidence under qa/" (`tests/run_fixture_test.py:182`) and the gate-sha-tied acceptance that delivers: both as expected.
+
+Earlier note (kept for the record):
 **Not run this session — skill under edit** (see case 01). Cited historical result:
 `reviews/stl-re-deliver.md` D4 evidence: "Reproduced: `- 1970-01-01 | x | ACCEPT-BAND | ok |
 qa/VERDICT.md` passes preflight for BAND_NOT_MET" (the defect, pre-fix) and, separately, that

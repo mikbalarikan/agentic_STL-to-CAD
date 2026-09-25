@@ -14,7 +14,7 @@
   "limitations": [
     {
       "id": "L1",
-      "text": "Bore diameter {{params:bore_d.value}} mm is assumed; the scan does not resolve it.",
+      "text": "Bore diameter {{params:bore_d.value}} mm is assumed; the scan does not resolve it. Tier1 partial: only 2 of 3 dims are gated (the bore is not calipered).",
       "rerun_trigger": "One caliper reading of the bore diameter; a value different from the model triggers a re-run.",
       "evidence": "measure/params.json#bore_d"
     }

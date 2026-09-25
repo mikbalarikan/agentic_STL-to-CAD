@@ -83,6 +83,20 @@ def fail(msg: str, code: int = 2) -> None:
     sys.exit(code)
 
 
+def run_main(main_fn: Any) -> None:
+    """D15: SKILL.md documents exit 1 as `repro_check.py`'s own "not reproducible" signal, which
+    collides with the exit 1 a bare Python traceback gives from any script. Call every script's
+    `main()` through this so an unexpected internal error gets its own exit code (3), distinct
+    from a deliberate `fail()` (2, `DeliverError`) or `repro_check.py`'s `sys.exit(1)`."""
+    try:
+        main_fn()
+    except SystemExit:
+        raise
+    except Exception as exc:  # noqa: BLE001 - last-resort guard, see docstring
+        print(f"INTERNAL ERROR: {exc}", file=sys.stderr)
+        sys.exit(3)
+
+
 # ------------------------------------------------------------------------ CHK-PUBLISH
 def first_verdict_token(text: str) -> str | None:
     """First verdict-vocabulary token in reading order (longest alternative wins)."""
@@ -92,17 +106,37 @@ def first_verdict_token(text: str) -> str | None:
 
 
 def check_publish(run: Path) -> tuple[str, dict[str, Any]]:
-    """CHK-PUBLISH + headline-verdict agreement. Returns (verdict, gate)."""
+    """CHK-PUBLISH + headline-verdict agreement. Returns (verdict, gate).
+
+    verdict.py writes `verdict: null` whenever `errors` is non-empty (a refused proposal must
+    never be mistaken for a trustworthy verdict, verdict.py:295-299), and always records which
+    verdicts the evidence actually allows in `allowed_verdicts`. Deliver refuses on all three
+    failure shapes: a null verdict, a non-empty `errors` list, and a verdict outside
+    `allowed_verdicts` (D-review D1/D4: never trust a verdict word alone)."""
     verdict_md = run / "qa" / "VERDICT.md"
     gate_path = run / "qa" / "gate.json"
     if not verdict_md.is_file() or not gate_path.is_file():
         raise DeliverError("CHK-PUBLISH fail: qa/VERDICT.md and qa/gate.json must both exist before "
                            "anything is written to deliver/. Run stl-re-verify first.")
     gate = load_json(gate_path)
+    errors = gate.get("errors") or []
+    if errors:
+        raise DeliverError(f"CHK-PUBLISH fail: qa/gate.json#errors is non-empty ({errors}); verdict.py "
+                           "refused to grade this run and wrote verdict: null. Fix the evidence and "
+                           "re-run stl-re-verify; never deliver a refused gate.")
     verdict = gate.get("verdict")
-    if verdict not in VERDICTS:
+    if verdict is None or verdict not in VERDICTS:
         raise DeliverError(f"CHK-PUBLISH fail: qa/gate.json verdict is {verdict!r}; it must be one of "
                            f"{VERDICTS} (run-contract §7). Return to stl-re-verify.")
+    allowed = gate.get("allowed_verdicts")
+    if allowed and verdict not in allowed:
+        raise DeliverError(f"CHK-PUBLISH fail: qa/gate.json verdict {verdict!r} is not one of its own "
+                           f"allowed_verdicts {allowed}; the gate is internally inconsistent. Return to "
+                           "stl-re-verify.")
+    hf = gate.get("hash_frozen") or {}
+    if "unchanged" in hf and hf.get("unchanged") is not True:
+        raise DeliverError("CHK-PUBLISH fail: qa/gate.json#hash_frozen.unchanged is not true; the STEP "
+                           "changed during QA (run-contract §12). Re-run stl-re-verify on the current STEP.")
     first = first_verdict_token(verdict_md.read_text(encoding="utf-8"))
     if first != verdict:
         raise DeliverError(f"CHK-NUMBERS fail: the headline verdict in qa/VERDICT.md is {first!r} but "
@@ -130,8 +164,19 @@ def decisions(run: Path, decision_id: str) -> list[dict[str, str]]:
     return out
 
 
-def check_acceptance(run: Path, verdict: str) -> dict[str, str] | None:
-    """BAND_NOT_MET: need an ACCEPT-BAND entry in DECISIONS.md whose evidence file exists in the run."""
+# D4: evidence for an accepted band miss must not live under a stage folder the pipeline
+# itself writes (qa/, build/, measure/, intake/, deliver/, an old _itN_SUPERSEDED/) -- otherwise
+# any in-run file, including the verifier's own qa/VERDICT.md, would count as the owner's written
+# acceptance. It must be a document the owner actually wrote: decisions/ or the run root.
+ACCEPT_BAND_FORBIDDEN_PREFIXES = ("qa/", "build/", "measure/", "intake/", "deliver/")
+
+
+def check_acceptance(run: Path, verdict: str, gate: dict[str, Any]) -> dict[str, str] | None:
+    """BAND_NOT_MET: need an ACCEPT-BAND entry in DECISIONS.md whose evidence file exists in the run,
+    is not one of verify's/deliver's own output files, names the current gate by hash, and names at
+    least one of `gate.json#band_fails` (run-contract §10; orchestrate SKILL.md:106: "which band,
+    the number"). This ties the acceptance to THIS gate, so it cannot carry over from an earlier
+    iteration's miss (review D4)."""
     if verdict != "BAND_NOT_MET":
         return None
     entries = [e for e in decisions(run, "ACCEPT-BAND") if e["date"] and e["who"] and e["decision"]]
@@ -140,10 +185,31 @@ def check_acceptance(run: Path, verdict: str) -> dict[str, str] | None:
                            "owner: show the missed band with its number, the per-region explanation and "
                            "the options from qa/VERDICT.md. Write nothing to deliver/ until they answer.")
     acc = entries[-1]
-    ev = (run / acc["evidence"].strip("` ")).resolve() if acc["evidence"] else None
+    ev_rel = acc["evidence"].strip("` ")
+    if any(ev_rel.startswith(p) or f"/{p}" in ev_rel for p in ACCEPT_BAND_FORBIDDEN_PREFIXES) or \
+            re.search(r"_it\d+_SUPERSEDED/", ev_rel):
+        raise DeliverError(f"BAND_NOT_MET stop: ACCEPT-BAND evidence {ev_rel!r} is a pipeline output "
+                           "(qa/build/measure/intake/deliver or a superseded iteration), not the owner's "
+                           "own written acceptance. Save their answer under decisions/ or the run root "
+                           "and record that path instead.")
+    ev = (run / ev_rel).resolve() if ev_rel else None
     if ev is None or not ev.is_file() or run.resolve() not in ev.parents:
         raise DeliverError(f"BAND_NOT_MET stop: the ACCEPT-BAND evidence path {acc['evidence']!r} is not a "
                            "file inside the run folder. Save the owner's written acceptance there first.")
+    gate_path = run / "qa" / "gate.json"
+    gate_sha = sha256_file(gate_path) if gate_path.is_file() else ""
+    text_and_ev = f"{acc['decision']} {ev.read_text(encoding='utf-8', errors='replace')}"
+    cites_gate = (gate_sha and gate_sha[:12] in text_and_ev) or (str(gate.get("created", "")) and
+                                                                 str(gate["created"]) in text_and_ev)
+    if not cites_gate:
+        raise DeliverError("BAND_NOT_MET stop: ACCEPT-BAND does not reference this gate (no sha256 "
+                           f"prefix of the current qa/gate.json, {gate_sha[:12]!r}, or its `created` "
+                           "timestamp in the decision or its evidence file); re-ask the owner. An "
+                           "acceptance must name the gate it accepts, so it cannot survive into a new one.")
+    band_fails = gate.get("band_fails") or []
+    if band_fails and not any(bf.split(":", 1)[0].strip() in text_and_ev for bf in band_fails):
+        raise DeliverError(f"BAND_NOT_MET stop: ACCEPT-BAND does not name any of gate.json#band_fails "
+                           f"{band_fails}; re-ask the owner to say which band they are accepting.")
     acc["evidence"] = ev.relative_to(run.resolve()).as_posix()
     return acc
 
@@ -184,7 +250,11 @@ def check_inputs_unchanged(run: Path) -> dict[str, Any]:
     """input/ files still match input/INPUT_HASHES.json (evidence is never modified; SYNTHESIS A1)."""
     p = run / "input" / "INPUT_HASHES.json"
     if not p.is_file():
-        return {"ran": False, "result": "finding", "note": "input/INPUT_HASHES.json missing"}
+        # run-contract §10: init_run.py always writes this file. Its absence means evidence
+        # integrity is simply unprovable, not merely unchecked, so this fails rather than a
+        # softer "finding" (review D13); the caller HALTs (orchestrator §6).
+        return {"ran": True, "result": "fail",
+                "note": "input/INPUT_HASHES.json missing; evidence integrity unprovable; HALT (orchestrator §6)"}
     doc = load_json(p)
     changed = []
     entries = doc.get("files") or [{"path": k, "sha256": v} for k, v in (doc.get("inputs") or {}).items()]
@@ -207,8 +277,19 @@ def _hexes(obj: Any) -> set[str]:
 
 
 def check_hash_frozen(run: Path, gate: dict[str, Any]) -> dict[str, Any]:
-    """The STEP files in build/ must be the ones QA hashed (qa/gate.json#hash_frozen)."""
-    frozen = _hexes(gate.get("hash_frozen"))
+    """The STEP files in build/ must be the ones QA hashed (qa/gate.json#hash_frozen).
+
+    Shape (run-contract §12): `{"before": {path: sha256}, "after": {path: sha256}, "unchanged":
+    bool}`. `unchanged is False` means the STEP changed mid-QA and is a hard fail regardless of
+    what build/ holds now (review D10); CHK-PUBLISH already refuses this earlier, so reaching
+    here with `unchanged: False` should not happen, but this check still fails closed. When
+    `after` exists, match against `after`'s hashes only (never pool `before` in with it: a STEP
+    that merely matches the PRE-QA hash was never actually gated)."""
+    hf = gate.get("hash_frozen") or {}
+    if hf.get("unchanged") is False:
+        return {"ran": True, "result": "fail", "note": "qa/gate.json#hash_frozen.unchanged is false: "
+                "the STEP changed during QA"}
+    frozen = _hexes(hf["after"]) if isinstance(hf.get("after"), dict) else _hexes(hf)
     steps = sorted((run / "build").glob("*.step"))
     if not frozen:
         return {"ran": False, "result": "finding", "note": "qa/gate.json has no hash_frozen sha256"}
@@ -238,10 +319,28 @@ def check_regime(run: Path, gate: dict[str, Any]) -> dict[str, Any]:
             "note": f"regime {g!r}" + ("" if i else " (intake/regime.json has no name to compare)")}
 
 
+# ------------------------------------------------------------------------- repro freshness
+def check_repro_fresh(run: Path, repro: dict[str, Any]) -> None:
+    """D3: `deliver/repro.json#inputs` records the sha256 (run-contract §2 header) of every file
+    the rebuild read (`build/model.py`, `measure/params.json`, the delivered STEPs) at the moment
+    it was checked. `deliver/` survives an `init_run.py supersede`, so an old repro.json can
+    otherwise certify a `model.py` that no longer produces the delivered STEP. Recompute each
+    hash now and refuse if any differ."""
+    stale = []
+    for rel, sha in (repro.get("inputs") or {}).items():
+        f = run / rel
+        if not f.is_file() or sha256_file(f) != sha:
+            stale.append(rel)
+    if stale:
+        raise DeliverError(f"deliver/repro.json is stale ({', '.join(stale)} changed since the repro "
+                           "check ran); re-run scripts/repro_check.py before rendering the README or "
+                           "the manifest.")
+
+
 def preflight(run: Path) -> dict[str, Any]:
     """All blocking pre-delivery checks. Raises DeliverError on the first refusal."""
     verdict, gate = check_publish(run)
-    acc = check_acceptance(run, verdict)
+    acc = check_acceptance(run, verdict, gate)
     checks = {
         "CHK-PUBLISH": {"ran": True, "result": "pass", "note": f"verdict {verdict}"},
         "CHK-SUPERSEDED": check_superseded(run),

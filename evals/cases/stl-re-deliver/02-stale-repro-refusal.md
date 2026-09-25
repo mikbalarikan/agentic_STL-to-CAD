@@ -37,6 +37,9 @@ repro, then changed `build/model.py` (`plate_x*2`). `make_readme.py` exited 0 an
 would ship uncaught.
 
 ## Last observed result
+**Run 2026-09-25 after deliver round-1 fixes:** `python3 skills/stl-re-deliver/tests/run_fixture_test.py` → 31/31 passed, including the case "model.py changed after repro (stale repro.json)" (`tests/run_fixture_test.py:208`): refused as expected.
+
+Earlier note (kept for the record):
 **Not run this session — skill under edit** (see case 01; `skills/stl-re-deliver/` has
 uncommitted, in-progress changes to its qa fixtures at the time this suite was written). Cited
 historical result: `reviews/stl-re-deliver.md` D3 "Reproduced: I ran repro, then changed

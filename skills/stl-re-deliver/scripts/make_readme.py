@@ -29,10 +29,16 @@ from pathlib import Path
 from typing import Any
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from _common import MAX_LOOPS, DeliverError, fail, load_json, preflight, sha256_file  # noqa: E402
+from _common import (MAX_LOOPS, DeliverError, check_repro_fresh, fail, load_json, preflight,  # noqa: E402
+                     run_main, sha256_file)
 
 PLACEHOLDER = re.compile(r"\{\{(gate|params|export|align|repro):([A-Za-z0-9_.\-\[\] ]+)\}\}")
-LITERAL_DECIMAL = re.compile(r"(?<![\w.])[-+]?\d+\.\d+")
+# D7: the old lookbehind `(?<![\w.])` treated letters, digits and the diameter sign as "word"
+# characters, so `Ø8.00`, `AF7.358`, `M3.5` and `x8.5` slipped through uncaught. Only a
+# preceding digit or '.' should suppress a match now (that is what protects a placeholder's own
+# digits and a number already flagged by an earlier match), so any decimal reachable through a
+# letter, `Ø`, `x`, whitespace or punctuation is still caught.
+LITERAL_DECIMAL = re.compile(r"(?<![\d.])[-+]?\d+\.\d+")
 STAT_KEYS = ("n", "rms", "p50", "p95", "p99", "max")
 ASSUMED_SOURCES = ("assumed", "photo-inferred", "standard")
 
@@ -113,6 +119,13 @@ class Renderer:
         self.w("")
 
 
+def _s(s: Any) -> str:
+    """Compact one-line stats summary (display only; the table above carries the real numbers)."""
+    if not isinstance(s, dict) or not s.get("n"):
+        return "n 0"
+    return f"n {fmt(s['n'])} · p95 {fmt(s.get('p95'))} · max {fmt(s.get('max'))}"
+
+
 def stats_row(label: str, s: Any, src: str) -> list[Any]:
     if not isinstance(s, dict):
         return [label] + ["—"] * len(STAT_KEYS) + ["not reported", src]
@@ -155,12 +168,57 @@ def render(run: Path, limitations_path: Path, out: Path) -> str:
     cb = lim.get("claim_boundary") or {}
     if not cb.get("not_fit_for"):
         raise DeliverError("claim_boundary.not_fit_for is empty; state what the result is NOT (SYNTHESIS F7).")
+
+    # D2: every limitation verify actually found (qa/gate.json#limitations, written by
+    # verdict.py from review.json) must reach the README, matched by id (or by text when a
+    # limitation carries no id) -- it must not be re-typed from memory and silently dropped.
+    declared_ids = {str(L["id"]) for L in limits if L.get("id")}
+    declared_texts = {str(L["text"]) for L in limits if L.get("text")}
+    missing_gate_lims = [L.get("id") or L.get("text") for L in gate.get("limitations") or []
+                         if not ((L.get("id") and str(L["id"]) in declared_ids) or
+                                 (L.get("text") and str(L["text"]) in declared_texts))]
+    if missing_gate_lims:
+        raise DeliverError(f"deliver/limitations.json is missing verify's declared limitation(s) "
+                           f"{missing_gate_lims} (qa/gate.json#limitations); every limitation verify "
+                           "found must reach the README with the same id, not be re-typed or dropped.")
+    # Every automatic finding (mask-dependent pass, partial Tier-1, grey zone, decimated scan, ...)
+    # needs a declared limitation that actually covers it, identified by its keyword (the phrase
+    # before the first ':', e.g. "tier1 partial", "mask-dependent pass").
+    auto_limits = gate.get("auto_limitations") or []
+    declared_blob = " ".join(f"{L.get('text', '')} {L.get('evidence', '')}" for L in limits).lower()
+    uncovered = [a for a in auto_limits if a.split(":", 1)[0].strip().lower() not in declared_blob]
+    if uncovered:
+        raise DeliverError(f"deliver/limitations.json does not cover qa/gate.json#auto_limitations "
+                           f"{uncovered}; declare each one (mention its keyword in a limitation's text "
+                           "or evidence) instead of letting it disappear.")
+    # D11: rebuild says a failed or shrunk fillet must be declared as a limitation
+    # (stl-re-rebuild-build123d/SKILL.md:194, CHK-FILLET). export_check.json's per-frame
+    # `fillets` list is written by export_frames.py; any entry not `OK` is a geometry deviation.
+    bad_fillets = []
+    ex_doc = docs.get("export") or {}
+    for frame_name, frame in (ex_doc.get("exports", ex_doc) if isinstance(ex_doc, dict) else {}).items():
+        if not isinstance(frame, dict):
+            continue
+        for f in frame.get("fillets") or []:
+            if f.get("status") != "OK":
+                bad_fillets.append(f"{frame_name}: {f.get('feature', f)}")
+    if bad_fillets:
+        declared_blob_fillet = " ".join(f"{L.get('text', '')} {L.get('evidence', '')}" for L in limits)
+        if "export_check.json" not in declared_blob_fillet:
+            raise DeliverError(f"CHK-FILLET fail: build/export_check.json has non-OK fillet(s) "
+                               f"{bad_fillets}; declare a limitation whose evidence names "
+                               "export_check.json (stl-re-rebuild-build123d/SKILL.md:194).")
+
+    if verdict == "BAND_NOT_MET" and not gate.get("miss_explanations"):
+        raise DeliverError("qa/gate.json#miss_explanations is empty for BAND_NOT_MET; verdict.py should "
+                           "have refused this already (SYNTHESIS F1). Return to stl-re-verify.")
     repro = docs["repro"]
     if repro.get("reproducible") is not True:
         raise DeliverError(
             "deliver/repro.json says the rebuild is not reproducible. Fix determinism in build/ "
             "(loop back to stl-re-rebuild-build123d); do not deliver a model that cannot be rebuilt."
         )
+    check_repro_fresh(run, repro)
 
     R = Renderer(run, docs, files)
     part = lim.get("part") or {}
@@ -177,6 +235,10 @@ def render(run: Path, limitations_path: Path, out: Path) -> str:
     indep = (gate.get("checks") or {}).get("CHK-INDEP")
     if indep:
         R.w(f"**Verification independence (CHK-INDEP):** {fmt(indep.get('result'))} — {fmt(indep.get('note'))}  ")
+    else:
+        # D2: CHK-INDEP is not always recorded as a named check; fall back to gate.json#independence
+        # (verify's own free-text statement) rather than saying nothing about independence.
+        R.w(f"**Verification independence:** {fmt(gate.get('independence')) or 'NOT DECLARED'}  ")
     R.w("")
     if verdict == "BAND_NOT_MET" and acc:
         R.w("> **A deviation band was NOT met.** Delivered only under the recorded human acceptance "
@@ -255,59 +317,151 @@ def render(run: Path, limitations_path: Path, out: Path) -> str:
             [[f"`{k}`", p.get("value"), p.get("unit"), p.get("measured"), p.get("rule"), p.get("source"),
               p.get("uncertainty_mm"), p.get("critical"), p.get("evidence")] for k, p in sorted(params.items())])
 
+    # 6b. model tree (design intent) --------------------------------------------------------
+    # D6: OD README.md:46-60 (6 features) and DRM README.md:27-54 (F01-F09 per part) both
+    # deliver a feature tree; M02 README.md:12 states the editable source and that the STEP
+    # carries no native feature history. `limitations.json#feature_tree` is optional (a run may
+    # have none written yet), but when present it is rendered here rather than left to prose.
+    ftree = lim.get("feature_tree") or []
+    R.h2("Model tree (design intent)")
+    R.w("The STEP is a neutral B-Rep; it carries no feature history. The editable design intent "
+        "is `build/model.py` driven by `measure/params.json`, and the ordered feature plan is "
+        "`build/MODELING_PLAN.md`.", "")
+    if ftree:
+        R.table(["id", "feature", "params"],
+                [[f.get("id", i), f.get("feature"), fmt(f.get("params"))] for i, f in enumerate(ftree, 1)])
+    else:
+        R.w("_No `feature_tree` was declared in `deliver/limitations.json`; see `build/MODELING_PLAN.md` "
+            "for the ordered feature plan._", "")
+
     # 7. tier-1 ---------------------------------------------------------------------------
+    # Real shape (sim_caliper.py): {band_abs_mm, band_source, coverage:{gated,requested_total,
+    # absent}, dims:{id: {name,caliper,cad,delta,pass,gated,unmeasurable?,grey_zone?,...}}}.
     R.h2("Tier-1 — caliper dims re-measured on the STEP")
     t1 = gate.get("tier1") or {}
-    if isinstance(t1, list):
-        t1 = {str(d.get("name", i)): d for i, d in enumerate(t1)}
-    if t1:
-        band = (regime.get("bands") or {}).get("tier1")
-        R.w(f"Band: {fmt(band)} (from `qa/gate.json#regime.bands`).", "")
-        R.table(["dim", "caliper", "CAD re-measured", "Δ", "pass"],
-                [[k, d.get("caliper"), d.get("cad"), d.get("delta"), d.get("pass")] for k, d in t1.items()])
+    dims = t1.get("dims") or {}
+    if dims:
+        cov = t1.get("coverage") or {}
+        R.w(f"Band: ±{fmt(t1.get('band_abs_mm'))} mm (`{fmt(t1.get('band_source'))}`, from "
+            "`qa/gate.json#tier1.band_abs_mm`). Coverage: "
+            f"{fmt(cov.get('gated'))} of {fmt(cov.get('requested_total'))} gated"
+            + (f"; absent: {fmt(cov.get('absent'))}" if cov.get("absent") else "") + ".", "")
+        rows = []
+        for k, d in sorted(dims.items()):
+            flags = []
+            if d.get("unmeasurable"):
+                flags.append("**UNMEASURABLE on the STEP**")
+            if d.get("grey_zone"):
+                flags.append("grey zone (margin < reading uncertainty)")
+            res = "PASS" if d.get("pass") else "FAIL" if d.get("pass") is False else \
+                ("ungated" if not d.get("gated") else "reported")
+            rows.append([f"{k} {d.get('name', '')}", d.get("caliper"), d.get("cad"), d.get("delta"),
+                        res, "; ".join(flags) or "—"])
+        R.table(["dim", "caliper", "CAD re-measured", "Δ", "result", "flags"], rows)
+        unmeasurable = [k for k, d in dims.items() if d.get("gated") and d.get("unmeasurable")]
+        if unmeasurable:
+            R.w(f"**{fmt(unmeasurable)} gated but not measurable on the STEP: this is a finding, "
+                "never a silent pass (review V4).**", "")
     else:
         R.w("**Tier-1 not run: no caliper dimensions exist.** Every dimension is scan authority "
             "(or operator spec); see the source column in §5. Absent is not passed.", "")
 
     # 8. deviation ------------------------------------------------------------------------
+    # Real shape (deviation_gate.py): `scan_to_cad`/`cad_to_scan` are UNMASKED; the masked
+    # numbers are the separate `scan_to_cad_masked`/`cad_to_scan_masked` keys (review D1c). Never
+    # swap those labels: that is exactly the CHK-MASK dishonesty this skill exists to prevent.
     R.h2("Deviation gate (scan ↔ CAD)")
     R.w(f"Regime **{fmt(regime.get('name'))}** (`{fmt(regime.get('source'))}`); bands: {fmt(regime.get('bands'))}.", "")
     dev = gate.get("deviation") or {}
     reg = dev.get("registration") or {}
-    R.w(f"Registration: {fmt(reg.get('method'))}, iterations {fmt(reg.get('iterations'))}, converged "
+    R.w(f"Registration: {fmt(reg.get('method'))}, iterations {fmt(reg.get('iterations'))}"
+        f"{'/' + fmt(reg.get('max_iterations')) if reg.get('max_iterations') is not None else ''}, converged "
         f"{fmt(reg.get('converged'))}, correction {fmt(reg.get('delta_deg'))}° / {fmt(reg.get('delta_mm'))} mm.  ")
     R.w(f"Unobservable CAD fraction: {fmt(dev.get('unobservable_fraction'))}.", "")
     src = "`qa/gate.json#deviation`"
     R.table(["direction", *STAT_KEYS, "sampling", "source"], [
-        stats_row("scan → CAD (masked)", dev.get("scan_to_cad"), src),
-        stats_row("scan → CAD **unmasked**", dev.get("unmasked"), src),
-        stats_row("CAD → scan (all)", dev.get("cad_to_scan"), src),
+        stats_row("scan → CAD **unmasked**", dev.get("scan_to_cad"), src),
+        stats_row("scan → CAD (masked)", dev.get("scan_to_cad_masked"), src),
+        stats_row("CAD → scan **unmasked** (all)", dev.get("cad_to_scan"), src),
+        stats_row("CAD → scan (masked)", dev.get("cad_to_scan_masked"), src),
         stats_row("CAD → scan (observable)", dev.get("cad_to_scan_observable"), src),
     ])
+
+    # Gate table: the actual per-item PASS/FAIL the verdict was graded on (gate.json#gated_results,
+    # verdict.py's own gated_results(); review D1d -- this was not rendered at all before).
+    gres = gate.get("gated_results") or []
+    if gres:
+        R.w("### Gate results (what the verdict was graded on)", "")
+        rows = []
+        for g_ in gres:
+            b = g_.get("result") or {}
+            res = "PASS" if b.get("pass") else "FAIL" if b.get("pass") is False else "reported"
+            s = g_.get("stats") or {}
+            rows.append([g_["item"], f"p95 ≤{fmt(b.get('p95_band'))} / max ≤{fmt(b.get('max_band'))}",
+                        f"p95 {fmt(s.get('p95'))} max {fmt(s.get('max'))} (n {fmt(s.get('n'))})", res])
+        R.table(["item", "band", "measured", "result"], rows)
+
     zones = dev.get("zones") or {}
     if zones:
-        R.w("### Per zone", "")
-        R.table(["zone", *STAT_KEYS, "band", "gated", "pass", "note"],
-                [[z, *[(s or {}).get(k) for k in STAT_KEYS], (s or {}).get("band"), (s or {}).get("gated"),
-                  (s or {}).get("pass"), (s or {}).get("why", (s or {}).get("note"))] for z, s in zones.items()])
+        R.w("### Per zone (unmasked and masked side by side)", "")
+        rows = []
+        for zn, e in sorted(zones.items()):
+            for dn in ("scan_to_cad", "cad_to_scan"):
+                if dn not in e:
+                    continue
+                bu, bm = (e[dn].get("band_unmasked") or {}), (e[dn].get("band_masked") or {})
+                rows.append([zn, e.get("kind"), dn,
+                            "PASS" if bu.get("pass") else "FAIL" if bu.get("pass") is False else "reported",
+                            "PASS" if bm.get("pass") else "FAIL" if bm.get("pass") is False else "reported",
+                            _s(e[dn].get("unmasked")), _s(e[dn].get("masked")), e.get("note") or "—"])
+        R.table(["zone", "kind", "direction", "unmasked", "masked", "unmasked stats", "masked stats", "note"], rows)
     masks = dev.get("masks") or []
     R.w("### Masks (masked and unmasked are both shown above)", "")
     if masks:
-        R.table(["mask", "why", "fraction removed", "stats inside"],
-                [[m.get("name"), m.get("why"), m.get("fraction"), m.get("stats_inside")] for m in masks])
+        R.table(["mask", "direction", "why", "fraction removed", "stats inside"],
+                [[m.get("name"), m.get("direction"), m.get("why"), m.get("fraction"), m.get("stats_inside")]
+                 for m in masks])
     else:
         R.w("No masks were applied.", "")
-    for key, title in (("sensitivity", "Mask sensitivity"), ("over_band_clusters", "Over-band point clusters")):
-        rows_ = dev.get(key) or []
-        if rows_:
-            cols = sorted({c for r in rows_ for c in r})
-            R.w(f"### {title}", "")
-            R.table(cols, [[r.get(c) for c in cols] for r in rows_])
+    if dev.get("mask_dependent_passes"):
+        R.w(f"**CHK-MASK: mask-dependent pass(es):** {fmt(dev['mask_dependent_passes'])}.", "")
+    if dev.get("sensitivity"):
+        rows_ = dev["sensitivity"]
+        cols = sorted({c for r in rows_ for c in r if c != "zones"})
+        R.w("### Mask sensitivity", "")
+        R.table(cols, [[r.get(c) for c in cols] for r in rows_])
+    # over_band_clusters is a dict keyed by direction (deviation_gate.py), not a list of rows.
+    obc = dev.get("over_band_clusters") or {}
+    for dn in ("scan_to_cad", "cad_to_scan"):
+        ob = obc.get(dn)
+        if not ob:
+            continue
+        dn_label = "scan → CAD" if dn == "scan_to_cad" else "CAD → scan"
+        R.w(f"### Over-band point clusters, {dn_label} (> {fmt(ob.get('threshold_mm'))} mm)", "")
+        R.w(f"{fmt(ob.get('n_over'))} points ({fmt(ob.get('fraction_over'))} fraction) in "
+            f"{fmt(ob.get('n_clusters_ge_min'))} clusters ≥ {fmt(ob.get('min_pts'))} pts.", "")
+        if ob.get("clusters"):
+            expl = gate.get("cluster_explanations") or {}
+            R.table(["#", "n", "centroid", "r range", "θ range (deg)", "d max", "explanation"],
+                    [[i, c.get("n"), c.get("centroid"), c.get("r_range"), c.get("theta_deg_range"),
+                      c.get("d_max"), expl.get(str(i), "**UNEXPLAINED**")] for i, c in enumerate(ob["clusters"])])
     da = gate.get("datum_audit") or {}
-    if da:
+    if da.get("angle_deg") is not None:
         R.w(f"**Datum audit (report-only, QUESTIONS Q2):** angle {fmt(da.get('angle_deg'))}°, origin offset "
             f"{fmt(da.get('origin_offset_mm'))} mm, point disagreement p95 {fmt(da.get('point_disagreement_p95_mm'))} mm; "
-            f"reference band {fmt(da.get('reference_band'))}.", "")
+            f"reference band {fmt(da.get('reference_band'))} ({'within' if da.get('within_reference') else 'OUTSIDE'}).", "")
+
+    # 8b. band miss: where and what next (required for BAND_NOT_MET) ------------------------
+    # D6/D2: OD README.md:43-44 and the honesty rule (RE_SPEC.md:181-183) give the miss a
+    # per-region cause and options, not a bare "NOT MET" line. gate.json#miss_explanations is
+    # verify's own structured record (verdict.py refuses BAND_NOT_MET without it).
+    miss = gate.get("miss_explanations") or []
+    if verdict == "BAND_NOT_MET" or miss:
+        R.h2("Band miss: where and what next")
+        R.table(["region", "cause", "options"],
+                [[m.get("region"), m.get("cause"), fmt(m.get("options"))] for m in miss])
+        if gate.get("band_fails"):
+            R.w("Missed band(s): " + "; ".join(f"`{b}`" for b in gate["band_fails"]) + ".", "")
 
     # 9. checks ---------------------------------------------------------------------------
     checks = gate.get("checks") or {}
@@ -348,6 +502,8 @@ def render(run: Path, limitations_path: Path, out: Path) -> str:
     for x in cb.get("fit_for") or []:
         R.w(f"- Fit for: {R.prose(x, 'claim_boundary.fit_for')}")
     R.w(f"- The verdict covers only the Tier-1, deviation and named-check gates above, under the **{fmt(regime.get('name'))}** regime.", "")
+    if gate.get("claim_boundary"):
+        R.w(f"- Verify's own claim boundary (`qa/gate.json#claim_boundary`): {fmt(gate['claim_boundary'])}", "")
 
     if acc:
         R.h2("Human acceptance of the band miss")
@@ -403,4 +559,4 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    main()
+    run_main(main)

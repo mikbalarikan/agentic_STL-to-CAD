@@ -1,0 +1,17 @@
+{
+ "schema": "stl-re/regime@1",
+ "tool": "intake.py",
+ "tool_version": "fixture",
+ "inputs": {},
+ "seed": 0,
+ "created": "1970-01-01T00:00:00+00:00",
+ "name": "RE_SPEC",
+ "source": "baseline/oomwoo-re-pipeline/RE_SPEC.md:170-175",
+ "bands": {
+  "p95_mm": 1.6,
+  "max_mm": 4.0,
+  "tier1_abs_mm": 0.15,
+  "interface_max_mm": 0.8
+ },
+ "why": "fixture: calipers exist for F01/F02 (run-contract.md section 12 canonical band keys)"
+}

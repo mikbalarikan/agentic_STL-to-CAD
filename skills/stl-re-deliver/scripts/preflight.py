@@ -15,7 +15,7 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from _common import DeliverError, fail, preflight  # noqa: E402
+from _common import DeliverError, fail, preflight, run_main  # noqa: E402
 
 
 def main() -> None:
@@ -30,4 +30,4 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    main()
+    run_main(main)

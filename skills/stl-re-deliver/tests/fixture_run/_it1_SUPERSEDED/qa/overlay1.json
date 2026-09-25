@@ -1,0 +1,13 @@
+{
+ "schema": "stl-re/overlay@1",
+ "tool": "overlay.py",
+ "tool_version": "fixture",
+ "inputs": {},
+ "seed": 0,
+ "created": "1970-01-01T00:00:00+00:00",
+ "panels": [
+  "top",
+  "side"
+ ],
+ "empty_scan_panels": []
+}

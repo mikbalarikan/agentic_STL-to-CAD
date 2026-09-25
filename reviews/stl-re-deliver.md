@@ -59,3 +59,117 @@ tolerance (M02, labelled heuristic n=1), 2 fresh processes (T32). The 4-decimal 
 - repro_check compares geometry rather than raw hashes, works in a scratch copy, records environment pins and has an M02-shaped output.
 - `limitations-wording.md` is excellent: the golden quotes are accurate, the anti-patterns are well chosen, and the DRM index-row omission is caught.
 - The SKILL is compact (215 lines), with good progressive disclosure and an honest open-questions section.
+
+## Fixes applied (round 1)
+
+Applied against `skills/stl-re-deliver/` only. `tests/run_fixture_test.py` now runs 31
+assertions (was 21) and all pass; `python3 tests/gen_gate.py` regenerates the fixture's
+`qa/gate.json` (both iterations) by calling `stl-re-verify/scripts/verdict.py`'s own
+`assemble()`/`render()` on synthetic, schema-accurate QA block files.
+
+- **D1 (BLOCKER) — fixed.** `tests/fixture_run/qa/gate.json` and
+  `_it1_SUPERSEDED/qa/gate.json` are no longer hand-written. `tests/gen_gate.py` writes
+  `regime.json`, `hash_freeze.json`, `step_check.json`, `datum_audit.json`, `tier1.json`,
+  `registration.json`, `deviation.json`, `review.json`, `overlay1.json` in verify's real
+  schemas and calls the real `verdict.assemble()`/`verdict.render()` (imported from
+  `stl-re-verify/scripts/verdict.py`, unmodified) to produce `gate.json`/`VERDICT.md`.
+  `make_readme.py` was rewritten to match: Tier-1 renders from `tier1.dims{id:{...}}` with
+  `band_abs_mm`/`coverage` (flags a gated-but-`unmeasurable` dim); the deviation table now
+  labels `scan_to_cad`/`cad_to_scan` as **unmasked** and `scan_to_cad_masked`/`cad_to_scan_masked`
+  as masked (the old code had these swapped -- the exact CHK-MASK dishonesty this skill exists
+  to prevent); `over_band_clusters` is read as the real dict keyed by direction, not a list;
+  registration is read from `gate.json#registration` (top-level); zones render unmasked/masked
+  side by side; and a new "Gate results" table renders `gate.json#gated_results` (the actual
+  per-item PASS/FAIL the verdict was graded on), which was not rendered at all before.
+- **Refuse on null verdict / non-empty errors / verdict not in allowed_verdicts /
+  hash_frozen.unchanged — fixed** (folded into D1's fix). `_common.check_publish` now refuses
+  when `gate.json#errors` is non-empty, when `verdict` is `None`/outside the verdict vocabulary,
+  when `verdict` is not in `gate.json#allowed_verdicts`, or when `hash_frozen.unchanged` is not
+  `true`.
+- **D2 (MAJOR) — fixed.** `make_readme.py` now refuses unless every `gate.json#limitations[]`
+  (matched by `id`, or `text` when there is no id) appears in `deliver/limitations.json`, and
+  unless every `gate.json#auto_limitations` entry is covered by some limitation's `text` or
+  `evidence` (matched on the keyword before the first `:`). `gate.json#miss_explanations` is
+  rendered under a new "Band miss: where and what next" section (required for BAND_NOT_MET, and
+  the render refuses if it is empty there). The headline falls back to `gate.json#independence`
+  when CHK-INDEP is not a named check, and section 12 also renders verify's own
+  `gate.json#claim_boundary`. SKILL.md step 2 already said to seed `limitations.json` from
+  `qa/VERDICT.md`; it was not changed to point at `gate.json#limitations` directly, since the
+  README-level refusal now makes drift impossible either way.
+- **D3 (MAJOR) — fixed.** Added `_common.check_repro_fresh()`, called from both
+  `make_readme.py` and `make_manifest.py`: it recomputes the sha256 of every file recorded in
+  `deliver/repro.json#inputs` (`build/model.py`, `measure/params.json`, the delivered STEPs) and
+  refuses with "stale" in the message if any differs. Regression test: "model.py changed after
+  repro (stale repro.json)".
+- **D4 (MAJOR) — fixed.** `_common.check_acceptance` now: (1) refuses an ACCEPT-BAND entry
+  whose evidence path is under `qa/`, `build/`, `measure/`, `intake/`, `deliver/` or an old
+  `_itN_SUPERSEDED/` (evidence must be the owner's own document, under `decisions/` or the run
+  root); (2) requires the decision text or its evidence file to contain a ≥12-hex sha256 prefix
+  of the *current* `qa/gate.json` (or its `created` timestamp), so an acceptance cannot carry
+  over to a new gate; (3) requires the text to name at least one of `gate.json#band_fails`.
+  SKILL.md step 1 documents the evidence-location rule. Three regression tests added (missing
+  entry, evidence under `qa/`, entry that does not cite the current gate) plus the existing
+  happy-path test was updated to satisfy the new rule.
+- **D5 (MAJOR) — fixed.** `repro_check.py` gained `--cwd {run,build}` (default `run`, matching
+  the rebuild skill's own "library use" pattern -- `export_frames(body,
+  Path("intake/alignment.json"), Path("build"), ...)`, run-root-relative, per
+  `stl-re-rebuild-build123d/scripts/export_frames.py`'s own docstring). With `--cwd run` the
+  default command is `python build/model.py` from the scratch run root, with
+  `stl-re-rebuild-build123d/scripts` prepended to `PYTHONPATH` so a bare
+  `from export_frames import export_frames` resolves; `--cwd build` keeps the old
+  `model_template.py` CLI-style default. `repro.json` records `cwd`. Added
+  `tests/fixture_extra/model_library_style.py`, a model variant that builds the identical part
+  and calls `export_frames()` exactly the documented library way; a new regression test swaps it
+  in and confirms `repro_check.py`'s new default reproduces it (verified independently that it
+  produces bit-identical volume/faces/bbox to `build/model.py`'s own output in both frames).
+- **D6 (MAJOR) — fixed.** Added a "Model tree (design intent)" section (rendered from the new,
+  optional `limitations.json#feature_tree`, with the "STEP is a neutral B-Rep" sentence and
+  links to `model.py`/`MODELING_PLAN.md`) and a "Band miss: where and what next" section
+  (rendered from `gate.json#miss_explanations`, required for BAND_NOT_MET) -- see D1/D2 above.
+  `references/readme-template.md`'s section table was updated with both, and with the golden
+  citations already given in the finding.
+- **D7 (MINOR) — fixed.** `LITERAL_DECIMAL` changed from `(?<![\w.])[-+]?\d+\.\d+` to
+  `(?<![\d.])[-+]?\d+\.\d+`, so `Ø8.00`, `AF7.358` and `M3.5` are caught (only a preceding digit
+  or `.` now suppresses a match). Two regression tests added.
+- **D8 (MINOR) — skipped.** Flagging bare integers (`40 mm`, `Ø16`) as literals was judged too
+  aggressive for this round: unlike a decimal, an integer dimension is common in ordinary prose
+  ("iteration 2 of 3", "F01") and a blanket regex would produce many false CHK-NUMBERS refusals
+  unrelated to invented numbers. Left as SYNTHESIS's documented accepted residual risk
+  (finding's second option); can be revisited with a narrower pattern (unit-suffixed only) if it
+  proves necessary in practice.
+- **D9 (MINOR) — fixed.** `repro_check.py` refuses `--runs` < 2 before doing any work.
+  `subprocess.run` in `rebuild_once` is wrapped in `try/except subprocess.TimeoutExpired`,
+  recording `{"returncode": None, "error": "timeout", ...}` (a failed run, not a traceback).
+  Two regression tests added (`--runs 0`; the existing non-deterministic-build test still
+  exercises the normal completed-but-different-geometry path).
+- **D10 (MINOR) — fixed.** `_common.check_hash_frozen` now reads the real
+  `{"before": {...}, "after": {...}, "unchanged": bool}` shape, fails immediately when
+  `unchanged is False`, and matches build/ STEPs only against `after`'s hashes (never pools
+  `before` in). `check_publish` also refuses outright when `hash_frozen.unchanged` is not `true`
+  (see the "Refuse on null verdict / ..." entry above). The fixture's `hash_frozen` was already
+  wrong in the way the finding describes; `tests/gen_gate.py` and `run_fixture_test.py`'s
+  `prepare()` now both write the contract shape. Regression test added
+  ("hash_frozen.unchanged is false").
+- **D11 (MINOR) — fixed.** `make_readme.py` now reads `build/export_check.json`'s per-frame
+  `fillets` list and refuses (CHK-FILLET) if any entry is not `OK` and no declared limitation's
+  `text`/`evidence` mentions `export_check.json`. SKILL.md's "Always declare" list gained the
+  matching bullet. (No fixture regression test: the fixture has no fillets; adding one would
+  require a geometry change out of proportion to this fix, so this is covered by code review and
+  the check's own unit logic rather than an end-to-end case.)
+- **D12 (MINOR) — skipped.** A "Figures" section (overlay/figure paths) and an explicit
+  "restoration notes → assumptions" mapping note were judged lower priority than D1-D11 within
+  this round's scope and were not added. Left for a follow-up round; nothing here regresses.
+- **D13 (MINOR) — fixed.** `_common.check_inputs_unchanged` now returns `result: "fail"` (was
+  `"finding"`) when `input/INPUT_HASHES.json` is missing, with the note ending "HALT
+  (orchestrator §6)", per the finding.
+- **D14 (NIT) — fixed.** The `A or B` assertion (where B was already implied by an earlier case)
+  is now a single assertion that every produced STEP's raw sha256 differs from the delivered
+  one.
+- **D15 (NIT) — fixed.** Added `_common.run_main()`; every script's `if __name__ == "__main__":`
+  now calls `run_main(main)`, which lets a `DeliverError`'s `fail()` (exit 2) and
+  `repro_check.py`'s deliberate `sys.exit(1)` ("not reproducible") through unchanged but turns
+  any other exception into exit 3 ("internal error"), so a bug here can no longer be misread as
+  "not reproducible". SKILL.md documents exit 3.
+
+Not touched: `references/limitations-wording.md` (no finding against it) and
+`golden-examples/`/`baseline/` (out of scope, per instructions).

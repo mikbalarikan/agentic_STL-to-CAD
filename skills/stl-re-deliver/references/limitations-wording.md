@@ -1,5 +1,7 @@
 # Limitations, claim boundary and band-miss wording
 
+_B02 is a blind-replay target (`evals/replay/B02.md`), so its part-specific values are replaced by `<placeholders>` in the quotes below. The cited lines hold the originals._
+
 How the golden deliveries worded what they could NOT claim. Quote the pattern, not the
 numbers: in `deliver/limitations.json` every number goes in as a placeholder
 (`{{gate:...}}`, `{{params:...}}`), never typed (CHK-NUMBERS). Numbers in the quotes
@@ -31,14 +33,14 @@ values taken from the same scan is not independent evidence.
 >    check could not be run. No global scale was applied (the 0.4–1.6 % scan/caliper
 >    disagreement on four mid-size dims is not uniform enough to justify one).
 > 3. **F01, the hex drive socket, has no caliper reading of any kind.** The CAD holds the scan
->    fit **AF 7.358**, deliberately NOT intent-snapped to 7.0 or 7.5. This is the torque
+>    fit **AF <scan value>**, deliberately NOT intent-snapped to the nearest standard size. This is the torque
 >    interface and the largest single risk on the part. **One caliper reading on F01 should
 >    trigger a re-run.**
 
 Masked pass, declared (`VERDICT.md:138-145`):
 
-> Two gated interfaces *are* [mask-dependent]: unmasked … the **hex pocket reads max 1.624 —
-> 0.824 over band** … the hex-pocket PASS is a *masked* pass, and it is the same feature (F01)
+> Two gated interfaces *are* [mask-dependent]: unmasked … the **hex pocket reads max <value> —
+> <amount> over band** … the hex-pocket PASS is a *masked* pass, and it is the same feature (F01)
 > that carries no caliper reading.
 
 Fitness / claim boundary (`VERDICT.md:204-213`, repeated in `70_report.py:340-347`):
@@ -119,7 +121,7 @@ plane over ±0.07 mm undulation. Each names what was measured and what was model
 | Published before the gate | "Iteration 1 was published to 4_STEP before the gate finished" (`OOM-B02/6_RE_work/70_report.py:376`) | A non-verified STEP reached users | CHK-PUBLISH |
 | Verdict overwritten in place | "CAD under test: … (it2, overwritten in place)" (`OOM-P03/6_RE_work/VERDICT.md:6`) | it1 evidence is only second-hand | CHK-SUPERSEDED |
 | Circular validator shown as a pass | OD validator 13/13 with scan-derived expected values (`OD-H12/README.md:70-71`) | It is a consistency check | Label it so; never list it as independent evidence |
-| Re-scoping a failing interface to "interior" silently | B02 SAF-1 boss 1.540 re-scoped (`OOM-B02/6_RE_work/VERDICT.md:135-136`) | The gate got weaker, not the geometry better | Declare it as a limitation (B02 did) |
+| Re-scoping a failing interface to "interior" silently | B02 SAF-1 boss interface re-scoped (`OOM-B02/6_RE_work/VERDICT.md:135-136`) | The gate got weaker, not the geometry better | Declare it as a limitation (B02 did) |
 
 ## 4. Wording checklist for `limitations.json`
 

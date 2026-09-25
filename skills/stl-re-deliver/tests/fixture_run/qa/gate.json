@@ -1,133 +1,782 @@
 {
-  "schema": "stl-re/gate@1",
-  "tool": "verify",
-  "tool_version": "fixture",
+ "schema": "stl-re/gate@1",
+ "tool": "verdict.py",
+ "tool_version": "stl-re-verify@1",
+ "inputs": {
+  "/home/claude/agentic_STL-to-CAD/skills/stl-re-deliver/tests/fixture_run/qa/datum_audit.json": "4baa82d6291f416f2e10d3651049526e2aa720cf0e6c72b13493663c5dcb9a64",
+  "/home/claude/agentic_STL-to-CAD/skills/stl-re-deliver/tests/fixture_run/qa/deviation.json": "d9e52617c367ee0a4f32d0c306370c7a039ccf56a92a8b05d0ecce952907fa38",
+  "/home/claude/agentic_STL-to-CAD/skills/stl-re-deliver/tests/fixture_run/qa/hash_freeze.json": "b002d1c6c2f1d5024db5dc7829a9dd5a330fc933c6b2497a68b0dc81d47faf6a",
+  "/home/claude/agentic_STL-to-CAD/skills/stl-re-deliver/tests/fixture_run/qa/overlay1.json": "764e588044603e43b6d32a86e81ef91f615cd038630fd0195792a79e0115cc06",
+  "/home/claude/agentic_STL-to-CAD/skills/stl-re-deliver/tests/fixture_run/qa/regime.json": "97f4bf5502c9af379c015b00dff86ebba4d42b7cf6b3960d91f61d9251f49771",
+  "/home/claude/agentic_STL-to-CAD/skills/stl-re-deliver/tests/fixture_run/qa/registration.json": "b450455b89afaca1e29a13c3877df8c5cab1fc40c6f9936c7d5cb736ebb43f8f",
+  "/home/claude/agentic_STL-to-CAD/skills/stl-re-deliver/tests/fixture_run/qa/review.json": "475410a09edcf9299aada04dfff36f2c6d517aeb37dd75838b4c8e0f3897d0d3",
+  "/home/claude/agentic_STL-to-CAD/skills/stl-re-deliver/tests/fixture_run/qa/step_check.json": "c2e63948e26f9005137cd8e6a55f8253737df94817b88766b213c39b5a281e2a",
+  "/home/claude/agentic_STL-to-CAD/skills/stl-re-deliver/tests/fixture_run/qa/tier1.json": "a9763df6151373a81acd9ad5913134138fb5d25145c073f4084cb1c98b1960e5"
+ },
+ "seed": null,
+ "created": "1970-01-01T00:00:00+00:00",
+ "regime": {
+  "name": "RE_SPEC",
+  "source": "baseline/oomwoo-re-pipeline/RE_SPEC.md:170-175",
+  "bands": {
+   "p95_mm": 1.6,
+   "max_mm": 4.0,
+   "tier1_abs_mm": 0.15,
+   "interface_max_mm": 0.8
+  },
+  "declared_in": null
+ },
+ "hash_frozen": {
   "inputs": {},
   "seed": 0,
-  "created": "1970-01-01T00:00:00+00:00",
+  "before": {
+   "build/fixture_part_datum.step": "0000000000000000000000000000000000000000000000000000000000000000",
+   "build/fixture_part.step": "0000000000000000000000000000000000000000000000000000000000000000"
+  },
+  "after": {
+   "build/fixture_part_datum.step": "0000000000000000000000000000000000000000000000000000000000000000",
+   "build/fixture_part.step": "0000000000000000000000000000000000000000000000000000000000000000"
+  },
+  "unchanged": true
+ },
+ "datum_audit": {
+  "inputs": {},
+  "seed": 0,
+  "independence": "builder matrix used only to select named regions; all fits are QA code on raw scan",
+  "primary": {
+   "type": "plane",
+   "method": "region SVD",
+   "faces": 120,
+   "fit_rms_mm": 0.004,
+   "fit_max_mm": 0.01
+  },
+  "angle_deg": 0.05,
+  "axis_angle_deg": 0.05,
+  "clock_audited": false,
+  "origin_offset_mm": 0.02,
+  "origin_offset_vec_mm": [
+   0.01,
+   0.01,
+   0.0
+  ],
+  "point_disagreement_mean_mm": 0.01,
+  "point_disagreement_p95_mm": 0.03,
+  "point_disagreement_max_mm": 0.05,
+  "reference_band": "\u22640.3\u00b0 / \u22640.15 mm (RE_SPEC.md:241)",
+  "reference": {
+   "angle_deg": 0.3,
+   "origin_offset_mm": 0.15,
+   "source": "baseline/oomwoo-re-pipeline/RE_SPEC.md:241"
+  },
+  "within_reference": true,
+  "blocking": false,
+  "note": "REPORT-ONLY (QUESTIONS.md Q2)."
+ },
+ "validity": {
+  "inputs": {},
+  "seed": 0,
+  "steps": {
+   "build/fixture_part_datum.step": {
+    "validity": {
+     "counts": {
+      "solid": 1,
+      "shell": 1,
+      "face": 7,
+      "edge": 15,
+      "vertex": 10
+     },
+     "brepcheck_valid": true,
+     "shells_closed": [
+      true
+     ],
+     "naked_edges": 0,
+     "volume_mm3": 5975.0,
+     "area_mm2": 1200.0,
+     "bbox": [
+      [
+       -20.0,
+       -15.0,
+       -2.5
+      ],
+      [
+       20.0,
+       15.0,
+       2.5
+      ]
+     ],
+     "single_valid_closed_solid": true
+    },
+    "tessellation": {
+     "tolerance": 0.005,
+     "angular_tolerance": 0.05,
+     "tris": 400,
+     "watertight": true,
+     "winding": true,
+     "euler": 2,
+     "components": 1,
+     "degenerate_faces": 0,
+     "volume_mm3": 5975.0,
+     "volume_vs_brep_mm3": 0.0
+    },
+    "surface_census": {
+     "faces": 7,
+     "by_type": {
+      "plane": {
+       "count": 6,
+       "area_mm2": 1150.0
+      },
+      "cylinder": {
+       "count": 1,
+       "area_mm2": 50.0
+      }
+     },
+     "analytic_area_share": 1.0,
+     "gated": false,
+     "note": "reported, not gated (QUESTIONS.md Q3)"
+    }
+   },
+   "build/fixture_part.step": {
+    "validity": {
+     "counts": {
+      "solid": 1,
+      "shell": 1,
+      "face": 7,
+      "edge": 15,
+      "vertex": 10
+     },
+     "brepcheck_valid": true,
+     "shells_closed": [
+      true
+     ],
+     "naked_edges": 0,
+     "volume_mm3": 5975.0,
+     "area_mm2": 1200.0,
+     "bbox": [
+      [
+       -20.0,
+       -15.0,
+       -2.5
+      ],
+      [
+       20.0,
+       15.0,
+       2.5
+      ]
+     ],
+     "single_valid_closed_solid": true
+    },
+    "tessellation": {
+     "tolerance": 0.005,
+     "angular_tolerance": 0.05,
+     "tris": 400,
+     "watertight": true,
+     "winding": true,
+     "euler": 2,
+     "components": 1,
+     "degenerate_faces": 0,
+     "volume_mm3": 5975.0,
+     "volume_vs_brep_mm3": 0.0
+    },
+    "surface_census": {
+     "faces": 7,
+     "by_type": {
+      "plane": {
+       "count": 6,
+       "area_mm2": 1150.0
+      },
+      "cylinder": {
+       "count": 1,
+       "area_mm2": 50.0
+      }
+     },
+     "analytic_area_share": 1.0,
+     "gated": false,
+     "note": "reported, not gated (QUESTIONS.md Q3)"
+    }
+   }
+  },
+  "all_single_valid_closed_solid": true
+ },
+ "surface_census": {
+  "build/fixture_part_datum.step": {
+   "faces": 7,
+   "by_type": {
+    "plane": {
+     "count": 6,
+     "area_mm2": 1150.0
+    },
+    "cylinder": {
+     "count": 1,
+     "area_mm2": 50.0
+    }
+   },
+   "analytic_area_share": 1.0,
+   "gated": false,
+   "note": "reported, not gated (QUESTIONS.md Q3)"
+  },
+  "build/fixture_part.step": {
+   "faces": 7,
+   "by_type": {
+    "plane": {
+     "count": 6,
+     "area_mm2": 1150.0
+    },
+    "cylinder": {
+     "count": 1,
+     "area_mm2": 50.0
+    }
+   },
+   "analytic_area_share": 1.0,
+   "gated": false,
+   "note": "reported, not gated (QUESTIONS.md Q3)"
+  }
+ },
+ "tier1": {
+  "inputs": {},
+  "seed": 0,
+  "band_abs_mm": 0.15,
+  "band_source": "baseline/oomwoo-re-pipeline/RE_SPEC.md:170",
+  "tessellation": {
+   "tolerance": 0.005,
+   "angular_tolerance": 0.05
+  },
+  "dims": {
+   "F01": {
+    "name": "plate_x",
+    "caliper": 40.02,
+    "cad": 40.0,
+    "source": "caliper",
+    "gated": true,
+    "uncertainty_mm": 0.02,
+    "method": "jaw",
+    "detail": {
+     "value": 40.0,
+     "reduce": "max"
+    },
+    "delta": -0.02,
+    "pass": true,
+    "grey_zone": false
+   },
+   "F02": {
+    "name": "plate_t",
+    "caliper": 5.01,
+    "cad": 5.0,
+    "source": "caliper",
+    "gated": true,
+    "uncertainty_mm": 0.02,
+    "method": "jaw",
+    "detail": {
+     "value": 5.0,
+     "reduce": "max"
+    },
+    "delta": -0.01,
+    "pass": true,
+    "grey_zone": false
+   },
+   "F03": {
+    "name": "bore_d",
+    "caliper": null,
+    "cad": 8.0,
+    "source": "assumed",
+    "gated": false,
+    "uncertainty_mm": null,
+    "method": "bore",
+    "detail": {
+     "value": 8.0
+    },
+    "delta": null,
+    "pass": null
+   }
+  },
+  "worst_gated_abs_delta": 0.02,
+  "coverage": {
+   "gated": 2,
+   "requested_total": 3,
+   "absent": [
+    "F03 bore_d: not observable on the scan"
+   ]
+  },
+  "all_pass": true
+ },
+ "registration": {
+  "inputs": {},
+  "seed": 11,
+  "method": "point-to-point ICP, CAD samples -> scan samples, masked correspondences (B02 q20_tier2.py)",
+  "scan_kind": "full",
+  "iterations": 12,
+  "max_iterations": 60,
+  "converged": true,
+  "delta_deg": 0.01,
+  "delta_mm": 0.004,
+  "max_point_move_mm": 0.05,
+  "final_kept_fraction": 0.97,
+  "T_refine": [
+   [
+    1.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   [
+    0.0,
+    1.0,
+    0.0,
+    0.0
+   ],
+   [
+    0.0,
+    0.0,
+    1.0,
+    0.0
+   ],
+   [
+    0.0,
+    0.0,
+    0.0,
+    1.0
+   ]
+  ],
+  "T_refine_meaning": "maps datum-frame CAD onto the aligned scan; deviation_gate applies its inverse to the scan. QA-only: never written back to alignment.json (CHK-CIRCULAR).",
+  "trace_tail": [
+   {
+    "it": 11,
+    "step": 1e-07,
+    "rot_deg": 0.0001,
+    "trans_mm": 0.0001,
+    "kept_fraction": 0.97,
+    "mean_d_kept": 0.03
+   }
+  ],
+  "reference_masks_removed": [],
+  "params": {
+   "ns": 3000000,
+   "scan_seed": 11,
+   "nc": 300000,
+   "cad_seed": 13,
+   "normal_deg": 70.0,
+   "boundary_mm": 0.8,
+   "max_corr_mm": 3.0,
+   "max_iter": 60,
+   "tol": 1e-06
+  },
+  "notes": [
+   "welded: 20000 verts / 40000 faces"
+  ]
+ },
+ "deviation": {
+  "inputs": {},
+  "seed": 0,
+  "scan": {
+   "path": "input/scan.stl",
+   "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+   "kind": "full",
+   "full_res": true,
+   "vertices": 20000,
+   "faces": 40000
+  },
+  "cad": {
+   "path": "build/fixture_part_datum.step",
+   "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+   "tessellated_by_qa": true,
+   "tessellation": {
+    "tolerance": 0.005,
+    "angular_tolerance": 0.05
+   },
+   "faces": 400
+  },
+  "frame": "datum",
+  "registration": {
+   "method": "trimmed ICP",
+   "iterations": 12,
+   "max_iterations": 60,
+   "converged": true,
+   "delta_deg": 0.01,
+   "delta_mm": 0.004,
+   "file": "qa/registration.json"
+  },
+  "sampling": {
+   "s2c_points": "all",
+   "s2c_seed": 0,
+   "c2s_samples": 300000,
+   "c2s_seed": 2,
+   "k": 8,
+   "n_samp": 3000000,
+   "dist_seed": 0,
+   "vertex_candidates": false,
+   "method": "KD candidates -> exact point-to-triangle (OD gate.py:8-17)"
+  },
   "regime": {
-    "name": "RE_SPEC",
-    "source": "baseline/oomwoo-re-pipeline/RE_SPEC.md:170-175",
-    "bands": {
-      "tier1": "±0.15 mm",
-      "tier2_whole": "p95 ≤1.6 / max ≤4.0 mm",
-      "tier2_interfaces": "max ≤0.8 mm"
-    }
+   "name": "RE_SPEC",
+   "source": "baseline/oomwoo-re-pipeline/RE_SPEC.md:170-175",
+   "bands": {
+    "p95_mm": 1.6,
+    "max_mm": 4.0,
+    "tier1_abs_mm": 0.15,
+    "interface_max_mm": 0.8
+   }
   },
-  "hash_frozen": {},
-  "datum_audit": {
-    "angle_deg": 0.05,
-    "origin_offset_mm": 0.02,
-    "point_disagreement_p95_mm": 0.03,
-    "reference_band": "≤0.3° / ≤0.15 mm (RE_SPEC.md:241)",
-    "blocking": false
+  "scan_to_cad": {
+   "n": 20000,
+   "rms": 0.041,
+   "mean": 0.041,
+   "p50": 0.03,
+   "p95": 0.088,
+   "p99": 0.12,
+   "max": 0.31
   },
-  "validity": {
-    "solids": 1,
-    "valid": true
+  "cad_to_scan": {
+   "n": 20000,
+   "rms": 0.9,
+   "mean": 0.9,
+   "p50": 0.02,
+   "p95": 3.9,
+   "p99": 4.0,
+   "max": 4.0
   },
-  "surface_census": {
-    "PLANE": 6,
-    "CYLINDER": 1
+  "scan_to_cad_masked": {
+   "n": 20000,
+   "rms": 0.041,
+   "mean": 0.041,
+   "p50": 0.03,
+   "p95": 0.088,
+   "p99": 0.12,
+   "max": 0.31
   },
-  "tier1": {
-    "F01 plate_x": {
-      "caliper": 40.02,
-      "cad": 40.0,
-      "delta": -0.02,
-      "pass": true
-    },
-    "F02 plate_t": {
-      "caliper": 5.01,
-      "cad": 5.0,
-      "delta": -0.01,
-      "pass": true
-    }
+  "cad_to_scan_masked": {
+   "n": 20000,
+   "rms": 0.9,
+   "mean": 0.9,
+   "p50": 0.02,
+   "p95": 3.9,
+   "p99": 4.0,
+   "max": 4.0
   },
-  "deviation": {
-    "registration": {
-      "method": "trimmed ICP",
-      "iterations": 12,
-      "converged": true,
-      "delta_deg": 0.01,
-      "delta_mm": 0.004
-    },
+  "unmasked": {
+   "scan_to_cad": {
+    "n": 20000,
+    "rms": 0.041,
+    "mean": 0.041,
+    "p50": 0.03,
+    "p95": 0.088,
+    "p99": 0.12,
+    "max": 0.31
+   },
+   "cad_to_scan": {
+    "n": 20000,
+    "rms": 0.9,
+    "mean": 0.9,
+    "p50": 0.02,
+    "p95": 3.9,
+    "p99": 4.0,
+    "max": 4.0
+   }
+  },
+  "masked_fraction": {
+   "scan_to_cad": 0.0,
+   "cad_to_scan": 0.0
+  },
+  "bands": {
+   "scan_to_cad": {
+    "unmasked": null,
+    "masked": null
+   },
+   "cad_to_scan": {
+    "unmasked": null,
+    "masked": null
+   }
+  },
+  "masks": [],
+  "cad_to_scan_observable": {
+   "n": 18000,
+   "rms": 0.05,
+   "mean": 0.05,
+   "p50": 0.02,
+   "p95": 0.09,
+   "p99": 0.14,
+   "max": 0.29
+  },
+  "unobservable_fraction": 0.1,
+  "observability": {
+   "note": "fixture"
+  },
+  "zones": {
+   "bore_wall": {
+    "kind": "functional_interface",
+    "note": "bore wall vs mating shaft",
+    "band": [
+     null,
+     0.8
+    ],
     "scan_to_cad": {
-      "n": 20000,
-      "rms": 0.041,
+     "unmasked": {
+      "n": 900,
+      "rms": 0.05,
+      "mean": 0.05,
       "p50": 0.03,
-      "p95": 0.088,
-      "p99": 0.12,
-      "max": 0.31,
-      "sampling": "area-uniform",
-      "seed": 0
+      "p95": 0.1,
+      "p99": 0.2,
+      "max": 0.4
+     },
+     "masked": {
+      "n": 900,
+      "rms": 0.05,
+      "mean": 0.05,
+      "p50": 0.03,
+      "p95": 0.1,
+      "p99": 0.2,
+      "max": 0.4
+     },
+     "masked_fraction": 0.0,
+     "band_unmasked": null,
+     "band_masked": null
     },
     "cad_to_scan": {
-      "n": 20000,
-      "rms": 0.9,
-      "p50": 0.02,
-      "p95": 3.9,
-      "p99": 4.0,
-      "max": 4.0,
-      "sampling": "area-uniform",
-      "seed": 0
-    },
-    "cad_to_scan_observable": {
-      "n": 18000,
+     "unmasked": {
+      "n": 900,
       "rms": 0.05,
-      "p50": 0.02,
-      "p95": 0.09,
-      "p99": 0.14,
-      "max": 0.29,
-      "sampling": "area-uniform",
-      "seed": 0
-    },
-    "unobservable_fraction": 0.1,
-    "zones": {
-      "bore wall": {
-        "n": 900,
-        "rms": 0.05,
-        "p50": 0.03,
-        "p95": 0.1,
-        "p99": 0.2,
-        "max": 0.4,
-        "band": "max ≤0.8",
-        "gated": true,
-        "pass": true
-      }
-    },
-    "masks": [],
-    "unmasked": {
-      "n": 20000,
-      "rms": 0.041,
+      "mean": 0.05,
       "p50": 0.03,
-      "p95": 0.088,
-      "p99": 0.12,
-      "max": 0.31,
-      "sampling": "area-uniform",
-      "seed": 0
-    },
-    "sensitivity": [],
-    "over_band_clusters": [],
-    "scan": "input/scan.stl",
-    "full_res": true
-  },
-  "checks": {
-    "CHK-MASK": {
-      "ran": true,
-      "result": "pass",
-      "note": "no masks"
-    },
-    "CHK-INDEP": {
-      "ran": true,
-      "result": "pass",
-      "note": "verify ran in a fresh agent"
-    },
-    "CHK-CIRCULAR": {
-      "ran": true,
-      "result": "pass",
-      "note": "datum not refined to CAD"
+      "p95": 0.1,
+      "p99": 0.2,
+      "max": 0.4
+     },
+     "masked": {
+      "n": 900,
+      "rms": 0.05,
+      "mean": 0.05,
+      "p50": 0.03,
+      "p95": 0.1,
+      "p99": 0.2,
+      "max": 0.4
+     },
+     "masked_fraction": 0.0,
+     "band_unmasked": null,
+     "band_masked": null
     }
+   }
   },
-  "verdict": "APPROVED_WITH_LIMITATIONS"
+  "sensitivity": [],
+  "mask_dependent_passes": [],
+  "over_band_clusters": {
+   "scan_to_cad": {
+    "threshold_mm": 0.8,
+    "eps_mm": 1.0,
+    "min_pts": 20,
+    "n_over": 0,
+    "fraction_over": 0.0,
+    "clusters": [],
+    "n_clusters_ge_min": 0,
+    "points_in_small_clusters": 0
+   },
+   "cad_to_scan": {
+    "threshold_mm": 0.8,
+    "eps_mm": 1.0,
+    "min_pts": 20,
+    "n_over": 0,
+    "fraction_over": 0.0,
+    "clusters": [],
+    "n_clusters_ge_min": 0,
+    "points_in_small_clusters": 0
+   },
+   "reading": "scan_to_cad clusters = scan material the CAD lacks (missing feature or artefact); cad_to_scan clusters = CAD material with no scan (invented or unobservable)"
+  },
+  "gate_valid": true,
+  "gate_invalid_reasons": [],
+  "label": "OFFICIAL (full-res)"
+ },
+ "deviation_datum_frame": null,
+ "deviation_runs": [],
+ "gated_results": [
+  {
+   "item": "scan_to_cad:masked",
+   "result": {
+    "p95_band": 1.6,
+    "max_band": 4.0,
+    "pass": true
+   },
+   "stats": {
+    "n": 20000,
+    "rms": 0.041,
+    "mean": 0.041,
+    "p50": 0.03,
+    "p95": 0.088,
+    "p99": 0.12,
+    "max": 0.31
+   }
+  },
+  {
+   "item": "cad_to_scan_observable",
+   "result": {
+    "p95_band": 1.6,
+    "max_band": 4.0,
+    "pass": true
+   },
+   "stats": {
+    "n": 18000,
+    "rms": 0.05,
+    "mean": 0.05,
+    "p50": 0.02,
+    "p95": 0.09,
+    "p99": 0.14,
+    "max": 0.29
+   }
+  },
+  {
+   "item": "zone:bore_wall:scan_to_cad",
+   "result": {
+    "p95_band": null,
+    "max_band": 0.8,
+    "pass": true
+   },
+   "stats": {
+    "n": 900,
+    "rms": 0.05,
+    "mean": 0.05,
+    "p50": 0.03,
+    "p95": 0.1,
+    "p99": 0.2,
+    "max": 0.4
+   },
+   "unmasked": {
+    "n": 900,
+    "rms": 0.05,
+    "mean": 0.05,
+    "p50": 0.03,
+    "p95": 0.1,
+    "p99": 0.2,
+    "max": 0.4
+   },
+   "band_unmasked": {
+    "p95_band": null,
+    "max_band": 0.8,
+    "pass": true
+   }
+  },
+  {
+   "item": "zone:bore_wall:cad_to_scan",
+   "result": {
+    "p95_band": null,
+    "max_band": 0.8,
+    "pass": true
+   },
+   "stats": {
+    "n": 900,
+    "rms": 0.05,
+    "mean": 0.05,
+    "p50": 0.03,
+    "p95": 0.1,
+    "p99": 0.2,
+    "max": 0.4
+   },
+   "unmasked": {
+    "n": 900,
+    "rms": 0.05,
+    "mean": 0.05,
+    "p50": 0.03,
+    "p95": 0.1,
+    "p99": 0.2,
+    "max": 0.4
+   },
+   "band_unmasked": {
+    "p95_band": null,
+    "max_band": 0.8,
+    "pass": true
+   }
+  }
+ ],
+ "overlays": [
+  {
+   "inputs": {},
+   "seed": 0,
+   "panels": [
+    "top",
+    "side"
+   ],
+   "empty_scan_panels": []
+  }
+ ],
+ "checks": {
+  "CHK-MASK": {
+   "ran": true,
+   "result": "pass",
+   "note": "no pass depends on a mask"
+  },
+  "CHK-CLUSTER": {
+   "ran": true,
+   "result": "pass",
+   "note": "0 scan->CAD over-band clusters; unexplained: []"
+  },
+  "CHK-OVERLAY": {
+   "ran": true,
+   "result": "pass",
+   "note": "every panel shows scan"
+  },
+  "CHK-CIRCULAR": {
+   "ran": true,
+   "result": "pass",
+   "note": "fixture"
+  },
+  "CHK-LIKE4LIKE": {
+   "ran": true,
+   "result": "pass",
+   "note": "fixture"
+  },
+  "CHK-INDEP": {
+   "ran": true,
+   "result": "pass",
+   "note": "fixture"
+  },
+  "CHK-FILLET": {
+   "ran": true,
+   "result": "pass",
+   "note": "fixture"
+  },
+  "CHK-PATCHWORK": {
+   "ran": true,
+   "result": "pass",
+   "note": "fixture"
+  },
+  "CHK-ENUM": {
+   "ran": true,
+   "result": "pass",
+   "note": "fixture: matches photo"
+  },
+  "CHK-ACHIEVABLE": {
+   "ran": true,
+   "result": "n/a",
+   "note": "no Tier-1 miss to attribute (\u00a74 CHK-ACHIEVABLE)"
+  },
+  "PHOTO-PLAUSIBILITY": {
+   "ran": true,
+   "result": "n/a",
+   "note": "no photos taken for this run"
+  }
+ },
+ "blockers": [],
+ "evidence_blockers": [],
+ "geom_fails": [],
+ "band_fails": [],
+ "auto_limitations": [
+  "tier1 partial: 2 of 3 gated"
+ ],
+ "limitations": [
+  {
+   "id": "L1",
+   "text": "Bore diameter is assumed; the scan does not resolve it.",
+   "rerun_trigger": "One caliper reading of the bore diameter; a value different from the model triggers a re-run.",
+   "evidence": "measure/params.json#bore_d"
+  }
+ ],
+ "miss_explanations": [],
+ "claim_boundary": "Not fit for any physical use; the bore is not calipered. Fit for pipeline testing of stl-re-deliver only.",
+ "independence": "verify ran in a fresh agent (CHK-INDEP)",
+ "cluster_explanations": {},
+ "allowed_verdicts": [
+  "APPROVED_WITH_LIMITATIONS",
+  "HALT",
+  "REVISE"
+ ],
+ "proposed_verdict": "APPROVED_WITH_LIMITATIONS",
+ "verdict": "APPROVED_WITH_LIMITATIONS",
+ "errors": []
 }

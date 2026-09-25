@@ -8,9 +8,10 @@
   "name": "RE_SPEC",
   "source": "baseline/oomwoo-re-pipeline/RE_SPEC.md:170-175",
   "bands": {
-    "tier1": "±0.15 mm",
-    "tier2_whole": "p95 ≤1.6 / max ≤4.0 mm",
-    "tier2_interfaces": "max ≤0.8 mm"
+    "p95_mm": 1.6,
+    "max_mm": 4.0,
+    "tier1_abs_mm": 0.15,
+    "interface_max_mm": 0.8
   },
-  "why": "fixture"
+  "why": "fixture: calipers exist for F01/F02 (run-contract.md section 12 canonical band keys)"
 }

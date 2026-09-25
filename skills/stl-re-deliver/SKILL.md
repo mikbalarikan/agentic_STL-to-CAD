@@ -30,8 +30,10 @@ layout, the JSON keys, the verdicts, `DECISIONS.md` and the check ids used below
 | `_itN_SUPERSEDED/` | `deliver/MANIFEST.json` (`scripts/make_manifest.py`, always last) |
 
 Scripts live in `scripts/`. All take `--run <run folder>`. Exit 0 means done, 2 means
-refused (the message names the check and the next action), and 1 means `repro_check.py`
-found a non-reproducible build.
+refused (the message names the check and the next action), 1 means `repro_check.py`
+found a non-reproducible build, and 3 means an unexpected internal error (a bug here, not a
+finding about the run -- every script's `main()` runs under `_common.run_main()`, so a bare
+traceback never masquerades as "not reproducible").
 
 ## Steps
 
@@ -59,7 +61,7 @@ It writes nothing. It runs:
 |---|---|
 | `APPROVED` | Continue. `limitations` must be empty. If VERDICT.md lists limitations, the verdict is wrong. Send it back to verify. |
 | `APPROVED_WITH_LIMITATIONS` | Continue. Every limitation in VERDICT.md goes into `limitations.json` with a re-run trigger (SYNTHESIS F10). |
-| `BAND_NOT_MET` | If there is no ACCEPT-BAND entry, **stop and ask the owner**. Show them the missed band with its number, the per-region explanation and the options, all read from `gate.json` and `VERDICT.md`. Write nothing to `deliver/`. Once an entry exists, continue. The README opens with a "band NOT met" banner and an acceptance section. |
+| `BAND_NOT_MET` | If there is no ACCEPT-BAND entry, **stop and ask the owner**. Show them the missed band with its number, the per-region explanation and the options, all read from `gate.json` and `VERDICT.md`. Write nothing to `deliver/`. Once an entry exists, continue. The README opens with a "band NOT met" banner and an acceptance section, plus a "Band miss: where and what next" section from `gate.json#miss_explanations`. **The entry must be tied to this gate**: its decision or its evidence file must contain the sha256 prefix (or `created` timestamp) of the *current* `qa/gate.json`, and must name at least one of `gate.json#band_fails`. Its evidence file must live under `decisions/` or the run root, never under `qa/`, `build/`, `measure/`, `intake/`, `deliver/` or an old `_itN_SUPERSEDED/` (an acceptance recorded against an earlier gate, or pointed at the verifier's own `qa/VERDICT.md`, does not count). |
 | `REVISE`, `HALT` | Refuse. REVISE goes back to measure/rebuild. HALT goes to the orchestrator and a human. |
 
 Never change a verdict, loosen a band, or edit `qa/` or `build/` from this skill
@@ -81,6 +83,8 @@ Take the content from `qa/VERDICT.md` and `measure/params.json`. Do not take it 
   - Every photo-inferred or assumed critical feature.
   - QA that was not independent (CHK-INDEP; B02 A13, `VERDICT.md:189-194`).
   - Circular validators, labelled as consistency checks (OD `README.md:70-71`).
+  - Every fillet with status FAILED or a used radius ≠ target (CHK-FILLET; rebuild
+    `SKILL.md:194`), with evidence naming `export_check.json`.
 - **Assumptions / invented geometry:** anything the model contains that was not measured.
   This includes connectors invented to make one solid (OD core tube). Params tagged
   `assumed`, `photo-inferred` or `standard` are listed automatically.
@@ -94,14 +98,21 @@ Take the content from `qa/VERDICT.md` and `measure/params.json`. Do not take it 
 ### 3. Reproducibility re-run
 
 ```
-python scripts/repro_check.py --run <run> [--cmd python model.py] [--runs 2]
+python scripts/repro_check.py --run <run> [--cwd run|build] [--cmd ...] [--runs 2]
 ```
 
 The script copies `build/` (without STEP or STL outputs), `measure/` and `intake/` (without
-meshes) to a scratch folder. It runs the build in 2 fresh subprocesses and re-imports every
-produced STEP whose name matches a delivered one. Then it compares solids, face count,
-surface census, volume and bbox.
+meshes) to a scratch folder. It runs the build in 2 (or more; `--runs` must be ≥2) fresh
+subprocesses and re-imports every produced STEP whose name matches a delivered one. Then it
+compares solids, face count, surface census, volume and bbox.
 
+- **`--cwd` (default `run`):** the rebuild runs from the run root by default, as
+  `build/model.py`, with `stl-re-rebuild-build123d/scripts` on `PYTHONPATH` -- this is what the
+  rebuild skill's own "library use" pattern needs (`export_frames(body,
+  Path("intake/alignment.json"), Path("build"), ...)`, paths relative to the run root, plus a
+  bare `from export_frames import export_frames`). Pass `--cwd build` for a `model.py` written
+  the `templates/model_template.py` CLI way instead (run from `build/`, paths passed on the
+  command line). `repro.json#cwd` records which was used.
 - The default tolerance is exact equality. The M02 rerun recorded
   `volume_abs_delta_mm3 0.0` and `bbox_max_abs_delta_mm 0.0`
   (`golden-examples/M02-02-03_watertight-design-intent/reproducibility_report.json`),
@@ -112,6 +123,10 @@ surface census, volume and bbox.
 - If `build/model.py` does not write the STEPs itself (for example a separate export
   script), pass the full command with `--cmd`, and put the same command in
   `repro_commands`.
+- `deliver/repro.json` goes stale the moment `build/model.py`, `measure/params.json` or a
+  delivered STEP changes afterward (for example after an `init_run.py supersede`).
+  `make_readme.py` and `make_manifest.py` both re-check `repro.json#inputs`' recorded sha256
+  against the current files and refuse a stale repro rather than trust it.
 
 **On failure (exit 1):** do not deliver. Read `repro.json#runs[].stderr_tail`. The usual
 causes are an unseeded random, a wall-clock value, a dict/set order, or an absolute path.
@@ -184,7 +199,9 @@ circular or partial pass a clean pass (`analysis/SYNTHESIS.md` §0.1).
 |---|---|---|
 | CHK-PUBLISH fail | No verdict yet | Run stl-re-verify. Do not create `deliver/`. |
 | CHK-NUMBERS headline mismatch | VERDICT.md and gate.json disagree | Send it back to verify. Do not edit either file. |
-| ACCEPT-BAND stop | BAND_NOT_MET with no recorded acceptance | Ask the owner. Save their written answer in the run and append the `DECISIONS.md` line. |
+| ACCEPT-BAND stop | BAND_NOT_MET with no recorded acceptance, or the entry does not cite this gate / a `qa/` (etc.) file was used as evidence | Ask the owner. Save their written answer under `decisions/` or the run root (never a pipeline stage folder), citing the current `qa/gate.json` sha256 and the missed band, then append the `DECISIONS.md` line. |
+| repro is stale | `build/model.py`, `measure/params.json` or a delivered STEP changed after `repro_check.py` ran | Re-run `scripts/repro_check.py` before rendering the README or the manifest. |
+| gate limitation / auto_limitations missing | `qa/gate.json#limitations` or `#auto_limitations` has an entry `deliver/limitations.json` does not cover | Add the missing limitation (same `id`) or mention the auto-limitation's keyword; never drop one. |
 | CHK-SUPERSEDED fail | An earlier iteration is lost or incomplete | Tell the user what is missing. Record `OTHER` in `DECISIONS.md` and name the gap as a limitation. Never fabricate the old files. |
 | hash freeze fail | The STEP changed after QA | Re-run verify on the current STEP. |
 | inputs changed | The evidence was modified | HALT (orchestrator §6). |
@@ -195,11 +212,24 @@ circular or partial pass a clean pass (`analysis/SYNTHESIS.md` §0.1).
 ## Test
 
 `tests/run_fixture_test.py` copies `tests/fixture_run/` to a scratch folder. The fixture is
-a synthetic plate with a bore: two iterations, APPROVED_WITH_LIMITATIONS. The script plays
-the rebuild and verify outputs the fixture needs, then runs preflight, repro, README and
-manifest. It also runs 8 refusal cases (one per check above, plus a missing re-run trigger
-and a literal decimal), BAND_NOT_MET with an ACCEPT-BAND entry, and a non-deterministic
-model. That is 21 assertions in total.
+a synthetic plate with a bore: two iterations, APPROVED_WITH_LIMITATIONS. `qa/gate.json` (both
+iterations) is not hand-written: `tests/gen_gate.py` writes verify's own QA block files
+(`regime.json`, `hash_freeze.json`, `step_check.json`, `tier1.json`, `registration.json`,
+`deviation.json`, `review.json`, ...) in verify's real schema and calls
+`stl-re-verify/scripts/verdict.py`'s own `assemble()`/`render()` to compose `gate.json` and
+`VERDICT.md`, so the fixture exercises the real gate shape rather than a hand-sketched one. Run
+`python3 tests/gen_gate.py` to regenerate both after changing the QA block content.
+
+The test script plays the rebuild and verify outputs the fixture still needs (STEP hashes,
+`export_check.json`), then runs preflight, repro, README and manifest. It also runs refusal
+cases for every check above (a missing re-run trigger, literal decimals including
+`Ø8.00`/`AF7.358`-style tokens, a stale `repro.json` after `model.py` changes, `--runs 0`,
+`hash_frozen.unchanged: false`, a gate limitation missing from `limitations.json`, an
+uncovered `auto_limitations` entry, and three ACCEPT-BAND shapes: none, evidence under `qa/`,
+and evidence that does not cite the current gate), BAND_NOT_MET with a valid ACCEPT-BAND entry,
+a `model.py` using the rebuild skill's run-root-relative "library use" pattern under
+`repro_check.py`'s default `--cwd run`, and a non-deterministic model. That is 31 assertions in
+total.
 
 ```
 python tests/run_fixture_test.py            # needs build123d; prints N/N passed

@@ -1,0 +1,71 @@
+{
+ "schema": "stl-re/tier1@1",
+ "tool": "sim_caliper.py",
+ "tool_version": "fixture",
+ "inputs": {},
+ "seed": 0,
+ "created": "1970-01-01T00:00:00+00:00",
+ "band_abs_mm": 0.15,
+ "band_source": "baseline/oomwoo-re-pipeline/RE_SPEC.md:170",
+ "tessellation": {
+  "tolerance": 0.005,
+  "angular_tolerance": 0.05
+ },
+ "dims": {
+  "F01": {
+   "name": "plate_x",
+   "caliper": 40.02,
+   "cad": 40.0,
+   "source": "caliper",
+   "gated": true,
+   "uncertainty_mm": 0.02,
+   "method": "jaw",
+   "detail": {
+    "value": 40.0,
+    "reduce": "max"
+   },
+   "delta": -0.02,
+   "pass": true,
+   "grey_zone": false
+  },
+  "F02": {
+   "name": "plate_t",
+   "caliper": 5.01,
+   "cad": 5.0,
+   "source": "caliper",
+   "gated": true,
+   "uncertainty_mm": 0.02,
+   "method": "jaw",
+   "detail": {
+    "value": 5.0,
+    "reduce": "max"
+   },
+   "delta": -0.01,
+   "pass": true,
+   "grey_zone": false
+  },
+  "F03": {
+   "name": "bore_d",
+   "caliper": null,
+   "cad": 8.0,
+   "source": "assumed",
+   "gated": false,
+   "uncertainty_mm": null,
+   "method": "bore",
+   "detail": {
+    "value": 8.0
+   },
+   "delta": null,
+   "pass": null
+  }
+ },
+ "worst_gated_abs_delta": 0.02,
+ "coverage": {
+  "gated": 2,
+  "requested_total": 3,
+  "absent": [
+   "F03 bore_d: not observable on the scan"
+  ]
+ },
+ "all_pass": true
+}

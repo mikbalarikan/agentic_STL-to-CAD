@@ -28,7 +28,8 @@ from pathlib import Path
 from typing import Any
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from _common import DeliverError, fail, header, load_json, preflight, sha256_file, write_json  # noqa: E402
+from _common import (DeliverError, check_repro_fresh, fail, header, load_json, preflight,  # noqa: E402
+                     run_main, sha256_file, write_json)
 
 
 def role_of(rel: str, part: str) -> str:
@@ -85,8 +86,10 @@ def main() -> None:
         for req in ("deliver/README.md", "deliver/repro.json"):
             if not (run / req).is_file():
                 raise DeliverError(f"{req} missing; run repro_check.py and make_readme.py before the manifest")
-        if load_json(run / "deliver" / "repro.json").get("reproducible") is not True:
+        repro = load_json(run / "deliver" / "repro.json")
+        if repro.get("reproducible") is not True:
             raise DeliverError("deliver/repro.json is not reproducible; loop back to rebuild")
+        check_repro_fresh(run, repro)
     except DeliverError as exc:
         fail(str(exc))
     excludes: list[tuple[str, str]] = []
@@ -137,4 +140,4 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    main()
+    run_main(main)

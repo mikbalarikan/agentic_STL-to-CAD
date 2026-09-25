@@ -67,23 +67,24 @@ this session; they cite the review's pre-fix reproductions and are marked
 | stl-re-orchestrate | 01-init-run-selftest-doctor | selftest OK; doctor ok, all deps/skills found | **Run this session — matches exactly** |
 | stl-re-orchestrate | 02-supersede-requires-route | `--route` required, else exit 2 | **Run this session — exit 2, matches fix record** |
 | stl-re-orchestrate | 03-refused-gate-never-trusted | Refused gate.json → status verdict null + finding | **Run this session — matches fix record** |
-| stl-re-deliver | 01-fixture-test-suite | 21/21 fixture cases pass | Cited from review (pre-edit): 21/21 — **not run (skill under edit)** |
-| stl-re-deliver | 02-stale-repro-refusal | Stale repro.json refused after model.py changes | Cited from review (defect, no fix-round recorded yet) — **not run (skill under edit)** |
-| stl-re-deliver | 03-accept-band-tied-to-gate | ACCEPT-BAND tied to the current gate, evidence path restricted | Cited from review (defect, no fix-round recorded yet) — **not run (skill under edit)** |
+| stl-re-deliver | 01-fixture-test-suite | all fixture cases pass | 31/31 pass after round-1 fixes (run 2026-09-25) |
+| stl-re-deliver | 02-stale-repro-refusal | Stale repro.json refused after model.py changes | Pass: refused as expected (fixture test, run 2026-09-25) |
+| stl-re-deliver | 03-accept-band-tied-to-gate | ACCEPT-BAND tied to the current gate, evidence path restricted | Pass: refused as expected (fixture test, run 2026-09-25) |
 
-**Tally of cases run in this session:** 16 run (all matched their cited expected outcome), 4
-cited from prior reviews and not independently rerun, 3 not run because `stl-re-deliver` was
-under active edit.
+**Tally of cases run in this session:** 19 run (all matched their cited expected outcome;
+the 3 deliver cases were run after the deliver fixes landed), 4 cited from prior reviews and
+not independently rerun.
 
 ## Honest note on `evals/replay/`
 
 The blind replays under `evals/replay/` (`B02.md`, `dreame_screw.md`, `artifacts/`) were **not
-fully blind**. They were run to compare the new `stl-re-*` skills against the baseline skill on
-held-out parts, but the replay-writing process had access to the golden answer keys while
-building the comparison tables, which is a channel for the golden numbers to leak into how the
-replay was framed or reported — this is being scrubbed, but has not been fully audited or fixed
-as of this eval suite. Treat any number in `evals/replay/` as suggestive, not as an
-independently-blind confirmation.
+fully blind**. The replaying agents read skill text that stated golden answers for these very
+parts (datum specs, clock angles, parameter values, gate numbers). Both replay reports flag this
+as defect D1. The leaked values were then removed from the skill text, keeping the lessons
+and citations (`reviews/_answer_key_scrub.md`, commit `9265a60`), but the replays were not
+re-run afterwards. Comparing against the golden record when writing the reports is intended
+and is not the leak. Treat the new-skill replay numbers as suggestive, not as an
+independently blind confirmation.
 
 They also ran on **pre-fix skills**: `evals/replay/B02.md` records the new-skills run as "Frozen
 at commit `ccbb063` — before the Phase 4 review-fix commits (`a2c95be`, `5ee60da`, `69f7b5e`,

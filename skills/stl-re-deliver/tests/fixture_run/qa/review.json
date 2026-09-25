@@ -1,0 +1,54 @@
+{
+ "schema": "stl-re/review@1",
+ "tool": "review",
+ "tool_version": "fixture",
+ "inputs": {},
+ "seed": 0,
+ "created": "1970-01-01T00:00:00+00:00",
+ "verdict": "APPROVED_WITH_LIMITATIONS",
+ "photos": [],
+ "checks": {
+  "CHK-CIRCULAR": {
+   "ran": true,
+   "result": "pass",
+   "note": "fixture"
+  },
+  "CHK-LIKE4LIKE": {
+   "ran": true,
+   "result": "pass",
+   "note": "fixture"
+  },
+  "CHK-INDEP": {
+   "ran": true,
+   "result": "pass",
+   "note": "fixture"
+  },
+  "CHK-FILLET": {
+   "ran": true,
+   "result": "pass",
+   "note": "fixture"
+  },
+  "CHK-PATCHWORK": {
+   "ran": true,
+   "result": "pass",
+   "note": "fixture"
+  },
+  "CHK-ENUM": {
+   "ran": true,
+   "result": "pass",
+   "note": "fixture: matches photo"
+  }
+ },
+ "independence": "verify ran in a fresh agent (CHK-INDEP)",
+ "cluster_explanations": {},
+ "claim_boundary": "Not fit for any physical use; the bore is not calipered. Fit for pipeline testing of stl-re-deliver only.",
+ "miss_explanations": [],
+ "limitations": [
+  {
+   "id": "L1",
+   "text": "Bore diameter is assumed; the scan does not resolve it.",
+   "rerun_trigger": "One caliper reading of the bore diameter; a value different from the model triggers a re-run.",
+   "evidence": "measure/params.json#bore_d"
+  }
+ ]
+}

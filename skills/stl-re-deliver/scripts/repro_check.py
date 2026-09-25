@@ -30,7 +30,7 @@ from pathlib import Path
 from typing import Any
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from _common import DeliverError, fail, header, preflight, sha256_file, write_json  # noqa: E402
+from _common import DeliverError, fail, header, preflight, run_main, sha256_file, write_json  # noqa: E402
 
 OUTPUT_SUFFIXES = {".step", ".stp", ".stl"}
 
@@ -73,13 +73,31 @@ def scratch_copy(run: Path, dst: Path) -> None:
     (dst / "build").mkdir(parents=True, exist_ok=True)
 
 
-def rebuild_once(run: Path, cmd: list[str], timeout_s: int) -> tuple[Path, dict[str, Any]]:
+def rebuild_once(run: Path, cmd: list[str], timeout_s: int, cwd_mode: str) -> tuple[Path, dict[str, Any]]:
     tmp = Path(tempfile.mkdtemp(prefix="stl-re-repro-"))
     scratch_copy(run, tmp)
-    env = dict(os.environ, PYTHONHASHSEED="0", STL_RE_RUN=str(tmp),
+    # D5: the rebuild skill's own "library use" pattern embeds
+    # `from export_frames import export_frames; export_frames(body, Path("intake/alignment.json"),
+    # Path("build"), ...)` directly in model.py (stl-re-rebuild-build123d/scripts/export_frames.py
+    # LIBRARY USE section) -- paths relative to the RUN ROOT, not to build/, and it needs
+    # export_frames importable without a --scripts flag. Default cwd is therefore the run root
+    # (scratch copy), running `build/model.py`, with the rebuild skill's scripts/ on PYTHONPATH so
+    # `from export_frames import export_frames` resolves the same way rebuild's own docs assume.
+    # --cwd build restores the model_template.py CLI pattern (`python model.py --params ../...`).
+    cwd = tmp if cwd_mode == "run" else tmp / "build"
+    rebuild_scripts = Path(__file__).resolve().parents[2] / "stl-re-rebuild-build123d" / "scripts"
+    pythonpath = str(rebuild_scripts) + (os.pathsep + os.environ["PYTHONPATH"] if os.environ.get("PYTHONPATH") else "")
+    env = dict(os.environ, PYTHONHASHSEED="0", STL_RE_RUN=str(tmp), PYTHONPATH=pythonpath,
                SOURCE_DATE_EPOCH=os.environ.get("SOURCE_DATE_EPOCH", "0"))
-    proc = subprocess.run(cmd, cwd=tmp / "build", env=env, capture_output=True, text=True, timeout=timeout_s)
-    info = {"returncode": proc.returncode, "stdout_tail": proc.stdout[-2000:], "stderr_tail": proc.stderr[-2000:]}
+    try:
+        proc = subprocess.run(cmd, cwd=cwd, env=env, capture_output=True, text=True, timeout=timeout_s)
+        info = {"returncode": proc.returncode, "stdout_tail": proc.stdout[-2000:], "stderr_tail": proc.stderr[-2000:]}
+    except subprocess.TimeoutExpired as exc:
+        # D9: an uncaught TimeoutExpired used to propagate as a traceback (exit 1, indistinguishable
+        # from "not reproducible" per SKILL.md:32-34). Record it as a normal failed run instead.
+        info = {"returncode": None, "error": "timeout", "timeout_s": timeout_s,
+                "stdout_tail": (exc.stdout or "")[-2000:] if isinstance(exc.stdout, str) else "",
+                "stderr_tail": (exc.stderr or "")[-2000:] if isinstance(exc.stderr, str) else ""}
     return tmp, info
 
 
@@ -114,12 +132,19 @@ def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     ap.add_argument("--run", required=True, type=Path)
     ap.add_argument("--cmd", nargs="+", default=None,
-                    help="rebuild command run in <scratch>/build (default: python model.py)")
+                    help="rebuild command (default depends on --cwd: 'python build/model.py' from "
+                         "the run root, or 'python model.py' from build/)")
     ap.add_argument("--runs", type=int, default=2, help="fresh processes (default 2, facet-film T32)")
     ap.add_argument("--tol-mm", type=float, default=0.0, help="recorded parameter; default exact (M02)")
     ap.add_argument("--timeout-s", type=int, default=1800)
+    ap.add_argument("--cwd", choices=["run", "build"], default="run",
+                    help="where the rebuild command runs: the run root (default; the rebuild skill's "
+                         "library-use pattern, export_frames.py paths relative to the run) or build/ "
+                         "(the model_template.py CLI pattern)")
     ap.add_argument("--keep-scratch", action="store_true")
     a = ap.parse_args()
+    if a.runs < 2:
+        fail("--runs must be >= 2 (facet-film T32: two fresh processes, same geometric digest)")
     run = a.run.resolve()
     try:
         preflight(run)
@@ -128,14 +153,14 @@ def main() -> None:
     delivered = sorted(p for p in (run / "build").glob("*.step"))
     if not (run / "build" / "model.py").is_file() or not delivered:
         fail("build/model.py and at least one build/*.step are required")
-    cmd = a.cmd or [sys.executable, "model.py"]
+    cmd = a.cmd or ([sys.executable, "build/model.py"] if a.cwd == "run" else [sys.executable, "model.py"])
     originals = {p.name: measure_step(p) for p in delivered}
 
     runs: list[dict[str, Any]] = []
     per_file: dict[str, list[dict[str, Any]]] = {n: [] for n in originals}
     ok = True
     for i in range(a.runs):
-        tmp, info = rebuild_once(run, cmd, a.timeout_s)
+        tmp, info = rebuild_once(run, cmd, a.timeout_s, a.cwd)
         info["run"] = i + 1
         produced = {p.name: p for p in (tmp / "build").glob("*.step")}
         info["produced"] = sorted(produced)
@@ -168,7 +193,7 @@ def main() -> None:
     doc.update({
         "method": f"{a.runs} fresh subprocess rebuild(s) of build/model.py in a scratch copy; STEP re-imported; "
                   "solids, faces, surface census, volume, bbox compared (raw hash reported, not required)",
-        "command": cmd, "tolerance_mm": a.tol_mm, "environment": environment(),
+        "command": cmd, "cwd": a.cwd, "tolerance_mm": a.tol_mm, "environment": environment(),
         "reproducible": bool(ok), "runs": runs, "files": files,
     })
     write_json(run / "deliver" / "repro.json", doc)
@@ -177,4 +202,4 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    main()
+    run_main(main)
