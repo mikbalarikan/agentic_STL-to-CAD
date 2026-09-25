@@ -19,7 +19,14 @@ sha256, otherwise the zip is refused (the run changed after the manifest: re-run
 steps). Files the manifest does not list (other than the manifest itself) are refused too.
 Python caches (__pycache__, *.pyc) are skipped: they are not source.
 
-The zip's own sha256 is printed and written next to it as <zip>.sha256.
+Size limit: `--split-mb N` (default 28, below the 30 MiB file-send limit of the Claude apps; 0 =
+never split) packs the files into several STANDALONE zips `<name>_partK-of-N.zip`, each a valid
+zip that opens on its own, with the same root folder so extracting all parts into one place gives
+the full layout. Part 1 always carries ZIP_INDEX.md and DELIVERABLES/ (the STEP files first);
+ZIP_INDEX.md lists which part holds which file. Sizes are planned from each file's deflated
+size; a single file larger than the limit is refused.
+
+Each zip's sha256 is printed and written next to it as <zip>.sha256.
 Exit codes: 0 written; 2 refused; 3 internal error.
 """
 from __future__ import annotations
@@ -28,6 +35,7 @@ import argparse
 import fnmatch
 import sys
 import zipfile
+import zlib
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
@@ -42,7 +50,7 @@ def skipped(rel: str) -> bool:
     return any(fnmatch.fnmatch(rel, g) for g in SKIP)
 
 
-def index_md(run_name: str, man: dict, deliverables: list[str]) -> str:
+def index_md(run_name: str, man: dict, deliverables: list[str], parts: dict[str, int] | None = None, n_parts: int = 1) -> str:
     lines = [
         f"# {run_name} — delivery zip",
         "",
@@ -78,6 +86,11 @@ def index_md(run_name: str, man: dict, deliverables: list[str]) -> str:
         "Every file in `run/` is listed with its sha256 in `run/deliver/MANIFEST.json`.",
         "",
     ]
+    if n_parts > 1 and parts:
+        lines += [f"## Parts ({n_parts} standalone zips; extract all into the same folder)", ""]
+        for k in range(1, n_parts + 1):
+            lines.append(f"- part {k}: " + ", ".join(f"`{p}`" for p, v in sorted(parts.items()) if v == k))
+        lines.append("")
     return "\n".join(lines)
 
 
@@ -85,6 +98,8 @@ def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     ap.add_argument("--run", required=True, type=Path)
     ap.add_argument("--out", type=Path, help="zip path (default: <run parent>/<run name>_delivery.zip)")
+    ap.add_argument("--split-mb", type=float, default=28.0,
+                    help="max size per zip in MiB; split into standalone parts above it (0 = never split)")
     a = ap.parse_args()
     run = a.run.resolve()
     out = (a.out or run.parent / f"{run.name}_delivery.zip").resolve()
@@ -111,19 +126,46 @@ def main() -> None:
     if not any(r.endswith(".step") for r in deliverables):
         fail("no build/*.step found: nothing to deliver")
     root = run.name
+    # entries: (arcname, source path); deliverables first (they go in part 1), then the run
+    entries = [(f"{root}/DELIVERABLES/{r}", run / r) for r in sorted(deliverables, key=lambda r: not r.endswith(".step"))]
+    entries += [(f"{root}/run/{r}", f) for r, f in zip(rels, files) if not skipped(r)]
+    limit = int(a.split_mb * 1024 * 1024) if a.split_mb > 0 else 0
+    est = {arc: len(zlib.compress(src.read_bytes(), 6)) + 200 for arc, src in entries}
+    total = sum(est.values()) + 8192
+    part_of: dict[str, int] = {}
+    if limit and total > limit:
+        big = [arc for arc, _ in entries if est[arc] > limit - 16384]
+        if big:
+            fail(f"file(s) larger than --split-mb after compression: {big}; raise --split-mb")
+        sizes = [16384]  # part 1 reserves room for ZIP_INDEX.md
+        for arc, _src in entries:   # first fit, keeping order (deliverables land in part 1)
+            k = next((i for i, sz in enumerate(sizes) if sz + est[arc] <= limit), None)
+            if k is None:
+                sizes.append(0)
+                k = len(sizes) - 1
+            sizes[k] += est[arc]
+            part_of[arc] = k + 1
+        n_parts = len(sizes)
+    else:
+        part_of = {arc: 1 for arc, _ in entries}
+        n_parts = 1
+    outs = [out] if n_parts == 1 else [out.with_name(f"{out.stem}_part{k}-of-{n_parts}.zip") for k in range(1, n_parts + 1)]
     out.parent.mkdir(parents=True, exist_ok=True)
-    with zipfile.ZipFile(out, "w", compression=zipfile.ZIP_DEFLATED, compresslevel=6) as zf:
-        zf.writestr(f"{root}/ZIP_INDEX.md", index_md(root, man, [f"DELIVERABLES/{d}" for d in deliverables]))
-        for r in deliverables:
-            zf.write(run / r, f"{root}/DELIVERABLES/{r}")
-        for r, f in zip(rels, files):
-            if not skipped(r):
-                zf.write(f, f"{root}/run/{r}")
-    digest = sha256_file(out)
-    out.with_name(out.name + ".sha256").write_text(f"{digest}  {out.name}\n", encoding="utf-8")
-    n = sum(1 for r in rels if not skipped(r))
-    print(f"wrote {out} ({out.stat().st_size} bytes, {len(deliverables)} deliverables, {n} run files) sha256 {digest}")
-
+    rel_parts = {arc.split("/", 1)[1]: k for arc, k in part_of.items()}
+    idx = index_md(root, man, [f"DELIVERABLES/{d}" for d in deliverables], rel_parts, n_parts)
+    for k, path in enumerate(outs, start=1):
+        with zipfile.ZipFile(path, "w", compression=zipfile.ZIP_DEFLATED, compresslevel=6) as zf:
+            if k == 1:
+                zf.writestr(f"{root}/ZIP_INDEX.md", idx)
+            for arc, src in entries:
+                if part_of[arc] == k:
+                    zf.write(src, arc)
+        digest = sha256_file(path)
+        path.with_name(path.name + ".sha256").write_text(f"{digest}  {path.name}\n", encoding="utf-8")
+        if path.stat().st_size > limit > 0:
+            fail(f"{path.name} came out at {path.stat().st_size} bytes, over --split-mb; raise it or re-run")
+        print(f"wrote {path} ({path.stat().st_size} bytes, {sum(1 for v in part_of.values() if v == k)} files) sha256 {digest}")
+    print(f"{len(deliverables)} deliverables, {len(entries) - len(deliverables)} run files, {n_parts} zip(s)")
 
 if __name__ == "__main__":
     run_main(main)

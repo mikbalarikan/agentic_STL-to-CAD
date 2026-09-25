@@ -12,7 +12,8 @@ Owner standing decisions, so they are not asked again every session:
 - **Deliver format: one zip.** Every finished job is handed over as a single downloadable zip
   with all source files and the deliverables:
   `python3 skills/stl-re-deliver/scripts/package_zip.py --run runs/<run>` →
-  `runs/<run>_delivery.zip` (+ `.sha256`), sent to the user as a file (`SendUserFile`).
+  `runs/<run>_delivery.zip` (+ `.sha256`), sent to the user as a file (`SendUserFile`). Over
+  28 MiB it is split into standalone `_partK-of-N.zip` files (30 MiB send limit); send all parts.
   Details: `skills/stl-re-deliver/SKILL.md` step 6.
 - **Repo record:** after delivery, copy the small records (VERDICT.md, gate.json, DECISIONS.md,
   deliver/README.md, a builder report, one overlay PNG) to `evals/real-runs/<part>/`, add

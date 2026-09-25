@@ -197,6 +197,10 @@ python scripts/package_zip.py --run <run> [--out <zip>]
 
 - Default output: `<run parent>/<run name>_delivery.zip` plus `<zip>.sha256`. The zip is written
   outside the run folder, so the manifest stays valid.
+- Size: the Claude apps refuse file sends over 30 MiB, so by default (`--split-mb 28`) a larger
+  delivery is written as standalone parts `<name>_partK-of-N.zip` (each opens on its own; extract
+  all into one folder). Part 1 holds `ZIP_INDEX.md` and `DELIVERABLES/`; the index lists the part
+  of every file. Send all parts together (OD-G04: 71.5 MiB → 3 parts).
 - Layout: `<run>/DELIVERABLES/` (STEP datum + scan frame, CAD STL, README, VERDICT, gate.json,
   PARAM_TABLE, overlays), `<run>/run/` (the complete run folder: input, intake, measure, build,
   qa, deliver, superseded iterations, DECISIONS.md) and `<run>/ZIP_INDEX.md` (what is where, the
