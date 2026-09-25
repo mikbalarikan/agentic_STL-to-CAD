@@ -21,6 +21,7 @@
     "hole_theta_2":  {"value": 118.5, "unit": "deg", "measured": null, "rule": "keep-measured", "source": "assumed", "estimator": "template example", "uncertainty_mm": null, "evidence": "templates/example_params.json", "critical": false},
     "hole_theta_3":  {"value": 241.0, "unit": "deg", "measured": null, "rule": "keep-measured", "source": "assumed", "estimator": "template example", "uncertainty_mm": null, "evidence": "templates/example_params.json", "critical": false},
     "bore_chamfer":  {"value": 0.5,   "unit": "mm",  "measured": null, "rule": "assumed", "source": "assumed", "estimator": "template example", "uncertainty_mm": null, "evidence": "templates/example_params.json", "critical": false},
-    "hub_fillet":    {"value": 1.5,   "unit": "mm",  "measured": null, "rule": "assumed", "source": "assumed", "estimator": "template example", "uncertainty_mm": null, "evidence": "templates/example_params.json", "critical": false}
+    "hub_fillet":    {"value": 1.5,   "unit": "mm",  "measured": null, "rule": "assumed", "source": "assumed", "estimator": "template example", "uncertainty_mm": null, "evidence": "templates/example_params.json", "critical": false},
+    "hub_fillet_fallback_1": {"value": 0.75, "unit": "mm", "measured": null, "rule": "assumed", "source": "assumed", "estimator": "template example: plan fallback if hub_fillet fails", "uncertainty_mm": null, "evidence": "templates/example_params.json", "critical": false}
   }
 }

@@ -139,8 +139,11 @@ param/comment drift) and silent fillet skips.
 3. Through-bore cut. Re-import self-check that raises on failure (`model.py:85-101`).
 
 The involute flank was a **polygonal** `Wire.make_polygon` of 20 samples per flank, which
-gives 2,306 planar facets (inspection count). This is not a scan re-tile, but it is exactly
-what the census flags. Use a `Spline` through computed involute points instead
+gives 2,306 planar facets (inspection count). This is not a scan re-tile, but the type
+census does **not** flag it: planar facets count as analytic (`face_stats.py` gives
+`analytic_area_share = 1.0`, `ruled_like_faces = 0` on this STEP). Only the face count
+against the plan, and `plane_face_count` / `plane_face_median_area_mm2`, expose it. Use a
+`Spline` through computed involute points instead
 (`../stl-re-measure-intent/references/gears.md`, heuristic, n=1: M02).
 
 ## Not observed in any golden (use only with a plan justification)

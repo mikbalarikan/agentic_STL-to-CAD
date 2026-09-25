@@ -106,3 +106,56 @@ mechanically.
   Heuristics are consistently labelled n=1.
 - The OCP/build123d version-drift table comes from real testing, and the scripts include the
   shims.
+
+## Fixes applied (round 1)
+
+Applied by the fix agent, 2026-09-25, per orchestrator decisions 1–5. Only files under
+`skills/stl-re-rebuild-build123d/` were edited; `run-contract.md` was read but not touched
+(owned by another agent).
+
+| id | status | notes |
+|---|---|---|
+| M1 | fixed | `scripts/export_frames.py`: `scale_factor != 1` no longer aborts before writing anything. `export_frames()` now exports/validates only `<part>_datum.step`, writes `export_check.json` with the `datum` entry and `"scan": {"skipped": "scale_factor=<s> != 1 (run-contract.md section 11): ..."}`, then raises the new `ScaleFrameSkipped` (carries `result`), which `main()` (CLI) and `model_template.py`'s `main()` both catch and turn into exit code **3**, distinct from the exit-2 `ExportAbort` path. `SKILL.md` Precondition 2, Step 6 and the exit-code line document this and the `DECISIONS.md` OTHER line; Open questions 1 removed. Verified: synthetic `scale_factor=1.01` on the DRM screw golden -> rc=3, `x_datum.step` written, `export_check.json#scan.skipped` present, `pass: true`. |
+| M2 | fixed | `templates/model_template.py`: `Params.group()` now accepts a single list-valued param named `prefix` (run-contract §11) as well as numbered `prefix_1, prefix_2, ...` keys, and raises `KeyError` (never returns `[]` silently) when the list is empty or neither form is present. `SKILL.md` Step 3 documents both forms; Open question 2 removed. Verified with a synthetic `leg_theta: {"value": [60, 150, -60]}` (returns the list), numbered keys (unchanged behaviour), an empty list (raises), and a missing group (raises). Template `--example` smoke test (which now also exercises a fallback-radii group, see m6) still passes rc 0. |
+| M3 | fixed | `scripts/export_frames.py`: `scan_frame_trsf()` now checks the SVD singular values of the inverted rotation block against 1 with a `RIGID_SINGULAR_VALUE_TOL = 1e-6` guard (commented as a float-noise tolerance, not an engineering threshold) and raises `ExportAbort` naming the singular values instead of silently orthonormalising. The guard only applies when `scale_factor == 1` (when it is not, run-contract §11 says the scale is legitimately folded into `matrix_4x4`, so a non-rigid rotation block there is expected, not a bug, and is moot since the scan frame is skipped anyway). `SKILL.md` Step 6 documents the abort. Verified: a synthetic 2% non-orthogonal perturbation of the DRM golden matrix (singular values 1.0017/1.0/0.9861) now aborts rc=2 with `export_check.json` written (previously rc=0, per the review's repro). |
+| M4 | fixed | `SKILL.md` Step 0 rewritten: the orchestrator runs `init_run.py supersede`, not the builder; the builder only reads carried-forward `build/` files and hands back to the orchestrator (CHK-SUPERSEDED) if it finds an unsuperseded prior iteration. In-iteration rebuild attempts overwrite `build/` in place. Named-checks table's CHK-SUPERSEDED row updated to "(feeds; orchestrator runs `init_run.py supersede`)". |
+| M5 | fixed | `references/strategy-catalogue.md`: M02 entry now says the type census does **not** flag the planar-facet patchwork (cites `analytic_area_share = 1.0`, `ruled_like_faces = 0` on that STEP) and that only the face count / new plane-area fields expose it. `SKILL.md` Step 7 adds a bullet stating the same, with the M02 evidence (2,354 faces / 2,306 planar facets) and naming `plane_face_count` / `plane_face_median_area_mm2` as the reported (not gated), no-invented-threshold signals. `scripts/face_stats.py` now computes and reports `plane_face_count` and `plane_face_median_area_mm2` (median area of plane faces only; `None` when there are no plane faces) alongside the existing per-type counts, with a docstring section explaining the blind spot and citing M02. Verified: `face_stats.py` on the M02 golden STEP gives faces=2354, analytic_area_share=1.0, ruled_like_faces=0 (confirming the blind spot), plane_face_count=2306, plane_face_median_area_mm2=0.17988 (confirming the new signal is visible). OD golden still reproduces the NX census exactly (213 = 139 plane / 48 cylinder / 24 cone / 2 torus) with plane_face_count=139. |
+| m1 | fixed | `scripts/export_frames.py`: `roundtrip_bbox_max_abs_mm` renamed to `numeric_roundtrip_bbox_mm`; its `note` now says it is a numerical round-trip only, does not prove the direction of T, and that overlaying the scan is the real check. (The `--scan` seeded-vertex comparison suggested as optional was not added, to keep the change minimal and local; the note tells the reader what to do instead.) |
+| m2 | fixed | `scripts/export_frames.py`: every early abort path (invalid body, bad/missing `matrix_4x4`, non-rigid matrix, reflection) now writes `export_check.json` (via a new `_abort_with_report` helper) with the run-contract §2 header, `part`, `pass: false` and `failures: [msg]` before raising `ExportAbort`, so verify/deliver can always see why a run stopped. |
+| m3 | fixed | `scripts/fillet_log.py`: added a `SELECTOR_ERROR` status, distinct from `NO_EDGES`, for a selector that raises. Counted in `summary()`; `summarize` already treats any non-`OK` status (including this one) as failing. `STATUS VALUES` doc block updated. Verified with a selector that raises `ZeroDivisionError`: status is `SELECTOR_ERROR`, not `NO_EDGES`. |
+| m4 | fixed | `scripts/export_frames.py`: added an optional `params_json` argument (hashed into `inputs`, wired through from `--params` on the CLI and from `model_template.py`), and each frame's report in `export_check.json` now carries a `sha256` of the exported STEP (computed with `_common.sha256_file`) so verify's `hash_frozen.before` (run-contract §12) has a value to read directly. Verified on the DRM golden reproduction: `datum`/`scan` `sha256` fields are present and non-empty. |
+| m5 | fixed | `SKILL.md`: added a short "`<skill>`/`<run>`" convention paragraph under "Inputs → outputs", and rewrote the `fillet_log.py summarize`, `export_frames.py` and `face_stats.py` command blocks to use `<skill>/scripts/...` for the script and `<run>/build/...` for data paths consistently, instead of mixing skill-relative and run-relative paths under one implied cwd. |
+| m6 | fixed | `templates/model_template.py`: F05's fallback radius is no longer the bare literal `r_f * 0.5`; it now reads `*P.group("hub_fillet_fallback")` from params.json. `templates/example_params.json` gained a `hub_fillet_fallback_1` entry (source `assumed`, estimator notes it is a plan fallback). Verified via the `--example` smoke test (still rc 0, fillets both OK). |
+| m7 | fixed | `scripts/export_frames.py`: provenance comment now cites `build_screw.py:106` (was `:101`), matching `SKILL.md:152` and the catalogue. |
+| n1 | fixed | `scripts/validate_step.py`: added `nonmanifold_edge_count()` (edges used more than twice, excluding degenerate ones) and a report-only `nonmanifold_edges` field in `validate_shape()`'s result, alongside the existing `naked_edges`. Not part of the pass/fail rule. Verified: OD golden gives `nonmanifold_edges: 0`. |
+| n2 | fixed | `scripts/export_frames.py`: the scale check is now `abs(scale - 1.0) <= 1e-12` (`scale_rigid`) instead of an exact `!=` comparison; this was folded into the M1 rewrite rather than kept as a separate literal `scale != 1.0` line. |
+| n3 | skipped | Requires adding `fillets.json`/`face_stats.json` to run-contract.md §1's `build/` line, which this agent was told not to edit (owned by another agent). Left as a note for the orchestrator; no local fix is possible without touching the shared contract. |
+| n4 | skipped | Same reason as n3: the fix is a line in `run-contract.md` §12 documenting the `SELECTOR_ERROR` status addition (itself now shipped, see m3) for `stl-re-verify` to read. Out of scope for this pass; flagging for the orchestrator/verify owner. |
+
+### Verification run (this pass)
+
+- `python3 -m py_compile` on all 5 scripts + `templates/model_template.py`: OK.
+- `templates/model_template.py --example`: rc 0, 1 solid, 18 faces, fillets `{OK: 2, REDUCED: 0,
+  FAILED: 0, NO_EDGES: 0, SELECTOR_ERROR: 0}` (new key present).
+- DRM screw reproduction (`export_frames.py` on `dreame_brush_screw_cap_datum_frame.step` +
+  `report/screw_alignment.json`): rc 0, 56 = 56 faces, volume 269.077577 both frames,
+  `numeric_roundtrip_bbox_mm` 3.5e-7, `sha256` present on both frame reports - matches the
+  review's original repro.
+- OD `face_stats.py` on `OD-H12-Pump_datum.step`: 213 faces = 139 plane / 48 cylinder /
+  24 cone / 2 torus (matches golden log), `plane_face_count` 139, `plane_face_median_area_mm2`
+  10.27, `nonmanifold_edges` 0 (via `validate_step.py`).
+- M02 `face_stats.py` on `M02-02-03_WATERTIGHT_SOLID.step`: 2354 faces, `analytic_area_share`
+  1.0, `ruled_like_faces` 0 (confirms the blind spot M5 documents), `plane_face_count` 2306,
+  `plane_face_median_area_mm2` 0.17988 (confirms the new reported signal).
+- Synthetic non-rigid matrix (DRM alignment with `matrix_4x4[0][0] *= 1.02`): rc 2, `ABORT:
+  matrix_4x4 rotation block is not rigid (singular values [1.001674, 1.0, 0.986148], ...)`,
+  `export_check.json` written with `pass: false` (previously rc 0 per the review's finding).
+- Synthetic `scale_factor=1.01` on the DRM alignment: rc 3, `DATUM-ONLY: scale_factor=1.01: ...`,
+  `<part>_datum.step` written, `export_check.json#scan == {"skipped": "scale_factor=1.01 != 1
+  (run-contract.md section 11): ..."}`, `pass: true` (previously rc 2 with nothing written).
+- `Params.group()`: verified list-valued, numbered-key, empty-list (raises `KeyError`) and
+  missing-group (raises `KeyError`) cases directly against the class.
+- `FilletLog.apply()` with a selector that raises `ZeroDivisionError`: status `SELECTOR_ERROR`
+  (previously `NO_EDGES`), counted in `summary()`.
+- All temporary output folders and `__pycache__` directories created while testing were
+  removed; nothing outside `skills/stl-re-rebuild-build123d/` and this review file was edited.

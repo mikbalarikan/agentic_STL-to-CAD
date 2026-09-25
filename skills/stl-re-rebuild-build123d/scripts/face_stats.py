@@ -19,6 +19,17 @@ WHAT IT REPORTS (owner decision QUESTIONS.md A/Q3: REPORTED, NOT GATED)
   U or V (what `loft(ruled=True)` produces; the W01 failure). Optionally compares the
   face count with the plan's expected range (reported as in/out of range, never a gate).
 
+PLANAR-FACET PATCHWORK IS NOT WHAT THIS CENSUS FLAGS
+  A patchwork of planar facets (stacked prisms, a polygonal profile in place of a curve) is
+  INVISIBLE to `analytic_area_share` and `ruled_like_faces`: every facet is a plane, so it
+  counts as analytic, and it is not a B-spline, so `ruled_like_faces` stays 0. M02's polygonal
+  involute (`Wire.make_polygon`, 20 samples/flank) produced 2,354 faces, 2,306 of them planar
+  facets, with analytic_area_share == 1.0 and ruled_like_faces == 0
+  (analysis/golden/M02-02-03.md section 6) - a cold read of this census alone would call that
+  clean. `plane_face_count` and `plane_face_median_area_mm2` are reported (never gated, no
+  invented threshold) so a face count far above the plan, together with a small median plane
+  area, can be inspected by eye instead of missed entirely.
+
 Analytic set used for `analytic_area_share`: plane, cylinder, cone, sphere, torus,
 surface of revolution (RE_SPEC.md:268 list; sphere added as a quadric). Surfaces of
 extrusion (e.g. B02's extruded spline outline) are reported separately, not as analytic.
@@ -34,6 +45,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import statistics
 import sys
 from pathlib import Path
 from typing import Any
@@ -86,6 +98,7 @@ def surface_census(shape: TopoDS_Shape) -> dict[str, Any]:
     """Census of unique faces of an OCP shape: counts and area share per surface type."""
     faces = unique_subshapes(shape, TopAbs_FACE)
     by_type: dict[str, dict[str, float]] = {}
+    areas_by_type: dict[str, list[float]] = {}
     total = 0.0
     ruled_like = 0
     for f in faces:
@@ -108,6 +121,7 @@ def surface_census(shape: TopoDS_Shape) -> dict[str, Any]:
         d = by_type.setdefault(name, {"count": 0, "area_mm2": 0.0})
         d["count"] += 1
         d["area_mm2"] += a
+        areas_by_type.setdefault(name, []).append(a)
     out_types: dict[str, dict[str, float]] = {}
     for name in sorted(by_type):
         d = by_type[name]
@@ -117,6 +131,7 @@ def surface_census(shape: TopoDS_Shape) -> dict[str, Any]:
             "area_share": r6(d["area_mm2"] / total) if total > 0 else 0.0,
         }
     analytic = sum(by_type[n]["area_mm2"] for n in by_type if n in ANALYTIC)
+    plane_areas = areas_by_type.get("plane", [])
     return {
         "faces": len(faces),
         "total_area_mm2": r6(total),
@@ -125,6 +140,14 @@ def surface_census(shape: TopoDS_Shape) -> dict[str, Any]:
         "analytic_set": list(ANALYTIC),
         "freeform_faces": int(sum(by_type[n]["count"] for n in ("bspline", "bezier") if n in by_type)),
         "ruled_like_faces": ruled_like,
+        # Reported only (owner decision Q3), no threshold: a patchwork of planar facets
+        # (stacked prisms, a polygonal curve) is all-plane and non-ruled, so it does not move
+        # analytic_area_share or ruled_like_faces at all. A high plane_face_count together
+        # with a small plane_face_median_area_mm2, against the plan's expected face count,
+        # is the signal to inspect by eye. Evidence case: M02's polygonal involute gave 2,354
+        # faces, 2,306 of them planar facets (analysis/golden/M02-02-03.md section 6).
+        "plane_face_count": int(len(plane_areas)),
+        "plane_face_median_area_mm2": r6(statistics.median(plane_areas)) if plane_areas else None,
     }
 
 

@@ -11,7 +11,9 @@ PROVENANCE
     golden used TopTools_IndexedDataMapOfShapeListOfShape, which newer OCP releases no
     longer export under that name (build123d 0.13 / OCP drift), so edge uses are counted
     per face with TopExp_Explorer. A seam edge is used twice by its own face, so it is not
-    naked; degenerate edges (cone apex, sphere pole) are skipped.
+    naked; degenerate edges (cone apex, sphere pole) are skipped. `nonmanifold_edges` (an
+    edge used more than twice) is reported from the same counts, for visibility only:
+    BRepCheck usually already catches non-manifold topology, so this is not a pass/fail gate.
   * Optional self-intersection check (BOPAlgo_CheckerSI): from
     golden-examples/OOM-B02_side-brush-3-arm/6_RE_work/qa/q02b_selfint.py. Changed: run
     single-threaded for determinism (the golden used SetRunParallel(True)).
@@ -55,8 +57,9 @@ _TO_SHELL = getattr(TopoDS, "Shell_s", None) or getattr(TopoDS, "Shell")
 _TO_EDGE = getattr(TopoDS, "Edge_s", None) or getattr(TopoDS, "Edge")
 
 
-def naked_edge_count(shape: TopoDS_Shape) -> int:
-    """Edges used by fewer than two face-occurrences (open boundary). Seams count twice."""
+def edge_use_counts(shape: TopoDS_Shape) -> tuple[dict[int, int], set[int]]:
+    """Face-occurrence count per edge (by hash) and the set of degenerate edges (cone apex,
+    sphere pole). A seam edge is used twice by its own face."""
     uses: dict[int, int] = {}
     degenerate: set[int] = set()
     for face in unique_subshapes(shape, TopAbs_FACE):
@@ -68,7 +71,20 @@ def naked_edge_count(shape: TopoDS_Shape) -> int:
             if BRep_Tool.Degenerated_s(_TO_EDGE(e)):
                 degenerate.add(k)
             ex.Next()
+    return uses, degenerate
+
+
+def naked_edge_count(shape: TopoDS_Shape) -> int:
+    """Edges used by fewer than two face-occurrences (open boundary). Seams count twice."""
+    uses, degenerate = edge_use_counts(shape)
     return sum(1 for k, n in uses.items() if n < 2 and k not in degenerate)
+
+
+def nonmanifold_edge_count(shape: TopoDS_Shape) -> int:
+    """Edges used by MORE than two face-occurrences (non-manifold). Report only: BRepCheck
+    usually catches these already, but naked_edge_count alone cannot show them."""
+    uses, degenerate = edge_use_counts(shape)
+    return sum(1 for k, n in uses.items() if n > 2 and k not in degenerate)
 
 
 def self_intersections(shape: TopoDS_Shape) -> int:
@@ -94,6 +110,7 @@ def validate_shape(shape: TopoDS_Shape, selfint: bool = False, census: bool = Tr
     res["valid"] = bool(BRepCheck_Analyzer(shape).IsValid())
     res["shell_closed"] = [bool(BRep_Tool.IsClosed_s(_TO_SHELL(s))) for s in shells]
     res["naked_edges"] = naked_edge_count(shape)
+    res["nonmanifold_edges"] = nonmanifold_edge_count(shape)  # report only, not a pass/fail gate
     res["closed"] = bool(shells) and all(res["shell_closed"]) and res["naked_edges"] == 0
     vp = GProp_GProps()
     BRepGProp.VolumeProperties_s(shape, vp)

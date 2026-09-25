@@ -19,7 +19,8 @@ features of build/MODELING_PLAN.md. Every pattern below is lifted from a golden 
 Run:  python model.py --params ../measure/params.json --alignment ../intake/alignment.json \
                       --out . --part <part>
 Tiny self-contained example:  python model_template.py --example
-Exit codes: 0 ok, 2 export aborted (invalid solid etc.).
+Exit codes: 0 ok, 2 export aborted (invalid solid, reflection, non-rigid matrix, re-import),
+  3 datum-only (scale_factor != 1; see export_frames.py and SKILL.md).
 """
 from __future__ import annotations
 
@@ -64,9 +65,22 @@ class Params:
         return self.raw[key]["value"]
 
     def group(self, prefix: str) -> list[Any]:
-        """Values of prefix_1, prefix_2, ... in numeric order (e.g. measured hole angles)."""
+        """A placement group of measured values (e.g. hole/leg angles), either form
+        (run-contract.md section 11 - a consumer must accept both):
+          * a single list-valued param named `prefix` (e.g. "leg_theta": {"value": [60, 150, -60], ...}), or
+          * numbered keys prefix_1, prefix_2, ... in numeric order.
+        Never silently returns []: an empty list value, or no keys of either form, raises,
+        so a pattern can never place zero instances without someone noticing."""
+        if prefix in self.raw and isinstance(self.raw[prefix]["value"], list):
+            val = self[prefix]
+            if not val:
+                raise KeyError(f"param {prefix!r}: list value is empty (run-contract.md section 11)")
+            return list(val)
         keys = sorted((k for k in self.raw if k.startswith(prefix + "_") and k[len(prefix) + 1:].isdigit()),
                       key=lambda k: int(k[len(prefix) + 1:]))
+        if not keys:
+            raise KeyError(f"no params for group {prefix!r}: expected a list-valued {prefix!r} or "
+                          f"numbered {prefix}_1, {prefix}_2, ... (run-contract.md section 11)")
         return [self[k] for k in keys]
 
     def unused(self) -> list[str]:
@@ -108,14 +122,15 @@ def build(P: Params, flog: Any) -> Part:
                       lambda s: [e for e in s.edges().filter_by(GeomType.CIRCLE)
                                  if abs(e.center().Z) < 1e-3 and abs(e.radius - rb) < 1e-3],
                       radii=[P["bore_chamfer"]], op="chamfer", param="bore_chamfer")
-    # F05 hub/flange fillet LAST, with a declared fallback list (target first).
+    # F05 hub/flange fillet LAST, with a declared fallback list (target first, then plan
+    # fallbacks from params.json - never a bare literal like r_f * 0.5; see plan §5/§6).
     r_f = P["hub_fillet"]
     body = flog.apply(body, "F05 hub-flange fillet",
                       lambda s: [e for e in s.edges().filter_by(GeomType.CIRCLE)
                                  if abs(e.center().Z - P["flange_t"]) < 1e-3
                                  and abs(e.radius - P["hub_od"] / 2) < 1e-3],
-                      radii=[r_f, r_f * 0.5], param="hub_fillet",
-                      why_fallback="plan: half radius allowed if the full one fails; declare it")
+                      radii=[r_f, *P.group("hub_fillet_fallback")], param="hub_fillet",
+                      why_fallback="plan: fallback radii allowed if the full one fails; declare it")
     return body.clean()
 
 
@@ -149,9 +164,14 @@ def main(argv: list[str] | None = None) -> int:
         flog.log(f"UNUSED params (plan/measure mismatch?): {P.unused()}")
     a.out.mkdir(parents=True, exist_ok=True)
     flog.write(a.out / "fillets.json", a.out / "build_log.txt", inputs=[a.params, Path(__file__)])
+    from export_frames import ScaleFrameSkipped
+
     try:
         chk = export_frames(body, a.alignment, a.out, a.part, fillets_json=a.out / "fillets.json",
-                            model_py=Path(__file__).resolve())
+                            model_py=Path(__file__).resolve(), params_json=a.params)
+    except ScaleFrameSkipped as ex:
+        print(f"DATUM-ONLY: {ex}", file=sys.stderr)
+        return 3
     except ExportAbort as ex:
         print(f"ABORT: {ex}", file=sys.stderr)
         return 2

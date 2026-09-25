@@ -15,11 +15,15 @@ PROVENANCE
     (CHK-FILLET, P03). Here an empty selection is logged as NO_EDGES.
 
 STATUS VALUES
-  OK        target radius applied, result valid
-  REDUCED   a smaller fallback radius was applied (must be declared in MODELING_PLAN.md)
-  FAILED    every radius failed; shape returned unchanged (must be declared or fixed)
-  NO_EDGES  the selector found no edges; nothing applied (selector bug or geometry changed)
-A result that is not a valid single solid counts as a failed attempt.
+  OK             target radius applied, result valid
+  REDUCED        a smaller fallback radius was applied (must be declared in MODELING_PLAN.md)
+  FAILED         every radius failed; shape returned unchanged (must be declared or fixed)
+  NO_EDGES       the selector found no edges; nothing applied (selector bug or geometry changed)
+  SELECTOR_ERROR the selector itself raised (a real code bug, distinct from a legitimate
+                 empty match) - nothing applied
+A result that is not a valid single solid counts as a failed attempt. SELECTOR_ERROR and
+NO_EDGES both mean nothing was applied, but only NO_EDGES means the selector ran cleanly
+and legitimately matched nothing; treat SELECTOR_ERROR as a bug to fix, not a geometry fact.
 
 LIBRARY USE (inside build/model.py)
   from fillet_log import FilletLog
@@ -77,9 +81,12 @@ class FilletLog:
                                  "why_fallback": why_fallback}
         try:
             edges = list(select(shape))
-        except Exception as ex:  # selector crashed: record it, do not hide it
-            edges = []
+        except Exception as ex:  # selector crashed: record it as a bug, not an empty match
             entry["tried"].append({"radius": None, "error": f"selector: {str(ex)[:160]}"})
+            entry["n_edges"] = 0
+            entry["status"] = "SELECTOR_ERROR"
+            self._record(entry)
+            return shape
         entry["n_edges"] = len(edges)
         if not edges:
             entry["status"] = "NO_EDGES"
@@ -117,7 +124,7 @@ class FilletLog:
                  f"{e['status']}" + ("" if e["status"] == "OK" else f" tried={[t['radius'] for t in e['tried']]}"))
 
     def summary(self) -> dict[str, int]:
-        out: dict[str, int] = {"OK": 0, "REDUCED": 0, "FAILED": 0, "NO_EDGES": 0}
+        out: dict[str, int] = {"OK": 0, "REDUCED": 0, "FAILED": 0, "NO_EDGES": 0, "SELECTOR_ERROR": 0}
         for e in self.entries:
             out[e["status"]] += 1
         return out

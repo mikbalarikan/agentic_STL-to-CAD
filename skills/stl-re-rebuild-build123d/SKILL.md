@@ -29,6 +29,11 @@ not QA**. Label it that way, as M02 did
 | `intake/alignment.json` (`matrix_4x4`: raw scan → datum) | `<part>_datum.step`, `<part>.step` (scan frame), `<part>_cad.stl` (scan frame) |
 | photos (for intent only) | `export_check.json` (run-contract §5) |
 
+`<skill>` below is this skill's own folder (`.../stl-re-rebuild-build123d`), which holds
+`scripts/`; `<run>` is the run folder, which holds `build/`, `intake/` and `measure/`. A
+script path is always skill-relative and a data path always run-relative, regardless of the
+shell's cwd (run-contract.md §1).
+
 Scripts (all typed, argparse, JSON header per run-contract §2, provenance header):
 
 | Script | Job |
@@ -44,8 +49,12 @@ Scripts (all typed, argparse, JSON header per run-contract §2, provenance heade
 
 1. `measure/params.json` exists, and every param has `value` and `source` (run-contract §4).
    If it is missing, go back to `stl-re-measure-intent`.
-2. `intake/alignment.json` has a `matrix_4x4`. `scale_factor` must be 1.0, because
-   `export_frames.py` aborts otherwise (see Open questions).
+2. `intake/alignment.json` has a `matrix_4x4`. If `scale_factor != 1`, `export_frames.py`
+   does not abort: it writes the datum-frame STEP and its `export_check.json#datum` entry,
+   skips the scan-frame export (`export_check.json#scan = {"skipped": ...}`), and exits 3
+   (run-contract.md section 11). Add
+   `- <date> | builder | OTHER | scan-frame STEP not delivered: scale_factor=<s> | build/export_check.json`
+   to `DECISIONS.md` when this happens.
 3. The part class is covered by a golden strategy (`references/strategy-catalogue.md`). There
    is no golden evidence for sheet metal, freeform or styled surfaces with no analytic
    intent, or multi-body STEP deliverables. For those, HALT and ask
@@ -56,15 +65,25 @@ Scripts (all typed, argparse, JSON header per run-contract §2, provenance heade
 
 ## Step 0: iteration housekeeping (CHK-SUPERSEDED)
 
-If `build/` already holds a previous iteration, never overwrite it. Run
-`python ../stl-re-orchestrate/scripts/init_run.py supersede <run>`. It moves `measure/ build/
-qa/` into `_itN_SUPERSEDED/` intact, copies `MODELING_PLAN.md` and `model.py` forward, and
-refuses past loop 3 (`baseline/oomwoo-re-pipeline/RE_SPEC.md:248-250`).
-- *Why:* P03 overwrote its it1 verdict (`analysis/golden/OOM-P03.md` §8). B02 kept
-  `_it1_SUPERSEDED/` with the script, STEP and param table
-  (`golden-examples/OOM-B02_side-brush-3-arm/6_RE_work/_it1_SUPERSEDED/`).
-- Record the parameter diff between iterations in the plan's change log. B02's it1→it2
-  diff was a single parameter (`analysis/SYNTHESIS.md` §5).
+The **orchestrator** runs `init_run.py supersede <run>` after a `REVISE` verdict
+(`../stl-re-orchestrate/SKILL.md:107,163`); it moves `measure/ build/ qa/` into
+`_itN_SUPERSEDED/` intact and copies `MODELING_PLAN.md` and `model.py` forward. **Do not run
+`init_run.py supersede` here** - `cmd_supersede` refuses unless the verdict is `REVISE`
+(`../stl-re-orchestrate/scripts/init_run.py:235-236`), and after the orchestrator has already
+superseded, `build/` holds the carried-forward `model.py`/`MODELING_PLAN.md`, so calling it
+again fails or double-supersedes.
+
+- On entry, if `qa/VERDICT.md` exists and `build/` was not superseded (i.e. this is a fresh
+  rebuild after a REVISE that has not gone through the orchestrator's supersede step yet),
+  stop and hand back to the orchestrator (CHK-SUPERSEDED) instead of overwriting `build/`.
+- Within one iteration, rebuild attempts (Step 6's 3-attempts-per-feature loop) overwrite
+  `build/` in place. Log each attempt and the parameter diff in the plan's change log (§8
+  in `templates/MODELING_PLAN.md`). B02's it1→it2 diff was a single parameter
+  (`analysis/SYNTHESIS.md` §5).
+- *Why this boundary matters:* P03 overwrote its it1 verdict by rebuilding in place
+  (`analysis/golden/OOM-P03.md` §8). B02 kept `_it1_SUPERSEDED/` with the script, STEP and
+  param table (`golden-examples/OOM-B02_side-brush-3-arm/6_RE_work/_it1_SUPERSEDED/`), which
+  is exactly what the orchestrator's supersede step reproduces.
 
 ## Step 1: write `build/MODELING_PLAN.md` first (D1)
 
@@ -137,6 +156,11 @@ Start from `templates/model_template.py`.
   records the params the model used, and the build log lists the unused ones: an unused
   param means the plan and the measurements disagree. All five goldens drove the model
   from one dict or JSON (`analysis/SYNTHESIS.md` D6).
+  - For a placement group (hole/leg angles, etc.), use `P.group(prefix)`. It accepts both
+    forms run-contract §11 allows: a single list-valued param (`"leg_theta": {"value": [60,
+    150, -60], ...}`) or numbered keys (`leg_theta_1, leg_theta_2, ...`). It never returns
+    `[]` silently - an empty list, or no keys of either form, raises, so a pattern can never
+    place zero instances unnoticed.
 - **No numeric literal in geometry** except documented clearances. Examples: a cut tool
   overshooting a face (e.g. `+1.0`, commented), and the tangent-boolean offset (heuristic,
   n=1: B02; see idioms).
@@ -187,7 +211,7 @@ Apply every fillet and chamfer through `FilletLog.apply(shape, feature, selector
 - The baseline "fillets strictly last" rule is rewritten accordingly
   (`analysis/SYNTHESIS.md` §3).
 
-**After the build:** run `python scripts/fillet_log.py summarize build/fillets.json`.
+**After the build:** run `python3 <skill>/scripts/fillet_log.py summarize <run>/build/fillets.json`.
 - **Exit 2** means a non-OK entry. Fix the selector or geometry, or declare the entry in
   `MODELING_PLAN.md` as "target R… → used R… / not applied, because …".
 - A REDUCED or FAILED fillet is a geometry deviation. Verify must see it in
@@ -217,19 +241,33 @@ In `model.py`, call
 CLI on a datum STEP:
 
 ```
-python scripts/export_frames.py --shape build/<part>_datum.step \
-    --alignment intake/alignment.json --out build --part <part> --fillets build/fillets.json
+python3 <skill>/scripts/export_frames.py --shape <run>/build/<part>_datum.step \
+    --alignment <run>/intake/alignment.json --out <run>/build --part <part> \
+    --fillets <run>/build/fillets.json
 ```
 
-It does the following, in order, and **aborts (exit 2 / `ExportAbort`)** on any failure:
+It does the following, in order, and **aborts (exit 2 / `ExportAbort`)** on any failure, or
+exits **3** (`ScaleFrameSkipped`, not a failure) when `scale_factor != 1` (see step 3 below):
 1. It requires the built body to be exactly 1 valid solid; otherwise nothing is exported.
    Source: OD `export_final.py:25-26`.
 2. It inverts T and re-orthonormalises the rotation by SVD.
    - OCP rejects a near-orthonormal matrix, and a float inverse is only near-orthonormal
      (`golden-examples/OD-H12_delonghi-dedica-pump/report/src/export_final.py:19`).
+   - A non-rigid rotation block (singular values off 1 by more than a 1e-6 float-noise
+     tolerance) aborts: a hidden scale or shear in `matrix_4x4` must not be silently
+     orthonormalised away. That 1e-6 is a numeric-precision guard, not an engineering
+     threshold.
    - A reflection (det < 0) aborts, because a mirrored part passes every validity check.
-3. It writes `<part>_datum.step`, `<part>.step` (scan frame) and `<part>_cad.stl` (scan
-   frame).
+   - If `scale_factor != 1`, this step is skipped for the scan frame (see below).
+3. It writes `<part>_datum.step` always, and `<part>.step` + `<part>_cad.stl` (scan frame)
+   only when `scale_factor == 1`.
+   - When `scale_factor != 1`, the run contract folds the scale into `matrix_4x4`
+     (run-contract.md section 11), so inverting it back out for the scan frame would be a
+     similarity transform, not a rigid OCP transform. `export_frames.py` writes the
+     datum-frame STEP and its `export_check.json#datum` entry, records
+     `export_check.json#scan = {"skipped": "scale_factor != 1 (run-contract.md section
+     11)"}`, and exits **3** (distinct from the exit-2 abort). Add the `OTHER` line to
+     `DECISIONS.md` described in Precondition 2.
    - STL tolerance defaults to 0.003 / 0.05 rad, as DRM used (`frames.py:19`).
    - OD used 0.01 / 0.1 (`export_final.py:36`).
 4. It re-imports both STEPs and runs `validate_step.validate_shape`: 1 solid, 1 shell, closed,
@@ -255,7 +293,8 @@ there too and keep its log. OD, B02, P03 and DRM all did (`analysis/SYNTHESIS.md
 ## Step 7: CHK-PATCHWORK self-census (reported)
 
 ```
-python scripts/face_stats.py build/<part>_datum.step --expect-faces MIN MAX --json build/face_stats.json
+python3 <skill>/scripts/face_stats.py <run>/build/<part>_datum.step --expect-faces MIN MAX \
+    --json <run>/build/face_stats.json
 ```
 
 - Report in `build_log.txt` and the plan:
@@ -270,6 +309,14 @@ python scripts/face_stats.py build/<part>_datum.step --expect-faces MIN MAX --js
 - A face count far outside the plan means the plan or the model is wrong. Explain which.
   - Counter-example: M02's polygonal involute produced 2,354 faces, 2,306 of them planar
     facets, with no Tier-0 check (`analysis/golden/M02-02-03.md` §6).
+- **Planar-facet patchwork (stacked prisms, a polygonal curve in place of a smooth one) is
+  invisible to `analytic_area_share` and `ruled_like_faces`**: planes count as analytic and
+  are not B-splines, so the census reports them as clean. M02's polygonal involute gave
+  `analytic_area_share = 1.0`, `ruled_like_faces = 0` and 2,354 faces
+  (`analysis/golden/M02-02-03.md` §6) - this census alone would not have caught it. The
+  signals are the face count against the plan and `face_stats.py`'s `plane_face_count` /
+  `plane_face_median_area_mm2` (a plan-sized part with far more planes than expected, or an
+  unexpectedly small median plane area, needs a by-eye look). No threshold is set here.
 - Tested reference: this script reproduces OD's NX-log census exactly (213 faces = 139
   plane / 48 cylinder / 24 cone / 2 torus; `OD-H12-Pump.log`).
 
@@ -287,7 +334,7 @@ python scripts/face_stats.py build/<part>_datum.step --expect-faces MIN MAX --js
 |---|---|---|
 | CHK-FILLET | `fillet_log.py` statuses + `summarize` | Fix the selector or geometry, or declare target → used in the plan. Never ship silently. |
 | CHK-PATCHWORK | `face_stats.py` census; loft policy | Ruled or polyline-stack faces: rebuild the feature. Count out of range: explain it (not gated). |
-| CHK-SUPERSEDED | Step 0 `init_run.py supersede` | Never overwrite an iteration. Restore it from git or the backup, and note the loss. |
+| CHK-SUPERSEDED | (feeds; orchestrator runs `init_run.py supersede`) | Never overwrite an iteration in `build/`. If found unsuperseded on entry, hand back to the orchestrator instead of building over it. |
 | CHK-ENUM (feeds) | Plan maps every intake feature | Unmapped feature: plan it, or declare it out of scope with a reason. |
 | CHK-INDEP (feeds) | Label builder checks as "self-check, not QA" | Leave verification to a fresh agent. |
 | CHK-FRAME (feeds) | Angles are read from params.json in the frozen datum frame only | Sign or angle mismatch with the photos: back to measure. Do not flip it in code. |
@@ -309,15 +356,11 @@ python scripts/face_stats.py build/<part>_datum.step --expect-faces MIN MAX --js
 
 ## Open questions (not decided here)
 
-1. **Scale in the scan-frame export.** When CHK-SCALE applies one uniform scale, the run
-   contract does not say whether `matrix_4x4` includes it or whether the scan-frame STEP
-   should be scaled back. `export_frames.py` aborts when `scale_factor != 1.0` until the
-   orchestrator decides.
-2. **List-valued params.** Run-contract §4 shows scalar `value`s. DRM stored angle lists
-   (`leg_thetas`, `cup_thetas`). The template uses numbered keys (`hole_theta_1…`) to stay
-   within the contract. Should the contract allow lists?
-3. **Face-count expectation method.** No golden recorded an expected face count before
+1. **Face-count expectation method.** No golden recorded an expected face count before
    building. The per-op estimate in Step 1 is new practice and has no calibration data
    (`analysis/baseline/oomwoo-re-pipeline.md` §6 item 3).
-4. **P03 face count.** 500 vs 559 across records (`QUESTIONS.md` B). It is quoted only as a
+2. **P03 face count.** 500 vs 559 across records (`QUESTIONS.md` B). It is quoted only as a
    reference point.
+
+Resolved by the orchestrator session (run-contract.md section 11, 2026-09-25): scale in the
+scan-frame export (Precondition 2, Step 6) and list-valued params (`Params.group()`, Step 3).
