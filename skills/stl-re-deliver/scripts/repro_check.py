@@ -142,7 +142,19 @@ def main() -> None:
                          "library-use pattern, export_frames.py paths relative to the run) or build/ "
                          "(the model_template.py CLI pattern)")
     ap.add_argument("--keep-scratch", action="store_true")
-    a = ap.parse_args()
+    # A rebuild command with its own flags (model_template.py CLI: --params/--out/...) cannot go
+    # through --cmd (argparse stops at the first "-" token), so accept it after a bare "--":
+    #   repro_check.py --run R --cwd build -- python model.py --params ... --out ...
+    argv = sys.argv[1:]
+    tail: list[str] | None = None
+    if "--" in argv:
+        k = argv.index("--")
+        argv, tail = argv[:k], argv[k + 1:]
+    a = ap.parse_args(argv)
+    if tail:
+        if a.cmd:
+            fail("give the rebuild command either with --cmd or after '--', not both")
+        a.cmd = tail
     if a.runs < 2:
         fail("--runs must be >= 2 (facet-film T32: two fresh processes, same geometric digest)")
     run = a.run.resolve()

@@ -441,7 +441,14 @@ def render(run: Path, limitations_path: Path, out: Path) -> str:
         R.w(f"{fmt(ob.get('n_over'))} points ({fmt(ob.get('fraction_over'))} fraction) in "
             f"{fmt(ob.get('n_clusters_ge_min'))} clusters ≥ {fmt(ob.get('min_pts'))} pts.", "")
         if ob.get("clusters"):
-            expl = gate.get("cluster_explanations") or {}
+            # verify keys cluster_explanations by scan->CAD cluster index (verdict.py CHK-CLUSTER);
+            # a nested {direction: {index: text}} form is also accepted. Never reuse the
+            # scan->CAD texts for CAD->scan clusters (found on the OD-H22 real run).
+            ce = gate.get("cluster_explanations") or {}
+            if any(k in ce for k in ("scan_to_cad", "cad_to_scan")):
+                expl = ce.get(dn) or {}
+            else:
+                expl = ce if dn == "scan_to_cad" else {}
             R.table(["#", "n", "centroid", "r range", "θ range (deg)", "d max", "explanation"],
                     [[i, c.get("n"), c.get("centroid"), c.get("r_range"), c.get("theta_deg_range"),
                       c.get("d_max"), expl.get(str(i), "**UNEXPLAINED**")] for i, c in enumerate(ob["clusters"])])

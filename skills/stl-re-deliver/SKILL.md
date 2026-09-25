@@ -98,7 +98,7 @@ Take the content from `qa/VERDICT.md` and `measure/params.json`. Do not take it 
 ### 3. Reproducibility re-run
 
 ```
-python scripts/repro_check.py --run <run> [--cwd run|build] [--cmd ...] [--runs 2]
+python scripts/repro_check.py --run <run> [--cwd run|build] [--cmd ... | -- <command>] [--runs 2]
 ```
 
 The script copies `build/` (without STEP or STL outputs), `measure/` and `intake/` (without
@@ -122,7 +122,10 @@ compares solids, face count, surface census, volume and bbox.
   `analysis/baseline/facet-film-transferable.md`).
 - If `build/model.py` does not write the STEPs itself (for example a separate export
   script), pass the full command with `--cmd`, and put the same command in
-  `repro_commands`.
+  `repro_commands`. A command with its own flags (the `model_template.py` CLI pattern,
+  `--params ... --out ...`) goes after a bare `--` instead:
+  `repro_check.py --run <run> --cwd build -- python model.py --params ... --out ...`
+  (found on the OD-H22 real run).
 - `deliver/repro.json` goes stale the moment `build/model.py`, `measure/params.json` or a
   delivered STEP changes afterward (for example after an `init_run.py supersede`).
   `make_readme.py` and `make_manifest.py` both re-check `repro.json#inputs`' recorded sha256
