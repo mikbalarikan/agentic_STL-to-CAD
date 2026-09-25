@@ -30,9 +30,11 @@ this at first (A13, `analysis/golden/OOM-B02.md` §9).
 
 ## 0. Before you start
 
-1. Read `qa/regime.json`. It is copied from the REGIME decision made at intake (`DECISIONS.md` /
-   `INTAKE_CARD.md`). It must name the regime and its source.
-   - If the regime is missing, **stop and ask the human.** There is no default (QUESTIONS.md Q1).
+1. Copy `intake/regime.json` to `qa/regime.json` (`cp intake/regime.json qa/regime.json`), the
+   canonical declaration written at intake (run-contract §12). Never edit it. It must name the
+   regime and its source.
+   - If `intake/regime.json` is missing, **stop and ask the human.** There is no default
+     (QUESTIONS.md Q1).
    - Regimes and their sources: see [references/gate-protocol.md](references/gate-protocol.md) §1.
      In short:
      - **RE_SPEC:** Tier-1 ±0.15, Tier-2 p95 ≤1.6 / max ≤4.0, interfaces ≤0.8
@@ -262,12 +264,6 @@ without reporting both runs.
 
 ## Open questions (not decided here)
 
-- Where exactly intake stores the regime (`intake.json` key vs `DECISIONS.md`). This skill reads a
-  copied `qa/regime.json`.
-- Which statistic the baseline-skill regime gates is not stated at its source. OD and DRM applied
-  it to both directions. This skill's default gates scan→CAD masked plus CAD→scan observable.
-  The regime may override this with `gated`.
-- Whether ICP is required under the baseline-skill regime. The DRM official gate reports
-  `registration_converged: true` but no method (QUESTIONS.md B). OD used none.
 - The ICP cap/tolerance (60, 1e-6) comes from one project (B02). The DRM decimated screw needed 109
-  iterations.
+  iterations. (Non-convergence is reported and invalidates the Tier-2 gate regardless of cap;
+  run-contract §12.)

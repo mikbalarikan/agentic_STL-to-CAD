@@ -146,3 +146,27 @@ CHK-PUBLISH, CHK-LIKE4LIKE, CHK-NUMBERS, CHK-INDEP. Definitions and evidence:
   aborts on `scale_factor ≠ 1`, and the run records a limitation in `DECISIONS.md`
   (`OTHER`): only the datum-frame STEP is delivered. No golden applied a scale, so there is
   no evidence to follow.
+
+## 12. Integration decisions (orchestrator session, after Phase 3 drafts)
+
+- **Regime file.** The canonical declaration is **`intake/regime.json`**, written at intake
+  with the same shape as `qa/gate.json#regime`: `{"name", "source", "bands", "why"}`. It
+  replaces the `intake/intake.json#regime` key in §10. Verify copies it to
+  `qa/regime.json` and never edits it. Deliver checks `gate.json#regime.name ==
+  intake/regime.json#name`. `DECISIONS.md` carries the matching `REGIME` line.
+- **What the baseline-skill band applies to.** p95 and max apply to scan→CAD and to the
+  *observable* part of CAD→scan. Raw CAD→scan is reported, not gated. Evidence: the DRM
+  official gate applied the limits in both directions
+  (`golden-examples/dreame_brush-caps/report/screw_official_gate.json#limits`), and OD
+  showed that raw CAD→scan counts surfaces no scanner can see
+  (`golden-examples/OD-H12_delonghi-dedica-pump/report/deviation_gate.json`).
+- **Registration in every regime.** Verify always runs its own ICP (independence,
+  `RE_SPEC.md:173`) and reports numbers both in the builder's datum frame and after ICP.
+  The gate is evaluated after ICP. A large gap between the two is a datum finding.
+- **`gate.json#hash_frozen`** = `{"before": {path: sha256}, "after": {path: sha256},
+  "unchanged": bool}` (as written by `stl-re-verify/scripts/step_check.py verify`).
+- **`build/export_check.json`** = `{"datum": {...}, "scan": {...}, ...}` at the top level (as
+  written by `stl-re-rebuild-build123d/scripts/export_frames.py`). Readers may also accept
+  the OD golden shape `{"exports": {...}}`.
+- **ICP iteration cap.** Golden B02 used 60 (`q20_tier2.py`, converged at 48). This is a
+  parameter, not a threshold. Non-convergence is reported and makes the Tier-2 gate invalid.

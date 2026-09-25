@@ -223,18 +223,19 @@ def check_hash_frozen(run: Path, gate: dict[str, Any]) -> dict[str, Any]:
 
 
 def check_regime(run: Path, gate: dict[str, Any]) -> dict[str, Any]:
-    """The regime in gate.json must be the one declared at intake (run-contract §9, §10)."""
-    intake = run / "intake" / "intake.json"
+    """The regime in gate.json must be the one declared at intake (run-contract §12): compare
+    gate.json#regime.name with intake/regime.json#name (the canonical declaration)."""
+    intake = run / "intake" / "regime.json"
     g = (gate.get("regime") or {}).get("name")
     if not g:
         return {"ran": True, "result": "fail", "note": "qa/gate.json has no regime.name"}
     if not intake.is_file():
-        return {"ran": False, "result": "finding", "note": "intake/intake.json missing; regime not cross-checked"}
-    i = ((load_json(intake).get("regime")) or {}).get("name")
+        return {"ran": False, "result": "finding", "note": "intake/regime.json missing; regime not cross-checked"}
+    i = load_json(intake).get("name")
     if i and i != g:
         return {"ran": True, "result": "fail", "note": f"intake declared {i!r} but gate applied {g!r}"}
     return {"ran": True, "result": "pass" if i else "finding",
-            "note": f"regime {g!r}" + ("" if i else " (intake.json has no regime to compare)")}
+            "note": f"regime {g!r}" + ("" if i else " (intake/regime.json has no name to compare)")}
 
 
 def preflight(run: Path) -> dict[str, Any]:

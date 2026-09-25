@@ -176,6 +176,18 @@ In the card §0, declare the band regime (RE_SPEC / baseline-skill / project-spe
 There is no silent default (run-contract §9). What the goldens used: B02 and P03 → RE_SPEC; DRM and
 OD → baseline-skill (SYNTHESIS Q1). Regime numbers are in the card template.
 
+Run this command to write the canonical declaration to `intake/regime.json` (run-contract §12):
+
+```bash
+python scripts/intake.py regime --name RE_SPEC --out-dir intake --why "<why this regime applies>"
+python scripts/intake.py regime --name baseline-skill --class plastic --out-dir intake --why "..."
+python scripts/intake.py regime --name project-spec --bands '{"p95_mm": 0.5, "max_mm": 1.0}' \
+    --source "<path:line>" --out-dir intake --why "..."
+```
+
+Then append a `REGIME` line to `DECISIONS.md` (run-contract §10) recording the choice and its
+evidence path.
+
 ### Step 8 — Datum (SYNTHESIS B1–B7, B11; RE_SPEC.md:109-129)
 
 Plan the DOF ladder in the card §6 first, then write `intake/datum_spec.json` and run:

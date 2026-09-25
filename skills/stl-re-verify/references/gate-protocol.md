@@ -5,9 +5,11 @@ Numbers marked "parameter" are the values a golden used. They are not thresholds
 
 ## 1. Band regimes (declared at intake, named in the verdict)
 
-The regime is chosen at intake (`INTAKE_CARD.md` / `DECISIONS.md` REGIME entry) and copied into
-`qa/regime.json`. QA never picks one (QUESTIONS.md Q1, run-contract.md §9). If no regime was
-declared, stop and ask the human. Do not fall back to a default.
+The regime is chosen at intake (`INTAKE_CARD.md` / `DECISIONS.md` REGIME entry), written to
+`intake/regime.json` (run-contract §12), and copied verbatim into `qa/regime.json` (e.g. `cp
+intake/regime.json qa/regime.json`) — never edited. QA never picks one (QUESTIONS.md Q1,
+run-contract.md §9, §12). If `intake/regime.json` is missing, stop and ask the human. Do not fall
+back to a default.
 
 | Regime | Tier-1 (caliper) | Tier-2 whole part | Named functional interfaces | Source | Golden use |
 |---|---|---|---|---|---|
@@ -17,6 +19,18 @@ declared, stop and ask the human. Do not fall back to a default.
 | `project-spec` | from the spec | from the spec | from the spec | the spec path:line | M02 (operator spec, ±0.03 / ±0.02, origin not recorded) |
 
 Under RE_SPEC, interior/occluded zones are **reported, not gated** (`RE_SPEC.md:176`).
+
+**What the baseline-skill band applies to** (run-contract §12): p95 and max apply to scan→CAD and
+to the *observable* part of CAD→scan. Raw CAD→scan is reported, not gated. Evidence: the DRM
+official gate applied the limits in both directions
+(`golden-examples/dreame_brush-caps/report/screw_official_gate.json#limits`), and OD showed that
+raw CAD→scan counts surfaces no scanner can see
+(`golden-examples/OD-H12_delonghi-dedica-pump/report/deviation_gate.json`).
+
+**Registration under every regime** (run-contract §12): Verify always runs its own ICP
+(independence, `RE_SPEC.md:173`), including under `baseline-skill`, and reports numbers both in
+the builder's datum frame and after ICP. The gate is evaluated after ICP. A large gap between the
+two is a datum finding.
 
 `qa/regime.json` format (read by `deviation_gate.py`, `sim_caliper.py`, `verdict.py`):
 

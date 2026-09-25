@@ -25,7 +25,7 @@ layout, the JSON keys, the verdicts, `DECISIONS.md` and the check ids used below
 | Reads | Writes |
 |---|---|
 | `qa/gate.json`, `qa/VERDICT.md` (required, CHK-PUBLISH) | `deliver/limitations.json` (you write it, step 2) |
-| `measure/params.json`, `build/export_check.json`, `intake/alignment.json`, `intake/intake.json` | `deliver/repro.json` (`scripts/repro_check.py`) |
+| `measure/params.json`, `build/export_check.json`, `intake/alignment.json`, `intake/regime.json` | `deliver/repro.json` (`scripts/repro_check.py`) |
 | `build/model.py`, `build/*.step`, `input/INPUT_HASHES.json`, `DECISIONS.md` | `deliver/README.md` (`scripts/make_readme.py`) |
 | `_itN_SUPERSEDED/` | `deliver/MANIFEST.json` (`scripts/make_manifest.py`, always last) |
 
@@ -51,7 +51,7 @@ It writes nothing. It runs:
 | **CHK-SUPERSEDED** | `_it1…_itk_SUPERSEDED/` are numbered from 1 with no gaps, and each holds `qa/VERDICT.md`, `qa/gate.json` (verdict REVISE) and `build/model.py`. A missing STEP is a finding, not a failure. Iteration = k + 1 ≤ 3 | P03 it1 verdict "overwritten in place" (`golden-examples/OOM-P03_mop-pad-bracket/6_RE_work/VERDICT.md:6`); B02 kept `_it1_SUPERSEDED/`; 3 loops (`baseline/oomwoo-re-pipeline/RE_SPEC.md:248-250`) |
 | inputs unchanged | Every file in `input/INPUT_HASHES.json` still has its sha256 | SYNTHESIS A1; evidence is never modified |
 | hash freeze | Every `build/*.step` matches a sha256 in `gate.json#hash_frozen`, so the STEP you deliver is the one QA gated. If no STEP matches, that is a failure. If only some match, that is a finding. | (heuristic, n=1: M02) `golden-examples/M02-02-03_watertight-design-intent/VERDICT.md:6` |
-| regime declared | `gate.json#regime.name` equals `intake/intake.json#regime.name` | Owner decision Q1: the band regime is declared at intake and named in the verdict, never defaulted silently (`QUESTIONS.md` §A) |
+| regime declared | `gate.json#regime.name` equals `intake/regime.json#name` (the canonical declaration, run-contract §12) | Owner decision Q1: the band regime is declared at intake and named in the verdict, never defaulted silently (`QUESTIONS.md` §A) |
 
 ### 1. Act on the verdict
 
@@ -210,10 +210,6 @@ python tests/run_fixture_test.py            # needs build123d; prints N/N passed
 - DRM snap: the golden delivery went out with `overall_pass: false` and no recorded
   acceptance (`QUESTIONS.md` §B). This skill will not reproduce that. Whether that
   delivery was accepted, and by whom, is still unknown.
-- The `hash_frozen` key layout in `gate.json` is not fixed by the run contract. The check
-  accepts any sha256 strings found under it. Verify should settle on one layout.
-- `export_check.json` is read as either `{datum, scan}` or `{exports: {datum, scan}}` (the
-  OD golden shape). The rebuild skill should pick one.
 - The exact-equality tolerance comes from one golden (M02) on one OCCT build. Across
   machines or OCCT versions, geometric digests may differ. No golden records such a
   cross-version run.

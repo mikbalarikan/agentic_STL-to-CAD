@@ -84,8 +84,9 @@ there is no silent default (`QUESTIONS.md` A/Q1; `references/run-contract.md` §
    | `project-spec` | the numbers in the user's spec, cited by path | the user's file | M02-02-03 (`OPERATOR_SPEC.json`) |
 
 2. Record it in `DECISIONS.md` (`REGIME`, who chose, why) and in `INTAKE_CARD.md`; the
-   intake skill also writes it to `intake/intake.json` as `regime` with the same shape as
-   `qa/gate.json#regime` (`references/run-contract.md` §6, §10). If the user says "you
+   intake skill also writes it to `intake/regime.json` (via
+   `stl-re-intake-datum/scripts/intake.py regime`) with the same shape as
+   `qa/gate.json#regime` (`references/run-contract.md` §6, §12). If the user says "you
    pick", record "delegated to agent" plus your reason. That is declared, not silent.
 3. Never change the regime after seeing gate numbers to turn a miss into a pass. A missed
    band is reported, never loosened (`analysis/SYNTHESIS.md` F1). A later regime change

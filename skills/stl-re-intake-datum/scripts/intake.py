@@ -294,6 +294,46 @@ def cmd_scale(a: argparse.Namespace) -> int:
     return 0
 
 
+# ----------------------------------------------------------------------------- regime
+RE_SPEC_BANDS = {"tier1_abs_mm": 0.15, "tier2_p95_mm": 1.6, "tier2_max_mm": 4.0, "interface_max_mm": 0.8}
+RE_SPEC_SOURCE = "baseline/oomwoo-re-pipeline/RE_SPEC.md:170-175"
+BASELINE_SKILL_BANDS = {"plastic": {"p95_mm": 0.30, "max_mm": 0.80}, "machined": {"p95_mm": 0.15, "max_mm": 0.50}}
+BASELINE_SKILL_SOURCE = "baseline/skills/stl2step-build123d/SKILL.md:87"
+
+
+def cmd_regime(a: argparse.Namespace) -> int:
+    """Write intake/regime.json (run-contract §12): the canonical band-regime declaration."""
+    bands = json.loads(a.bands) if a.bands else None
+    source = a.source
+    if a.name == "RE_SPEC":
+        if bands is None:
+            bands = dict(RE_SPEC_BANDS)
+            source = source or RE_SPEC_SOURCE
+    elif a.name == "baseline-skill":
+        if bands is None:
+            if a.klass is None:
+                ap_error = "baseline-skill without --bands requires --class plastic|machined"
+                raise SystemExit(ap_error)
+            bands = dict(BASELINE_SKILL_BANDS[a.klass])
+            source = source or BASELINE_SKILL_SOURCE
+    else:  # project-spec
+        if bands is None or not source:
+            raise SystemExit("project-spec requires --bands and --source")
+    if not source:
+        raise SystemExit("--source is required")
+    out = a.out_dir
+    out.mkdir(parents=True, exist_ok=True)
+    rep: dict[str, Any] = json_header("regime", "intake.py", {}, a.seed)
+    rep["name"] = a.name
+    rep["source"] = source
+    rep["bands"] = bands
+    rep["why"] = a.why or ""
+    txt = _dump(rep)
+    (out / "regime.json").write_text(txt)
+    print(txt)
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     ap.add_argument("--seed", type=int, default=0)
@@ -334,6 +374,17 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("--scan-noise", type=float, required=True, help="measured noise floor (mm)")
     p.add_argument("--out", type=Path)
     p.set_defaults(func=cmd_scale)
+
+    p = sub.add_parser("regime", help="declare the band regime -> intake/regime.json (run-contract §12)")
+    p.add_argument("--name", choices=["RE_SPEC", "baseline-skill", "project-spec"], required=True)
+    p.add_argument("--source", help="path:line evidence for the bands (required for project-spec; "
+                                    "defaulted for RE_SPEC/baseline-skill when --bands is omitted)")
+    p.add_argument("--bands", help="JSON string, e.g. '{\"p95_mm\": 0.3, \"max_mm\": 0.8}'")
+    p.add_argument("--class", dest="klass", choices=["plastic", "machined"],
+                   help="required for baseline-skill when --bands is omitted")
+    p.add_argument("--why", help="why this regime applies to this run")
+    p.add_argument("--out-dir", type=Path, required=True)
+    p.set_defaults(func=cmd_regime)
 
     a = ap.parse_args(argv)
     if a.cmd == "stats" and (a.table_dir is None) != (a.table_below is None):
