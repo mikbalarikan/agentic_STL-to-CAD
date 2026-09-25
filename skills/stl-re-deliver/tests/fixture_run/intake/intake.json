@@ -1,0 +1,21 @@
+{
+  "schema": "stl-re/intake@1",
+  "tool": "intake.py",
+  "tool_version": "fixture",
+  "inputs": {},
+  "seed": 0,
+  "created": "1970-01-01T00:00:00+00:00",
+  "regime": {
+    "name": "RE_SPEC",
+    "source": "baseline/oomwoo-re-pipeline/RE_SPEC.md:170-175",
+    "bands": {
+      "tier1": "±0.15 mm",
+      "tier2_whole": "p95 ≤1.6 / max ≤4.0 mm",
+      "tier2_interfaces": "max ≤0.8 mm"
+    }
+  },
+  "scan": {
+    "faces": 12,
+    "watertight": true
+  }
+}

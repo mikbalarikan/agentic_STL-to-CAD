@@ -1,0 +1,123 @@
+{
+  "schema": "stl-re/gate@1",
+  "tool": "verify",
+  "tool_version": "fixture",
+  "inputs": {},
+  "seed": 0,
+  "created": "1970-01-01T00:00:00+00:00",
+  "regime": {
+    "name": "RE_SPEC",
+    "source": "baseline/oomwoo-re-pipeline/RE_SPEC.md:170-175",
+    "bands": {
+      "tier1": "±0.15 mm",
+      "tier2_whole": "p95 ≤1.6 / max ≤4.0 mm",
+      "tier2_interfaces": "max ≤0.8 mm"
+    }
+  },
+  "hash_frozen": {},
+  "datum_audit": {
+    "angle_deg": 0.05,
+    "origin_offset_mm": 0.02,
+    "point_disagreement_p95_mm": 0.03,
+    "reference_band": "≤0.3° / ≤0.15 mm (RE_SPEC.md:241)",
+    "blocking": false
+  },
+  "validity": {
+    "solids": 1,
+    "valid": true
+  },
+  "surface_census": {
+    "PLANE": 6,
+    "CYLINDER": 1
+  },
+  "tier1": {
+    "F01 plate_x": {
+      "caliper": 40.02,
+      "cad": 40.0,
+      "delta": -0.02,
+      "pass": true
+    },
+    "F02 plate_t": {
+      "caliper": 5.01,
+      "cad": 5.0,
+      "delta": -0.01,
+      "pass": true
+    }
+  },
+  "deviation": {
+    "registration": {
+      "method": "trimmed ICP",
+      "iterations": 12,
+      "converged": true,
+      "delta_deg": 0.01,
+      "delta_mm": 0.004
+    },
+    "scan_to_cad": {
+      "n": 20000,
+      "rms": 0.041,
+      "p50": 0.03,
+      "p95": 0.088,
+      "p99": 0.12,
+      "max": 0.31,
+      "sampling": "area-uniform",
+      "seed": 0
+    },
+    "cad_to_scan": {
+      "n": 20000,
+      "rms": 0.9,
+      "p50": 0.02,
+      "p95": 3.9,
+      "p99": 4.0,
+      "max": 4.0,
+      "sampling": "area-uniform",
+      "seed": 0
+    },
+    "cad_to_scan_observable": {
+      "n": 18000,
+      "rms": 0.05,
+      "p50": 0.02,
+      "p95": 0.09,
+      "p99": 0.14,
+      "max": 0.29,
+      "sampling": "area-uniform",
+      "seed": 0
+    },
+    "unobservable_fraction": 0.1,
+    "zones": {
+      "bore wall": {
+        "n": 900,
+        "rms": 0.05,
+        "p50": 0.03,
+        "p95": 0.1,
+        "p99": 0.2,
+        "max": 0.4,
+        "band": "max ≤0.8",
+        "gated": true,
+        "pass": true
+      }
+    },
+    "masks": [],
+    "unmasked": {
+      "n": 20000,
+      "rms": 0.041,
+      "p50": 0.03,
+      "p95": 0.088,
+      "p99": 0.12,
+      "max": 0.31,
+      "sampling": "area-uniform",
+      "seed": 0
+    },
+    "sensitivity": [],
+    "over_band_clusters": [],
+    "scan": "input/scan.stl",
+    "full_res": true
+  },
+  "checks": {
+    "CHK-ENUM": {
+      "ran": true,
+      "result": "finding",
+      "note": "fixture: bore too small vs photo"
+    }
+  },
+  "verdict": "REVISE"
+}
