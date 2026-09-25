@@ -5,7 +5,15 @@ architecture or gate numbers and need an answer from the owner. The rest are rec
 They are listed so no skill states them as fact. Per-project details are in the
 `## Questions` section of each `analysis/golden/*.md` and `analysis/baseline/*.md` file.
 
-## A. Decisions needed from the owner
+## A. Owner decisions (resolved 2026-09-25: Ikbal approved the architecture and the recommendations)
+
+- **Q1 → resolved:** the intake declares the band regime (RE_SPEC / baseline-skill / project spec, each with its source); the verdict names it. No single silent default.
+- **Q2 → resolved:** the datum audit is run and reported against the RE_SPEC ≤0.3° / ≤0.15 mm numbers, but it is **report-only**, not blocking.
+- **Q3 → resolved:** face count and surface-type census are **reported, not gated**. The qualitative anti-patchwork rules (no ruled lofts / polyline stacks of scan slices) stay.
+- **Q4 → resolved:** blind replay targets are OOM-B02 and the Dreame screw cap.
+- **Q5 → resolved:** `stl-re-deliver` stays a separate skill. Branch stays `claude/skills-v1-kickoff-mtk1l9`.
+
+Original questions, kept for the record:
 
 **Q1. Default deviation band.** Two regimes exist and the goldens used both:
 - RE_SPEC Tier-2: p95 ≤1.6 / max ≤4.0 after ICP + skin mask, plus Tier-1 ±0.15 and
