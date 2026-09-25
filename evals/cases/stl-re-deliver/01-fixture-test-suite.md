@@ -1,0 +1,39 @@
+# Case: `tests/run_fixture_test.py` fixture suite passes end-to-end
+
+## Skill
+`stl-re-deliver`
+
+## Input (repo paths)
+- `skills/stl-re-deliver/tests/fixture_run/` (a synthetic, contract-shaped run folder: `qa/`
+  block files, `build/model.py`, `measure/params.json`, delivered STEP)
+
+## Command or procedure
+```
+python3 skills/stl-re-deliver/tests/run_fixture_test.py --workdir <tmp> --keep
+```
+(`run_fixture_test.py --help`: `--workdir WORKDIR`, `--keep` (keep the scratch dir for
+inspection). The suite exercises `make_manifest.py`, `make_readme.py`, `preflight.py` and
+`repro_check.py` together against the fixture run.)
+
+## Expected outcome
+Cited from `reviews/stl-re-deliver.md` "What I ran": the fixture suite is expected to pass all
+21 recorded cases (`21/21 passed`). This is an exact pass-count match to the recorded value, not
+a tolerance.
+
+## Baseline behaviour (cited)
+The baseline skills have no delivery-manifest or repro-check tooling at all
+(`analysis/baseline/stl2step-skills.md` §8 "Deliverables" lists only the delivered files, with no
+manifest/README generation, no reproducibility rebuild and no ACCEPT-BAND mechanism). A baseline
+delivery would ship the STEP and whatever free-text notes the agent chose to write, with no
+machine check that every excluded file has a stated reason, that the build is reproducible from
+source, or that every declared limitation traces to a `gate.json` field.
+
+## Last observed result
+**Not run this session — skill under edit.** `git status` shows `skills/stl-re-deliver/` has
+uncommitted changes in progress (`tests/fixture_run/qa/gate.json` modified,
+`tests/fixture_run/qa/VERDICT.md` deleted, several new `qa/*.json` fixture files and a new
+`tests/gen_gate.py` added, none yet committed) at the time this eval suite was written, meaning
+another agent is actively mid-edit on this skill's fixtures. Per this eval suite's own
+instructions, deliver cases are recorded without running them in that state. Cited historical
+result: `reviews/stl-re-deliver.md` "What I ran" recorded **21/21 passed** (~1 min 53 s,
+build123d 0.13) on the pre-edit fixture. **not run (skill under edit)**.
