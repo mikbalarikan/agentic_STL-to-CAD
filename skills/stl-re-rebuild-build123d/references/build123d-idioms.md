@@ -139,3 +139,11 @@ B02's comment says "tangent faces make the OCC boolean fail"
 
 The rows marked with an OCP rename were found while testing this skill's scripts on
 build123d 0.13.0. Record `build123d.__version__` in `build_log.txt`.
+
+## Observed in the Phase 4 DRM replay
+
+- **`extrude(taper=...)` gives B-spline side faces** (build123d 0.13). Planar draft faces come
+  out as `BSPLINE`, which inflates the B-spline share in the surface census. For planar drafted
+  faces, intersect with tilted half-space boxes (the replay's workaround), then confirm the
+  face types with `face_stats.py`. Evidence: DRM replay
+  report D11 (`evals/replay/dreame_screw.md`).
