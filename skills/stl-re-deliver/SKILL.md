@@ -27,7 +27,8 @@ layout, the JSON keys, the verdicts, `DECISIONS.md` and the check ids used below
 | `qa/gate.json`, `qa/VERDICT.md` (required, CHK-PUBLISH) | `deliver/limitations.json` (you write it, step 2) |
 | `measure/params.json`, `build/export_check.json`, `intake/alignment.json`, `intake/regime.json` | `deliver/repro.json` (`scripts/repro_check.py`) |
 | `build/model.py`, `build/*.step`, `input/INPUT_HASHES.json`, `DECISIONS.md` | `deliver/README.md` (`scripts/make_readme.py`) |
-| `_itN_SUPERSEDED/` | `deliver/MANIFEST.json` (`scripts/make_manifest.py`, always last) |
+| `_itN_SUPERSEDED/` | `deliver/MANIFEST.json` (`scripts/make_manifest.py`, last file in the run) |
+| the whole run folder + `deliver/MANIFEST.json` | `<run parent>/<run>_delivery.zip` + `.sha256` (`scripts/package_zip.py`, outside the run, step 6) |
 
 Scripts live in `scripts/`. All take `--run <run folder>`. Exit 0 means done, 2 means
 refused (the message names the check and the next action), 1 means `repro_check.py`
@@ -184,9 +185,33 @@ the golden `MANIFEST.json` shape (`golden-examples/*/MANIFEST.json`) and facet-f
 - If any role is `unclassified`, look at the file. It may be a stray intermediate that
   belongs in a stage folder.
 
-### 6. Report to the user
+### 6. Package the delivery zip (always; the standing hand-off format)
 
-Give the path to `deliver/README.md` and then state:
+The owner's standing instruction (2026-09-25): every job is handed over as ONE downloadable zip
+holding all source files and the deliverables. Do this for every delivered run without being
+asked again:
+
+```
+python scripts/package_zip.py --run <run> [--out <zip>]
+```
+
+- Default output: `<run parent>/<run name>_delivery.zip` plus `<zip>.sha256`. The zip is written
+  outside the run folder, so the manifest stays valid.
+- Layout: `<run>/DELIVERABLES/` (STEP datum + scan frame, CAD STL, README, VERDICT, gate.json,
+  PARAM_TABLE, overlays), `<run>/run/` (the complete run folder: input, intake, measure, build,
+  qa, deliver, superseded iterations, DECISIONS.md) and `<run>/ZIP_INDEX.md` (what is where, the
+  verdict and regime from MANIFEST.json, the re-build command).
+- It refuses (exit 2) when any file differs from `deliver/MANIFEST.json`, or a file is not listed
+  in it: re-run steps 3–5 first. Python caches are skipped.
+- Send the zip to the user as a file (in Claude Code: `SendUserFile`), with the verdict line from
+  step 7 as the caption. Do not commit the zip or the run folder's meshes to git; the repo keeps
+  only a record under `evals/real-runs/<part>/` (VERDICT, gate, DECISIONS, README, key figures).
+- `DELIVERABLES/` inherits CHK-PUBLISH: it only exists because preflight passed. Never build a zip
+  of an undelivered run to "share progress".
+
+### 7. Report to the user
+
+Give the path to `deliver/README.md` and the zip, and then state:
 - the verdict word;
 - the regime;
 - the iteration (n of 3);

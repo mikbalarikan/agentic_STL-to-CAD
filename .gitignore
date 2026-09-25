@@ -1,2 +1,5 @@
 __pycache__/
 *.pyc
+runs/
+*_delivery.zip
+*_delivery.zip.sha256

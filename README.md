@@ -13,7 +13,7 @@ traced to evidence in `golden-examples/` or to the RE_SPEC in `baseline/`.
 | [`stl-re-measure-intent`](skills/stl-re-measure-intent/SKILL.md) | Sections, primitive fits, R(θ) maps, pattern counts, caliper/photo authority with achievability checks (STRIKE/UNPROVEN), noise-bounded rounding → `params.json` + `PARAM_TABLE.md`. | After intake, before modelling, or to re-measure a flagged feature. |
 | [`stl-re-rebuild-build123d`](skills/stl-re-rebuild-build123d/SKILL.md) | Modelling plan, build123d strategies, logged fillets, anti-patchwork census, single-solid validation, datum- and scan-frame STEP export. | Once `params.json` exists, or when a verdict sends the CAD back. |
 | [`stl-re-verify`](skills/stl-re-verify/SKILL.md) | Independent QA: hash freeze, datum audit (report-only), Tier-1 on the STEP, own ICP, two-way full-res deviation with zones and named masks, observability, overlays, verdict under the declared regime. | After a rebuild, before delivery, ideally in a fresh agent. |
-| [`stl-re-deliver`](skills/stl-re-deliver/SKILL.md) | README from the gate and params JSON, `MANIFEST.json` with hashes and roles, fresh-process reproducibility check. Refuses stale or untrusted verdicts. | Only after verify wrote a trusted `qa/gate.json` and `VERDICT.md`. |
+| [`stl-re-deliver`](skills/stl-re-deliver/SKILL.md) | README from the gate and params JSON, `MANIFEST.json` with hashes and roles, fresh-process reproducibility check, and the delivery zip (all source files + deliverables, `scripts/package_zip.py`). Refuses stale or untrusted verdicts. | Only after verify wrote a trusted `qa/gate.json` and `VERDICT.md`. |
 
 Verdicts: `APPROVED`, `APPROVED_WITH_LIMITATIONS`, `BAND_NOT_MET` (delivery needs a recorded
 human `ACCEPT-BAND`), `REVISE`, `HALT`. The band regime (RE_SPEC, baseline-skill or a project
@@ -40,9 +40,14 @@ required; `stl-re-rebuild-build123d/references/freecad-equivalents.md` is a refe
 Then ask Claude to convert a scan (for example "turn scan.stl into a STEP, calipers are in
 MEASUREMENTS.md"), and `stl-re-orchestrate` takes it from there.
 
+Every delivered job is handed over as one zip, `<run>_delivery.zip` (source files +
+deliverables); see `CLAUDE.md` for the standing session conventions.
+
 ## Repository layout
 
 - `skills/`: the six skills (this is what you install).
+- `CLAUDE.md`: standing conventions for jobs run in this repo (run folder, regime words, zip delivery).
+- `runs/`: local run folders and delivery zips (git-ignored).
 - `evals/`: per-skill eval cases (`evals/cases/`) and the blind replays against the baseline
   (`evals/replay/`). Read `evals/README.md` for how to run them and for the caveats.
 - `analysis/`: the evidence base. Per-golden and per-baseline extractions, `SYNTHESIS.md`
