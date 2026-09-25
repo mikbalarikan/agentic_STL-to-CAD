@@ -1,0 +1,2458 @@
+{
+  "schema": "independent-cad-qa-v1",
+  "candidate": "/home/oguz/work/re/M02-02-03_CORRECTED/02_model/M02-02-03_CORRECTED.step",
+  "expected_frozen_sha256": "457aa5d9fb68f454b63cf51415f235566f4f5e99853f80a1fa973271283449ac",
+  "fail_closed": true,
+  "hash_before_qa": "457aa5d9fb68f454b63cf51415f235566f4f5e99853f80a1fa973271283449ac",
+  "hash_before_matches_expected": true,
+  "step_import": {
+    "readable": true,
+    "reader": "OCP.STEPControl_Reader -> TransferRoots -> OneShape",
+    "roots_for_transfer": 1,
+    "roots_transferred": 1
+  },
+  "brep": {
+    "brepcheck_valid": true,
+    "solid_count": 1,
+    "shell_count": 1,
+    "shell_closed_flags": [
+      true
+    ],
+    "all_shells_closed": true,
+    "volume_mm3": 1265.5249544687101,
+    "positive_volume": true,
+    "bbox_optimal_mm": {
+      "xmin": -9.524928186006239,
+      "ymin": -9.496381881944325,
+      "zmin": 0.0,
+      "xmax": 9.524928186006239,
+      "ymax": 9.496381881944325,
+      "zmax": 9.95
+    },
+    "overall_z_mm": 9.95
+  },
+  "analytic_cylindrical_faces": [
+    {
+      "face_index": 44,
+      "diameter_mm": 16.5,
+      "axis_direction": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "axis_location_mm": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "face_bbox_z_mm": [
+        0.0,
+        3.0
+      ]
+    },
+    {
+      "face_index": 57,
+      "diameter_mm": 16.5,
+      "axis_direction": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "axis_location_mm": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "face_bbox_z_mm": [
+        0.0,
+        3.0
+      ]
+    },
+    {
+      "face_index": 144,
+      "diameter_mm": 16.5,
+      "axis_direction": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "axis_location_mm": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "face_bbox_z_mm": [
+        0.0,
+        3.0
+      ]
+    },
+    {
+      "face_index": 157,
+      "diameter_mm": 16.5,
+      "axis_direction": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "axis_location_mm": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "face_bbox_z_mm": [
+        0.0,
+        3.0
+      ]
+    },
+    {
+      "face_index": 244,
+      "diameter_mm": 16.5,
+      "axis_direction": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "axis_location_mm": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "face_bbox_z_mm": [
+        0.0,
+        3.0
+      ]
+    },
+    {
+      "face_index": 257,
+      "diameter_mm": 16.5,
+      "axis_direction": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "axis_location_mm": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "face_bbox_z_mm": [
+        0.0,
+        3.0
+      ]
+    },
+    {
+      "face_index": 344,
+      "diameter_mm": 16.5,
+      "axis_direction": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "axis_location_mm": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "face_bbox_z_mm": [
+        0.0,
+        3.0
+      ]
+    },
+    {
+      "face_index": 357,
+      "diameter_mm": 16.5,
+      "axis_direction": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "axis_location_mm": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "face_bbox_z_mm": [
+        0.0,
+        3.0
+      ]
+    },
+    {
+      "face_index": 444,
+      "diameter_mm": 16.5,
+      "axis_direction": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "axis_location_mm": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "face_bbox_z_mm": [
+        0.0,
+        3.0
+      ]
+    },
+    {
+      "face_index": 457,
+      "diameter_mm": 16.5,
+      "axis_direction": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "axis_location_mm": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "face_bbox_z_mm": [
+        0.0,
+        3.0
+      ]
+    },
+    {
+      "face_index": 544,
+      "diameter_mm": 16.5,
+      "axis_direction": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "axis_location_mm": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "face_bbox_z_mm": [
+        0.0,
+        3.0
+      ]
+    },
+    {
+      "face_index": 557,
+      "diameter_mm": 16.5,
+      "axis_direction": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "axis_location_mm": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "face_bbox_z_mm": [
+        0.0,
+        3.0
+      ]
+    },
+    {
+      "face_index": 644,
+      "diameter_mm": 16.5,
+      "axis_direction": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "axis_location_mm": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "face_bbox_z_mm": [
+        0.0,
+        3.0
+      ]
+    },
+    {
+      "face_index": 657,
+      "diameter_mm": 16.5,
+      "axis_direction": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "axis_location_mm": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "face_bbox_z_mm": [
+        0.0,
+        3.0
+      ]
+    },
+    {
+      "face_index": 744,
+      "diameter_mm": 16.5,
+      "axis_direction": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "axis_location_mm": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "face_bbox_z_mm": [
+        0.0,
+        3.0
+      ]
+    },
+    {
+      "face_index": 757,
+      "diameter_mm": 16.5,
+      "axis_direction": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "axis_location_mm": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "face_bbox_z_mm": [
+        0.0,
+        3.0
+      ]
+    },
+    {
+      "face_index": 844,
+      "diameter_mm": 16.5,
+      "axis_direction": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "axis_location_mm": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "face_bbox_z_mm": [
+        0.0,
+        3.0
+      ]
+    },
+    {
+      "face_index": 857,
+      "diameter_mm": 16.5,
+      "axis_direction": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "axis_location_mm": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "face_bbox_z_mm": [
+        0.0,
+        3.0
+      ]
+    },
+    {
+      "face_index": 944,
+      "diameter_mm": 16.5,
+      "axis_direction": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "axis_location_mm": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "face_bbox_z_mm": [
+        0.0,
+        3.0
+      ]
+    },
+    {
+      "face_index": 957,
+      "diameter_mm": 16.5,
+      "axis_direction": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "axis_location_mm": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "face_bbox_z_mm": [
+        0.0,
+        3.0
+      ]
+    },
+    {
+      "face_index": 1044,
+      "diameter_mm": 16.5,
+      "axis_direction": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "axis_location_mm": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "face_bbox_z_mm": [
+        0.0,
+        3.0
+      ]
+    },
+    {
+      "face_index": 1057,
+      "diameter_mm": 16.5,
+      "axis_direction": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "axis_location_mm": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "face_bbox_z_mm": [
+        0.0,
+        3.0
+      ]
+    },
+    {
+      "face_index": 1144,
+      "diameter_mm": 16.5,
+      "axis_direction": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "axis_location_mm": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "face_bbox_z_mm": [
+        0.0,
+        3.0
+      ]
+    },
+    {
+      "face_index": 1157,
+      "diameter_mm": 16.5,
+      "axis_direction": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "axis_location_mm": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "face_bbox_z_mm": [
+        0.0,
+        3.0
+      ]
+    },
+    {
+      "face_index": 1244,
+      "diameter_mm": 16.5,
+      "axis_direction": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "axis_location_mm": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "face_bbox_z_mm": [
+        0.0,
+        3.0
+      ]
+    },
+    {
+      "face_index": 1257,
+      "diameter_mm": 16.5,
+      "axis_direction": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "axis_location_mm": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "face_bbox_z_mm": [
+        0.0,
+        3.0
+      ]
+    },
+    {
+      "face_index": 1344,
+      "diameter_mm": 16.5,
+      "axis_direction": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "axis_location_mm": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "face_bbox_z_mm": [
+        0.0,
+        3.0
+      ]
+    },
+    {
+      "face_index": 1357,
+      "diameter_mm": 16.5,
+      "axis_direction": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "axis_location_mm": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "face_bbox_z_mm": [
+        0.0,
+        3.0
+      ]
+    },
+    {
+      "face_index": 1444,
+      "diameter_mm": 16.5,
+      "axis_direction": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "axis_location_mm": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "face_bbox_z_mm": [
+        0.0,
+        3.0
+      ]
+    },
+    {
+      "face_index": 1457,
+      "diameter_mm": 16.5,
+      "axis_direction": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "axis_location_mm": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "face_bbox_z_mm": [
+        0.0,
+        3.0
+      ]
+    },
+    {
+      "face_index": 1501,
+      "diameter_mm": 1.95,
+      "axis_direction": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "axis_location_mm": [
+        0.0,
+        0.0,
+        -1.0
+      ],
+      "face_bbox_z_mm": [
+        0.0,
+        9.95
+      ]
+    },
+    {
+      "face_index": 1504,
+      "diameter_mm": 8.7,
+      "axis_direction": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "axis_location_mm": [
+        0.0,
+        0.0,
+        3.0
+      ],
+      "face_bbox_z_mm": [
+        3.0,
+        9.95
+      ]
+    },
+    {
+      "face_index": 1554,
+      "diameter_mm": 8.7,
+      "axis_direction": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "axis_location_mm": [
+        0.0,
+        0.0,
+        3.0
+      ],
+      "face_bbox_z_mm": [
+        3.0,
+        9.95
+      ]
+    },
+    {
+      "face_index": 1604,
+      "diameter_mm": 8.7,
+      "axis_direction": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "axis_location_mm": [
+        0.0,
+        0.0,
+        3.0
+      ],
+      "face_bbox_z_mm": [
+        3.0,
+        9.95
+      ]
+    },
+    {
+      "face_index": 1654,
+      "diameter_mm": 8.7,
+      "axis_direction": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "axis_location_mm": [
+        0.0,
+        0.0,
+        3.0
+      ],
+      "face_bbox_z_mm": [
+        3.0,
+        9.95
+      ]
+    },
+    {
+      "face_index": 1704,
+      "diameter_mm": 8.7,
+      "axis_direction": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "axis_location_mm": [
+        0.0,
+        0.0,
+        3.0
+      ],
+      "face_bbox_z_mm": [
+        3.0,
+        9.95
+      ]
+    },
+    {
+      "face_index": 1754,
+      "diameter_mm": 8.7,
+      "axis_direction": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "axis_location_mm": [
+        0.0,
+        0.0,
+        3.0
+      ],
+      "face_bbox_z_mm": [
+        3.0,
+        9.95
+      ]
+    },
+    {
+      "face_index": 1804,
+      "diameter_mm": 8.7,
+      "axis_direction": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "axis_location_mm": [
+        0.0,
+        0.0,
+        3.0
+      ],
+      "face_bbox_z_mm": [
+        3.0,
+        9.95
+      ]
+    },
+    {
+      "face_index": 1854,
+      "diameter_mm": 8.7,
+      "axis_direction": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "axis_location_mm": [
+        0.0,
+        0.0,
+        3.0
+      ],
+      "face_bbox_z_mm": [
+        3.0,
+        9.95
+      ]
+    },
+    {
+      "face_index": 1904,
+      "diameter_mm": 8.7,
+      "axis_direction": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "axis_location_mm": [
+        0.0,
+        0.0,
+        3.0
+      ],
+      "face_bbox_z_mm": [
+        3.0,
+        9.95
+      ]
+    },
+    {
+      "face_index": 1954,
+      "diameter_mm": 8.7,
+      "axis_direction": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "axis_location_mm": [
+        0.0,
+        0.0,
+        3.0
+      ],
+      "face_bbox_z_mm": [
+        3.0,
+        9.95
+      ]
+    },
+    {
+      "face_index": 2004,
+      "diameter_mm": 8.7,
+      "axis_direction": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "axis_location_mm": [
+        0.0,
+        0.0,
+        3.0
+      ],
+      "face_bbox_z_mm": [
+        3.0,
+        9.95
+      ]
+    },
+    {
+      "face_index": 2054,
+      "diameter_mm": 8.7,
+      "axis_direction": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "axis_location_mm": [
+        0.0,
+        0.0,
+        3.0
+      ],
+      "face_bbox_z_mm": [
+        3.0,
+        9.95
+      ]
+    },
+    {
+      "face_index": 2104,
+      "diameter_mm": 8.7,
+      "axis_direction": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "axis_location_mm": [
+        0.0,
+        0.0,
+        3.0
+      ],
+      "face_bbox_z_mm": [
+        3.0,
+        9.95
+      ]
+    },
+    {
+      "face_index": 2154,
+      "diameter_mm": 8.7,
+      "axis_direction": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "axis_location_mm": [
+        0.0,
+        0.0,
+        3.0
+      ],
+      "face_bbox_z_mm": [
+        3.0,
+        9.95
+      ]
+    },
+    {
+      "face_index": 2204,
+      "diameter_mm": 8.7,
+      "axis_direction": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "axis_location_mm": [
+        0.0,
+        0.0,
+        3.0
+      ],
+      "face_bbox_z_mm": [
+        3.0,
+        9.95
+      ]
+    },
+    {
+      "face_index": 2254,
+      "diameter_mm": 8.7,
+      "axis_direction": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "axis_location_mm": [
+        0.0,
+        0.0,
+        3.0
+      ],
+      "face_bbox_z_mm": [
+        3.0,
+        9.95
+      ]
+    },
+    {
+      "face_index": 2304,
+      "diameter_mm": 8.7,
+      "axis_direction": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "axis_location_mm": [
+        0.0,
+        0.0,
+        3.0
+      ],
+      "face_bbox_z_mm": [
+        3.0,
+        9.95
+      ]
+    }
+  ],
+  "z_normal_planar_face_levels": [
+    {
+      "z_mm": 0.0,
+      "face_count": 1,
+      "total_area_mm2": 246.95189224472512,
+      "face_indices": [
+        0
+      ]
+    },
+    {
+      "z_mm": 3.0,
+      "face_count": 1,
+      "total_area_mm2": 171.4599098368947,
+      "face_indices": [
+        1502
+      ]
+    },
+    {
+      "z_mm": 9.95,
+      "face_count": 1,
+      "total_area_mm2": 75.49198240784774,
+      "face_indices": [
+        1503
+      ]
+    }
+  ],
+  "bore_measurement": {
+    "selector": "All STEP BREP faces classified by BRepAdaptor_Surface; nearest Z-axis analytic cylinder to expected bore; preserve face index, axis and span",
+    "candidate_count": 48,
+    "selected": {
+      "face_index": 1501,
+      "diameter_mm": 1.95,
+      "axis_direction": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "axis_location_mm": [
+        0.0,
+        0.0,
+        -1.0
+      ],
+      "face_bbox_z_mm": [
+        0.0,
+        9.95
+      ]
+    },
+    "expected_diameter_mm": 1.95,
+    "tolerance_mm": 0.02,
+    "pass": true
+  },
+  "mesh": {
+    "source": "/home/oguz/work/re/M02-02-03_CORRECTED/03_qa/qa_step_tessellated.stl",
+    "linear_deflection_mm": 0.01,
+    "angular_deflection_rad": 0.1,
+    "vertices": 5174,
+    "triangles": 10348,
+    "watertight": true,
+    "winding_consistent": true,
+    "component_count": 1,
+    "boundary_edge_count": 0,
+    "nonmanifold_edge_count": 0,
+    "edge_incidence_selector": "np.bincount(mesh.edges_unique_inverse); boundary=count==1; nonmanifold=count>2 after trimesh merge_vertices"
+  },
+  "gears": {
+    "big": {
+      "name": "big_gear",
+      "stations_mm": [
+        0.5,
+        1.5,
+        2.5
+      ],
+      "station_details": [
+        {
+          "z_mm": 0.5,
+          "section_loop_count": 2,
+          "outer_loop_selector": "closed section loop with largest signed-area magnitude; all other loops excluded before center-out rays",
+          "outer_loop_area_mm2": 249.93042214435457,
+          "ray_count": 10200,
+          "od_mm": 19.049996889013244,
+          "min_outer_diameter_mm": 16.49871355883131,
+          "rotational_order_residual_table": [
+            {
+              "order": 10,
+              "rms_radial_residual_mm": 7.30493562769089e-07,
+              "max_abs_radial_residual_mm": 7.006013676758016e-06
+            },
+            {
+              "order": 11,
+              "rms_radial_residual_mm": 0.8168990101315183,
+              "max_abs_radial_residual_mm": 1.275597436687585
+            },
+            {
+              "order": 12,
+              "rms_radial_residual_mm": 1.084022677506293,
+              "max_abs_radial_residual_mm": 1.275622146336648
+            },
+            {
+              "order": 13,
+              "rms_radial_residual_mm": 0.8834573635437097,
+              "max_abs_radial_residual_mm": 1.275587748533498
+            },
+            {
+              "order": 14,
+              "rms_radial_residual_mm": 0.5022899406317101,
+              "max_abs_radial_residual_mm": 1.0703787517759018
+            },
+            {
+              "order": 15,
+              "rms_radial_residual_mm": 7.129222510815527e-07,
+              "max_abs_radial_residual_mm": 5.11065523234322e-06
+            },
+            {
+              "order": 16,
+              "rms_radial_residual_mm": 0.4498018473315319,
+              "max_abs_radial_residual_mm": 0.9935398776630908
+            },
+            {
+              "order": 17,
+              "rms_radial_residual_mm": 0.7386817757565022,
+              "max_abs_radial_residual_mm": 1.275593963813355
+            },
+            {
+              "order": 18,
+              "rms_radial_residual_mm": 0.9286473402474319,
+              "max_abs_radial_residual_mm": 1.2756285977804112
+            },
+            {
+              "order": 19,
+              "rms_radial_residual_mm": 1.0462279655849,
+              "max_abs_radial_residual_mm": 1.2756049327670098
+            },
+            {
+              "order": 20,
+              "rms_radial_residual_mm": 1.0840226775062753,
+              "max_abs_radial_residual_mm": 1.275622004535121
+            },
+            {
+              "order": 21,
+              "rms_radial_residual_mm": 1.0528267615063611,
+              "max_abs_radial_residual_mm": 1.2756295662420616
+            },
+            {
+              "order": 22,
+              "rms_radial_residual_mm": 0.9776972854762005,
+              "max_abs_radial_residual_mm": 1.2756362606371123
+            },
+            {
+              "order": 23,
+              "rms_radial_residual_mm": 0.8773387127273643,
+              "max_abs_radial_residual_mm": 1.2755925895203841
+            },
+            {
+              "order": 24,
+              "rms_radial_residual_mm": 0.770380065608244,
+              "max_abs_radial_residual_mm": 1.2756404119451688
+            },
+            {
+              "order": 25,
+              "rms_radial_residual_mm": 0.6563751464657656,
+              "max_abs_radial_residual_mm": 1.2751636907199853
+            },
+            {
+              "order": 26,
+              "rms_radial_residual_mm": 0.533597547839641,
+              "max_abs_radial_residual_mm": 1.1162295702699314
+            },
+            {
+              "order": 27,
+              "rms_radial_residual_mm": 0.40760142495534263,
+              "max_abs_radial_residual_mm": 0.9314282829509626
+            },
+            {
+              "order": 28,
+              "rms_radial_residual_mm": 0.27967132641517933,
+              "max_abs_radial_residual_mm": 0.7389182331926971
+            },
+            {
+              "order": 29,
+              "rms_radial_residual_mm": 0.14901529258457502,
+              "max_abs_radial_residual_mm": 0.5239185266652537
+            },
+            {
+              "order": 30,
+              "rms_radial_residual_mm": 7.44656646493436e-07,
+              "max_abs_radial_residual_mm": 7.76998645335425e-06
+            },
+            {
+              "order": 31,
+              "rms_radial_residual_mm": 0.14085267020275263,
+              "max_abs_radial_residual_mm": 0.5086380073149623
+            },
+            {
+              "order": 32,
+              "rms_radial_residual_mm": 0.24927311760521909,
+              "max_abs_radial_residual_mm": 0.6913423207131988
+            },
+            {
+              "order": 33,
+              "rms_radial_residual_mm": 0.3439260236197053,
+              "max_abs_radial_residual_mm": 0.8367673859996216
+            },
+            {
+              "order": 34,
+              "rms_radial_residual_mm": 0.4277020878359947,
+              "max_abs_radial_residual_mm": 0.9610734285739966
+            },
+            {
+              "order": 35,
+              "rms_radial_residual_mm": 0.5022899406317382,
+              "max_abs_radial_residual_mm": 1.0703784437665895
+            },
+            {
+              "order": 36,
+              "rms_radial_residual_mm": 0.5691358986866423,
+              "max_abs_radial_residual_mm": 1.1684264517769112
+            },
+            {
+              "order": 37,
+              "rms_radial_residual_mm": 0.6289541615268568,
+              "max_abs_radial_residual_mm": 1.2572549287383499
+            },
+            {
+              "order": 38,
+              "rms_radial_residual_mm": 0.6818918199844884,
+              "max_abs_radial_residual_mm": 1.2753384946815896
+            },
+            {
+              "order": 39,
+              "rms_radial_residual_mm": 0.7285811069422353,
+              "max_abs_radial_residual_mm": 1.2755633859030198
+            },
+            {
+              "order": 40,
+              "rms_radial_residual_mm": 0.7703800656082272,
+              "max_abs_radial_residual_mm": 1.275640076380979
+            }
+          ],
+          "exact_section_symmetry_threshold_max_abs_mm": 0.002,
+          "qualified_orders": [
+            10,
+            15,
+            30
+          ],
+          "selected_maximal_order": 30,
+          "diagnostic_peak_count": 31,
+          "diagnostic_peak_prominence_mm": 0.1020513332072774,
+          "diagnostic_peak_indices": [
+            19,
+            359,
+            699,
+            1039,
+            1379,
+            1681,
+            2059,
+            2399,
+            2701,
+            3041,
+            3419,
+            3721,
+            4061,
+            4401,
+            4741,
+            5119,
+            5459,
+            5799,
+            6139,
+            6479,
+            6781,
+            7159,
+            7499,
+            7801,
+            8141,
+            8519,
+            8821,
+            9161,
+            9501,
+            9841,
+            10181
+          ]
+        },
+        {
+          "z_mm": 1.5,
+          "section_loop_count": 2,
+          "outer_loop_selector": "closed section loop with largest signed-area magnitude; all other loops excluded before center-out rays",
+          "outer_loop_area_mm2": 249.9304221443835,
+          "ray_count": 10200,
+          "od_mm": 19.049996889013244,
+          "min_outer_diameter_mm": 16.49871355883131,
+          "rotational_order_residual_table": [
+            {
+              "order": 10,
+              "rms_radial_residual_mm": 7.304935628727071e-07,
+              "max_abs_radial_residual_mm": 7.00601368031073e-06
+            },
+            {
+              "order": 11,
+              "rms_radial_residual_mm": 0.8168990101315182,
+              "max_abs_radial_residual_mm": 1.275597436687585
+            },
+            {
+              "order": 12,
+              "rms_radial_residual_mm": 1.084022677506293,
+              "max_abs_radial_residual_mm": 1.2756221463366497
+            },
+            {
+              "order": 13,
+              "rms_radial_residual_mm": 0.8834573635437097,
+              "max_abs_radial_residual_mm": 1.2755877485334945
+            },
+            {
+              "order": 14,
+              "rms_radial_residual_mm": 0.50228994063171,
+              "max_abs_radial_residual_mm": 1.0703787517759018
+            },
+            {
+              "order": 15,
+              "rms_radial_residual_mm": 7.129222511108045e-07,
+              "max_abs_radial_residual_mm": 5.11065523234322e-06
+            },
+            {
+              "order": 16,
+              "rms_radial_residual_mm": 0.44980184733153183,
+              "max_abs_radial_residual_mm": 0.9935398776630908
+            },
+            {
+              "order": 17,
+              "rms_radial_residual_mm": 0.7386817757565022,
+              "max_abs_radial_residual_mm": 1.2755939638133533
+            },
+            {
+              "order": 18,
+              "rms_radial_residual_mm": 0.9286473402474316,
+              "max_abs_radial_residual_mm": 1.2756285977804112
+            },
+            {
+              "order": 19,
+              "rms_radial_residual_mm": 1.0462279655849,
+              "max_abs_radial_residual_mm": 1.275604932767008
+            },
+            {
+              "order": 20,
+              "rms_radial_residual_mm": 1.0840226775062751,
+              "max_abs_radial_residual_mm": 1.275622004535121
+            },
+            {
+              "order": 21,
+              "rms_radial_residual_mm": 1.052826761506361,
+              "max_abs_radial_residual_mm": 1.2756295662420598
+            },
+            {
+              "order": 22,
+              "rms_radial_residual_mm": 0.9776972854762005,
+              "max_abs_radial_residual_mm": 1.2756362606371106
+            },
+            {
+              "order": 23,
+              "rms_radial_residual_mm": 0.8773387127273642,
+              "max_abs_radial_residual_mm": 1.275592589520386
+            },
+            {
+              "order": 24,
+              "rms_radial_residual_mm": 0.7703800656082439,
+              "max_abs_radial_residual_mm": 1.2756404119451705
+            },
+            {
+              "order": 25,
+              "rms_radial_residual_mm": 0.6563751464657656,
+              "max_abs_radial_residual_mm": 1.2751636907199853
+            },
+            {
+              "order": 26,
+              "rms_radial_residual_mm": 0.5335975478396409,
+              "max_abs_radial_residual_mm": 1.1162295702699314
+            },
+            {
+              "order": 27,
+              "rms_radial_residual_mm": 0.4076014249553426,
+              "max_abs_radial_residual_mm": 0.9314282829509626
+            },
+            {
+              "order": 28,
+              "rms_radial_residual_mm": 0.2796713264151793,
+              "max_abs_radial_residual_mm": 0.7389182331926971
+            },
+            {
+              "order": 29,
+              "rms_radial_residual_mm": 0.14901529258457494,
+              "max_abs_radial_residual_mm": 0.5239185266652537
+            },
+            {
+              "order": 30,
+              "rms_radial_residual_mm": 7.446566465915142e-07,
+              "max_abs_radial_residual_mm": 7.769986455130606e-06
+            },
+            {
+              "order": 31,
+              "rms_radial_residual_mm": 0.14085267020275258,
+              "max_abs_radial_residual_mm": 0.508638007314957
+            },
+            {
+              "order": 32,
+              "rms_radial_residual_mm": 0.24927311760521903,
+              "max_abs_radial_residual_mm": 0.6913423207131988
+            },
+            {
+              "order": 33,
+              "rms_radial_residual_mm": 0.3439260236197052,
+              "max_abs_radial_residual_mm": 0.8367673859996216
+            },
+            {
+              "order": 34,
+              "rms_radial_residual_mm": 0.42770208783599467,
+              "max_abs_radial_residual_mm": 0.9610734285739948
+            },
+            {
+              "order": 35,
+              "rms_radial_residual_mm": 0.502289940631738,
+              "max_abs_radial_residual_mm": 1.0703784437665913
+            },
+            {
+              "order": 36,
+              "rms_radial_residual_mm": 0.5691358986866422,
+              "max_abs_radial_residual_mm": 1.1684264517769094
+            },
+            {
+              "order": 37,
+              "rms_radial_residual_mm": 0.6289541615268567,
+              "max_abs_radial_residual_mm": 1.2572549287383517
+            },
+            {
+              "order": 38,
+              "rms_radial_residual_mm": 0.6818918199844884,
+              "max_abs_radial_residual_mm": 1.2753384946815896
+            },
+            {
+              "order": 39,
+              "rms_radial_residual_mm": 0.7285811069422352,
+              "max_abs_radial_residual_mm": 1.2755633859030198
+            },
+            {
+              "order": 40,
+              "rms_radial_residual_mm": 0.7703800656082272,
+              "max_abs_radial_residual_mm": 1.275640076380979
+            }
+          ],
+          "exact_section_symmetry_threshold_max_abs_mm": 0.002,
+          "qualified_orders": [
+            10,
+            15,
+            30
+          ],
+          "selected_maximal_order": 30,
+          "diagnostic_peak_count": 30,
+          "diagnostic_peak_prominence_mm": 0.1020513332072774,
+          "diagnostic_peak_indices": [
+            19,
+            359,
+            699,
+            1039,
+            1379,
+            1681,
+            2059,
+            2399,
+            2701,
+            3041,
+            3419,
+            3721,
+            4061,
+            4401,
+            4741,
+            5119,
+            5459,
+            5799,
+            6139,
+            6479,
+            6781,
+            7159,
+            7499,
+            7801,
+            8141,
+            8519,
+            8821,
+            9161,
+            9501,
+            9841
+          ]
+        },
+        {
+          "z_mm": 2.5,
+          "section_loop_count": 2,
+          "outer_loop_selector": "closed section loop with largest signed-area magnitude; all other loops excluded before center-out rays",
+          "outer_loop_area_mm2": 249.93042214436093,
+          "ray_count": 10200,
+          "od_mm": 19.04999688901324,
+          "min_outer_diameter_mm": 16.49871355883131,
+          "rotational_order_residual_table": [
+            {
+              "order": 10,
+              "rms_radial_residual_mm": 7.304935629836491e-07,
+              "max_abs_radial_residual_mm": 7.0060136945215845e-06
+            },
+            {
+              "order": 11,
+              "rms_radial_residual_mm": 0.8168990101315183,
+              "max_abs_radial_residual_mm": 1.2755974366875833
+            },
+            {
+              "order": 12,
+              "rms_radial_residual_mm": 1.084022677506293,
+              "max_abs_radial_residual_mm": 1.2756221463366497
+            },
+            {
+              "order": 13,
+              "rms_radial_residual_mm": 0.8834573635437097,
+              "max_abs_radial_residual_mm": 1.275587748533498
+            },
+            {
+              "order": 14,
+              "rms_radial_residual_mm": 0.50228994063171,
+              "max_abs_radial_residual_mm": 1.0703787517759018
+            },
+            {
+              "order": 15,
+              "rms_radial_residual_mm": 7.129222511760793e-07,
+              "max_abs_radial_residual_mm": 5.110655228790506e-06
+            },
+            {
+              "order": 16,
+              "rms_radial_residual_mm": 0.4498018473315319,
+              "max_abs_radial_residual_mm": 0.9935398776630908
+            },
+            {
+              "order": 17,
+              "rms_radial_residual_mm": 0.7386817757565022,
+              "max_abs_radial_residual_mm": 1.275593963813355
+            },
+            {
+              "order": 18,
+              "rms_radial_residual_mm": 0.9286473402474319,
+              "max_abs_radial_residual_mm": 1.2756285977804094
+            },
+            {
+              "order": 19,
+              "rms_radial_residual_mm": 1.0462279655849,
+              "max_abs_radial_residual_mm": 1.2756049327670063
+            },
+            {
+              "order": 20,
+              "rms_radial_residual_mm": 1.0840226775062753,
+              "max_abs_radial_residual_mm": 1.2756220045351228
+            },
+            {
+              "order": 21,
+              "rms_radial_residual_mm": 1.0528267615063611,
+              "max_abs_radial_residual_mm": 1.2756295662420598
+            },
+            {
+              "order": 22,
+              "rms_radial_residual_mm": 0.9776972854762005,
+              "max_abs_radial_residual_mm": 1.2756362606371106
+            },
+            {
+              "order": 23,
+              "rms_radial_residual_mm": 0.8773387127273643,
+              "max_abs_radial_residual_mm": 1.2755925895203841
+            },
+            {
+              "order": 24,
+              "rms_radial_residual_mm": 0.770380065608244,
+              "max_abs_radial_residual_mm": 1.2756404119451688
+            },
+            {
+              "order": 25,
+              "rms_radial_residual_mm": 0.6563751464657656,
+              "max_abs_radial_residual_mm": 1.275163690719987
+            },
+            {
+              "order": 26,
+              "rms_radial_residual_mm": 0.533597547839641,
+              "max_abs_radial_residual_mm": 1.1162295702699314
+            },
+            {
+              "order": 27,
+              "rms_radial_residual_mm": 0.40760142495534263,
+              "max_abs_radial_residual_mm": 0.9314282829509608
+            },
+            {
+              "order": 28,
+              "rms_radial_residual_mm": 0.27967132641517933,
+              "max_abs_radial_residual_mm": 0.7389182331926971
+            },
+            {
+              "order": 29,
+              "rms_radial_residual_mm": 0.149015292584575,
+              "max_abs_radial_residual_mm": 0.5239185266652555
+            },
+            {
+              "order": 30,
+              "rms_radial_residual_mm": 7.446566466364642e-07,
+              "max_abs_radial_residual_mm": 7.76998646401239e-06
+            },
+            {
+              "order": 31,
+              "rms_radial_residual_mm": 0.14085267020275263,
+              "max_abs_radial_residual_mm": 0.5086380073149623
+            },
+            {
+              "order": 32,
+              "rms_radial_residual_mm": 0.24927311760521909,
+              "max_abs_radial_residual_mm": 0.6913423207131988
+            },
+            {
+              "order": 33,
+              "rms_radial_residual_mm": 0.34392602361970526,
+              "max_abs_radial_residual_mm": 0.836767385999627
+            },
+            {
+              "order": 34,
+              "rms_radial_residual_mm": 0.4277020878359947,
+              "max_abs_radial_residual_mm": 0.9610734285739948
+            },
+            {
+              "order": 35,
+              "rms_radial_residual_mm": 0.5022899406317382,
+              "max_abs_radial_residual_mm": 1.070378443766593
+            },
+            {
+              "order": 36,
+              "rms_radial_residual_mm": 0.5691358986866422,
+              "max_abs_radial_residual_mm": 1.1684264517769094
+            },
+            {
+              "order": 37,
+              "rms_radial_residual_mm": 0.6289541615268568,
+              "max_abs_radial_residual_mm": 1.2572549287383517
+            },
+            {
+              "order": 38,
+              "rms_radial_residual_mm": 0.6818918199844884,
+              "max_abs_radial_residual_mm": 1.2753384946815913
+            },
+            {
+              "order": 39,
+              "rms_radial_residual_mm": 0.7285811069422353,
+              "max_abs_radial_residual_mm": 1.2755633859030198
+            },
+            {
+              "order": 40,
+              "rms_radial_residual_mm": 0.7703800656082272,
+              "max_abs_radial_residual_mm": 1.275640076380979
+            }
+          ],
+          "exact_section_symmetry_threshold_max_abs_mm": 0.002,
+          "qualified_orders": [
+            10,
+            15,
+            30
+          ],
+          "selected_maximal_order": 30,
+          "diagnostic_peak_count": 30,
+          "diagnostic_peak_prominence_mm": 0.10205133320727726,
+          "diagnostic_peak_indices": [
+            19,
+            359,
+            699,
+            1039,
+            1379,
+            1681,
+            2059,
+            2399,
+            2701,
+            3041,
+            3419,
+            3721,
+            4061,
+            4401,
+            4741,
+            5119,
+            5459,
+            5799,
+            6139,
+            6479,
+            6781,
+            7159,
+            7499,
+            7801,
+            8141,
+            8519,
+            8821,
+            9161,
+            9501,
+            9841
+          ]
+        }
+      ],
+      "tooth_count_expected": 30,
+      "tooth_count_measured": 30,
+      "tooth_count_pass": true,
+      "od_expected_mm": 19.05,
+      "od_tolerance_mm": 0.03,
+      "od_measured_mm": 19.049996889013244,
+      "od_pass": true,
+      "zero_twist_selector": "outer-loop center-out radial signatures; bounded circular registration over one tooth pitch relative to first station",
+      "phase_by_station": [
+        {
+          "z_mm": 0.5,
+          "phase_relative_to_first_deg": -6.661338147750939e-16,
+          "best_fit_rms_mm": 1.0698699479912506e-16,
+          "zero_phase_rms_mm": 0.0
+        },
+        {
+          "z_mm": 1.5,
+          "phase_relative_to_first_deg": -6.661338147750939e-16,
+          "best_fit_rms_mm": 1.6794996609991176e-15,
+          "zero_phase_rms_mm": 1.6783019595607975e-15
+        },
+        {
+          "z_mm": 2.5,
+          "phase_relative_to_first_deg": -6.661338147750939e-16,
+          "best_fit_rms_mm": 1.5232134233268088e-15,
+          "zero_phase_rms_mm": 1.5235180355532969e-15
+        }
+      ],
+      "max_abs_twist_deg": 6.661338147750939e-16,
+      "zero_twist_tolerance_deg": 0.02,
+      "zero_twist_pass": true
+    },
+    "small": {
+      "name": "small_gear",
+      "stations_mm": [
+        3.5,
+        6.5,
+        9.5
+      ],
+      "station_details": [
+        {
+          "z_mm": 3.5,
+          "section_loop_count": 2,
+          "outer_loop_selector": "closed section loop with largest signed-area magnitude; all other loops excluded before center-out rays",
+          "outer_loop_area_mm2": 78.47222067427822,
+          "ray_count": 10200,
+          "od_mm": 11.199998554697002,
+          "min_outer_diameter_mm": 8.698367067445835,
+          "rotational_order_residual_table": [
+            {
+              "order": 10,
+              "rms_radial_residual_mm": 0.8758830011709515,
+              "max_abs_radial_residual_mm": 1.250775230860249
+            },
+            {
+              "order": 11,
+              "rms_radial_residual_mm": 1.084904391747339,
+              "max_abs_radial_residual_mm": 1.2507971151565638
+            },
+            {
+              "order": 12,
+              "rms_radial_residual_mm": 1.0540887568954116,
+              "max_abs_radial_residual_mm": 1.2507705433675778
+            },
+            {
+              "order": 13,
+              "rms_radial_residual_mm": 0.8892679917700834,
+              "max_abs_radial_residual_mm": 1.2507388552979792
+            },
+            {
+              "order": 14,
+              "rms_radial_residual_mm": 0.7066767113527571,
+              "max_abs_radial_residual_mm": 1.2508011849805607
+            },
+            {
+              "order": 15,
+              "rms_radial_residual_mm": 0.5002496611109435,
+              "max_abs_radial_residual_mm": 1.135501623493587
+            },
+            {
+              "order": 16,
+              "rms_radial_residual_mm": 0.27982611844103605,
+              "max_abs_radial_residual_mm": 0.8507627551645598
+            },
+            {
+              "order": 17,
+              "rms_radial_residual_mm": 5.624882804141237e-07,
+              "max_abs_radial_residual_mm": 6.075695239360357e-06
+            },
+            {
+              "order": 18,
+              "rms_radial_residual_mm": 0.25595939957807107,
+              "max_abs_radial_residual_mm": 0.8183656027685249
+            },
+            {
+              "order": 19,
+              "rms_radial_residual_mm": 0.4172936127640662,
+              "max_abs_radial_residual_mm": 1.0297849068830125
+            },
+            {
+              "order": 20,
+              "rms_radial_residual_mm": 0.5470796444317443,
+              "max_abs_radial_residual_mm": 1.1950842766372949
+            },
+            {
+              "order": 21,
+              "rms_radial_residual_mm": 0.6518993362238809,
+              "max_abs_radial_residual_mm": 1.250583980864377
+            },
+            {
+              "order": 22,
+              "rms_radial_residual_mm": 0.7348515781618292,
+              "max_abs_radial_residual_mm": 1.2507777581524184
+            },
+            {
+              "order": 23,
+              "rms_radial_residual_mm": 0.8031582386904951,
+              "max_abs_radial_residual_mm": 1.2507957704385646
+            },
+            {
+              "order": 24,
+              "rms_radial_residual_mm": 0.8609941721089807,
+              "max_abs_radial_residual_mm": 1.2508070388504224
+            },
+            {
+              "order": 25,
+              "rms_radial_residual_mm": 0.9104057296316717,
+              "max_abs_radial_residual_mm": 1.2508063216050447
+            },
+            {
+              "order": 26,
+              "rms_radial_residual_mm": 0.9529878833805403,
+              "max_abs_radial_residual_mm": 1.250776757315906
+            },
+            {
+              "order": 27,
+              "rms_radial_residual_mm": 0.9900414595433746,
+              "max_abs_radial_residual_mm": 1.2507863177416798
+            },
+            {
+              "order": 28,
+              "rms_radial_residual_mm": 1.0222724714674902,
+              "max_abs_radial_residual_mm": 1.250807932014415
+            },
+            {
+              "order": 29,
+              "rms_radial_residual_mm": 1.050329410153851,
+              "max_abs_radial_residual_mm": 1.2507495636030805
+            },
+            {
+              "order": 30,
+              "rms_radial_residual_mm": 1.0703979155935874,
+              "max_abs_radial_residual_mm": 1.2508157436255827
+            },
+            {
+              "order": 31,
+              "rms_radial_residual_mm": 1.083296064089924,
+              "max_abs_radial_residual_mm": 1.250780893261271
+            },
+            {
+              "order": 32,
+              "rms_radial_residual_mm": 1.0914538350629213,
+              "max_abs_radial_residual_mm": 1.2508094292009977
+            },
+            {
+              "order": 33,
+              "rms_radial_residual_mm": 1.0959365740573745,
+              "max_abs_radial_residual_mm": 1.2507559205336607
+            },
+            {
+              "order": 34,
+              "rms_radial_residual_mm": 1.097324343727879,
+              "max_abs_radial_residual_mm": 1.2508082970507637
+            },
+            {
+              "order": 35,
+              "rms_radial_residual_mm": 1.0960333967381344,
+              "max_abs_radial_residual_mm": 1.2507618013406647
+            },
+            {
+              "order": 36,
+              "rms_radial_residual_mm": 1.0926653723854525,
+              "max_abs_radial_residual_mm": 1.2507999296501122
+            },
+            {
+              "order": 37,
+              "rms_radial_residual_mm": 1.0874447453168608,
+              "max_abs_radial_residual_mm": 1.2508128198637367
+            },
+            {
+              "order": 38,
+              "rms_radial_residual_mm": 1.0806188825228435,
+              "max_abs_radial_residual_mm": 1.2507517967123905
+            },
+            {
+              "order": 39,
+              "rms_radial_residual_mm": 1.072394216720142,
+              "max_abs_radial_residual_mm": 1.2508123153841186
+            },
+            {
+              "order": 40,
+              "rms_radial_residual_mm": 1.0629711310997734,
+              "max_abs_radial_residual_mm": 1.2508066027710925
+            }
+          ],
+          "exact_section_symmetry_threshold_max_abs_mm": 0.002,
+          "qualified_orders": [
+            17
+          ],
+          "selected_maximal_order": 17,
+          "diagnostic_peak_count": 17,
+          "diagnostic_peak_prominence_mm": 0.10006525949004669,
+          "diagnostic_peak_indices": [
+            654,
+            1146,
+            1746,
+            2454,
+            3054,
+            3654,
+            4146,
+            4854,
+            5346,
+            6054,
+            6546,
+            7146,
+            7746,
+            8454,
+            9054,
+            9546,
+            10146
+          ]
+        },
+        {
+          "z_mm": 6.5,
+          "section_loop_count": 2,
+          "outer_loop_selector": "closed section loop with largest signed-area magnitude; all other loops excluded before center-out rays",
+          "outer_loop_area_mm2": 78.47222067427839,
+          "ray_count": 10200,
+          "od_mm": 11.199998554697002,
+          "min_outer_diameter_mm": 8.698367067445835,
+          "rotational_order_residual_table": [
+            {
+              "order": 10,
+              "rms_radial_residual_mm": 0.8758830011709514,
+              "max_abs_radial_residual_mm": 1.250775230860249
+            },
+            {
+              "order": 11,
+              "rms_radial_residual_mm": 1.0849043917473389,
+              "max_abs_radial_residual_mm": 1.2507971151565647
+            },
+            {
+              "order": 12,
+              "rms_radial_residual_mm": 1.0540887568954116,
+              "max_abs_radial_residual_mm": 1.2507705433675778
+            },
+            {
+              "order": 13,
+              "rms_radial_residual_mm": 0.8892679917700833,
+              "max_abs_radial_residual_mm": 1.2507388552979801
+            },
+            {
+              "order": 14,
+              "rms_radial_residual_mm": 0.7066767113527571,
+              "max_abs_radial_residual_mm": 1.2508011849805607
+            },
+            {
+              "order": 15,
+              "rms_radial_residual_mm": 0.5002496611109435,
+              "max_abs_radial_residual_mm": 1.135501623493588
+            },
+            {
+              "order": 16,
+              "rms_radial_residual_mm": 0.279826118441036,
+              "max_abs_radial_residual_mm": 0.8507627551645598
+            },
+            {
+              "order": 17,
+              "rms_radial_residual_mm": 5.624882805034391e-07,
+              "max_abs_radial_residual_mm": 6.075695241136714e-06
+            },
+            {
+              "order": 18,
+              "rms_radial_residual_mm": 0.255959399578071,
+              "max_abs_radial_residual_mm": 0.8183656027685258
+            },
+            {
+              "order": 19,
+              "rms_radial_residual_mm": 0.4172936127640661,
+              "max_abs_radial_residual_mm": 1.0297849068830125
+            },
+            {
+              "order": 20,
+              "rms_radial_residual_mm": 0.5470796444317442,
+              "max_abs_radial_residual_mm": 1.1950842766372949
+            },
+            {
+              "order": 21,
+              "rms_radial_residual_mm": 0.6518993362238807,
+              "max_abs_radial_residual_mm": 1.2505839808643762
+            },
+            {
+              "order": 22,
+              "rms_radial_residual_mm": 0.7348515781618292,
+              "max_abs_radial_residual_mm": 1.2507777581524175
+            },
+            {
+              "order": 23,
+              "rms_radial_residual_mm": 0.8031582386904951,
+              "max_abs_radial_residual_mm": 1.2507957704385646
+            },
+            {
+              "order": 24,
+              "rms_radial_residual_mm": 0.8609941721089807,
+              "max_abs_radial_residual_mm": 1.2508070388504215
+            },
+            {
+              "order": 25,
+              "rms_radial_residual_mm": 0.9104057296316715,
+              "max_abs_radial_residual_mm": 1.2508063216050456
+            },
+            {
+              "order": 26,
+              "rms_radial_residual_mm": 0.9529878833805401,
+              "max_abs_radial_residual_mm": 1.250776757315907
+            },
+            {
+              "order": 27,
+              "rms_radial_residual_mm": 0.9900414595433746,
+              "max_abs_radial_residual_mm": 1.250786317741679
+            },
+            {
+              "order": 28,
+              "rms_radial_residual_mm": 1.0222724714674902,
+              "max_abs_radial_residual_mm": 1.250807932014414
+            },
+            {
+              "order": 29,
+              "rms_radial_residual_mm": 1.050329410153851,
+              "max_abs_radial_residual_mm": 1.2507495636030805
+            },
+            {
+              "order": 30,
+              "rms_radial_residual_mm": 1.0703979155935874,
+              "max_abs_radial_residual_mm": 1.2508157436255836
+            },
+            {
+              "order": 31,
+              "rms_radial_residual_mm": 1.0832960640899238,
+              "max_abs_radial_residual_mm": 1.25078089326127
+            },
+            {
+              "order": 32,
+              "rms_radial_residual_mm": 1.0914538350629213,
+              "max_abs_radial_residual_mm": 1.2508094292009968
+            },
+            {
+              "order": 33,
+              "rms_radial_residual_mm": 1.0959365740573745,
+              "max_abs_radial_residual_mm": 1.2507559205336616
+            },
+            {
+              "order": 34,
+              "rms_radial_residual_mm": 1.097324343727879,
+              "max_abs_radial_residual_mm": 1.2508082970507646
+            },
+            {
+              "order": 35,
+              "rms_radial_residual_mm": 1.0960333967381344,
+              "max_abs_radial_residual_mm": 1.2507618013406638
+            },
+            {
+              "order": 36,
+              "rms_radial_residual_mm": 1.0926653723854525,
+              "max_abs_radial_residual_mm": 1.2507999296501122
+            },
+            {
+              "order": 37,
+              "rms_radial_residual_mm": 1.0874447453168605,
+              "max_abs_radial_residual_mm": 1.2508128198637367
+            },
+            {
+              "order": 38,
+              "rms_radial_residual_mm": 1.0806188825228435,
+              "max_abs_radial_residual_mm": 1.2507517967123913
+            },
+            {
+              "order": 39,
+              "rms_radial_residual_mm": 1.072394216720142,
+              "max_abs_radial_residual_mm": 1.2508123153841186
+            },
+            {
+              "order": 40,
+              "rms_radial_residual_mm": 1.0629711310997731,
+              "max_abs_radial_residual_mm": 1.2508066027710925
+            }
+          ],
+          "exact_section_symmetry_threshold_max_abs_mm": 0.002,
+          "qualified_orders": [
+            17
+          ],
+          "selected_maximal_order": 17,
+          "diagnostic_peak_count": 17,
+          "diagnostic_peak_prominence_mm": 0.10006525949004669,
+          "diagnostic_peak_indices": [
+            654,
+            1146,
+            1746,
+            2454,
+            3054,
+            3654,
+            4146,
+            4854,
+            5346,
+            6054,
+            6546,
+            7146,
+            7746,
+            8454,
+            9054,
+            9546,
+            10146
+          ]
+        },
+        {
+          "z_mm": 9.5,
+          "section_loop_count": 2,
+          "outer_loop_selector": "closed section loop with largest signed-area magnitude; all other loops excluded before center-out rays",
+          "outer_loop_area_mm2": 78.47222067427757,
+          "ray_count": 10200,
+          "od_mm": 11.199998554697002,
+          "min_outer_diameter_mm": 8.698367067445835,
+          "rotational_order_residual_table": [
+            {
+              "order": 10,
+              "rms_radial_residual_mm": 0.8758830011709515,
+              "max_abs_radial_residual_mm": 1.2507752308602473
+            },
+            {
+              "order": 11,
+              "rms_radial_residual_mm": 1.084904391747339,
+              "max_abs_radial_residual_mm": 1.2507971151565647
+            },
+            {
+              "order": 12,
+              "rms_radial_residual_mm": 1.0540887568954116,
+              "max_abs_radial_residual_mm": 1.2507705433675769
+            },
+            {
+              "order": 13,
+              "rms_radial_residual_mm": 0.8892679917700833,
+              "max_abs_radial_residual_mm": 1.2507388552979801
+            },
+            {
+              "order": 14,
+              "rms_radial_residual_mm": 0.7066767113527571,
+              "max_abs_radial_residual_mm": 1.2508011849805616
+            },
+            {
+              "order": 15,
+              "rms_radial_residual_mm": 0.5002496611109436,
+              "max_abs_radial_residual_mm": 1.135501623493588
+            },
+            {
+              "order": 16,
+              "rms_radial_residual_mm": 0.27982611844103605,
+              "max_abs_radial_residual_mm": 0.8507627551645598
+            },
+            {
+              "order": 17,
+              "rms_radial_residual_mm": 5.624882804600248e-07,
+              "max_abs_radial_residual_mm": 6.075695243801249e-06
+            },
+            {
+              "order": 18,
+              "rms_radial_residual_mm": 0.25595939957807107,
+              "max_abs_radial_residual_mm": 0.8183656027685249
+            },
+            {
+              "order": 19,
+              "rms_radial_residual_mm": 0.4172936127640662,
+              "max_abs_radial_residual_mm": 1.0297849068830134
+            },
+            {
+              "order": 20,
+              "rms_radial_residual_mm": 0.5470796444317443,
+              "max_abs_radial_residual_mm": 1.1950842766372975
+            },
+            {
+              "order": 21,
+              "rms_radial_residual_mm": 0.6518993362238809,
+              "max_abs_radial_residual_mm": 1.250583980864377
+            },
+            {
+              "order": 22,
+              "rms_radial_residual_mm": 0.7348515781618292,
+              "max_abs_radial_residual_mm": 1.2507777581524193
+            },
+            {
+              "order": 23,
+              "rms_radial_residual_mm": 0.8031582386904951,
+              "max_abs_radial_residual_mm": 1.2507957704385637
+            },
+            {
+              "order": 24,
+              "rms_radial_residual_mm": 0.8609941721089807,
+              "max_abs_radial_residual_mm": 1.2508070388504233
+            },
+            {
+              "order": 25,
+              "rms_radial_residual_mm": 0.9104057296316717,
+              "max_abs_radial_residual_mm": 1.2508063216050447
+            },
+            {
+              "order": 26,
+              "rms_radial_residual_mm": 0.9529878833805402,
+              "max_abs_radial_residual_mm": 1.250776757315906
+            },
+            {
+              "order": 27,
+              "rms_radial_residual_mm": 0.9900414595433746,
+              "max_abs_radial_residual_mm": 1.250786317741679
+            },
+            {
+              "order": 28,
+              "rms_radial_residual_mm": 1.0222724714674902,
+              "max_abs_radial_residual_mm": 1.250807932014415
+            },
+            {
+              "order": 29,
+              "rms_radial_residual_mm": 1.050329410153851,
+              "max_abs_radial_residual_mm": 1.2507495636030797
+            },
+            {
+              "order": 30,
+              "rms_radial_residual_mm": 1.0703979155935874,
+              "max_abs_radial_residual_mm": 1.2508157436255836
+            },
+            {
+              "order": 31,
+              "rms_radial_residual_mm": 1.083296064089924,
+              "max_abs_radial_residual_mm": 1.25078089326127
+            },
+            {
+              "order": 32,
+              "rms_radial_residual_mm": 1.0914538350629213,
+              "max_abs_radial_residual_mm": 1.2508094292009986
+            },
+            {
+              "order": 33,
+              "rms_radial_residual_mm": 1.0959365740573745,
+              "max_abs_radial_residual_mm": 1.2507559205336598
+            },
+            {
+              "order": 34,
+              "rms_radial_residual_mm": 1.097324343727879,
+              "max_abs_radial_residual_mm": 1.2508082970507646
+            },
+            {
+              "order": 35,
+              "rms_radial_residual_mm": 1.0960333967381344,
+              "max_abs_radial_residual_mm": 1.2507618013406638
+            },
+            {
+              "order": 36,
+              "rms_radial_residual_mm": 1.0926653723854525,
+              "max_abs_radial_residual_mm": 1.2507999296501122
+            },
+            {
+              "order": 37,
+              "rms_radial_residual_mm": 1.0874447453168608,
+              "max_abs_radial_residual_mm": 1.2508128198637358
+            },
+            {
+              "order": 38,
+              "rms_radial_residual_mm": 1.0806188825228435,
+              "max_abs_radial_residual_mm": 1.2507517967123913
+            },
+            {
+              "order": 39,
+              "rms_radial_residual_mm": 1.072394216720142,
+              "max_abs_radial_residual_mm": 1.2508123153841186
+            },
+            {
+              "order": 40,
+              "rms_radial_residual_mm": 1.0629711310997731,
+              "max_abs_radial_residual_mm": 1.2508066027710916
+            }
+          ],
+          "exact_section_symmetry_threshold_max_abs_mm": 0.002,
+          "qualified_orders": [
+            17
+          ],
+          "selected_maximal_order": 17,
+          "diagnostic_peak_count": 16,
+          "diagnostic_peak_prominence_mm": 0.10006525949004669,
+          "diagnostic_peak_indices": [
+            654,
+            1146,
+            1746,
+            2454,
+            3054,
+            3654,
+            4146,
+            4854,
+            5346,
+            6054,
+            6546,
+            7146,
+            7746,
+            8454,
+            9054,
+            9546
+          ]
+        }
+      ],
+      "tooth_count_expected": 17,
+      "tooth_count_measured": 17,
+      "tooth_count_pass": true,
+      "od_expected_mm": 11.2,
+      "od_tolerance_mm": 0.03,
+      "od_measured_mm": 11.199998554697002,
+      "od_pass": true,
+      "zero_twist_selector": "outer-loop center-out radial signatures; bounded circular registration over one tooth pitch relative to first station",
+      "phase_by_station": [
+        {
+          "z_mm": 3.5,
+          "phase_relative_to_first_deg": -1.3322676295501878e-15,
+          "best_fit_rms_mm": 2.979689941748647e-16,
+          "zero_phase_rms_mm": 0.0
+        },
+        {
+          "z_mm": 6.5,
+          "phase_relative_to_first_deg": -1.3322676295501878e-15,
+          "best_fit_rms_mm": 9.008447820906816e-16,
+          "zero_phase_rms_mm": 8.590977722053798e-16
+        },
+        {
+          "z_mm": 9.5,
+          "phase_relative_to_first_deg": -8.881784197001252e-16,
+          "best_fit_rms_mm": 8.965850379529528e-16,
+          "zero_phase_rms_mm": 8.859988374706483e-16
+        }
+      ],
+      "max_abs_twist_deg": 1.3322676295501878e-15,
+      "zero_twist_tolerance_deg": 0.02,
+      "zero_twist_pass": true
+    }
+  },
+  "axial_measurements": {
+    "selector": "Exact AddOptimal STEP BREP z extrema plus interior Z-normal planar-face level with greatest summed exposed area; widths are adjacent spans",
+    "zmin_mm": 0.0,
+    "zmax_mm": 9.95,
+    "selected_transition_level": {
+      "z_mm": 3.0,
+      "face_count": 1,
+      "total_area_mm2": 171.4599098368947,
+      "face_indices": [
+        1502
+      ]
+    },
+    "big_width_mm": 3.0,
+    "big_expected_mm": 3.0,
+    "big_tolerance_mm": 0.02,
+    "big_pass": true,
+    "small_width_mm": 6.949999999999999,
+    "small_expected_mm": 6.95,
+    "small_tolerance_mm": 0.02,
+    "small_pass": true,
+    "overall_z_mm": 9.95,
+    "overall_expected_mm": 9.95,
+    "overall_tolerance_mm": 0.02,
+    "overall_pass": true
+  },
+  "checks": [
+    {
+      "name": "frozen_hash_before",
+      "measured": "457aa5d9fb68f454b63cf51415f235566f4f5e99853f80a1fa973271283449ac",
+      "expected": "457aa5d9fb68f454b63cf51415f235566f4f5e99853f80a1fa973271283449ac",
+      "tolerance": "exact",
+      "pass": true,
+      "selector": "SHA-256 of exact candidate path before import"
+    },
+    {
+      "name": "step_readable",
+      "measured": true,
+      "expected": true,
+      "tolerance": "boolean",
+      "pass": true,
+      "selector": "OCP STEPControl reader transfer"
+    },
+    {
+      "name": "brepcheck_valid",
+      "measured": true,
+      "expected": true,
+      "tolerance": "boolean",
+      "pass": true,
+      "selector": "BRepCheck_Analyzer(shape, geometric_controls=True)"
+    },
+    {
+      "name": "solid_count",
+      "measured": 1,
+      "expected": 1,
+      "tolerance": "exact",
+      "pass": true,
+      "selector": "TopExp_Explorer TopAbs_SOLID"
+    },
+    {
+      "name": "shell_count",
+      "measured": 1,
+      "expected": 1,
+      "tolerance": "exact",
+      "pass": true,
+      "selector": "TopExp_Explorer TopAbs_SHELL"
+    },
+    {
+      "name": "shell_closed",
+      "measured": [
+        true
+      ],
+      "expected": [
+        true
+      ],
+      "tolerance": "all",
+      "pass": true,
+      "selector": "TopoDS.Shell_s(shell).Closed()"
+    },
+    {
+      "name": "positive_volume_mm3",
+      "measured": 1265.5249544687101,
+      "expected": ">0",
+      "tolerance": ">0",
+      "pass": true,
+      "selector": "BRepGProp.VolumeProperties_s"
+    },
+    {
+      "name": "mesh_watertight",
+      "measured": true,
+      "expected": true,
+      "tolerance": "boolean",
+      "pass": true,
+      "selector": "trimesh on STEP-retessellated STL"
+    },
+    {
+      "name": "mesh_component_count",
+      "measured": 1,
+      "expected": 1,
+      "tolerance": "exact",
+      "pass": true,
+      "selector": "trimesh.split(only_watertight=False)"
+    },
+    {
+      "name": "mesh_boundary_edges",
+      "measured": 0,
+      "expected": 0,
+      "tolerance": "exact",
+      "pass": true,
+      "selector": "np.bincount(mesh.edges_unique_inverse); boundary=count==1; nonmanifold=count>2 after trimesh merge_vertices"
+    },
+    {
+      "name": "mesh_nonmanifold_edges",
+      "measured": 0,
+      "expected": 0,
+      "tolerance": "exact",
+      "pass": true,
+      "selector": "np.bincount(mesh.edges_unique_inverse); boundary=count==1; nonmanifold=count>2 after trimesh merge_vertices"
+    },
+    {
+      "name": "big_tooth_count",
+      "measured": 30,
+      "expected": 30,
+      "tolerance": "exact at every station",
+      "pass": true,
+      "selector": "outer contour radial rotational-order residual + diagnostic crest peaks at Z=0.50,1.50,2.50"
+    },
+    {
+      "name": "big_od_mm",
+      "measured": 19.049996889013244,
+      "expected": 19.05,
+      "tolerance": "\u00b10.03 mm",
+      "pass": true,
+      "selector": "outer-contour center-out rays at Z=1.50 mm"
+    },
+    {
+      "name": "big_width_mm",
+      "measured": 3.0,
+      "expected": 3.0,
+      "tolerance": "\u00b10.02 mm",
+      "pass": true,
+      "selector": "exact BREP zmin to selected shoulder plane"
+    },
+    {
+      "name": "small_tooth_count",
+      "measured": 17,
+      "expected": 17,
+      "tolerance": "exact at every station",
+      "pass": true,
+      "selector": "outer contour radial rotational-order residual + diagnostic crest peaks at Z=3.50,6.50,9.50"
+    },
+    {
+      "name": "small_od_mm",
+      "measured": 11.199998554697002,
+      "expected": 11.2,
+      "tolerance": "\u00b10.03 mm",
+      "pass": true,
+      "selector": "outer-contour center-out rays at Z=6.50 mm"
+    },
+    {
+      "name": "small_width_mm",
+      "measured": 6.949999999999999,
+      "expected": 6.95,
+      "tolerance": "\u00b10.02 mm",
+      "pass": true,
+      "selector": "selected shoulder plane to exact BREP zmax"
+    },
+    {
+      "name": "bore_diameter_mm",
+      "measured": 1.95,
+      "expected": 1.95,
+      "tolerance": "\u00b10.02 mm",
+      "pass": true,
+      "selector": "selected analytic cylindrical STEP face"
+    },
+    {
+      "name": "overall_z_mm",
+      "measured": 9.95,
+      "expected": 9.95,
+      "tolerance": "\u00b10.02 mm",
+      "pass": true,
+      "selector": "BRepBndLib.AddOptimal_s exact z extent"
+    },
+    {
+      "name": "big_zero_twist_deg",
+      "measured": 6.661338147750939e-16,
+      "expected": 0.0,
+      "tolerance": "\u22640.02 deg",
+      "pass": true,
+      "selector": "outer-loop center-out radial signatures; bounded circular registration over one tooth pitch relative to first station"
+    },
+    {
+      "name": "small_zero_twist_deg",
+      "measured": 1.3322676295501878e-15,
+      "expected": 0.0,
+      "tolerance": "\u22640.02 deg",
+      "pass": true,
+      "selector": "outer-loop center-out radial signatures; bounded circular registration over one tooth pitch relative to first station"
+    },
+    {
+      "name": "frozen_hash_after",
+      "measured": "457aa5d9fb68f454b63cf51415f235566f4f5e99853f80a1fa973271283449ac",
+      "expected": "457aa5d9fb68f454b63cf51415f235566f4f5e99853f80a1fa973271283449ac",
+      "tolerance": "exact and unchanged",
+      "pass": true,
+      "selector": "SHA-256 after all computations/renders"
+    }
+  ],
+  "hash_after_qa": "457aa5d9fb68f454b63cf51415f235566f4f5e99853f80a1fa973271283449ac",
+  "hash_after_matches_expected": true,
+  "hash_unchanged_during_qa": true,
+  "computational_overall_pass": true,
+  "visual_overall_pass": true,
+  "verdict": "PASS"
+}

@@ -1,0 +1,8 @@
+F03 frustum valid=True faces=7 side_edges=5 types=['GeomType.PLANE']
+F03 corner fillet R1.15 on 5 edges OK valid=True
+F04 disc top fillet OK
+F05 dimples: R14.0 tilt 5.15 deg, axis x@zc=18.385
+F09 web fillet R0.55 at z=-2.6 OK (1 edges)
+F09 web fillet R0.6 at z=-4.05 OK (1 edges)
+F10 cb chamfer OK
+F11 bottom fillet OK (10 edges)

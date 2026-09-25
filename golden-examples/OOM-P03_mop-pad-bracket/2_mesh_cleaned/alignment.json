@@ -1,0 +1,34 @@
+{
+  "part": "OOM-P03 Mop Pad Bracket",
+  "description": "Composite raw-scan -> datum transform (row-major 4x4). Applies to 1_scan_raw_STL / 2_mesh_cleaned/OOM-P03.stl and OOM-P03_work_250k.stl (same RAW scanner coords). Datum: rotation/hex axis -> +Z (toward DRIVE/hex side); PAD-attach velcro field plane -> Z=0; origin on rotation axis (least-squares rim-circle center). No scale applied (caliper ENV-D1 127.54 vs scan rim 127.84, ratio 0.998, single-axis check per RE_SPEC 2).",
+  "units": "mm",
+  "matrix_4x4": [
+    [
+      0.41678995496423277,
+      0.2613145429700706,
+      0.8706324385601866,
+      213.13804877890738
+    ],
+    [
+      -0.8455801168660573,
+      0.46294703032585816,
+      0.265846408802632,
+      52.458471724950684
+    ],
+    [
+      -0.33358716912030434,
+      -0.8469915918973547,
+      0.41391405370377227,
+      131.79278908670955
+    ],
+    [
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ]
+  ],
+  "axis_source": "PCA flat-face normal (126k verts) for direction; least-squares Kasa circle fit on solid rim outer edge for XY center (resSD 0.039mm); Z origin at pad velcro field (median).",
+  "notes": "F08 tread OD ~140 (intake scan guess) REJECTED as raw-frame tilt artifact; true OD tips \u00d8128.6 (raw+work meshes both cap at r=64.32).",
+  "refinement": "matrix_4x4 refined by best-fit ICP (Kabsch, 90%-trimmed) of scan outer skin to CAD (rot 0.405 deg, trans 0.093 mm) to match verifier ICP frame."
+}

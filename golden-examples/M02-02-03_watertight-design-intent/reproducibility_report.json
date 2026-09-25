@@ -1,0 +1,17 @@
+{
+  "original_volume_mm3": 1265.5249544687101,
+  "rebuild_volume_mm3": 1265.5249544687101,
+  "volume_abs_delta_mm3": 0.0,
+  "original_bbox_mm": [
+    19.049856372012478,
+    18.99276376388865,
+    9.95
+  ],
+  "rebuild_bbox_mm": [
+    19.049856372012478,
+    18.99276376388865,
+    9.95
+  ],
+  "bbox_max_abs_delta_mm": 0.0,
+  "geometry_measurements_identical": true
+}

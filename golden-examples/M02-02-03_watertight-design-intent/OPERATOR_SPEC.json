@@ -1,0 +1,19 @@
+{
+  "schema": "operator-measured-compound-spur-gear-v1",
+  "part_id": "M02-02-03",
+  "units": "mm",
+  "source_stl_sha256": "533599f0dc37af76de91d540c35a3379ce6cc2f52498d857f479e3b48cb0b60a",
+  "large_gear": {
+    "tooth_count": 30,
+    "outside_diameter_mm": 19.05,
+    "toothed_face_width_mm": 3.0
+  },
+  "small_gear": {
+    "tooth_count": 17,
+    "outside_diameter_mm": 11.2,
+    "toothed_face_width_mm": 6.95
+  },
+  "coaxial_bore_diameter_mm": 1.95,
+  "requested_output": "one watertight solid-body STEP",
+  "modeling_contract": "semantic parametric rebuild; no triangle wrapping"
+}

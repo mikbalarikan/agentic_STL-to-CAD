@@ -1,0 +1,350 @@
+{
+  "project": "OOM-E01_battery-2P4S-6800",
+  "source_path": "H:\\My Drive\\111 UP UP UP\\REMAKE AI - DIY\\OOMWOO_CAD\\01_SOURCED_reverse-engineered\\Successfull Reverse Engineering\\OOM-E01_Battery-ML-XJT-2P4S-6800",
+  "note": "Golden example imported verbatim except 'excluded' files; excluded originals stay at source_path (Google Drive).",
+  "included": [],
+  "excluded": [
+    {
+      "path": "1_scan_raw_STL/pDswi_b9Eb_MYbm_9y9A/resources.obproj",
+      "bytes": 24576,
+      "sha256": "777a560eb2a97346c550c501384312f298629c24327dc544aa98c61838dc6c81",
+      "reason": "raw scanner project/cache (vendor format, ~GB) - not needed for method distillation"
+    },
+    {
+      "path": "1_scan_raw_STL/pDswi_b9Eb_MYbm_9y9A/result/Mesh.ply",
+      "bytes": 125009953,
+      "sha256": "84c7b460fed7342be5d81f4243a7f3783a0a313dc9a8625fd542e4f88e1d1aeb",
+      "reason": "raw scanner project/cache (vendor format, ~GB) - not needed for method distillation"
+    },
+    {
+      "path": "1_scan_raw_STL/project.obp",
+      "bytes": 198,
+      "sha256": "90c7b91f9ff187c02f520fa601f952a974873a1eaf256cb93589511c8572b6b0",
+      "reason": "raw scanner project/cache (vendor format, ~GB) - not needed for method distillation"
+    },
+    {
+      "path": "1_scan_raw_STL/scanDataConfig.dat",
+      "bytes": 555,
+      "sha256": "f1898782e90a72d36c1393556de455039f7670a4720a22081b59cbbc6fc305b3",
+      "reason": "raw scanner project/cache (vendor format, ~GB) - not needed for method distillation"
+    },
+    {
+      "path": "1_scan_raw_STL/scanParamConfig.dat",
+      "bytes": 2409,
+      "sha256": "5ca2949f287c463f80a567b157f0aac9120a430c57e2bae7d0395661094c3c2e",
+      "reason": "raw scanner project/cache (vendor format, ~GB) - not needed for method distillation"
+    },
+    {
+      "path": "1_scan_raw_STL/si1BeHQ_1L359W_eYzBAh_WYQ6Dr/result/Fused.ply",
+      "bytes": 59296579,
+      "sha256": "e1de756ff1812210a76fe0598126d56ea877fb9ee59faf79af30023b49d26eb4",
+      "reason": "raw scanner project/cache (vendor format, ~GB) - not needed for method distillation"
+    },
+    {
+      "path": "1_scan_raw_STL/si1BeHQ_1L359W_eYzBAh_WYQ6Dr/result/model.ply",
+      "bytes": 8872358,
+      "sha256": "c9cdf1e01e3092e3b690c92ac723e04bd6000787094c75d45fefdaa56175e032",
+      "reason": "raw scanner project/cache (vendor format, ~GB) - not needed for method distillation"
+    },
+    {
+      "path": "1_scan_raw_STL/su7KW0z_TIYN8D_RU4YJl_A3zZed/resources.obscan",
+      "bytes": 472838144,
+      "sha256": "66ce83bd609d9e92d6f746803bd596c6a01b08365e6d502e8a9f2224de8e92bd",
+      "reason": "raw scanner project/cache (vendor format, ~GB) - not needed for method distillation"
+    },
+    {
+      "path": "1_scan_raw_STL/su7KW0z_TIYN8D_RU4YJl_A3zZed/result/Fused.ply",
+      "bytes": 62429355,
+      "sha256": "a333405053e77426c1e5b22eb9580783551cf041daac964182ea35f2d785a887",
+      "reason": "raw scanner project/cache (vendor format, ~GB) - not needed for method distillation"
+    },
+    {
+      "path": "1_scan_raw_STL/su7KW0z_TIYN8D_RU4YJl_A3zZed/result/model.ply",
+      "bytes": 9623934,
+      "sha256": "201f16e9de227788b5f00bb8f409d1e2dbf7cd152fd04f256d280d65ed04f72d",
+      "reason": "raw scanner project/cache (vendor format, ~GB) - not needed for method distillation"
+    },
+    {
+      "path": "1_scan_raw_STL/svG3j3c_43ysyk_J6gbXL_QlvToY/resources.obscan",
+      "bytes": 477442048,
+      "sha256": "af232c679a60537f4c909d5a2843e54fa6d616f2815e373b5969e5d7eb2bffef",
+      "reason": "raw scanner project/cache (vendor format, ~GB) - not needed for method distillation"
+    },
+    {
+      "path": "1_scan_raw_STL/svG3j3c_43ysyk_J6gbXL_QlvToY/result/Fused.ply",
+      "bytes": 106321388,
+      "sha256": "bdfae46de061136a49271365eaf63a0e3b4cde02508e7ec7620f8a4a1af4fa75",
+      "reason": "raw scanner project/cache (vendor format, ~GB) - not needed for method distillation"
+    },
+    {
+      "path": "1_scan_raw_STL/svG3j3c_43ysyk_J6gbXL_QlvToY/result/model.ply",
+      "bytes": 8598014,
+      "sha256": "17cbaf493792c2f93b5b68e71c4ecfcee8a95a275adbd8bb0974aef9cca183b9",
+      "reason": "raw scanner project/cache (vendor format, ~GB) - not needed for method distillation"
+    },
+    {
+      "path": "1_scan_raw_STL/thumbnail.png",
+      "bytes": 6035,
+      "sha256": "42e7091a57b60800f3081f0fbc457670d60c47da4311e3eb3ef407569cb638ff",
+      "reason": "raw scanner project/cache (vendor format, ~GB) - not needed for method distillation"
+    },
+    {
+      "path": "2_mesh_cleaned/alignment.json",
+      "bytes": 2827,
+      "sha256": "580dde88823ec7c3ae35843ef1c54868f80d083cf9e16e3e90b2dbc0d998b069",
+      "reason": "excluded"
+    },
+    {
+      "path": "2_mesh_cleaned/OOM-E01.stl",
+      "bytes": 249964634,
+      "sha256": "116736287380da8eeca7df268e710c19017c2530cf23eb6a856fbd9814950276",
+      "reason": "exceeds 50 MB"
+    },
+    {
+      "path": "2_mesh_cleaned/OOM-E01_work.stl",
+      "bytes": 20000034,
+      "sha256": "732b899e5ade8541da1f4bef6c7c782d6c59500666f0551596118cb7f7164fc3",
+      "reason": "excluded"
+    },
+    {
+      "path": "4_STEP/OOM-E01-Exported.log",
+      "bytes": 5378,
+      "sha256": "188fa510b08c8ae249d07643f9e0e69b30b786337db62e79d4a79611ccd9166e",
+      "reason": "excluded"
+    },
+    {
+      "path": "4_STEP/OOM-E01-Exported.stp",
+      "bytes": 73905,
+      "sha256": "9acd712a3e0d348102d4f5c46bd57f43cee8117d0644e258f8d0305d8aa3f628",
+      "reason": "excluded"
+    },
+    {
+      "path": "4_STEP/OOM-E01.prt",
+      "bytes": 436369,
+      "sha256": "265674d2034f593adbd088f0321d1d2790c8a40947d4bef79ceeb763fd79718c",
+      "reason": "Siemens NX native part (binary, needs NX) - STEP export is the portable record"
+    },
+    {
+      "path": "4_STEP/OOM-E01.step",
+      "bytes": 364106,
+      "sha256": "394767213b7cc17e0d01e198b4b7afca76f9be91acc8b23e78e75d7adec26131",
+      "reason": "excluded"
+    },
+    {
+      "path": "4_STEP/OOM-E01_cad.stl",
+      "bytes": 1742684,
+      "sha256": "8a1f39c9b4a629991a093572574a4e838f1bcae2433fca0a8d5c4c4437884562",
+      "reason": "excluded"
+    },
+    {
+      "path": "5_reference/Context Images/IMG_20260729_035704.jpg",
+      "bytes": 2599128,
+      "sha256": "001270e9206ca6d3adc2401e0787b8e3b2f8fbc3ce2f7e2decbb032faab9e74d",
+      "reason": "excluded"
+    },
+    {
+      "path": "5_reference/Context Images/IMG_20260729_035731.jpg",
+      "bytes": 2012400,
+      "sha256": "0e1ba2fc59769f2b7b1689abd36522e80826b505a7f17b579240ea9dda797141",
+      "reason": "excluded"
+    },
+    {
+      "path": "5_reference/Context Images/IMG_20260729_035734.jpg",
+      "bytes": 1845425,
+      "sha256": "bebbef281c742e663558900b4a12b3b21201a1c6045258229b0f12c75558d9ec",
+      "reason": "excluded"
+    },
+    {
+      "path": "5_reference/Context Images/IMG_20260729_035737.jpg",
+      "bytes": 1994804,
+      "sha256": "957ea55d620492f14e510fe2fec4d931f05cbb91a9441c341d8d3eb067d77ffe",
+      "reason": "excluded"
+    },
+    {
+      "path": "5_reference/Context Images/IMG_20260729_035742.jpg",
+      "bytes": 1669365,
+      "sha256": "52fe0604642df87d672e84ba1dc83649f37fb95010e9b934899a37520af4dc85",
+      "reason": "excluded"
+    },
+    {
+      "path": "5_reference/Context Images/IMG_20260729_035746.jpg",
+      "bytes": 2220829,
+      "sha256": "693070d6f530c7b4e5f7c27b18fd2f24047192d02a686519923d8b84ec3ef9d9",
+      "reason": "excluded"
+    },
+    {
+      "path": "5_reference/Context Images/IMG_20260729_035750.jpg",
+      "bytes": 1988104,
+      "sha256": "f82ba07db59c348f81ece9fafc46de323ea579a27b55b57bc30ad44b041c29b9",
+      "reason": "excluded"
+    },
+    {
+      "path": "5_reference/Context Images/IMG_20260729_035754.jpg",
+      "bytes": 1658401,
+      "sha256": "2aa50b31cfff284bef8ea951613fafad1527d1fbe6064e06a4f763d6d33d6d85",
+      "reason": "excluded"
+    },
+    {
+      "path": "5_reference/Context Images/IMG_20260729_035758.jpg",
+      "bytes": 1721619,
+      "sha256": "969e6d38abe5340541a891a98700f444f9642bf8819c2c529e69a5bead9b7b27",
+      "reason": "excluded"
+    },
+    {
+      "path": "5_reference/Context Images/IMG_20260729_035801.jpg",
+      "bytes": 1789870,
+      "sha256": "b7d56c7bd7c8c3acf0e88ea28ff6b8552d473d35cee2855ed028c48aa5d3cff0",
+      "reason": "excluded"
+    },
+    {
+      "path": "5_reference/Context Images/IMG_20260729_035806.jpg",
+      "bytes": 1778766,
+      "sha256": "3ff9b96fb68528ba536105cc69f3e770de127cfea84490cc8b908f11c499ded0",
+      "reason": "excluded"
+    },
+    {
+      "path": "5_reference/Context Images/IMG_20260729_035810.jpg",
+      "bytes": 1964555,
+      "sha256": "f8bf611da65a42d07a9a3a69f4906c526b8d97f6ac89e55216e3697b7aac3edd",
+      "reason": "excluded"
+    },
+    {
+      "path": "5_reference/Context Images/IMG_20260729_035811.jpg",
+      "bytes": 1871532,
+      "sha256": "b30f464f3ab50dfb22dc9b433d7f2fe8683a9211251432e02c167a503b252e0d",
+      "reason": "excluded"
+    },
+    {
+      "path": "5_reference/Context Images/IMG_20260729_035840.jpg",
+      "bytes": 2376770,
+      "sha256": "07e9db3b06323be4bc1b85b6da93058d586927d667e455b3910015d326ea7b40",
+      "reason": "excluded"
+    },
+    {
+      "path": "5_reference/Context Images/IMG_20260729_035905.jpg",
+      "bytes": 1755692,
+      "sha256": "20b151bf8de3c936450a7d78cea05ac559c9d74e6f7feedff3e90b3e56509768",
+      "reason": "excluded"
+    },
+    {
+      "path": "5_reference/Context Images/IMG_20260729_035916.jpg",
+      "bytes": 1322550,
+      "sha256": "bdd6a36928010ae9d65a93d7594bde8a2b7a93fbe4da68524f31a72966d395a6",
+      "reason": "excluded"
+    },
+    {
+      "path": "5_reference/Context Images/IMG_20260729_035930.jpg",
+      "bytes": 2321821,
+      "sha256": "2a82bedabea6547eda1cd2c1275b13797d517bfddc5e1f3d5b314517258dc29d",
+      "reason": "excluded"
+    },
+    {
+      "path": "5_reference/Context Images/Taranma_20260729-0401.jpg",
+      "bytes": 474948,
+      "sha256": "04b61ecb2d249c4b4c886728a0d472d50567141f1c8fd56ad348036a37c5397d",
+      "reason": "excluded"
+    },
+    {
+      "path": "5_reference/MEASUREMENTS.md",
+      "bytes": 4144,
+      "sha256": "101ad4c607b9a4918f9679aec635bb7571c1ac28fe76b69b5b5713855dea976e",
+      "reason": "excluded"
+    },
+    {
+      "path": "6_RE_work/build_OOM-E01.py",
+      "bytes": 4379,
+      "sha256": "e8c4bf01ad2a8d6ec705548348d55649c507649b312d60640cf93cc0c1a3c0b3",
+      "reason": "excluded"
+    },
+    {
+      "path": "6_RE_work/INTAKE_CARD.md",
+      "bytes": 10053,
+      "sha256": "6a67399c94c7c8c46e893a9e91817bcc1a50076d9ba3e202843e98305d0ee664",
+      "reason": "excluded"
+    },
+    {
+      "path": "6_RE_work/PARAMS.md",
+      "bytes": 4812,
+      "sha256": "492e824ff80e3eaecb9ccc7b7a485979d6d04237f4a0ceff14435d7a25fe48cd",
+      "reason": "excluded"
+    },
+    {
+      "path": "6_RE_work/sections/section_X0_body.png",
+      "bytes": 34678,
+      "sha256": "9ef5cbbc3f2bf29f7b456cc45b33d7315c6919d7c5aafc4c37442c6b82939ceb",
+      "reason": "excluded"
+    },
+    {
+      "path": "6_RE_work/sections/section_Xm57_blind.png",
+      "bytes": 35018,
+      "sha256": "2c42c9e043c1503e357279877e84bb7781d75d3e883a16263479440e0465d01e",
+      "reason": "excluded"
+    },
+    {
+      "path": "6_RE_work/sections/section_Xp55_connector.png",
+      "bytes": 36148,
+      "sha256": "ad17a9b6036d7c8cc371577643f075beb1540ad352693597482f8606828405d0",
+      "reason": "excluded"
+    },
+    {
+      "path": "6_RE_work/sections/section_Y0_center.png",
+      "bytes": 34819,
+      "sha256": "f254079df7405bd354a116e0fede4bd70f6def15ee1c453832617ac8fe071358",
+      "reason": "excluded"
+    },
+    {
+      "path": "6_RE_work/sections/section_Yp7_rib.png",
+      "bytes": 36532,
+      "sha256": "aaa73bc2881a86a82b7a7ea38da61cc43662ef6203acb181140060d2370ce6de",
+      "reason": "excluded"
+    },
+    {
+      "path": "6_RE_work/VERDICT.md",
+      "bytes": 7290,
+      "sha256": "eb83b828b34baf4e7256c916317090571cc59c95b5acbf08f90674277f564c4d",
+      "reason": "excluded"
+    },
+    {
+      "path": "7_docs/OOM-E01_front.png",
+      "bytes": 2039029,
+      "sha256": "a1dd66f24c932141ac240031b752c9a9b39fc43bfbf452a6ba8e78ae56735007",
+      "reason": "excluded"
+    },
+    {
+      "path": "7_docs/OOM-E01_iso.png",
+      "bytes": 2131755,
+      "sha256": "46d8204d874bfce97687196684e08c0ec59855ae8590f591c7451d6a79b2e163",
+      "reason": "excluded"
+    },
+    {
+      "path": "7_docs/OOM-E01_RE_report.pdf",
+      "bytes": 11308604,
+      "sha256": "e7e4c52fbf0935b647f26a2634b3454e82939da940575e464a355f8b77527f28",
+      "reason": "excluded"
+    },
+    {
+      "path": "7_docs/OOM-E01_scan_vs_cad.png",
+      "bytes": 2198311,
+      "sha256": "5335d2ebe81acaa71b64fd305b9a20b533296e3068e2a5041cb2262663c6f422",
+      "reason": "excluded"
+    },
+    {
+      "path": "7_docs/OOM-E01_side.png",
+      "bytes": 2002273,
+      "sha256": "585c5b034913b96f981e8d7cd573e254acf94abeb2c61bd193c149218692032f",
+      "reason": "excluded"
+    },
+    {
+      "path": "7_docs/OOM-E01_top.png",
+      "bytes": 2040464,
+      "sha256": "a78e5465d6bdce307de5e2a1f68c5be84159ef11a3ff74f44e9e27f45b1c2a02",
+      "reason": "excluded"
+    },
+    {
+      "path": "OOM-E01_Battery-BRR-2P4S-5200.prt",
+      "bytes": 97931176,
+      "sha256": "63376ae0cab817a01ec95ca12316b17c2b9a6cf657beec193771cd6137a6e30e",
+      "reason": "Siemens NX native part (binary, needs NX) - STEP export is the portable record"
+    }
+  ]
+}

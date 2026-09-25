@@ -1,0 +1,48 @@
+{
+ "bore_dia": 14.0,
+ "od": 23.73,
+ "z_top": 0.0,
+ "inner_bot_z": -1.53,
+ "outer_bot_z": -1.84,
+ "step_r0": 9.58,
+ "step_r1": 9.85,
+ "bore_chamfer_r": 7.88,
+ "bore_chamfer_z": -0.65,
+ "flat_x": 8.93,
+ "flat_fillet": 2.75,
+ "ramp_slope_dz_dx": 0.0835,
+ "ramp_z_at_x": [
+  7.714,
+  -1.402
+ ],
+ "leg_thetas": [
+  60.0,
+  150.0,
+  -60.0
+ ],
+ "leg_r_in": 11.0,
+ "leg_r_out": 11.9,
+ "leg_half_angle": 9.6,
+ "hook_r_out": 12.48,
+ "hook_catch_z": 5.25,
+ "hook_ramp_z0": 5.62,
+ "hook_ramp_r1": 11.78,
+ "hook_top_z": 6.25,
+ "hook_inner_fillet": 0.3,
+ "relief_r": 11.73,
+ "relief_z0": 4.28,
+ "relief_z1": 4.68,
+ "relief_z2": 4.98,
+ "cup_r_pos": 8.9,
+ "cup_r_top": 1.52,
+ "cup_r_bot": 1.38,
+ "cup_depth": 0.43,
+ "cup_thetas": [
+  60.0,
+  150.0,
+  -60.0,
+  -140.0
+ ],
+ "od_top_fillet": 0.2,
+ "bore_top_fillet": 0.15
+}

@@ -1,0 +1,28 @@
+{
+  "schema": "oguz-re-mesh-manifest-v0",
+  "source_name": "M02-02-03.STL",
+  "sha256": "533599f0dc37af76de91d540c35a3379ce6cc2f52498d857f479e3b48cb0b60a",
+  "size_bytes": 8956434,
+  "vertices": 90514,
+  "faces": 179127,
+  "bbox_min_mm": [
+    -11.758184,
+    -30.932175,
+    -163.733109
+  ],
+  "bbox_max_mm": [
+    5.36129,
+    -11.963625,
+    -146.934204
+  ],
+  "bbox_size_mm": [
+    17.119475,
+    18.96855,
+    16.798904
+  ],
+  "watertight": false,
+  "body_count": 1,
+  "units_status": "MEASUREMENT_VERIFIED",
+  "scale_factor": 1.0,
+  "derived": []
+}

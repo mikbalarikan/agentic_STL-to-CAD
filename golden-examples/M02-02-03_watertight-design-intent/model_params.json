@@ -1,0 +1,69 @@
+{
+  "schema": "oguz-designer-selfcheck-v1",
+  "status": "MODELING_SELFCHECK_COMPLETE_NOT_QA",
+  "step_path": "/home/oguz/work/re/M02-02-03_CORRECTED/02_model/M02-02-03_CORRECTED.step",
+  "brep_valid": true,
+  "solid_count": 1,
+  "shell_count": 1,
+  "shell_closed": true,
+  "volume_mm3": 1265.5249544687101,
+  "bbox_mm": [
+    19.049856372012478,
+    18.99276376388865,
+    9.95
+  ],
+  "parameters": {
+    "common_module_mm": 0.6,
+    "pressure_angle_deg": 20.0,
+    "bore_diameter_mm": 1.95,
+    "big": {
+      "name": "big",
+      "teeth": 30,
+      "tip_diameter": 19.05,
+      "width": 3.0,
+      "z0": 0.0,
+      "phase_deg": 0.0
+    },
+    "small": {
+      "name": "small",
+      "teeth": 17,
+      "tip_diameter": 11.2,
+      "width": 6.95,
+      "z0": 3.0,
+      "phase_deg": 0.0
+    }
+  },
+  "derived": {
+    "big": {
+      "pitch": 9.0,
+      "base": 8.457233587073176,
+      "tip": 9.525,
+      "root": 8.25
+    },
+    "small": {
+      "pitch": 5.1,
+      "base": 4.792432366008133,
+      "tip": 5.6,
+      "root": 4.35
+    },
+    "overall_height_mm": 9.95
+  },
+  "feature_chain": [
+    "BIG_INVOLUTE_TOOTH_SKETCH",
+    "BIG_EXTRUDE",
+    "CIRCULAR_PATTERN_30X",
+    "SMALL_INVOLUTE_TOOTH_SKETCH",
+    "SMALL_EXTRUDE",
+    "CIRCULAR_PATTERN_17X",
+    "CONTINUOUS_CORE_UNION",
+    "THROUGH_BORE_CUT"
+  ],
+  "assumptions": [
+    "Common module 0.6 mm and 20 degree pressure angle; operator supplied tip diameters govern tooth truncation.",
+    "Zero profile shift/backlash/tip relief; compact polygonal involute approximation in the semantic sketch.",
+    "Axial bands are adjacent: large Z=0..3.00 mm and small Z=3.00..9.95 mm.",
+    "Relative angular phase is set to 0 degrees because no phase datum was supplied.",
+    "No extra hub projection is modeled because its diameter and height were not supplied."
+  ],
+  "claim_boundary": "Design-intent CAD matching supplied tooth counts, outside diameters, face widths and bore. Physical mesh fit/interchangeability remains unapproved."
+}

@@ -1,0 +1,93 @@
+{
+  "schema": "independent-cad-visual-review-v1",
+  "source_step": "/home/oguz/work/re/M02-02-03_CORRECTED/02_model/M02-02-03_CORRECTED.step",
+  "source_step_sha256": "457aa5d9fb68f454b63cf51415f235566f4f5e99853f80a1fa973271283449ac",
+  "render_method": "Matplotlib orthographic rendering of STL re-tessellated directly from re-imported STEP; transverse contour from same mesh",
+  "views": [
+    {
+      "path": "/home/oguz/work/re/M02-02-03_CORRECTED/03_qa/qa_step_isometric.png",
+      "pixel_size": [
+        1800,
+        1440
+      ],
+      "nonwhite_fraction": 0.13209953703703703,
+      "content_bbox_px": [
+        544,
+        51,
+        1291,
+        1085
+      ],
+      "frame_margins_px": {
+        "left_px": 544,
+        "top_px": 51,
+        "right_px": 508,
+        "bottom_px": 354
+      },
+      "content_clipped": false,
+      "mean_content_luminance_0_255": 111.72657967593646,
+      "crop_mean_luminance_0_255": 191.63105043013246,
+      "readable": true,
+      "selector": "PIL RGB pixel census; content=any channel<247; bbox must not touch frame; >1000 content pixels; mean content luminance between 25 and 245"
+    },
+    {
+      "path": "/home/oguz/work/re/M02-02-03_CORRECTED/03_qa/qa_step_side.png",
+      "pixel_size": [
+        1800,
+        1440
+      ],
+      "nonwhite_fraction": 0.09111072530864198,
+      "content_bbox_px": [
+        545,
+        51,
+        1290,
+        959
+      ],
+      "frame_margins_px": {
+        "left_px": 545,
+        "top_px": 51,
+        "right_px": 509,
+        "bottom_px": 480
+      },
+      "content_clipped": false,
+      "mean_content_luminance_0_255": 101.05676390821438,
+      "crop_mean_luminance_0_255": 201.38660645024282,
+      "readable": true,
+      "selector": "PIL RGB pixel census; content=any channel<247; bbox must not touch frame; >1000 content pixels; mean content luminance between 25 and 245"
+    },
+    {
+      "path": "/home/oguz/work/re/M02-02-03_CORRECTED/03_qa/qa_step_transverse_section.png",
+      "pixel_size": [
+        1325,
+        1332
+      ],
+      "nonwhite_fraction": 0.039742761629554084,
+      "content_bbox_px": [
+        54,
+        53,
+        1272,
+        1274
+      ],
+      "frame_margins_px": {
+        "left_px": 54,
+        "top_px": 53,
+        "right_px": 52,
+        "bottom_px": 57
+      },
+      "content_clipped": false,
+      "mean_content_luminance_0_255": 131.46384888084174,
+      "crop_mean_luminance_0_255": 249.1788077458786,
+      "readable": true,
+      "selector": "PIL RGB pixel census; content=any channel<247; bbox must not touch frame; >1000 content pixels; mean content luminance between 25 and 245"
+    }
+  ],
+  "manual_visual_inspection_required": true,
+  "automated_exposure_and_cropping_pass": true,
+  "manual_inspection": {
+    "performed": true,
+    "isometric": "PASS \u2014 both gear stages and through-bore are distinct; exposure is even; full part and title are inside frame.",
+    "side": "PASS \u2014 adjacent 3.00 mm and 6.95 mm axial bands and stepped silhouette are distinct; exposure is even; full part is inside frame. Bore is intentionally evidenced by isometric and transverse views.",
+    "transverse_section": "PASS \u2014 complete 30-tooth outer contour, circular bore contour, analytic-axis marker, labels, legend, and axes are readable and unclipped.",
+    "defects": []
+  },
+  "visual_verdict": "PASS"
+}

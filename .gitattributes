@@ -1,0 +1,14 @@
+* text=auto eol=lf
+*.stl binary
+*.png binary
+*.jpg binary
+*.pdf binary
+*.avif binary
+*.step text eol=lf
+*.stp text eol=lf
+
+# Evidence is stored byte-for-byte (MANIFEST sha256 must match)
+golden-examples/** -text
+golden-examples/*/MANIFEST.json text eol=lf
+golden-examples/README.md text eol=lf
+golden-examples/*/README.md -text

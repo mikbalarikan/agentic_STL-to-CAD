@@ -1,0 +1,88 @@
+{
+  "project": "M02-02-03_watertight-design-intent",
+  "source_path": "H:\\My Drive\\111 UP UP UP\\REMAKE AI - DIY\\OOMWOO_CAD\\01_SOURCED_reverse-engineered\\Successfull Reverse Engineering\\M02-02-03_WATERTIGHT_DESIGN_INTENT\\M02-02-03_WATERTIGHT_DESIGN_INTENT",
+  "note": "Golden example imported verbatim except 'excluded' files; excluded originals stay at source_path (Google Drive).",
+  "included": [
+    {
+      "path": "DESIGN_NOTES.md",
+      "bytes": 1358,
+      "sha256": "09e612da44583cda1a5b6a3101d616a1e08b87a33e348af943ce52da2187fc15"
+    },
+    {
+      "path": "M02-02-03_WATERTIGHT_SOLID.step",
+      "bytes": 9621968,
+      "sha256": "457aa5d9fb68f454b63cf51415f235566f4f5e99853f80a1fa973271283449ac"
+    },
+    {
+      "path": "mesh-manifest.json",
+      "bytes": 555,
+      "sha256": "6a48ab5134de8328ce46be97a3072c304a81fb8b4642a16ff28b8858ad00625f"
+    },
+    {
+      "path": "model.py",
+      "bytes": 5358,
+      "sha256": "caaea8a74f8943d7e0ad61c039de897151efe6449a7ce55b728fa4847fa3b8a4"
+    },
+    {
+      "path": "model_params.json",
+      "bytes": 1995,
+      "sha256": "3c4aab4cf568b2c146c661a9191d297844a9870e587e839a8ba21b325435fc17"
+    },
+    {
+      "path": "OPERATOR_SPEC.json",
+      "bytes": 586,
+      "sha256": "232dc1226b3885655d706c8a7c56f5f6c0f33ed67e1e528a1e623bbb47f7a296"
+    },
+    {
+      "path": "qa_report.json",
+      "bytes": 65162,
+      "sha256": "469126e1f640fefa6b7e2e1995df0283dec55debea2e904ff726be026a3e41d6"
+    },
+    {
+      "path": "qa_step_isometric.png",
+      "bytes": 362729,
+      "sha256": "d03117abdbd6a1b79767104875ff269e44570bbdbb92a678ed3db36b041de2ca"
+    },
+    {
+      "path": "qa_step_side.png",
+      "bytes": 189705,
+      "sha256": "d8c1374caf4fd8fbd7eb6c5662f0c9101434259c2458b09906de281e5c660f8b"
+    },
+    {
+      "path": "qa_step_transverse_section.png",
+      "bytes": 125134,
+      "sha256": "2f01b17e4272247f0fd2c7908ae62482ba60dfd8733fe0972015b2d384cb3d53"
+    },
+    {
+      "path": "README.md",
+      "bytes": 1108,
+      "sha256": "23c6889a12ade00773ba86528446476fbe1392fc7307aa0d9286caa8d3cb3d36"
+    },
+    {
+      "path": "reproducibility_report.json",
+      "bytes": 367,
+      "sha256": "a566391cfb772a04bb81810febf0e2842abcaf0a9c85beff8fbb62f1f133b924"
+    },
+    {
+      "path": "SHA256SUMS.txt",
+      "bytes": 1285,
+      "sha256": "9abd0f00407e41d399c1e6e6e2fe0f260b163027513599c6f79161aa9e8181ef"
+    },
+    {
+      "path": "target_validator_report.json",
+      "bytes": 1300,
+      "sha256": "74ab3385cec160e708758fb463beb67bff970cb37bd8cb52841c1e3a59667778"
+    },
+    {
+      "path": "VERDICT.md",
+      "bytes": 2216,
+      "sha256": "996f46d62e57a43c453cb9933486f1546dc8d19086e88772b6b61a9f78149f9e"
+    },
+    {
+      "path": "visual_review.json",
+      "bytes": 3366,
+      "sha256": "df42b1210608633c6d94d1ccd5952c8be2e535ee7de714bb19823ec4f0b59f5b"
+    }
+  ],
+  "excluded": []
+}

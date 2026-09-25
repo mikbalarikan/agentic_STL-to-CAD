@@ -1,0 +1,481 @@
+{
+  "project": "OOM-B02_side-brush-3-arm",
+  "source_path": "H:\\My Drive\\111 UP UP UP\\REMAKE AI - DIY\\OOMWOO_CAD\\01_SOURCED_reverse-engineered\\Successfull Reverse Engineering\\OOM-B02_Side-brush-3-arm",
+  "note": "Golden example imported verbatim except 'excluded' files; excluded originals stay at source_path (Google Drive).",
+  "included": [
+    {
+      "path": "2_mesh_cleaned/alignment.json",
+      "bytes": 2962,
+      "sha256": "ba74b64a8637d81584a19c4d49fe95edb82af84d84085435774c785fe214a88c"
+    },
+    {
+      "path": "2_mesh_cleaned/OOM-B02.stl",
+      "bytes": 39943784,
+      "sha256": "05a62a32bbb9b9bbe66809475f36cb99e1319c28d1ce0cf19a9ed4c6632b2714"
+    },
+    {
+      "path": "4_STEP/OOM-B02-exported.log",
+      "bytes": 5544,
+      "sha256": "272b70da38bfaf5552d691dd8bcb0bf82681c719fc73145c0da03fe6f5149276"
+    },
+    {
+      "path": "4_STEP/OOM-B02-exported.stp",
+      "bytes": 1607599,
+      "sha256": "01838f68fa6d20f1fd7ed0a29ab9e6a912983e40b208a81cdc3f30cb4ab56dbb"
+    },
+    {
+      "path": "4_STEP/OOM-B02.step",
+      "bytes": 3885610,
+      "sha256": "cf5f10b51528a3ebefbcaf05d956711d730aa89fbbfbe7853a84e453847ebe54"
+    },
+    {
+      "path": "4_STEP/OOM-B02_cad.stl",
+      "bytes": 3816884,
+      "sha256": "5909b4e83561b5d3bcf0a4a7b969af67c5081e4966d8552d06c10ef144761c90"
+    },
+    {
+      "path": "5_reference/IMG_20260729_181846.jpg",
+      "bytes": 2077843,
+      "sha256": "7b4f20ef7f28c7cf5b6892e456cc99c12a9d340912881780eb6b6ea97df49ddf"
+    },
+    {
+      "path": "5_reference/IMG_20260729_181847.jpg",
+      "bytes": 2417845,
+      "sha256": "8fdd23a114191445ff06b19ae38e95e8850fbe9b983df0d8819a7fb885f55ac9"
+    },
+    {
+      "path": "5_reference/IMG_20260729_181852.jpg",
+      "bytes": 2144275,
+      "sha256": "563eea2f928d61e5ba182400dc80e4e64e2311ea34f304a5a6b39ec5f187551e"
+    },
+    {
+      "path": "5_reference/IMG_20260729_181853.jpg",
+      "bytes": 2409100,
+      "sha256": "883419017df9e9f1ba30214aac7425526e70ceda1e80c5adde8ad5aef5160633"
+    },
+    {
+      "path": "5_reference/IMG_20260729_181949.jpg",
+      "bytes": 1918406,
+      "sha256": "31b8ea562810d57903f2dcab98dca5d5172e5a2d05523ce4a8f7450df34e22d7"
+    },
+    {
+      "path": "5_reference/IMG_20260729_182003.jpg",
+      "bytes": 1947623,
+      "sha256": "901068e0d7009ae4dd7c321844c3d29220328aca388bb7e31a0cb0a3f8f91edb"
+    },
+    {
+      "path": "5_reference/IMG_20260729_182020.jpg",
+      "bytes": 2116076,
+      "sha256": "ebd77dfb18225711055ab6f139f3ad15695017ece45247d7445bf91dfdb5af6e"
+    },
+    {
+      "path": "5_reference/IMG_20260729_182035.jpg",
+      "bytes": 2179149,
+      "sha256": "e78135f09cd5f5c320036ff1ff9155b6e86160da14bf46b059497f948a877112"
+    },
+    {
+      "path": "5_reference/IMG_20260729_182048.jpg",
+      "bytes": 2093729,
+      "sha256": "7bb184ad2cb6ad52f8838347272315556aefde701339b59d9f1a6f6a9ca7a003"
+    },
+    {
+      "path": "5_reference/IMG_20260729_182109.jpg",
+      "bytes": 2761552,
+      "sha256": "93ccd8a069004c8f9a7f038c6aacea7a6e2eb3f55f3d21702e9085ca14ad95e8"
+    },
+    {
+      "path": "5_reference/IMG_20260729_182128.jpg",
+      "bytes": 2133255,
+      "sha256": "4a1152d368d7836e86a64dc7effcc7db6d9a47746de41a38dc8890abd52ba8fc"
+    },
+    {
+      "path": "5_reference/IMG_20260729_182142.jpg",
+      "bytes": 2129791,
+      "sha256": "741f1605c27c096b5217ce5233734ba43829664d3581c9b17324d2ab126af87a"
+    },
+    {
+      "path": "5_reference/IMG_20260729_182203.jpg",
+      "bytes": 2094946,
+      "sha256": "193163856ecc2d4dfd0ed9ccdd6c60c31fca90e554b3abaabbf942e9b5c4e519"
+    },
+    {
+      "path": "5_reference/IMG_20260729_182215.jpg",
+      "bytes": 2123494,
+      "sha256": "55dfe81e50b2abaa34636c0db065e2834064be3ce2c53430f8b46ba6c660072f"
+    },
+    {
+      "path": "5_reference/IMG_20260729_182231.jpg",
+      "bytes": 2144292,
+      "sha256": "4f290bf53ead79f7fae03783750af77a0a1b79f1a865d0d578d1178d5c73199e"
+    },
+    {
+      "path": "5_reference/IMG_20260729_182250.jpg",
+      "bytes": 2117857,
+      "sha256": "4e33c8eea01f0e1e6a837fc6584bc1c808f9e0b20a8074e8db61eefca11b4b35"
+    },
+    {
+      "path": "5_reference/IMG_20260729_182301.jpg",
+      "bytes": 2112652,
+      "sha256": "816211e03be5537f883725ba743c48b14dd3b833cc513ca57b2030cc8755a709"
+    },
+    {
+      "path": "5_reference/IMG_20260729_182318.jpg",
+      "bytes": 2069042,
+      "sha256": "84577f1d47d73be804524bc95de8f4d49c440f58345804f39105f942eb470c33"
+    },
+    {
+      "path": "5_reference/MEASUREMENTS.md",
+      "bytes": 16507,
+      "sha256": "7ff0c6f5b8aa588761d7c5aa32f21aab7c137302f87cdcc101105aa99e6646b0"
+    },
+    {
+      "path": "6_RE_work/40_verify.py",
+      "bytes": 6358,
+      "sha256": "2d15b16e7f68a0db929627a36e52e22cf6942fdbb7a69ae913aa3497b9b6e5c6"
+    },
+    {
+      "path": "6_RE_work/50_overlays_it2.py",
+      "bytes": 10663,
+      "sha256": "876cda5f66335698a704dcea5372e9ae532197adf4e7f5ae2669681ad777331a"
+    },
+    {
+      "path": "6_RE_work/60_render.py",
+      "bytes": 5748,
+      "sha256": "18695aa9436fd5a966166858c055efcc7f57f3467597f544db43f05f79a93e2b"
+    },
+    {
+      "path": "6_RE_work/70_report.py",
+      "bytes": 26483,
+      "sha256": "c9963d6eb673cdfcd0c0e55e39040a6c3ba77ccf80298d89a011da953c153f12"
+    },
+    {
+      "path": "6_RE_work/_it1_SUPERSEDED/build_OOM-B02_it1.py",
+      "bytes": 15002,
+      "sha256": "77281854bd1680175e141fcc73d9ade40d262f3bfe748df5051a20c02a749bad"
+    },
+    {
+      "path": "6_RE_work/_it1_SUPERSEDED/OOM-B02_it1.step",
+      "bytes": 3875669,
+      "sha256": "83c610449d49233973a2d47dc0d71c698ad3885ef08d54aee0d1da9aad67ecc0"
+    },
+    {
+      "path": "6_RE_work/_it1_SUPERSEDED/OOM-B02_it1_bottom.png",
+      "bytes": 137918,
+      "sha256": "a9520618096fdf06430e63ea126c6814b7b2a088b6f450b93fac33cc830357bd"
+    },
+    {
+      "path": "6_RE_work/_it1_SUPERSEDED/OOM-B02_it1_cad.stl",
+      "bytes": 3814984,
+      "sha256": "38655c33cbbf44bf30696c8636c3db38ca4ce05a3ad41c31f122edec0772e791"
+    },
+    {
+      "path": "6_RE_work/_it1_SUPERSEDED/OOM-B02_it1_scan_vs_cad_cupside.png",
+      "bytes": 271884,
+      "sha256": "1c8eab84e70f6f25eff5d4c99b22b10dd604683fea8a1a40558d11c7c8b5de50"
+    },
+    {
+      "path": "6_RE_work/_it1_SUPERSEDED/PARAM_TABLE_it1.md",
+      "bytes": 17060,
+      "sha256": "7c97580dcc256bea65c788fecc4ab236f98a8e025564475956bef28e1f4b7ea5"
+    },
+    {
+      "path": "6_RE_work/ASSUMPTIONS.md",
+      "bytes": 3616,
+      "sha256": "ac4efe1fb684615b60ecc212a54428d3318e7fe13e0bbb29ff7ef8d55f7d5697"
+    },
+    {
+      "path": "6_RE_work/B02_A_overview_datum.png",
+      "bytes": 274856,
+      "sha256": "5b7901b0c42025b7ab0fe9261876ea83917ed9cbf73e69513b2972ddd7f72197"
+    },
+    {
+      "path": "6_RE_work/B02_B_hub_section_annotated.png",
+      "bytes": 141789,
+      "sha256": "6a6d3a15283249bb7906200fe2e46e6735aff5978ae3bd1cc7cacd5d46849018"
+    },
+    {
+      "path": "6_RE_work/B02_C_threefold_symmetry.png",
+      "bytes": 146899,
+      "sha256": "a025f0c9a2e775c2ecd8e4eaff62b18005b34b27708b7a502c76b967683ed5b9"
+    },
+    {
+      "path": "6_RE_work/B02_D_arm_roughness_profiles.png",
+      "bytes": 232894,
+      "sha256": "f15a974eafb9ad5f57c3ed06924b0615f2ec755a6c614cd179f9e1e8b84c9bc4"
+    },
+    {
+      "path": "6_RE_work/B02_E_cup_interior_and_skirt.png",
+      "bytes": 1986407,
+      "sha256": "3bfc23f85456ef921808c244d30ae21503809033c0ee7d733306b7e18ecff6ca"
+    },
+    {
+      "path": "6_RE_work/B02_F_hub_both_sides.png",
+      "bytes": 1133222,
+      "sha256": "784ea51f62c25c9ce18aa5dcfb350245305b4b70b5515307ee91709123ce012b"
+    },
+    {
+      "path": "6_RE_work/B02_G_arm_ends_tuft_junction.png",
+      "bytes": 710607,
+      "sha256": "826c7ff14b6db2a16442859f8de0812a6b3decc1372c5119c69bd684cd18739d"
+    },
+    {
+      "path": "6_RE_work/B02_H_sector_compare_3fold.png",
+      "bytes": 290736,
+      "sha256": "53ab78b25f3f8f9b7fa5c0ad8fc5f620d5990e2911373785a1cc52eaca85498a"
+    },
+    {
+      "path": "6_RE_work/B02_I_bore_hex_counterbore_zoom.png",
+      "bytes": 1027634,
+      "sha256": "1350a239fbd1ed25a5398cda21d98166575da6533127f03135b11dfc708c0fc9"
+    },
+    {
+      "path": "6_RE_work/B02_J_meridian_sections.png",
+      "bytes": 226344,
+      "sha256": "0df6da7da50a8973375694cfdecdd663953562ded2ffadbd24548f00d517d330"
+    },
+    {
+      "path": "6_RE_work/B02_S1_meridian_arm1.png",
+      "bytes": 202986,
+      "sha256": "c8bd86b9dcc393ebc2038c75cb42ce816de80badb3df84ace4a9f3733a5f5833"
+    },
+    {
+      "path": "6_RE_work/B02_S2_meridian_SAF1.png",
+      "bytes": 184716,
+      "sha256": "94e7af5aaeccf4dc9809f1cdd127fe9805ecce42d733c79fd2268e2cbd7faca2"
+    },
+    {
+      "path": "6_RE_work/B02_S3c1_plan_z1.00.png",
+      "bytes": 291655,
+      "sha256": "9c659e6e201664974b5b397c3ca14459e10f130a5510b8cb2d21c425fe964cdc"
+    },
+    {
+      "path": "6_RE_work/B02_S3c2_plan_z6.50.png",
+      "bytes": 207535,
+      "sha256": "ba07b086466112e7b4790f83c613cc21dd67effa448814e05c563afacb428445"
+    },
+    {
+      "path": "6_RE_work/B02_S4_hex_zoom.png",
+      "bytes": 271066,
+      "sha256": "4682c20af7ca5562d0a910e73f3e1b3e7dc0a576ee95235153efb851df08e0df"
+    },
+    {
+      "path": "6_RE_work/B02_S5_arm_end.png",
+      "bytes": 278169,
+      "sha256": "761b4345d1c544da0d58008911107bf4f64d862038addf41c32fba9f2004a746"
+    },
+    {
+      "path": "6_RE_work/build_OOM-B02.py",
+      "bytes": 15192,
+      "sha256": "95d0864887790d1f9bbab048a853566631d692f4d93b8557415bc64811b40d4a"
+    },
+    {
+      "path": "6_RE_work/INTAKE_CARD.md",
+      "bytes": 23769,
+      "sha256": "0eb22b7df9572c86ae657da92b6365f077a86b94831f1980eeb98e04cdc8dc85"
+    },
+    {
+      "path": "6_RE_work/PARAM_TABLE.md",
+      "bytes": 18036,
+      "sha256": "195e32e5ea2f655dc996acdcdcb8a68633433d13ff09f1e2e0889529e3fa8446"
+    },
+    {
+      "path": "6_RE_work/proposed_alignment.json",
+      "bytes": 1272,
+      "sha256": "baec8cb213fd457581613f9229ca5689ad4d6180ac1ce4600f81075f9cc23ade"
+    },
+    {
+      "path": "6_RE_work/qa/_datum_indep.json",
+      "bytes": 396,
+      "sha256": "61faa1a90f0df2a30913a82b87937a0464db61379d7f0e84656b5f779645d428"
+    },
+    {
+      "path": "6_RE_work/qa/_qa_it2.json",
+      "bytes": 1607,
+      "sha256": "759896c69f92c5bff7eb3fb8b9deaccad716a4d2f4e3c2a348932dfa76c38089"
+    },
+    {
+      "path": "6_RE_work/qa/_solid.json",
+      "bytes": 614,
+      "sha256": "18d49d542148e15fc33b1d0810677b4ce1698ee589760ba2a653bc290c8e80ef"
+    },
+    {
+      "path": "6_RE_work/qa/_tess.json",
+      "bytes": 298,
+      "sha256": "9eb04b61d0a47df8b1d7fe50b9dcfc799089dc386289329f5119713d82a385bf"
+    },
+    {
+      "path": "6_RE_work/qa/_tier2_it2.json",
+      "bytes": 3532,
+      "sha256": "c1a4cd3aedf78ef959910a838d8be790545891ef02aece4eb7f70ce6316c83b1"
+    },
+    {
+      "path": "6_RE_work/qa/_tier2_it2.log",
+      "bytes": 3419,
+      "sha256": "7575fb29ceed5fb19f67cae78eef899e30f192f9b7d40ae07a35d865b45126ba"
+    },
+    {
+      "path": "6_RE_work/qa/q01_solid.py",
+      "bytes": 2234,
+      "sha256": "2a75ac8657163380f7922f2593248110e0aa70af2040250e3e8c4c5c44e86ba1"
+    },
+    {
+      "path": "6_RE_work/qa/q02_tess.py",
+      "bytes": 1818,
+      "sha256": "bbf8cb935774cab8e9d3f51fc596a6536255c3ff7561ce14dbf693e94b4d3134"
+    },
+    {
+      "path": "6_RE_work/qa/q02b_selfint.py",
+      "bytes": 958,
+      "sha256": "ad7bc6f63fa698e2617697de6f230ad102caca0d84779501aa1c9e3491ebe077"
+    },
+    {
+      "path": "6_RE_work/qa/q03_datum.py",
+      "bytes": 2593,
+      "sha256": "976458e91bb61fbaf13b1d0d321b98384537c0da9579f4d1cfb483b3aef82246"
+    },
+    {
+      "path": "6_RE_work/qa/q03_datum_full.py",
+      "bytes": 8166,
+      "sha256": "bcebbc4207d015f2dda97c30779a5ab76e1d3031a738f4c0b4cc6c81f97cee65"
+    },
+    {
+      "path": "6_RE_work/qa/q10_solid_tess_tier1.py",
+      "bytes": 7115,
+      "sha256": "6576b504f5109dbd76a9273483e61950b50eb76f8ee1781c97295f6019a194f0"
+    },
+    {
+      "path": "6_RE_work/qa/q20_tier2.py",
+      "bytes": 12100,
+      "sha256": "722e32ac10720b7500b4669f2850645a8dfd911e15260a49df27515be4244baf"
+    },
+    {
+      "path": "6_RE_work/VERDICT.md",
+      "bytes": 15321,
+      "sha256": "48d92ba2f0f2b8a28fb2a4918d65c32585fcdb98276f6db42239080293d839ff"
+    },
+    {
+      "path": "6_RE_work/verify_OOM-B02.py",
+      "bytes": 6358,
+      "sha256": "2d15b16e7f68a0db929627a36e52e22cf6942fdbb7a69ae913aa3497b9b6e5c6"
+    },
+    {
+      "path": "7_docs/OOM-B02_front.png",
+      "bytes": 77137,
+      "sha256": "7adfbd369443adc1724ae76d82781edeefdaad33f75f2505b9c7367f7e64924e"
+    },
+    {
+      "path": "7_docs/OOM-B02_iso.png",
+      "bytes": 126644,
+      "sha256": "c0867e5f7030757ebf1af6e687fa94a7a8b9e0728c1dd19b04ec9e7387086579"
+    },
+    {
+      "path": "7_docs/OOM-B02_iso_cup.png",
+      "bytes": 125384,
+      "sha256": "85c4911bb9d60e82773fdfdbce0ed48b70a24ecc144b38b6cf21cec5cc526a6c"
+    },
+    {
+      "path": "7_docs/OOM-B02_RE_report.pdf",
+      "bytes": 444471,
+      "sha256": "4287f0ee24cf684e2c5a0027643b9cc99bdb91ac4285f081cc2b9ee876785b4b"
+    },
+    {
+      "path": "7_docs/OOM-B02_scan_vs_cad.png",
+      "bytes": 209391,
+      "sha256": "22ac396bfd9d0fb64aa33cb8de64333ba7c5a1ac6d01f6ff8218017cfa33652d"
+    },
+    {
+      "path": "7_docs/OOM-B02_scan_vs_cad_cup.png",
+      "bytes": 208415,
+      "sha256": "ce2e37b37fce702888c42f8a95afb7d594c771671a276b07314cc595650899eb"
+    },
+    {
+      "path": "7_docs/OOM-B02_scan_vs_cad_scale.png",
+      "bytes": 13192,
+      "sha256": "f62c3b2ad0349ed3669a629b6b49e9aa213429cd1501eb2f547fc6d88e9100f7"
+    },
+    {
+      "path": "7_docs/OOM-B02_side.png",
+      "bytes": 81204,
+      "sha256": "c5648f2d13e6f2eb791d2170453859c1051fc60f00e06111c6f041c4d060c3ec"
+    },
+    {
+      "path": "7_docs/OOM-B02_top.png",
+      "bytes": 167790,
+      "sha256": "1eafe11e66a143f481293e22f9ba6c05fc1dc1110a60026ed51bf1f73a2a5aff"
+    }
+  ],
+  "excluded": [
+    {
+      "path": "1_scan_raw_STL/OOM-B02/pCFeC_tcud_f9GH_NLzf/resources.obproj",
+      "bytes": 24576,
+      "sha256": "409b1494e7af78d665dddf0c6a479f3cb90ef8970a28a6a1eb8d7ff83c103991",
+      "reason": "raw scanner project/cache (vendor format, ~GB) - not needed for method distillation"
+    },
+    {
+      "path": "1_scan_raw_STL/OOM-B02/pCFeC_tcud_f9GH_NLzf/result/Mesh.ply",
+      "bytes": 20108354,
+      "sha256": "ecbfca66de8e0276fdafa4e25c5d4525a86280bc9bb2dcef66eb559bb8e6032d",
+      "reason": "raw scanner project/cache (vendor format, ~GB) - not needed for method distillation"
+    },
+    {
+      "path": "1_scan_raw_STL/OOM-B02/project.obp",
+      "bytes": 164,
+      "sha256": "da1785b217d7d0695e3f73dcaec8ec4010ee19fe1e57f0c337797515c7ff6b20",
+      "reason": "raw scanner project/cache (vendor format, ~GB) - not needed for method distillation"
+    },
+    {
+      "path": "1_scan_raw_STL/OOM-B02/scanDataConfig.dat",
+      "bytes": 370,
+      "sha256": "e4dd76a435dc81d05aa4fc09198caddae8fb67da5e90c431ee1639e2085b6a80",
+      "reason": "raw scanner project/cache (vendor format, ~GB) - not needed for method distillation"
+    },
+    {
+      "path": "1_scan_raw_STL/OOM-B02/scanParamConfig.dat",
+      "bytes": 2409,
+      "sha256": "5ca2949f287c463f80a567b157f0aac9120a430c57e2bae7d0395661094c3c2e",
+      "reason": "raw scanner project/cache (vendor format, ~GB) - not needed for method distillation"
+    },
+    {
+      "path": "1_scan_raw_STL/OOM-B02/sIVTyYH_erbnbb_dWBApm_yjVQMX/result/Fused.ply",
+      "bytes": 16273370,
+      "sha256": "502e20d2821e88faa00b3c40e35d79d0cd5b522c0e47e3aae9935be277acd98a",
+      "reason": "raw scanner project/cache (vendor format, ~GB) - not needed for method distillation"
+    },
+    {
+      "path": "1_scan_raw_STL/OOM-B02/sIVTyYH_erbnbb_dWBApm_yjVQMX/result/model.ply",
+      "bytes": 1229981,
+      "sha256": "e5fe64322f09111cc7b13a9884581e0b6d86fa91d70fb414bdd94998b361b607",
+      "reason": "raw scanner project/cache (vendor format, ~GB) - not needed for method distillation"
+    },
+    {
+      "path": "1_scan_raw_STL/OOM-B02/sIVTyYH_erbnbb_dWBApm_yjVQMX/temp/mainLOMCache.obmc",
+      "bytes": 192485838,
+      "sha256": "76f1a152866e5ce9f843f620618079b766b844672c40c3d406e16df5c2dbb576",
+      "reason": "raw scanner project/cache (vendor format, ~GB) - not needed for method distillation"
+    },
+    {
+      "path": "1_scan_raw_STL/OOM-B02/sWuHSnh_3T8WIb_fz84te_wqHJsE/result/Fused.ply",
+      "bytes": 9475415,
+      "sha256": "0d7da3ce035edc88a5ca7199d9cbbcf900c7d98b803f821414af7cb4ff43e94a",
+      "reason": "raw scanner project/cache (vendor format, ~GB) - not needed for method distillation"
+    },
+    {
+      "path": "1_scan_raw_STL/OOM-B02/sWuHSnh_3T8WIb_fz84te_wqHJsE/result/model.ply",
+      "bytes": 717917,
+      "sha256": "954b57c9f58348da4a3b5e5d8eddfc76eaca56f801c50e2a699e1319950d5878",
+      "reason": "raw scanner project/cache (vendor format, ~GB) - not needed for method distillation"
+    },
+    {
+      "path": "1_scan_raw_STL/OOM-B02/thumbnail.png",
+      "bytes": 5047,
+      "sha256": "20bc26caaa08bd0f53e6c7bb7830040922721a4a06982ef7d13aa42c3d0de5a4",
+      "reason": "raw scanner project/cache (vendor format, ~GB) - not needed for method distillation"
+    },
+    {
+      "path": "4_STEP/OOM-B02.prt",
+      "bytes": 26006522,
+      "sha256": "633eb992711da0e32ffa3c76442695600d1a8de23d989e628f64061ffad6df82",
+      "reason": "Siemens NX native part (binary, needs NX) - STEP export is the portable record"
+    }
+  ]
+}

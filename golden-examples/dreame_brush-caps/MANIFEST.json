@@ -1,0 +1,407 @@
+{
+  "project": "dreame_brush-caps",
+  "source_path": "H:\\My Drive\\111 UP UP UP\\REMAKE AI - DIY\\OOMWOO_CAD\\01_SOURCED_reverse-engineered\\Successfull Reverse Engineering\\dreame_brush_screw_cap",
+  "note": "Golden example imported verbatim except 'excluded' files; excluded originals stay at source_path (Google Drive).",
+  "included": [
+    {
+      "path": "dreame_brush_screw_cap.log",
+      "bytes": 6622,
+      "sha256": "74220365beafc554955a187ca74fbe2a2c5b8360c8b7beb6607d1acff720f46e"
+    },
+    {
+      "path": "dreame_brush_screw_cap.step",
+      "bytes": 270136,
+      "sha256": "ec1bdb3ef483d4e663f3ac20a6d814403cc2f0a88a988ce50d906b1df000dde9"
+    },
+    {
+      "path": "dreame_brush_screw_cap_cad.stl",
+      "bytes": 4923784,
+      "sha256": "85e30d79ac939eaa892715e82fef5a3492f38a9f222c39b03e32ada07b90106d"
+    },
+    {
+      "path": "dreame_brush_screw_cap_datum_frame.step",
+      "bytes": 268394,
+      "sha256": "11b10c9ce8691df9e029176d9f658cb0d7fae1533ea064907b9cd804b5023be6"
+    },
+    {
+      "path": "dreame_brush_snap_cap.log",
+      "bytes": 6536,
+      "sha256": "b58e90e775bd5c5173baf86c76a1d95b9ba2fab8748e289414f71be936c708eb"
+    },
+    {
+      "path": "dreame_brush_snap_cap.step",
+      "bytes": 222637,
+      "sha256": "2866574f6261f383fd1a27b2c5554b0477342254ec1f294add9332300cabd443"
+    },
+    {
+      "path": "dreame_brush_snap_cap_cad.stl",
+      "bytes": 5018684,
+      "sha256": "adac8e32f5e35ed5a6fa842d86c2599c6f276d47af2063c5a3f8ebaf427ee059"
+    },
+    {
+      "path": "dreame_brush_snap_cap_datum_frame.step",
+      "bytes": 220910,
+      "sha256": "b2eef0c147594aeb91d3df53fa3283ca2101acce080a8b18d9b6dafe75f4e57e"
+    },
+    {
+      "path": "README.md",
+      "bytes": 8015,
+      "sha256": "06fa79b12ca1e7ec307cd68310765f975ccc9770d4923fe888717e8b498f73cb"
+    },
+    {
+      "path": "report/intake.json",
+      "bytes": 4122,
+      "sha256": "05ec6a6f58cca76d0b189b0aadd9c1d75e8c9409f162317c2379128b6d3b30b0"
+    },
+    {
+      "path": "report/screw_alignment.json",
+      "bytes": 1099,
+      "sha256": "9212df569654db6cce8d0a828336f61a0473fb3bcd53d96d979d9b6777ece1bd"
+    },
+    {
+      "path": "report/screw_build_log.txt",
+      "bytes": 336,
+      "sha256": "3d3ebb9c4300b9f4448b848f17d4d3c8c342be3661e01eb0ad7e963a28a4f1d0"
+    },
+    {
+      "path": "report/screw_fastgate.json",
+      "bytes": 422,
+      "sha256": "88d4d2ea51975eaa2a6584959a1f2b77320ccc75495e66ec4d0edda6046d1eae"
+    },
+    {
+      "path": "report/screw_official_gate.json",
+      "bytes": 621,
+      "sha256": "d0e5ef09efed3ccab723ed442c0cdbac7fb141c8599ff860237d243b1efe8dac"
+    },
+    {
+      "path": "report/screw_params.json",
+      "bytes": 600,
+      "sha256": "2950236a757921f886a78a8e1ebbbbb6fbdd845478ebaa39be4e22abe80018f4"
+    },
+    {
+      "path": "report/snap_alignment.json",
+      "bytes": 1111,
+      "sha256": "6681ec44b95af43a51a908bcaac69d78ce4d8dd18bcb1fb0bc38588c49037428"
+    },
+    {
+      "path": "report/snap_build_log.txt",
+      "bytes": 173,
+      "sha256": "58b2eeffb5c8bb136b180890673571f33c94413b4c6780a08b24e783a37ee88d"
+    },
+    {
+      "path": "report/snap_fastgate.json",
+      "bytes": 420,
+      "sha256": "f9668b9437f1633e3185f407a1ca8120642bd6b7931d997bc8035bb37f1dc074"
+    },
+    {
+      "path": "report/snap_masked_gate.json",
+      "bytes": 1506,
+      "sha256": "651fff12bc13bf74cec57640d2244140ae015c90a0f6630b773671db02166d00"
+    },
+    {
+      "path": "report/snap_official_gate.json",
+      "bytes": 620,
+      "sha256": "17601fa8fd2bf2393ee684fb61e55df2c166e3361c620c345985cdf6e28e8f31"
+    },
+    {
+      "path": "report/snap_params.json",
+      "bytes": 851,
+      "sha256": "6f9e9e8b5f121ccf1fb3c8095e559d37e70d823a9a559cd932a9b409a4f67513"
+    },
+    {
+      "path": "report/source/align.py",
+      "bytes": 7912,
+      "sha256": "14e0f41b528ff6fe4c59f6ca2f025feb9dc04c74fb7baae3c2cd6d179731b96b"
+    },
+    {
+      "path": "report/source/build_screw.py",
+      "bytes": 6585,
+      "sha256": "0f4c7e4bcd2e7cdda82aff1f9b4a39d287c643d13dcd1abe440109dd9060b2f3"
+    },
+    {
+      "path": "report/source/build_snap.py",
+      "bytes": 5499,
+      "sha256": "9787ec9ed2e425a03c682749811de51374d6e0d44270f78554fba8a21f06a895"
+    },
+    {
+      "path": "report/source/datum.py",
+      "bytes": 3548,
+      "sha256": "343a7203c0858d10c483d4464ca20dbd9bf86e83c2848b18efb77ec9a353eb59"
+    },
+    {
+      "path": "report/source/fastgate.py",
+      "bytes": 4470,
+      "sha256": "de94b1c84e9c2640ce9374e4eae49153375505b6f4aaf25ecace4bda81cae121"
+    },
+    {
+      "path": "report/source/frames.py",
+      "bytes": 1060,
+      "sha256": "37ec0835fd4dd431041e74c24b6f63c927e80b17f4bbb374ce261e7c539e459c"
+    },
+    {
+      "path": "report/source/intake.py",
+      "bytes": 2112,
+      "sha256": "23387240ac2b9f5c7034807a97b91d73de2cea90cda6865e9f5fceaead6d95d7"
+    },
+    {
+      "path": "report/source/overlay.py",
+      "bytes": 2120,
+      "sha256": "8cca57e44d13f1ecec8ec91c303372b4aaa5051865db8f471df9bf9e4e81b787"
+    },
+    {
+      "path": "report/views/screw_bore_loops.png",
+      "bytes": 155388,
+      "sha256": "88ab0349188653425213ce0c5bcd02859be035b845cf3395432071930436019a"
+    },
+    {
+      "path": "report/views/screw_cad_final_bottom.png",
+      "bytes": 320584,
+      "sha256": "1eba3fb82935d30554979d1a93ba3bafce11389a0d4ec8a7286d559b93743c13"
+    },
+    {
+      "path": "report/views/screw_cad_final_front.png",
+      "bytes": 192760,
+      "sha256": "af818ac171978a59640d290ac3c4a3324c611af3a22c86dc90dc8f3bf5380ac2"
+    },
+    {
+      "path": "report/views/screw_cad_final_iso.png",
+      "bytes": 366013,
+      "sha256": "898ed61df7f52077232a6c26e6b05d4b43e3ad7a4af5f67520bca00b9824a3f9"
+    },
+    {
+      "path": "report/views/screw_cad_final_iso_bottom.png",
+      "bytes": 366024,
+      "sha256": "2532b5b6ef192adec7dc8f4eaad78a0976ce13b4c87e64779831b5d56eb10b03"
+    },
+    {
+      "path": "report/views/screw_cad_final_top.png",
+      "bytes": 368043,
+      "sha256": "4fef7fbf0463f0274a56412b308d7eac4be64c003a6283f7b36cf830d0687471"
+    },
+    {
+      "path": "report/views/screw_dev_c2s.png",
+      "bytes": 768066,
+      "sha256": "a44e4719bfa8a1608ef3c6db20096220f6a305613b92dfc853256045981ce47b"
+    },
+    {
+      "path": "report/views/screw_dev_s2c.png",
+      "bytes": 572284,
+      "sha256": "081a8400072a7599493fe5eb41bacf8e569b3c7ec682b4d00554db542d2f0baa"
+    },
+    {
+      "path": "report/views/screw_hmap_down.png",
+      "bytes": 631868,
+      "sha256": "281669c8b2e14de64acf1ae007ee7a95eed46addf8baa507703b6379bf7ced5e"
+    },
+    {
+      "path": "report/views/screw_hmap_up.png",
+      "bytes": 610553,
+      "sha256": "9fcfe1dcee03286cf9126db5f617684e848affd32262edb8fcc00e7e250e2fcd"
+    },
+    {
+      "path": "report/views/screw_iso.png",
+      "bytes": 338912,
+      "sha256": "b203501d15fbe65862623d4efb9d6875644a2c2caa4c9f7769c415c4fc90dc1c"
+    },
+    {
+      "path": "report/views/screw_overlay.png",
+      "bytes": 294599,
+      "sha256": "1285e2e7186b27c734604e45373d99677c917efc137f15753675bff0912e4e1f"
+    },
+    {
+      "path": "report/views/screw_polar.png",
+      "bytes": 229707,
+      "sha256": "9fd4ea76331e16903db2a50ab6725d6600a2b0bfd295ed7d121bdd22c1e3f301"
+    },
+    {
+      "path": "report/views/screw_rz.png",
+      "bytes": 89036,
+      "sha256": "971d742bfd50d91b62aeeb2cad811ca15283cad8ab662907f3845b4e009681a4"
+    },
+    {
+      "path": "report/views/snap_cad_final_bottom.png",
+      "bytes": 279400,
+      "sha256": "565766e20e20c97623bb8e26e3d3f49280327f71d152d460993a031785b410ca"
+    },
+    {
+      "path": "report/views/snap_cad_final_front.png",
+      "bytes": 87849,
+      "sha256": "3a2a9c28fa716810d2c2027936adb55aebed0255ffaf4250b33b6467d329eee6"
+    },
+    {
+      "path": "report/views/snap_cad_final_iso.png",
+      "bytes": 289981,
+      "sha256": "582b38bd13e25672d829fd460c7d8ae6cec3e034e67b848f9f8d901f8953f99b"
+    },
+    {
+      "path": "report/views/snap_cad_final_iso_bottom.png",
+      "bytes": 319788,
+      "sha256": "8a43255f4d9be9eb49d5d06667320c0bde3d7e00165418c2f1fb2f0b1ec42708"
+    },
+    {
+      "path": "report/views/snap_cad_final_top.png",
+      "bytes": 257118,
+      "sha256": "14ef90b23d017b77836a509a5f844ffe0b7f0d267ef4fcc11b7ba84a2f2a956d"
+    },
+    {
+      "path": "report/views/snap_dev_c2s.png",
+      "bytes": 526511,
+      "sha256": "e34706f9f353890f1d3eb620dd71fe849781ce594e91b7a684a08749740f69d7"
+    },
+    {
+      "path": "report/views/snap_dev_s2c.png",
+      "bytes": 536322,
+      "sha256": "7f165c5cb549d3473500c3b835ca2640260ce1d55bc2b0f0259162d8be5c5d37"
+    },
+    {
+      "path": "report/views/snap_hmap_down.png",
+      "bytes": 531745,
+      "sha256": "2e3bd57e7bef39adb25fd90f8faac438e4509180a01227dc6ec073dd91e39227"
+    },
+    {
+      "path": "report/views/snap_hmap_up.png",
+      "bytes": 539959,
+      "sha256": "d6d90cd35788f7136b89f546aab7e1887505f719f9dbae4b2390b6204129a04d"
+    },
+    {
+      "path": "report/views/snap_hook_profiles.png",
+      "bytes": 115892,
+      "sha256": "565cda1282ba4c3f24c1cc218cb6dc6819fce291837280812dbed8cd48ffe55c"
+    },
+    {
+      "path": "report/views/snap_iso.png",
+      "bytes": 243573,
+      "sha256": "e967973c35f5f111c8d88188a0b82e69c279cc493942c9476fa7430f2b3554fb"
+    },
+    {
+      "path": "report/views/snap_overlay.png",
+      "bytes": 246871,
+      "sha256": "c51a240443b693aaa259e81e5db20fbbb33251542623518c45109fe7d721e3f8"
+    },
+    {
+      "path": "report/views/snap_raw_rz.png",
+      "bytes": 110553,
+      "sha256": "e5144b08a5ccf42574ae241f39a817dc2e6b93a52036a7499d90577b80dc0d2f"
+    }
+  ],
+  "excluded": [
+    {
+      "path": "dreame_brush_screw_cap.stl",
+      "bytes": 91561634,
+      "sha256": "c20c6cc9bd1096603fc601e9037bec8da346bc67b021df303ead177ce3d4c035",
+      "reason": "exceeds 50 MB - decimated copy committed",
+      "decimated_copy": {
+        "decimated_file": "dreame_brush_screw_cap_scan_decimated.stl",
+        "original_file": "dreame_brush_screw_cap.stl",
+        "original_sha256": "c20c6cc9bd1096603fc601e9037bec8da346bc67b021df303ead177ce3d4c035",
+        "original_bytes": 91561634,
+        "original_triangles": 1831231,
+        "decimated_triangles": 949999,
+        "decimated_bytes": 47500034,
+        "method": "fast_simplification (quadric), target_reduction=0.4812",
+        "bbox_original_mm": [
+          [
+            7.53,
+            -11.1104,
+            -181.1744
+          ],
+          [
+            17.7157,
+            -0.6154,
+            -175.5846
+          ]
+        ],
+        "bbox_decimated_mm": [
+          [
+            7.5296,
+            -11.1094,
+            -181.1744
+          ],
+          [
+            17.7159,
+            -0.6156,
+            -175.5847
+          ]
+        ],
+        "dev_decimated_to_original_mm": {
+          "p50": 1.811676411554955e-05,
+          "p95": 0.0003179866349333524,
+          "max": 0.0015562971373144707,
+          "n_samples": 20000,
+          "seed": 0
+        }
+      }
+    },
+    {
+      "path": "dreame_brush_screw_cap_step.prt",
+      "bytes": 34586637,
+      "sha256": "054c4303e9039acb588ddfb45f2442d86fea2f809855aabb8097f2b97bea168e",
+      "reason": "Siemens NX native part (binary, needs NX) - STEP export is the portable record"
+    },
+    {
+      "path": "dreame_brush_snap_cap.stl",
+      "bytes": 249544084,
+      "sha256": "7520dd257d8ec1355e26b785da7ac78dfc8c90647e0821b4526e5e0c391e8a98",
+      "reason": "exceeds 50 MB - decimated copy committed",
+      "decimated_copy": {
+        "decimated_file": "dreame_brush_snap_cap_scan_decimated.stl",
+        "original_file": "dreame_brush_snap_cap.stl",
+        "original_sha256": "7520dd257d8ec1355e26b785da7ac78dfc8c90647e0821b4526e5e0c391e8a98",
+        "original_bytes": 249544084,
+        "original_triangles": 4990880,
+        "decimated_triangles": 950000,
+        "decimated_bytes": 47500084,
+        "method": "fast_simplification (quadric), target_reduction=0.8097",
+        "bbox_original_mm": [
+          [
+            -14.63,
+            -27.31,
+            -175.3748
+          ],
+          [
+            10.65,
+            -0.53,
+            -162.6025
+          ]
+        ],
+        "bbox_decimated_mm": [
+          [
+            -14.6,
+            -27.31,
+            -175.3748
+          ],
+          [
+            10.65,
+            -0.54,
+            -162.6026
+          ]
+        ],
+        "dev_decimated_to_original_mm": {
+          "p50": 0.00014928616479756182,
+          "p95": 0.0012513641619703033,
+          "max": 0.020035822241241757,
+          "n_samples": 20000,
+          "seed": 0
+        }
+      }
+    },
+    {
+      "path": "dreame_brush_snap_cap_step.prt",
+      "bytes": 100515271,
+      "sha256": "9f6367be6c73f975c66a8250a5e883293efc71254636e895535e1e39b0d91f30",
+      "reason": "Siemens NX native part (binary, needs NX) - STEP export is the portable record"
+    },
+    {
+      "path": "SOLID.prt",
+      "bytes": 156827,
+      "sha256": "adbbb9320dbafaefba62a455ac9095b2a96b90966dd7825ae086fa6e1cc00635",
+      "reason": "Siemens NX native part (binary, needs NX) - STEP export is the portable record"
+    },
+    {
+      "path": "SOLID32.prt",
+      "bytes": 161276,
+      "sha256": "c82f322b838813412c28c70d4271bd31b853d97aff8272c877bbd7b248e7b947",
+      "reason": "Siemens NX native part (binary, needs NX) - STEP export is the portable record"
+    }
+  ]
+}

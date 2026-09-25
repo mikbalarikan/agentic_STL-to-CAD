@@ -1,0 +1,84 @@
+{
+ "qa1": {
+  "counts": {
+   "solid": 1,
+   "shell": 1,
+   "face": 185,
+   "edge": 1066,
+   "vertex": 2132
+  },
+  "brepcheck_valid": true,
+  "volume": 5801.074705240473,
+  "area": 3655.7223552731457,
+  "bbox": [
+   -21.356573729281852,
+   -34.33150257302207,
+   -1e-07,
+   38.20000010012221,
+   34.33150257298551,
+   17.156039439104042
+  ]
+ },
+ "qa2": {
+  "tris": 714968,
+  "watertight": true,
+  "winding": true,
+  "euler": 0,
+  "components": 1,
+  "volume": 5799.219339720382,
+  "degenerate_faces": 0,
+  "volume_vs_brep": -1.8553655200912544
+ },
+ "qa4": {
+  "F05": {
+   "name": "skirt OD MAX",
+   "caliper": 26.85,
+   "cad": 26.850000413680412,
+   "gated": true
+  },
+  "F06": {
+   "name": "skirt OD MIN (STRUCK, A2)",
+   "caliper": null,
+   "cad": 25.616541514014603,
+   "gated": false
+  },
+  "F03": {
+   "name": "cup bore ID",
+   "caliper": 20.75,
+   "cad": 20.750000731197854,
+   "gated": true
+  },
+  "F02": {
+   "name": "hex pocket depth",
+   "caliper": 3.44,
+   "cad": 3.440000057220459,
+   "gated": true
+  },
+  "F01": {
+   "name": "hex AF (SCAN authority, ungated)",
+   "caliper": 7.358,
+   "cad": 7.357999940924901,
+   "gated": false
+  },
+  "F10": {
+   "name": "arm width @r36.5",
+   "caliper": 5.33,
+   "cad": 5.33009701822042,
+   "gated": true
+  },
+  "F11": {
+   "name": "arm thickness @r36.5",
+   "caliper": 4.07,
+   "cad": 4.095994010899079,
+   "gated": true
+  }
+ },
+ "qa4_worst_gated": 0.025994010899078823,
+ "form": {
+  "rigid_tip_D": 76.4000040388343,
+  "height": 17.15604019165039,
+  "dome_apex": 10.865643501281738,
+  "cup_floor_z": 2.4549999237060547,
+  "hex_floor_z": 5.894999980926514
+ }
+}

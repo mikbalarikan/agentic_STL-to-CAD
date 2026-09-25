@@ -1,0 +1,287 @@
+{
+  "project": "OOM-P03_mop-pad-bracket",
+  "source_path": "H:\\My Drive\\111 UP UP UP\\REMAKE AI - DIY\\OOMWOO_CAD\\01_SOURCED_reverse-engineered\\Successfull Reverse Engineering\\OOM-P03 Mop Pad Bracket",
+  "note": "Golden example imported verbatim except 'excluded' files; excluded originals stay at source_path (Google Drive).",
+  "included": [
+    {
+      "path": "2_mesh_cleaned/alignment.json",
+      "bytes": 1473,
+      "sha256": "0d33c0ce709b0db888a3c63ed2a51700be212e35e353c671d6cfd4b76666e718"
+    },
+    {
+      "path": "2_mesh_cleaned/OOM-P03_work_250k.stl",
+      "bytes": 12500084,
+      "sha256": "c9a11bd3a44b6f2f6824e68d320c602a8feda496714956795790dc2cab9f59eb"
+    },
+    {
+      "path": "4_STEP/OOM-P03-exported.log",
+      "bytes": 5329,
+      "sha256": "c45d61894d9d98b3d885b4af7a6c273437a5fbb56436a8c10dc44d2a6c7383bb"
+    },
+    {
+      "path": "4_STEP/OOM-P03-exported.stp",
+      "bytes": 1107103,
+      "sha256": "c1dcc79ac849a2dc52a0b426f2ebb83756ec89d30285cc14099220633841e594"
+    },
+    {
+      "path": "4_STEP/OOM-P03.step",
+      "bytes": 2494851,
+      "sha256": "21e1f041f17664d9c2d4adea116bc4940c3ed359da9fcaa3ab849192c6da8ed6"
+    },
+    {
+      "path": "4_STEP/OOM-P03_cad.stl",
+      "bytes": 1734284,
+      "sha256": "6df8a5db5df815cad944d392661ad1686c904d505ca38c6d46c563170f9b15e1"
+    },
+    {
+      "path": "5_reference/MEASUREMENTS.md",
+      "bytes": 4516,
+      "sha256": "3711cd5db4cc1c7e650614ba2c676e00af8d3cdc223c3c44f68afe2c2033847a"
+    },
+    {
+      "path": "6_RE_work/INTAKE_CARD.md",
+      "bytes": 8055,
+      "sha256": "15a29e1d929b999efc1e8dcfeea0a7e10c77bb2d044a9563b66e24c77de1743e"
+    },
+    {
+      "path": "6_RE_work/PARAM_TABLE.md",
+      "bytes": 5029,
+      "sha256": "ff072a20c315e238e33f6e84bf1fc6e3722649d266ef1d07d7b4979c5c325d7a"
+    },
+    {
+      "path": "6_RE_work/rebuild_OOM-P03.py",
+      "bytes": 8374,
+      "sha256": "cbfc7f3a7d0c398561ccabb07561367682fdf887facc6810c427efa027e8720d"
+    },
+    {
+      "path": "6_RE_work/sections/section_axial_meridian.png",
+      "bytes": 91587,
+      "sha256": "52af2bb9a336f2348b91e65232446bd9db6281eb2f931101696d213a4edfdce0"
+    },
+    {
+      "path": "6_RE_work/sections/section_driveface_polar_kidney.png",
+      "bytes": 236634,
+      "sha256": "66be5c09eed802a5f353c1b9595e86255ee8d7fe6a8681b01fc5e792574643ee"
+    },
+    {
+      "path": "6_RE_work/sections/section_tread_polar.png",
+      "bytes": 158559,
+      "sha256": "d3860a497146503dd8e85ebcae1a4c31a67f09bd05d7f5f7b2ef904c5a4f844c"
+    },
+    {
+      "path": "6_RE_work/VERDICT.md",
+      "bytes": 5047,
+      "sha256": "9e9051b4332c3f3f7b14e714dc313a6219b0cda2421f6da4234d8788ca5d9542"
+    },
+    {
+      "path": "7_docs/OOM-P03_front.png",
+      "bytes": 1974994,
+      "sha256": "bc4c72fed00822a260c129bc9b8f01167830260d6b07c615e36b6401247f12b7"
+    },
+    {
+      "path": "7_docs/OOM-P03_iso.png",
+      "bytes": 2103951,
+      "sha256": "f1cded5e76ff6c358c0fa3b48902db4b626753998b1e326cd9bd6b78bab5fb08"
+    },
+    {
+      "path": "7_docs/OOM-P03_RE_report.pdf",
+      "bytes": 3554903,
+      "sha256": "d920f13148c14e4c56e98d95e51fd96de7567a44358cc576f6257525ecfd2069"
+    },
+    {
+      "path": "7_docs/OOM-P03_scan_vs_cad.png",
+      "bytes": 2160031,
+      "sha256": "3f1a77c5791f495243ed36fd31d319058a6bd305f631ed102b345d128e2c5c4e"
+    },
+    {
+      "path": "7_docs/OOM-P03_side.png",
+      "bytes": 1974982,
+      "sha256": "71439e0f75d5beeb8bd5907827aca313f919f821cefddc68d3d3a7815cb913e5"
+    },
+    {
+      "path": "7_docs/OOM-P03_top.png",
+      "bytes": 2180236,
+      "sha256": "a673623b00a94c7c5fe83851649be7b6e902b71c3c46097dcd4f8ddbf5d8c583"
+    },
+    {
+      "path": "Context images/images.jpg",
+      "bytes": 21105,
+      "sha256": "b65f80f05847e458ed83f500fd7fca80ab9e6b782bd449a6c53e1fde723a588b"
+    },
+    {
+      "path": "Context images/IMG_20260729_140217.jpg",
+      "bytes": 1982333,
+      "sha256": "95c79e9f31cfc4a51346fd2663b80367ef2dac2559f59103b0b1817355b5036d"
+    },
+    {
+      "path": "Context images/IMG_20260729_140235.jpg",
+      "bytes": 1852804,
+      "sha256": "ee8dc3bc1c65fa3f1931ed151fb222a4a56c6f35f43e1a1ea10150ac80c3beef"
+    },
+    {
+      "path": "Context images/IMG_20260729_140242.jpg",
+      "bytes": 1835577,
+      "sha256": "27eed1464e16bf871b51edf6d491593b9c5f23d9288343e8c5b90454e165a611"
+    },
+    {
+      "path": "Context images/IMG_20260729_140245.jpg",
+      "bytes": 1833480,
+      "sha256": "b5f3b3b0eea944935db0126e7135ab55cbbe0f7c647023700196fb3532a13968"
+    },
+    {
+      "path": "Context images/IMG_20260729_140306.jpg",
+      "bytes": 1971077,
+      "sha256": "82799910db9409a43ab6a5f359165aee48b00272657075ef70fd67b27e0da561"
+    },
+    {
+      "path": "Context images/IMG_20260729_140327.jpg",
+      "bytes": 2141825,
+      "sha256": "37a4cc9b6329776bd715271620b0128d0f216e4291fa7881ffa8a1d082913fca"
+    },
+    {
+      "path": "Context images/IMG_20260729_140345.jpg",
+      "bytes": 2037178,
+      "sha256": "730b5349cdfba69b92eff3082e7c505865125d9b8083836d84ab7695ee784e3f"
+    },
+    {
+      "path": "Context images/IMG_20260729_140347.jpg",
+      "bytes": 2043278,
+      "sha256": "c3057e190cc8d01bd5a927cccf1a3d60b6a5fbde49982f8589d5b0f13eac5665"
+    },
+    {
+      "path": "Context images/IMG_20260729_140403.jpg",
+      "bytes": 2602327,
+      "sha256": "293e1c5071270cdad79e5ed34a376171aa1477356bb32798514b4a5ead87b893"
+    },
+    {
+      "path": "Context images/IMG_20260729_140419.jpg",
+      "bytes": 2362525,
+      "sha256": "29bcde51b755e699e5dcd68d68ddc699a188a613f398669fe870046bebd9db7b"
+    },
+    {
+      "path": "Context images/IMG_20260729_140456.jpg",
+      "bytes": 2568130,
+      "sha256": "9a4964128f2aab8e4b39a94ac5fb5b409a9fdc8dde24cecc78e69d93c1a753e3"
+    },
+    {
+      "path": "Context images/S85960efda4bb40e49b40091e78f327ccv.avif",
+      "bytes": 16306,
+      "sha256": "531fb4ae9d3a6d5e93404b85254f0e13f76c4bb7a59bf3521a9575c3a5277a0c"
+    }
+  ],
+  "excluded": [
+    {
+      "path": "1_scan_raw_STL/OOM-P03/scanDataConfig.dat",
+      "bytes": 201,
+      "sha256": "65d1764aecfdc8d415dd60fbd9e1f291b7ac33ee6a03df4fadb1b9c5c2dd1590",
+      "reason": "raw scanner project/cache (vendor format, ~GB) - not needed for method distillation"
+    },
+    {
+      "path": "1_scan_raw_STL/OOM-P03/thumbnail.png",
+      "bytes": 6186,
+      "sha256": "7e99dda2c1330b392ce86b747aea302fda8efd8f8a056129f122760d434c25a4",
+      "reason": "raw scanner project/cache (vendor format, ~GB) - not needed for method distillation"
+    },
+    {
+      "path": "1_scan_raw_STL/OOM-P03-/pErDC_JVpI_Ltc0_zQZP/resources.obproj",
+      "bytes": 24576,
+      "sha256": "3bb99daa1ea71bbf210134679045bc70be6b7c37d9a1686ae184240538c68569",
+      "reason": "raw scanner project/cache (vendor format, ~GB) - not needed for method distillation"
+    },
+    {
+      "path": "1_scan_raw_STL/OOM-P03-/pErDC_JVpI_Ltc0_zQZP/result/Mesh.ply",
+      "bytes": 104884648,
+      "sha256": "6a699b74654789077d5c9272ba9156fc6ab24feb227531fe2045cfd3fb4f3254",
+      "reason": "raw scanner project/cache (vendor format, ~GB) - not needed for method distillation"
+    },
+    {
+      "path": "1_scan_raw_STL/OOM-P03-/project.obp",
+      "bytes": 130,
+      "sha256": "062e0b80dd4ad051caa84e570c84c93d72aaeae13ad34e1bdfc581d420605362",
+      "reason": "raw scanner project/cache (vendor format, ~GB) - not needed for method distillation"
+    },
+    {
+      "path": "1_scan_raw_STL/OOM-P03-/sroMTwR_PKqirJ_Xsxxql_zuAicK/resources.obscan-shm",
+      "bytes": 32768,
+      "sha256": "6c2ef6c0b9c57bb6690099d5fc789ba5e9b895066cb4e9147d83c4fe44130f66",
+      "reason": "raw scanner project/cache (vendor format, ~GB) - not needed for method distillation"
+    },
+    {
+      "path": "1_scan_raw_STL/OOM-P03-/sroMTwR_PKqirJ_Xsxxql_zuAicK/resources.obscan-wal",
+      "bytes": 140112,
+      "sha256": "002a1b023c4f6707b10e4d16d5acd7120cc5302337f7ad0adcad11c613cc5ec9",
+      "reason": "raw scanner project/cache (vendor format, ~GB) - not needed for method distillation"
+    },
+    {
+      "path": "1_scan_raw_STL/OOM-P03-/sroMTwR_PKqirJ_Xsxxql_zuAicK/result/Fused.ply",
+      "bytes": 115718774,
+      "sha256": "b2783a2e8562259702be3ea8d362c5a65dba4f6566674e77cdbc57b723f607ff",
+      "reason": "raw scanner project/cache (vendor format, ~GB) - not needed for method distillation"
+    },
+    {
+      "path": "1_scan_raw_STL/OOM-P03-/sroMTwR_PKqirJ_Xsxxql_zuAicK/result/model.ply",
+      "bytes": 10523014,
+      "sha256": "f40ce6cca9879de0a0ac0b952085d283cad29a584200808ccf79ffe896f9c9c7",
+      "reason": "raw scanner project/cache (vendor format, ~GB) - not needed for method distillation"
+    },
+    {
+      "path": "1_scan_raw_STL/OOM-P03-/sroMTwR_PKqirJ_Xsxxql_zuAicK/temp/mainLOMCache.obmc",
+      "bytes": 77442510,
+      "sha256": "da4ead0bd96555fc37f90cbb67bd415bfc9f201b0b439fb18a1548d11b38fee9",
+      "reason": "raw scanner project/cache (vendor format, ~GB) - not needed for method distillation"
+    },
+    {
+      "path": "2_mesh_cleaned/OOM-P03.stl",
+      "bytes": 209377184,
+      "sha256": "9ff13f8031c26bd999432689b7fc252397268cfebf3cae85d40aa95e10d15ebb",
+      "reason": "exceeds 50 MB - decimated copy committed",
+      "decimated_copy": {
+        "decimated_file": "OOM-P03_scan_decimated.stl",
+        "original_file": "OOM-P03.stl",
+        "original_sha256": "9ff13f8031c26bd999432689b7fc252397268cfebf3cae85d40aa95e10d15ebb",
+        "original_bytes": 209377184,
+        "original_triangles": 4187542,
+        "decimated_triangles": 950000,
+        "decimated_bytes": 47500084,
+        "method": "fast_simplification (quadric), target_reduction=0.7731",
+        "bbox_original_mm": [
+          [
+            -61.5808,
+            6.7178,
+            -304.5906
+          ],
+          [
+            59.6191,
+            65.8432,
+            -194.978
+          ]
+        ],
+        "bbox_decimated_mm": [
+          [
+            -61.5831,
+            6.7271,
+            -304.5832
+          ],
+          [
+            59.6158,
+            65.8372,
+            -194.9762
+          ]
+        ],
+        "dev_decimated_to_original_mm": {
+          "p50": 0.001043481889118097,
+          "p95": 0.005208393035862265,
+          "max": 0.027728380760104518,
+          "n_samples": 20000,
+          "seed": 0
+        }
+      }
+    },
+    {
+      "path": "4_STEP/OOM-P03.prt",
+      "bytes": 145400807,
+      "sha256": "7f8f9c7ee71e09686b1bb73f38f4a5b87dc24a3b73aa9774e510760750f1830c",
+      "reason": "Siemens NX native part (binary, needs NX) - STEP export is the portable record"
+    }
+  ]
+}

@@ -1,0 +1,52 @@
+scan welded: 405114 verts / 798874 faces
+scan normals were inward -> inverted
+scan faces: 798874 total | bristle-masked 150548 (18.8%) | screw-masked 19222 | kept 629104
+scan open-boundary vertices: 7390
+scan sampled: 3000000 pts (~0.032 mm spacing over 3017 mm2)
+CAD sampled : 300000 pts over 3655 mm2
+ICP converged in 48 its | correction: 0.6981 deg, 0.1869 mm translation | 0.5031 mm max point move
+masking: outer-skin drops 5.91% | open-boundary drops 20.76% | gated points 233423 of 300000 (77.8%)
+hex pocket WALL: scan covers 263 of 360 deg (73%); largest gap 85 deg -> masked (A6)
+
+---- Tier-2 zone report (CAD->scan, outer skin, after ICP) ----
+  zone                                   n    mean     p95     max   gate
+  rim annulus (datum A)              13120   0.098   0.245   0.651   [masked 19.5%] named, no caliper PASS
+  cup bore wall                       8120   0.118   0.264   1.404   [masked 28.0%] Tier-1 (F03) 
+  cup floor                          18705   0.059   0.132   0.512   [masked  5.7%] interior 
+  hex pocket (F01)                    4379   0.083   0.216   0.316   [masked 43.4%] named, no caliper, 124 deg gap masked PASS
+  dome, off-arm off-SAF              33287   0.141   0.277   0.316   [masked 16.1%] cosmetic 
+  skirt band z 0-4.5                 19929   0.112   0.213   2.524   [masked 23.5%] Tier-1 (F05) 
+  SAF-1 external nub                   483   0.175   0.524   0.648   [masked 64.6%] named key, gated PASS
+  SAF-1 skirt recess                   479   0.177   0.467   0.751   [masked 68.8%] named key, gated PASS
+  SAF-1 internal boss                 2568   0.242   0.801   1.540   [masked 22.5%] interior/occluded (A7) 
+  arms r 14-38.2                     95933   0.335   0.890   1.325   [masked 24.4%] free-state droop (A11) 
+  arm/hub root r 7-14                46068   0.181   0.617   2.524   [masked 19.4%] blend 
+
+---- WHOLE PART (outer skin, bristles+screw excluded) ----
+  n 233423  mean 0.220  p95 0.740 (band 1.6)  max 2.524 (band 4.0)  -> PASS
+     p50    0.136
+     p90    0.557
+     p95    0.740
+     p99    1.003
+     p99.9  1.562
+
+---- open-boundary mask sensitivity (M3 radius) ----
+   [gated named interfaces, mask r = 0.0 vs 0.8 -- does the 0.8 PASS survive unmasked?]
+      rim annulus (datum A)      r=0.0  n= 16217  p95 0.233  max 0.651  PASS
+      rim annulus (datum A)      r=0.8  n= 13120  p95 0.245  max 0.651  PASS
+      hex pocket (F01)           r=0.0  n=  7598  p95 0.492  max 1.624  ** OVER by 0.824 **
+      hex pocket (F01)           r=0.8  n=  4379  p95 0.216  max 0.316  PASS
+      SAF-1 external nub         r=0.0  n=  1126  p95 0.518  max 0.648  PASS
+      SAF-1 external nub         r=0.8  n=   483  p95 0.524  max 0.648  PASS
+      SAF-1 skirt recess         r=0.0  n=  1315  p95 0.554  max 0.805  ** OVER by 0.005 **
+      SAF-1 skirt recess         r=0.8  n=   479  p95 0.467  max 0.751  PASS
+   r= 0.0 mm  kept 282278 ( 94.1%)  p95 0.894  max 3.049  PASS
+   r= 0.2 mm  kept 256755 ( 85.6%)  p95 0.750  max 3.049  PASS
+   r= 0.4 mm  kept 248894 ( 83.0%)  p95 0.742  max 2.996  PASS
+   r= 0.8 mm  kept 233423 ( 77.8%)  p95 0.740  max 2.524  PASS
+   r= 1.5 mm  kept 204830 ( 68.3%)  p95 0.731  max 2.524  PASS
+   r= 2.5 mm  kept 162039 ( 54.0%)  p95 0.712  max 2.524  PASS
+
+---- REVERSE scan->CAD (outer skin) : detects features the CAD is MISSING ----
+   n 347030  mean 0.212  p95 0.659  max 1.290
+saved _tier2_it2.json / _dev_it2.npy

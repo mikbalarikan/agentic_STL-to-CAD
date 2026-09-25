@@ -1,0 +1,77 @@
+{
+  "part": "OOM-B02_Side-brush-3-arm",
+  "written_by": "re-modeler, REBUILD iteration 1, 2026-07-29",
+  "source_mesh": "2_mesh_cleaned/OOM-B02.stl (798,874 tri, RAW scanner coords)",
+  "description": "Composite RAW-SCAN -> DATUM transform. Datum A = cup rim annular face -> XY plane at Z=0 with material in +Z (plane fit rms 0.052 mm over 30,342 raw faces). Datum B = rotation axis (cup bore + skirt + hex pocket common axis) -> +Z. Datum C = arm 1 centreline -> +X (theta=0); arms 2/3 fall at +120/-120 deg. Apply to the RAW scan; row-major 4x4, homogeneous, mm.",
+  "matrix_4x4": [
+    [
+      0.7418936740479141,
+      -0.488623777152045,
+      0.4591738023987823,
+      115.34298571691153
+    ],
+    [
+      0.5888487553559518,
+      0.802325404215258,
+      -0.0976272967287793,
+      -1.2147374122678238
+    ],
+    [
+      -0.3207037881339004,
+      0.34281299589206277,
+      0.8829656449285413,
+      262.8773366579297
+    ],
+    [
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ]
+  ],
+  "scale_correction": 1.0,
+  "scale_correction_note": "NONE APPLIED. RE_SPEC 2 envelope scale check could not be run (ENV-1/2/3 empty in MEASUREMENTS.md). The four available mid-size caliper dims sit 0.4-1.6% under the scan (ratios 0.984/0.996/0.991/0.989) - not uniform enough to justify a global scale. Absolute scale is UNVERIFIED; caliper values are used directly as CAD parameters, which absorbs the discrepancy locally.",
+  "verified_by_modeller": {
+    "method": "matrix applied to OOM-B02_raw.stl with trimesh; rim annulus band (r 10.9-13.3, |z|<0.4) re-fitted",
+    "rim_plane_z_mean_mm": 0.0213,
+    "rim_plane_z_std_mm": 0.0849,
+    "n_vertices": 17027,
+    "arm_angular_centres_deg": [
+      0.04,
+      120.3,
+      -118.96
+    ],
+    "datum_bbox": {
+      "x": [
+        -33.303,
+        62.177
+      ],
+      "y": [
+        -55.631,
+        53.905
+      ],
+      "z": [
+        -0.567,
+        36.722
+      ]
+    }
+  },
+  "z_stations_mm": {
+    "cup_rim_face": 0.0,
+    "cup_floor": 2.455,
+    "cup_floor_annular_groove_deepest": 2.792,
+    "hex_pocket_floor_scan": 6.02,
+    "hex_pocket_floor_CAD_caliper_driven": 5.895,
+    "dome_counterbore_floor": 9.543,
+    "dome_apex": 10.866,
+    "top_of_rigid_plastic": 17.1,
+    "highest_bristle_tip": 36.72
+  },
+  "notes": [
+    "mesh.volume is NEGATIVE -> face normals point INWARD; flip before any signed-distance work",
+    "bristle zone r > 38.5 mm is SOFT (+/-3 mm) and EXCLUDED from the Tier-2 gate",
+    "centre Phillips screw is a COTS fastener present in the scan: mask r < 3.6, Z 8.6..10.4 from the gate reference",
+    "SAF-1 (single 3-fold-breaking functional key) sits at theta = +59 deg from arm 1 IN THIS FRAME. The intake card quotes 'theta = -71 deg'; that is the same physical feature (the arm-1/arm-2 mid-gap) in the analyst's opposite-sign convention. Use +59 deg with this matrix.",
+    "scan occlusion: outer skirt + cup inner wall are absent over theta 96..140 deg in this frame"
+  ]
+}

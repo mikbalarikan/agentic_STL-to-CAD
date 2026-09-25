@@ -1,0 +1,5 @@
+F02 ramp plane angle 4.77 deg through (7.714,-1.402)
+F03 flat fillets OK (2 edges)
+F06 OD top fillet OK (2)
+F04 hook inner fillet OK (1 edges)
+F06 bore top fillet OK (1)

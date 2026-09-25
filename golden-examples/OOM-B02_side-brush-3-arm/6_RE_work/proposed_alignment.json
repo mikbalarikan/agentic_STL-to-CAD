@@ -1,0 +1,44 @@
+{
+  "_comment": "PROPOSED raw-scan -> datum transform for OOM-B02 (re-mesh-analyst intake). Datum A = cup rim annular face -> Z=0; axis -> +Z (material at +Z); arm 1 centreline -> +X. Modeller must copy matrix_4x4 into 2_mesh_cleaned/alignment.json per RE_SPEC 8.",
+  "source_mesh": "2_mesh_cleaned/OOM-B02.stl (798874 tri after vertex merge)",
+  "matrix_4x4": [
+    [
+      0.7418936740479141,
+      -0.488623777152045,
+      0.4591738023987823,
+      115.34298571691153
+    ],
+    [
+      0.5888487553559518,
+      0.802325404215258,
+      -0.0976272967287793,
+      -1.2147374122678238
+    ],
+    [
+      -0.3207037881339004,
+      0.34281299589206277,
+      0.8829656449285413,
+      262.8773366579297
+    ],
+    [
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ]
+  ],
+  "z_stations_mm": {
+    "cup_rim_face": 0.0,
+    "cup_floor": 2.566,
+    "hex_pocket_floor": 6.045,
+    "dome_counterbore_floor": 9.483,
+    "dome_apex": 10.97,
+    "top_of_rigid_plastic": 17.63,
+    "highest_bristle_tip": 36.72
+  },
+  "notes": [
+    "mesh.volume is negative -> normals point inward, flip before signed-distance work",
+    "bristle zone r>38.5 mm: SOFT, exclude from Tier-2 gate",
+    "centre screw is a COTS fastener present in the scan: r<3.6, Z 8.6..10.4 - mask from gate"
+  ]
+}

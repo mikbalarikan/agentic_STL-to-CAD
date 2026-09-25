@@ -1,0 +1,64 @@
+{
+  "schema": "oguz-validator-report-v0",
+  "input": "/home/oguz/work/re/M02-02-03_CORRECTED/02_model/M02-02-03_CORRECTED.step",
+  "expected": "/home/oguz/work/re/M02-02-03_CORRECTED/03_qa/expected.json",
+  "closed_solid": true,
+  "solid_count": 1,
+  "checks": [
+    {
+      "name": "closed_solid",
+      "kind": "topology",
+      "expected": true,
+      "measured": true,
+      "tol": "exact",
+      "pass": true
+    },
+    {
+      "name": "solid_count",
+      "kind": "topology",
+      "expected": 1,
+      "measured": 1,
+      "tol": "exact",
+      "pass": true
+    },
+    {
+      "name": "bbox_z",
+      "kind": "bbox_z",
+      "expected": 9.95,
+      "measured": 9.95,
+      "tol": "\u00b10.02mm",
+      "pass": true
+    },
+    {
+      "name": "dim:coaxial_bore",
+      "kind": "cyl_diameter",
+      "expected": 1.95,
+      "measured": 1.95,
+      "tol": "\u00b10.02mm",
+      "pass": true
+    },
+    {
+      "name": "dim:overall_height",
+      "kind": "bbox_z",
+      "expected": 9.95,
+      "measured": 9.95,
+      "tol": "\u00b10.02mm",
+      "pass": true
+    }
+  ],
+  "measured": {
+    "volume_mm3": 1265.525,
+    "mass_g": null,
+    "bbox_mm": [
+      19.0499,
+      18.9928,
+      9.95
+    ],
+    "cyl_diameters_mm": [
+      1.95,
+      8.7,
+      16.5
+    ]
+  },
+  "overall_pass": true
+}

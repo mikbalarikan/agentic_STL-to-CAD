@@ -1,0 +1,25 @@
+{
+  "schema": "oguz-re-deviation-report-v0",
+  "scan_sha256": "1635366bea67e5e31d3fae4f1329d38d250859f8b22ec9d49f4b3c8afee8f902",
+  "cad_sha256": "4b15835757887c4192eaee839d6a6fa4e7e74c20d0214923e7fc716c12482b97",
+  "registration_converged": true,
+  "scan_to_cad": {
+    "count": 50000,
+    "rms_mm": 0.042648,
+    "p95_mm": 0.085129,
+    "max_mm": 0.244769
+  },
+  "cad_to_scan": {
+    "count": 50000,
+    "rms_mm": 0.038418,
+    "p95_mm": 0.075746,
+    "max_mm": 0.268288
+  },
+  "limits": {
+    "p95_mm": 0.3,
+    "max_mm": 0.8
+  },
+  "regions": [],
+  "exclusions": [],
+  "overall_pass": true
+}
