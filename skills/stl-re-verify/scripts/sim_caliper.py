@@ -16,7 +16,7 @@ single analytic face (P03 used "feature queries", analysis/golden/OOM-P03.md §7
 The measure skill keeps its own copy for CHK-ACHIEVABLE; QA must not reuse builder helpers
 (analysis/baseline/facet-film-transferable.md T18).
 
-Band: |CAD - caliper| <= tier1_abs from the declared regime (RE_SPEC regime: ±0.15 mm,
+Band: |CAD - caliper| <= tier1_abs_mm from the declared regime (RE_SPEC regime: ±0.15 mm,
 baseline/oomwoo-re-pipeline/RE_SPEC.md:170). Grey zone flag (facet-film T15): a pass whose margin
 to the band is smaller than the reading's uncertainty (photo-transcribed readings: ±0.1 mm
 effective, analysis/golden/OOM-B02.md §4) is flagged for a human, not silently passed.
@@ -33,7 +33,8 @@ from typing import Any
 import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from _common import header, load_matrix, merge_into_gate, read_json, select, step_to_mesh, write_json  # noqa: E402
+from _common import (RegimeError, header, load_matrix, merge_into_gate, normalise_bands, read_json,  # noqa: E402
+                     select, step_to_mesh, write_json)
 
 TOOL = "sim_caliper.py"
 
@@ -193,7 +194,10 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--step", required=True, help="frozen FINAL STEP (datum frame preferred)")
     ap.add_argument("--step-matrix", help="optional 4x4 bringing the STEP into the datum frame")
     ap.add_argument("--dims", required=True, help="dims spec JSON: {dims:[...], total_requested:N}")
-    ap.add_argument("--regime", help="regime JSON; bands.tier1_abs is the Tier-1 band")
+    ap.add_argument("--regime", required=True, help="qa/regime.json; canonical flat bands "
+                    "{p95_mm,max_mm,tier1_abs_mm,interface_max_mm} (run-contract §12). "
+                    "bands.tier1_abs_mm is the Tier-1 band. Required: a missing regime never "
+                    "falls back to a default.")
     ap.add_argument("--tolerance", type=float, default=0.005)
     ap.add_argument("--angular-tolerance", type=float, default=0.05)
     ap.add_argument("--out", required=True)
@@ -201,8 +205,13 @@ def main(argv: list[str] | None = None) -> int:
     a = ap.parse_args(argv)
 
     spec = read_json(a.dims)
-    regime = read_json(a.regime) if a.regime else {"bands": {}}
-    band = regime.get("bands", {}).get("tier1_abs")
+    regime = read_json(a.regime)
+    try:
+        bands = normalise_bands(regime.get("bands", {}))
+    except RegimeError as e:
+        print(f"ERROR: regime refused: {e}", file=sys.stderr)
+        return 2
+    band = bands["tier1_abs_mm"]
     tmp = Path(tempfile.mkdtemp(prefix="qa_t1_")) / "fine.stl"
     m = step_to_mesh(a.step, tmp, a.tolerance, a.angular_tolerance)
     T = load_matrix(a.step_matrix) if a.step_matrix else np.eye(4)
@@ -240,6 +249,10 @@ def main(argv: list[str] | None = None) -> int:
                 row["pass"] = None
         else:
             row["delta"], row["pass"] = None, None
+            if row["gated"] and cal is not None and cad is None:
+                # review V4: a gated dim that cannot be measured on the STEP is a finding, never a
+                # silent pass -- verdict.py turns this into a blocker, not an absent/allowed gap.
+                row["unmeasurable"] = True
         rows[d["id"]] = row
     gated = [k for k, v in rows.items() if v["gated"] and v["caliper"] is not None]
     out = {**header("tier1", TOOL, [a.step, a.dims] + ([a.regime] if a.regime else []), None),

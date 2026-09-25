@@ -30,12 +30,12 @@ from pathlib import Path
 from typing import Any
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from _common import header, read_json, write_json  # noqa: E402
+from _common import CANONICAL_BAND_KEYS, RegimeError, band_result, header, normalise_bands, read_json, write_json  # noqa: E402
 
 TOOL = "verdict.py"
 VERDICTS = ("APPROVED", "APPROVED_WITH_LIMITATIONS", "BAND_NOT_MET", "REVISE", "HALT")
 REVIEW_CHECKS = ("CHK-CIRCULAR", "CHK-LIKE4LIKE", "CHK-INDEP", "CHK-FILLET", "CHK-PATCHWORK", "CHK-ENUM",
-                 "PHOTO-PLAUSIBILITY")
+                 "CHK-ACHIEVABLE", "PHOTO-PLAUSIBILITY")
 
 
 def _opt(qa: Path, name: str) -> Any:
@@ -49,33 +49,49 @@ def _strip(block: Any) -> Any:
     return block
 
 
-def gated_results(dev: dict[str, Any], regime: dict[str, Any]) -> list[dict[str, Any]]:
+def gated_results(dev: dict[str, Any], regime: dict[str, Any], bands: dict[str, Any]) -> list[dict[str, Any]]:
     """Band results that the regime gates. Default: whole part both directions (CAD->scan on the
-    observable subset when the split ran), plus every functional-interface zone."""
+    observable subset when the split ran), plus every functional-interface AND whole-part zone
+    (review V13).
+
+    Bands are recomputed HERE from qa/regime.json's canonical keys (review V2), never trusted from
+    deviation.json's cached `band_result`: deviation.json may have been produced by an earlier run
+    of deviation_gate.py against a since-changed regime.json, and a stale cached pass must not
+    survive into the verdict.
+    """
+    p95, mx, iface = bands["p95_mm"], bands["max_mm"], bands["interface_max_mm"]
     keys = regime.get("gated") or ["scan_to_cad:masked",
-                                   "cad_to_scan_observable" if "cad_to_scan_observable" in dev["bands"]
+                                   "cad_to_scan_observable" if "cad_to_scan_observable" in dev
                                    else "cad_to_scan:masked"]
     out = []
     for k in keys:
         if k.startswith("zone:"):
-            _, zn, dn = k.split(":")
-            b = dev["zones"][zn][dn]["band_masked"]
-            out.append({"item": k, "result": b, "stats": dev["zones"][zn][dn]["masked"]})
+            _, zn, dn = k.split(":", 2)                  # review V16: a zone name may contain ":"
+            e = dev["zones"][zn]
+            s = e[dn]["masked"]
+            b = band_result(s, None, iface) if e["kind"] == "functional_interface" else band_result(s, p95, mx)
+            out.append({"item": k, "result": b, "stats": s})
             continue
         if ":" in k:
-            d, which = k.split(":")
-            b = dev["bands"][d][which]
-            s = dev[d] if which == "unmasked" else dev[f"{d}_masked"]
+            d, which = k.split(":", 1)
+            s = dev[d] if which == "unmasked" else dev.get(f"{d}_masked", dev[d])
         else:
-            b, s = dev["bands"][k], dev[k]
-        out.append({"item": k, "result": b, "stats": s})
+            s = dev[k]
+        out.append({"item": k, "result": band_result(s, p95, mx), "stats": s})
     for zn, e in sorted(dev.get("zones", {}).items()):
-        if e["kind"] != "functional_interface":
+        if e["kind"] not in ("functional_interface", "whole"):
             continue
         for dn in ("scan_to_cad", "cad_to_scan"):
-            if dn in e and e[dn]["band_masked"] is not None:
-                out.append({"item": f"zone:{zn}:{dn}", "result": e[dn]["band_masked"], "stats": e[dn]["masked"],
-                            "unmasked": e[dn]["unmasked"], "band_unmasked": e[dn]["band_unmasked"]})
+            if dn not in e:
+                continue
+            s_m, s_u = e[dn]["masked"], e[dn]["unmasked"]
+            if e["kind"] == "functional_interface":
+                bm, bu = band_result(s_m, None, iface), band_result(s_u, None, iface)
+            else:
+                bm, bu = band_result(s_m, p95, mx), band_result(s_u, p95, mx)
+            if bm is not None:
+                out.append({"item": f"zone:{zn}:{dn}", "result": bm, "stats": s_m,
+                            "unmasked": s_u, "band_unmasked": bu})
     return out
 
 
@@ -87,46 +103,105 @@ def assemble(qa: Path) -> int:
         errors.append("regime.json missing or without name+source: the regime must be declared at intake "
                       "(QUESTIONS.md Q1). Ask the human; do not pick one.")
         regime = regime or {"bands": {}}
+    # review V1/V2 + run-contract §12: read only the canonical flat band keys; refuse to grade
+    # (error recorded here, verdict forced to null below) rather than fall back to a default.
+    try:
+        bands = normalise_bands(regime.get("bands", {}))
+    except RegimeError as e:
+        errors.append(f"regime.json: {e}")
+        bands = {k: None for k in CANONICAL_BAND_KEYS}
     hf, sc, da = _opt(qa, "hash_freeze.json"), _opt(qa, "step_check.json"), _opt(qa, "datum_audit.json")
     t1, reg, dev = _opt(qa, "tier1.json"), _opt(qa, "registration.json"), _opt(qa, "deviation.json")
+    dev_datum = _opt(qa, "deviation_datum.json")           # run-contract §12: builder-datum-frame stats
     overlays = [read_json(p) for p in sorted(qa.glob("overlays/*.json"))] + \
                [read_json(p) for p in sorted(qa.glob("overlay*.json"))]
+    # review V9: an earlier deviation.json a --supersede run displaced is still shown, so a looser
+    # or unmasked run cannot quietly disappear.
+    deviation_runs = [{"file": p.name, "label": d.get("label"), "scan_to_cad": d.get("scan_to_cad"),
+                       "cad_to_scan": d.get("cad_to_scan")}
+                      for p in sorted(qa.glob("deviation_run*.json")) for d in [read_json(p)]]
 
-    blockers: list[str] = []          # evidence problems: no official grade possible
+    blockers: list[str] = []          # evidence problems, fixable by re-running QA/measurement:
+                                       # counts toward the 3-loop limit (review V7)
+    evidence_blockers: list[str] = [] # evidence is simply missing/invalid: HALT only, re-run QA;
+                                       # does NOT count toward the 3-loop limit (review V7)
+    geom_fails: list[str] = []        # review V6: geometry validity failures -> REVISE/HALT only,
+                                       # never BAND_NOT_MET
     fails: list[str] = []             # band misses
     limits_auto: list[str] = []       # facts that force a declared limitation
     if hf is None or "after" not in hf:
-        blockers.append("hash freeze not run before/after QA")
+        evidence_blockers.append("hash freeze not run before/after QA")
     elif not hf.get("unchanged"):
-        blockers.append("STEP hash changed during QA")
+        evidence_blockers.append("STEP hash changed during QA")
     if sc is None:
-        blockers.append("step_check not run")
+        evidence_blockers.append("step_check not run")
     elif not sc["all_single_valid_closed_solid"]:
-        fails.append("validity: not a single valid closed solid")
+        # review V6: an invalid/non-closed solid can never be delivered as BAND_NOT_MET; it is a
+        # geometry fail that only REVISE or HALT can follow (never "band accepted by a human").
+        geom_fails.append("validity: not a single valid closed solid")
     if dev is None:
-        blockers.append("deviation gate not run")
+        evidence_blockers.append("deviation gate not run")
     else:
-        blockers += dev.get("gate_invalid_reasons", [])
-        if dev["registration"].get("converged") is None and regime.get("name") == "RE_SPEC":
-            blockers.append("RE_SPEC Tier-2 requires independent ICP (RE_SPEC.md:174); none recorded")
-    if t1 is not None and t1.get("all_pass") is False:
-        fails += [f"tier1 {k}: delta {v['delta']:+.4f} vs ±{t1['band_abs_mm']}" for k, v in sorted(t1["dims"].items())
-                  if v.get("pass") is False]
-    if t1 is not None and any(v.get("grey_zone") for v in t1["dims"].values()):
-        limits_auto.append("tier1 grey zone: margin to band < reading uncertainty (facet-film T15)")
-    if t1 is not None and t1["coverage"].get("requested_total") and \
-            t1["coverage"]["gated"] < t1["coverage"]["requested_total"]:
-        limits_auto.append(f"tier1 partial: {t1['coverage']['gated']} of {t1['coverage']['requested_total']} gated")
+        # deviation_gate.py itself flags a missing "--registration" (run-contract §12, review V3:
+        # verify always runs its own ICP, in every regime -- dropped the old RE_SPEC-only
+        # condition) as an evidence problem: the run must simply be redone with the right inputs,
+        # so it does not count toward the 3-loop limit. ICP non-convergence stays a normal blocker
+        # (review V7): it may need re-measurement, not just a re-run.
+        for reason in dev.get("gate_invalid_reasons", []):
+            if "decimated" in reason:
+                # DRM new-skill replay: a decimated-only scan is a declared LIMITATION, not a
+                # blocker -- it must still be able to reach APPROVED_WITH_LIMITATIONS (the DRM
+                # screw golden: scan-only, decimated, APPROVED_WITH_LIMITATIONS), never forced to
+                # REVISE/HALT. Plain APPROVED stays out of reach because limits_auto is non-empty.
+                limits_auto.append(f"{reason}; re-run trigger: full-res scan available")
+            elif "no independent QA registration" in reason:
+                evidence_blockers.append(reason)
+            else:
+                blockers.append(reason)
+    if t1 is None:
+        if bands.get("tier1_abs_mm") is not None:
+            # review V4(ii): Tier-1 is per-dim, blocking whenever the regime bands it.
+            blockers.append("Tier-1 not run, but the regime bands tier1_abs_mm: no Tier-1 grade is possible")
+        else:
+            limits_auto.append("no Tier-1 (no calipers run)")
+    else:
+        if t1.get("band_abs_mm") is not None and bands.get("tier1_abs_mm") is not None and \
+                t1["band_abs_mm"] != bands["tier1_abs_mm"]:
+            errors.append(f"tier1.json band_abs_mm {t1['band_abs_mm']} != regime.json tier1_abs_mm "
+                          f"{bands['tier1_abs_mm']}: tier1.json was produced under a different regime")
+        if t1.get("all_pass") is False:
+            fails += [f"tier1 {k}: delta {v['delta']:+.4f} vs ±{t1['band_abs_mm']}" for k, v in sorted(t1["dims"].items())
+                      if v.get("pass") is False]
+        # review V4(i): a gated dim that cannot be measured on the STEP is a finding, not a silent
+        # pass -- the verdict cannot be APPROVED while one exists.
+        unmeasurable = [k for k, v in sorted(t1["dims"].items()) if v.get("gated") and v.get("unmeasurable")]
+        if unmeasurable:
+            blockers.append(f"tier1 not measurable on STEP: {', '.join(unmeasurable)}")
+        if any(v.get("grey_zone") for v in t1["dims"].values()):
+            limits_auto.append("tier1 grey zone: margin to band < reading uncertainty (facet-film T15)")
+        if t1["coverage"].get("requested_total") and \
+                t1["coverage"]["gated"] < t1["coverage"]["requested_total"]:
+            limits_auto.append(f"tier1 partial: {t1['coverage']['gated']} of {t1['coverage']['requested_total']} gated")
 
     gres: list[dict[str, Any]] = []
     if dev is not None:
-        gres = gated_results(dev, regime)
+        gres = gated_results(dev, regime, bands)
         for g in gres:
             if g["result"] and g["result"]["pass"] is False:
                 fails.append(f"{g['item']}: p95 {g['stats']['p95']:.3f} max {g['stats']['max']:.3f} vs "
                              f"{g['result']['p95_band']}/{g['result']['max_band']}")
         if dev.get("mask_dependent_passes"):
             limits_auto.append("mask-dependent pass: " + "; ".join(dev["mask_dependent_passes"]))
+        if dev_datum is not None and bands.get("p95_mm") is not None:
+            # run-contract §12: report stats in both the builder's datum frame and after ICP; a
+            # large gap between the two is a datum finding, not silently absorbed by ICP.
+            try:
+                gap = abs(dev["scan_to_cad"]["p95"] - dev_datum["scan_to_cad"]["p95"])
+                if gap > bands["p95_mm"]:
+                    limits_auto.append(f"datum-frame vs post-ICP scan_to_cad p95 differ by {gap:.3f} mm "
+                                       f"(> band {bands['p95_mm']} mm): large ICP correction is a datum finding")
+            except (KeyError, TypeError):
+                pass
 
     checks: dict[str, Any] = {}
     if dev is not None:
@@ -146,8 +221,19 @@ def assemble(qa: Path) -> int:
                                  "note": ("no scan trace: " + ", ".join(empty)) if empty else "every panel shows scan"}
     else:
         checks["CHK-OVERLAY"] = {"ran": False, "result": "fail", "note": "no overlay panels produced"}
+    tier1_miss = any(f.startswith("tier1 ") for f in fails)
+    achievable_default = ({"ran": True, "result": "n/a", "note": "no Tier-1 miss to attribute (§4 CHK-ACHIEVABLE)"}
+                          if not tier1_miss else {"ran": False, "result": "fail",
+                                                   "note": "Tier-1 missed but CHK-ACHIEVABLE not recorded in review.json"})
+    # DRM new-skill replay: a run with no photos has nothing for PHOTO-PLAUSIBILITY to check.
+    # review.json declares this with an empty "photos" list; otherwise the check must be recorded.
+    no_photos = review.get("photos") == []
+    photo_default = ({"ran": True, "result": "n/a", "note": "no photos taken for this run"} if no_photos
+                     else {"ran": False, "result": "fail", "note": "not recorded in review.json"})
+    defaults = {"CHK-ACHIEVABLE": achievable_default, "PHOTO-PLAUSIBILITY": photo_default}
     for c in REVIEW_CHECKS:
-        checks[c] = review.get("checks", {}).get(c, {"ran": False, "result": "fail", "note": "not recorded in review.json"})
+        checks[c] = review.get("checks", {}).get(c, defaults.get(c, {"ran": False, "result": "fail",
+                                                                      "note": "not recorded in review.json"}))
     for c, v in checks.items():
         if not v.get("ran"):
             errors.append(f"{c} not run")
@@ -162,14 +248,24 @@ def assemble(qa: Path) -> int:
             errors.append(f"limitation {L.get('id')} has no re-run trigger (SYNTHESIS F10)")
     verdict = review.get("verdict")
     allowed: set[str]
-    if blockers:
+    if evidence_blockers:
+        # review V7: evidence is simply missing or invalid (decimated scan, no ICP, hash changed,
+        # step_check/deviation never run) -- HALT and re-run QA; this is not a measurement/geometry
+        # fix, so it does not count toward the 3-loop limit.
+        allowed = {"HALT"}
+    elif geom_fails:
+        # review V6: an invalid/non-closed solid can never reach BAND_NOT_MET (which implies a human
+        # can accept the miss); only REVISE (fix the geometry) or HALT.
+        allowed = {"REVISE", "HALT"}
+    elif blockers:
         allowed = {"REVISE", "HALT"}
     elif fails:
         allowed = {"BAND_NOT_MET", "REVISE", "HALT"}
     elif limits_auto or limitations:
         allowed = {"APPROVED_WITH_LIMITATIONS", "REVISE", "HALT"}
     else:
-        allowed = set(VERDICTS)
+        # review V8: nothing failed, so BAND_NOT_MET (a band was missed) cannot apply.
+        allowed = {"APPROVED", "REVISE", "HALT"}
     if verdict not in VERDICTS:
         errors.append(f"review.json verdict {verdict!r} is not one of {VERDICTS}")
     elif verdict not in allowed:
@@ -183,6 +279,12 @@ def assemble(qa: Path) -> int:
     if verdict == "BAND_NOT_MET" and not review.get("miss_explanations"):
         errors.append("BAND_NOT_MET needs per-region miss_explanations with options (SYNTHESIS F1)")
 
+    # review V12 / O-1 (orchestrate review): a refused verdict is never written into gate.json#verdict.
+    # On refusal (errors non-empty) write verdict: null and keep the reviewer's proposal separately
+    # under proposed_verdict, so a downstream reader (deliver, a human skimming gate.json) cannot
+    # mistake a refused proposal for a trustworthy verdict.
+    final_verdict = None if errors else verdict
+
     gate = {
         **header("gate", TOOL, [str(p) for p in sorted(qa.glob("*.json")) if p.name != "gate.json"], None),
         "regime": {"name": regime.get("name"), "source": regime.get("source"), "bands": regime.get("bands", {}),
@@ -194,18 +296,27 @@ def assemble(qa: Path) -> int:
         "tier1": _strip(t1),
         "registration": _strip(reg),
         "deviation": _strip(dev),
+        "deviation_datum_frame": _strip(dev_datum),
+        "deviation_runs": deviation_runs,
         "gated_results": gres,
         "overlays": [_strip(o) for o in overlays],
         "checks": checks,
-        "blockers": blockers, "band_fails": fails, "auto_limitations": limits_auto,
+        "blockers": blockers, "evidence_blockers": evidence_blockers, "geom_fails": geom_fails,
+        "band_fails": fails, "auto_limitations": limits_auto,
         "limitations": limitations, "miss_explanations": review.get("miss_explanations", []),
         "claim_boundary": review.get("claim_boundary"), "independence": review.get("independence"),
         "cluster_explanations": review.get("cluster_explanations", {}),
-        "allowed_verdicts": sorted(allowed), "verdict": verdict, "errors": errors,
+        "allowed_verdicts": sorted(allowed), "proposed_verdict": verdict, "verdict": final_verdict,
+        "errors": errors,
     }
     write_json(qa / "gate.json", gate)
-    print(f"regime {gate['regime']['name']} | blockers {len(blockers)} | band fails {len(fails)} | "
-          f"allowed {sorted(allowed)} | proposed {verdict}")
+    if errors and (qa / "VERDICT.md").is_file():
+        # a stale VERDICT.md next to an erroring gate.json would let a reader trust an old verdict
+        # that this assemble no longer stands behind.
+        (qa / "VERDICT.md").unlink()
+    print(f"regime {gate['regime']['name']} | blockers {len(blockers)} | evidence_blockers "
+          f"{len(evidence_blockers)} | geom_fails {len(geom_fails)} | band fails {len(fails)} | "
+          f"allowed {sorted(allowed)} | proposed {verdict} | verdict {final_verdict}")
     for e in errors:
         print("ERROR:", e)
     return 2 if errors else 0

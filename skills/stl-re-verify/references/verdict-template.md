@@ -39,21 +39,34 @@ Your judgement goes into `qa/review.json`, which `verdict.py assemble` checks ag
    "CHK-FILLET":    {"ran": true, "result": "pass|finding", "note": "export_check fillets: every target radius == used radius, no FAILED"},
    "CHK-PATCHWORK": {"ran": true, "result": "pass|finding", "note": "census: faces, analytic share; no ruled lofts / polyline stacks"},
    "CHK-ENUM":      {"ran": true, "result": "pass|finding", "note": "every photographed/intake feature exists in CAD; clusters reviewed"},
-   "PHOTO-PLAUSIBILITY": {"ran": true, "result": "pass|finding|n/a", "note": "photo ids checked"}},
+   "CHK-ACHIEVABLE": {"ran": true, "result": "pass|finding|n/a", "note": "same jaw run on the scan section, on a Tier-1 miss (§4 step 4); n/a when nothing missed"},
+   "PHOTO-PLAUSIBILITY": {"ran": true, "result": "pass|finding|n/a", "note": "photo ids checked; n/a when the run has no photos"}},
+ "photos": ["<photo id>", "..."],
  "cluster_explanations": {"0": "scan flap at 150° leg (artefact, photo 1234)", "1": "..."},
  "limitations": [{"id": "L1", "text": "...", "rerun_trigger": "one caliper reading on F01"}],
  "miss_explanations": [{"region": "front_body", "cause": "...", "options": "..."}],
  "claim_boundary": "Not fit for tooling until ..."}
 ```
 
+`photos: []` (an empty list, declared explicitly) makes `PHOTO-PLAUSIBILITY` default to `n/a` when
+the check itself is omitted from `checks`; leaving `photos` out entirely still requires the check to
+be recorded, so an agent cannot skip it by simply forgetting the field.
+
 `verdict.py assemble` computes the **allowed** set and refuses (exit 2) a verdict outside it:
 
 | Evidence | Allowed |
 |---|---|
-| Any blocker: hash changed, no step check, decimated scan, ICP unconverged, RE_SPEC without ICP, CHK-CIRCULAR = fail | REVISE, HALT |
-| Any band fail (validity, Tier-1, whole part, functional interface) | BAND_NOT_MET, REVISE, HALT |
-| All pass, but a mask-dependent pass, partial Tier-1 coverage, a grey-zone reading, or any declared limitation | APPROVED_WITH_LIMITATIONS, REVISE, HALT |
-| All pass, nothing else | any |
+| Evidence simply missing/invalid: hash changed, no step check, no independent ICP (run-contract §12: required in every regime) (review V7) | **HALT** (re-run QA; does not count toward the 3-loop limit) |
+| Any other blocker: ICP did not converge, Tier-1 gated dim not measurable on the STEP, CHK-CIRCULAR = fail | REVISE, HALT |
+| Geometry validity failure: not a single valid closed solid (review V6) | REVISE, HALT (never BAND_NOT_MET -- an invalid solid is not a band a human can accept) |
+| Any band fail (Tier-1, whole part, functional interface) | BAND_NOT_MET, REVISE, HALT |
+| All pass, but a decimated-scan limitation (DRM new-skill replay: not a blocker), a mask-dependent pass (including an observable-only pass, review V5), partial Tier-1 coverage, a grey-zone reading, or any declared limitation | APPROVED_WITH_LIMITATIONS, REVISE, HALT |
+| All pass, nothing else | APPROVED, REVISE, HALT (review V8: never BAND_NOT_MET here -- nothing missed a band) |
+
+`verdict.py assemble` never writes a refused verdict into `gate.json#verdict` (review V12 /
+orchestrate review O-1): on refusal (`errors` non-empty) it writes `verdict: null` and keeps the
+reviewer's proposal in `proposed_verdict`, and it deletes any stale `qa/VERDICT.md` so a downstream
+reader cannot mistake an old render for a current one.
 
 How to choose inside the allowed set:
 - **REVISE:** the cause is fixable in measurement or geometry. Examples: B02 it1 F06 misattributed;

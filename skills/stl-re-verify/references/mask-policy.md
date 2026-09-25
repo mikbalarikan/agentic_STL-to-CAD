@@ -14,7 +14,7 @@ a limitation, never a clean pass (`analysis/SYNTHESIS.md` E5, CHK-MASK).
 3. **Masked and unmasked side by side.** Report both for the whole part and for every zone. Never
    report masked numbers alone.
 4. **Sensitivity sweep.** Run leave-one-out per mask. Run a radius sweep for open-boundary masks.
-   The golden radii were 0, 0.2, 0.4, 0.8, 1.5 and 2.5 mm (B02 `q20_tier2.py:183`, parameters).
+   The golden radii were 0, 0.2, 0.4, 0.8, 1.5 and 2.5 mm (B02 `q20_tier2.py:181-190`, parameters).
 5. **Mask-dependent pass.** A gated item that passes masked and fails unmasked is listed in
    `deviation.mask_dependent_passes`. It forces `APPROVED_WITH_LIMITATIONS` at best, and the
    limitation text must say that the pass is masked, with the unmasked number.

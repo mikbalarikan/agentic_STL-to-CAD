@@ -37,9 +37,15 @@ two is a datum finding.
 ```json
 {"name": "RE_SPEC", "source": "baseline/oomwoo-re-pipeline/RE_SPEC.md:170-175",
  "declared_in": "intake/INTAKE_CARD.md §<n>",
- "bands": {"tier1_abs": 0.15, "p95": 1.6, "max": 4.0, "interface_max": 0.8},
+ "bands": {"tier1_abs_mm": 0.15, "p95_mm": 1.6, "max_mm": 4.0, "interface_max_mm": 0.8},
  "gated": ["cad_to_scan:masked", "scan_to_cad:masked"]}
 ```
+
+`bands` is the flat, canonical shape fixed after review V1 (run-contract §12, "Band keys
+(canonical)"): exactly the four keys above, `null` when the regime has no such band. `verdict.py`,
+`deviation_gate.py` and `sim_caliper.py` read only these keys (`_common.normalise_bands`) and
+refuse to grade (non-zero exit, error in `qa/gate.json#errors`) on an unknown key or when every
+gated key (`p95_mm`/`max_mm`/`tier1_abs_mm`) is null. There is no fallback default.
 
 The optional `gated` key names the statistics that must meet the whole-part band. Without it,
 `verdict.py` gates scan→CAD (masked) and CAD→scan (observable subset if the split ran, else masked).
@@ -62,11 +68,11 @@ Every `functional_interface` zone is always gated against `interface_max`.
 |---|---|---|---|
 | 0 | Hash freeze (heuristic, n=1: M02) | `step_check.py freeze` … `verify` at the end | the hash changes during QA |
 | 1 | Datum audit (report-only) | `datum_audit.py` | never |
-| 2 | Validity: single valid closed solid, re-import, naked edges, tessellation | `step_check.py check` | it fails. This is a band fail, not a blocker. |
+| 2 | Validity: single valid closed solid, re-import, naked edges, tessellation | `step_check.py check` | it fails. This is a geometry fail → REVISE (or HALT at loop 3), never BAND_NOT_MET (review V6). |
 | 3 | Surface census (reported) | `step_check.py check` | never |
 | 4 | Tier-1 re-measure on the STEP | `sim_caliper.py` | any gated \|Δ\| is over the band |
 | 5 | Independent registration | `tier2_icp.py` | converged = false |
-| 6 | Two-way deviation, zones, masks, sensitivity, observability, clusters | `deviation_gate.py` | the scan is decimated, or a band fails |
+| 6 | Two-way deviation, zones, masks, sensitivity, observability, clusters | `deviation_gate.py` | a band fails. A decimated scan is a declared limitation (at best `APPROVED_WITH_LIMITATIONS`, re-run trigger "full-res scan available"), not a blocker -- see below. |
 | 7 | Overlays with per-panel scan count | `overlay.py` | a panel has no scan trace (finding) |
 | 8 | Photo plausibility, CHK-CIRCULAR, CHK-LIKE4LIKE, CHK-ENUM, CHK-FILLET, CHK-PATCHWORK, CHK-INDEP | agent → `qa/review.json` | a check is not run |
 | 9 | Verdict | `verdict.py assemble` + `render` | the proposed verdict is not allowed by the evidence |
@@ -81,14 +87,28 @@ the raw scan.
 ```json
 {"primary":  {"type": "plane", "method": "vote|region", "cone_deg": 3.0, "band_mm": 0.30, "region": {...}},
  "level":    {"region": {...}},                        // axis-primary parts: plane that sets z = 0
- "position": {"type": "circle|axis_line|none", "region": {...}, "wall": "inner|outer|any"},
- "clock":    {"type": "fourier|plane_normal|none", "order": 3, "region": {"r": [20, 34]}}}
+ "position": {"type": "circle|axis_line|none", "region": {...}, "wall": "inner|outer|any",
+              "single_wall": "inner|outer"},            // only when `region` selects ONE wall
+ "clock":    {"type": "fourier|plane_normal|none", "order": 3, "region": {"r": [20, 34]},
+              "offset_deg": 0.0}}
 ```
 
 - Axis-primary parts: `"primary": {"type": "axis", "region": <cylindrical faces>}`. The axis is
   the smallest eigenvector of Σ a·nnᵀ (corrected form, SYNTHESIS §3).
 - The B02 values (3° cone, 0.30 mm band, Cauchy scale 0.30, 6000 vote directions, 60k compare
   points) are parameters from `q03_datum_full.py`.
+- **`position.wall` needs a genuine outer/inner pair in `region`** (`datum_audit.py` fixes the sign
+  convention empirically off the outermost faces, q03:80-84). When `region` selects only one wall
+  (a bore, or a boss with no matching counter-wall), that fix has nothing to read a convention off:
+  - `datum_audit.py` now detects this (inner- and outer-radius faces of the selection agree in
+    normal sign) and **refuses with a clear error** rather than silently keeping a near-random half
+    of the points (B02 replay D6: a false 17.8°/9.2 mm audit).
+  - Write `position.single_wall: "inner"` or `"outer"` instead of relying on `wall` when `region`
+    is deliberately a single wall (a bore-only or boss-only selection, DRM replay). This asserts the
+    wall's identity rather than inferring it, and every point in `region` is used.
+- **`clock.offset_deg`** is folded in before the nearest-360°/k-candidate choice against the
+  builder's declared +X, not after: applying it only at the end can make a different candidate look
+  nearer and pick the wrong flat (a DRM replay was 73° off before this fix).
 
 ### Predicate language (zones, masks, datum regions)
 
@@ -102,6 +122,9 @@ Keys are AND-ed:
 All coordinates are in the datum frame. Example: DRM `flat_corner_skirt (x>8.3 & |y|>5.5 & z<-1.45)`
 → `{"x": [8.3, null], "abs_y": [5.5, null], "z": [null, -1.45]}`.
 
+Zone and mask names must not contain `:` (`verdict.py`'s `regime.gated` entries such as
+`zone:<name>:<direction>` split on it; review V16).
+
 ## 3. Deviation gate method (defaults = OD golden, reproduced bit-exact)
 
 - **Distance.** Take `n_samp` seeded surface samples of the target and build a KD-tree. Find the
@@ -114,10 +137,13 @@ All coordinates are in the datum frame. Example: DRM `flat_corner_skirt (x>8.3 &
   600k scan subsample, k = 6 (`fastgate.py`). Record which variant was run.
 - **Stats.** n, rms, mean, p50, p95, p99, max, with the sampling and seeds (SYNTHESIS E3;
   facet-film T14).
-- **Full-res only for grades.** Decimated scans are inspection only. The decimated copies deviate
-  ≤ 0.028 mm from the originals (`golden-examples/README.md`). Even so, "official deviation gates
-  must re-run against the original full-resolution scan". The script labels a decimated run
-  `INSPECTION ONLY` and sets `gate_valid: false`.
+- **Full-res only for `APPROVED`.** Decimated scans are inspection only. The decimated copies
+  deviate ≤ 0.028 mm from the originals (`golden-examples/README.md`). Even so, "official deviation
+  gates must re-run against the original full-resolution scan". The script labels a decimated run
+  `INSPECTION ONLY` and sets `gate_valid: false`. `verdict.py` turns this into a declared
+  **limitation** (re-run trigger "full-res scan available"), not a blocker: the verdict can still be
+  `APPROVED_WITH_LIMITATIONS` when everything else passes (DRM screw golden: scan-only, decimated,
+  approved with the limitation declared), but never plain `APPROVED`.
 - **Registration.** The RE_SPEC regime requires independent ICP (`RE_SPEC.md:174`). If ICP does
   not converge, the gate is invalid (`re-qa-verifier.md:37-38`; the W01 ICP hit its 50-iteration
   cap, per `analysis/baseline/oomwoo-re-pipeline.md` §5).

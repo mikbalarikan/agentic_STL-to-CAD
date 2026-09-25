@@ -42,8 +42,8 @@ from typing import Any
 import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from _common import (band_result, header, load_matrix, load_mesh, merge_into_gate, read_json,  # noqa: E402
-                     select, sha256_file, stats, step_to_mesh, write_json)
+from _common import (RegimeError, band_result, header, load_matrix, load_mesh, merge_into_gate,  # noqa: E402
+                     normalise_bands, read_json, select, sha256_file, stats, step_to_mesh, write_json)
 
 TOOL = "deviation_gate.py"
 
@@ -192,8 +192,12 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--align", help="raw scan -> datum 4x4 (alignment.json / alignment_T1.json / .npy)")
     ap.add_argument("--cad", required=True, help="CAD as STEP (tessellated here) or STL")
     ap.add_argument("--cad-matrix", help="optional 4x4 applied to the CAD to bring it to the datum frame")
-    ap.add_argument("--registration", help="qa/registration.json from tier2_icp.py (T_refine applied)")
-    ap.add_argument("--regime", help="JSON with bands {p95,max,interface_max}; see references/gate-protocol.md")
+    ap.add_argument("--registration", help="qa/registration.json from tier2_icp.py (T_refine applied). "
+                    "run-contract §12: verify always runs its own ICP, in every regime; omitting this "
+                    "makes the run NO QA REGISTRATION, never OFFICIAL.")
+    ap.add_argument("--regime", required=True, help="qa/regime.json; canonical flat bands "
+                    "{p95_mm,max_mm,tier1_abs_mm,interface_max_mm} (run-contract §12). Required: a "
+                    "missing regime never falls back to a default.")
     ap.add_argument("--zones", help="zones JSON (list or {zones:[...]})")
     ap.add_argument("--masks", help="masks JSON (list or {masks:[...]})")
     ap.add_argument("--s2c-points", default="all", help="'all' scan vertices or an integer subsample")
@@ -211,7 +215,7 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--obs-cone-deg", type=float, default=60.0)
     ap.add_argument("--obs-max-range-mm", type=float, default=None)
     ap.add_argument("--sweep-radii", default="0,0.2,0.4,0.8,1.5,2.5",
-                    help="open-boundary radius sweep (B02 q20:183 used these)")
+                    help="open-boundary radius sweep (B02 q20_tier2.py:181-190 used these)")
     ap.add_argument("--cluster-threshold", type=float, default=None,
                     help="default: regime max band; else 0.8")
     ap.add_argument("--cluster-eps-mm", type=float, default=1.0)
@@ -219,13 +223,32 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--out", required=True, help="deviation block JSON (e.g. qa/deviation.json)")
     ap.add_argument("--gate", help="also merge the block into this gate.json under 'deviation'")
     ap.add_argument("--save-arrays", help="optional .npz with points and distances")
+    ap.add_argument("--supersede", action="store_true", help="review V9: an existing --out is never "
+                    "silently overwritten (an earlier looser/unmasked run must not disappear). Pass "
+                    "this to rename the existing file to deviation_runN.json before writing the new one.")
     a = ap.parse_args(argv)
 
-    # ---- regime / bands
-    regime = read_json(a.regime) if a.regime else {"name": None, "bands": {}}
-    bands = regime.get("bands", {})
-    whole_band = (bands.get("p95"), bands.get("max"))
-    iface_max = bands.get("interface_max")
+    out_path = Path(a.out)
+    if out_path.exists():
+        if not a.supersede:
+            print(f"ERROR: {out_path} already exists; pass --supersede to keep it as deviation_runN.json "
+                 "(review V9: never add a mask after the fact / never let an earlier run disappear)",
+                 file=sys.stderr)
+            return 2
+        n = 1
+        while (out_path.parent / f"deviation_run{n}.json").exists():
+            n += 1
+        out_path.rename(out_path.parent / f"deviation_run{n}.json")
+
+    # ---- regime / bands (run-contract §12; review V1/V2: canonical keys only, no default)
+    regime = read_json(a.regime)
+    try:
+        bands = normalise_bands(regime.get("bands", {}))
+    except RegimeError as e:
+        print(f"ERROR: regime refused: {e}", file=sys.stderr)
+        return 2
+    whole_band = (bands["p95_mm"], bands["max_mm"])
+    iface_max = bands["interface_max_mm"]
 
     # ---- scan (evidence is never written back)
     scan = load_mesh(a.scan)
@@ -297,7 +320,7 @@ def main(argv: list[str] | None = None) -> int:
                      "c2s_seed": a.c2s_seed, "k": a.k, "n_samp": a.n_samp, "dist_seed": a.dist_seed,
                      "vertex_candidates": a.vertex_candidates,
                      "method": "KD candidates -> exact point-to-triangle (OD gate.py:8-17)"},
-        "regime": {"name": regime.get("name"), "source": regime.get("source"), "bands": bands},
+        "regime": {"name": regime.get("name"), "source": regime.get("source"), "bands": bands},  # bands: canonical, normalised (run-contract §12)
         "scan_to_cad": b1["unmasked"], "cad_to_scan": b2["unmasked"],
         "scan_to_cad_masked": b1["masked"], "cad_to_scan_masked": b2["masked"],
         "unmasked": {"scan_to_cad": b1["unmasked"], "cad_to_scan": b2["unmasked"]},
@@ -395,6 +418,13 @@ def main(argv: list[str] | None = None) -> int:
             if dname in e and e[dname]["band_masked"] and e[dname]["band_unmasked"]:
                 if e[dname]["band_masked"]["pass"] and not e[dname]["band_unmasked"]["pass"]:
                     mdp.append(f"zone {zn} {dname}")
+    # review V5: CHK-MASK also applies to the observability split -- a whole-part pass that exists
+    # only because unobservable points were excluded is mask-dependent too, not a clean pass.
+    obs_band = res["bands"].get("cad_to_scan_observable")
+    if obs_band and res["bands"]["cad_to_scan"]["unmasked"] and obs_band["pass"] and \
+            not res["bands"]["cad_to_scan"]["unmasked"]["pass"]:
+        mdp.append(f"whole part cad_to_scan (observable-only pass; "
+                   f"{100 * res.get('unobservable_fraction', 0):.2f}% unobservable excluded)")
     res["mask_dependent_passes"] = mdp
 
     # ---- over-band clusters (CHK-ENUM / CHK-CLUSTER evidence)
@@ -406,14 +436,27 @@ def main(argv: list[str] | None = None) -> int:
                    "cad_to_scan clusters = CAD material with no scan (invented or unobservable)"}
 
     # ---- validity of the gate itself
+    # run-contract §12 / review V3: verify always runs its own ICP, in EVERY regime, and grades
+    # after ICP. An alignment-only run (no --registration) is never OFFICIAL, regardless of regime.
     reasons = []
     if a.scan_kind != "full":
         reasons.append("decimated scan: INSPECTION ONLY, not an official grade")
-    if reg.get("converged") is False:
+    if a.registration is None:
+        reasons.append("no independent QA registration (ICP) recorded: run-contract §12 requires "
+                       "verify's own ICP in every regime; this run cannot be labelled OFFICIAL")
+    elif reg.get("converged") is False:
         reasons.append("registration did not converge: gate invalid")
     res["gate_valid"] = not reasons
     res["gate_invalid_reasons"] = reasons
-    res["label"] = "OFFICIAL (full-res)" if not reasons else "INSPECTION ONLY" if a.scan_kind != "full" else "INVALID"
+    if a.scan_kind != "full":
+        label = "INSPECTION ONLY"
+    elif a.registration is None:
+        label = "NO QA REGISTRATION"
+    elif reg.get("converged") is False:
+        label = "INVALID"
+    else:
+        label = "OFFICIAL (full-res)"
+    res["label"] = label
 
     inputs = [a.scan, a.cad] + [p for p in (a.align, a.cad_matrix, a.registration, a.regime, a.zones, a.masks) if p]
     out = {**header("deviation", TOOL, inputs, a.dist_seed), **res}

@@ -194,12 +194,38 @@ def main(argv: list[str] | None = None) -> int:
         ref = rq >= np.percentile(rq, 90)
         outer_sign = np.sign(np.average(ndr[ref], weights=W[ref])) or 1.0
         wall = po.get("wall", "any")
-        keep = (np.ones(len(Q), bool) if wall == "any"
-                else (np.sign(ndr) == -outer_sign) if wall == "inner" else (np.sign(ndr) == outer_sign))
+        single_wall = po.get("single_wall")
+        if wall == "any":
+            keep = np.ones(len(Q), bool)
+        elif single_wall in ("inner", "outer"):
+            # DRM replay (b): a bore-only or boss-only `region` selects a single wall
+            # throughout. There is then no genuine inner/outer pair to read a sign convention off,
+            # so the caller must assert the wall's identity explicitly rather than have it inferred.
+            # Trust the region selection (it already picked the wall) and use every point.
+            keep = np.ones(len(Q), bool)
+        else:
+            # A real outer/inner wall pair shows a sign that correlates with radius: low-radius
+            # (inner) and high-radius (outer) faces disagree in sign. Detect that BEFORE trusting
+            # `outer_sign` -- without it, the "outermost 10%" reference is not really the outer
+            # wall, it is an arbitrary subset of the SAME wall, and the resulting filter silently
+            # keeps a near-random half of the points (B02 replay D6: a false 17.8 deg / 9.2 mm).
+            inner_ref = rq <= np.percentile(rq, 10)
+            inner_sign = np.sign(np.average(ndr[inner_ref], weights=W[inner_ref])) or 1.0
+            if inner_sign == outer_sign:
+                raise SystemExit(
+                    f"datum_audit: position.region has no detectable outer wall (the inner- and "
+                    f"outer-radius faces of the selection agree in normal sign), so wall={wall!r} "
+                    "cannot be verified against an outer/inner split. If this region is "
+                    "deliberately a single wall, set position.single_wall to 'inner' or 'outer' in "
+                    "the datum spec instead of 'wall' (review D6 / gate-protocol §2).")
+            keep = (np.sign(ndr) == -outer_sign) if wall == "inner" else (np.sign(ndr) == outer_sign)
+            if not keep.any():
+                keep = np.ones(len(Q), bool)
         c2, Rm, rms = circle_irls(Q[keep], W[keep], po.get("cauchy_scale_mm", 0.30))
         origin = p0 + c2[0] * R0[0] + c2[1] * R0[1]
-        out["position"] = {"type": "circle", "wall": wall, "faces": int(keep.sum()), "R_mm": Rm,
-                           "fit_rms_mm": rms, "method": "IRLS Cauchy circle (q03:88-100)"}
+        out["position"] = {"type": "circle", "wall": wall, "single_wall": single_wall,
+                           "faces": int(keep.sum()), "R_mm": Rm, "fit_rms_mm": rms,
+                           "method": "IRLS Cauchy circle (q03:88-100)"}
     elif po["type"] == "axis_line":        # axis-primary: least-squares point on the axis
         s_ = select(po["region"], Cb, Nb)
         Cl = (C[s_] - p0) @ R0.T
@@ -219,14 +245,18 @@ def main(argv: list[str] | None = None) -> int:
         th = np.degrees(np.arctan2(Vl[rs, 1], Vl[rs, 0]))
         ck_c = np.exp(1j * k * np.radians(th)).sum()
         ph = math.degrees(np.angle(ck_c)) / k
-        # labelling mod 360/k: pick the candidate nearest the builder's +X (q03:131-139 tried all)
+        offset = float(ck.get("offset_deg", 0.0))
+        # labelling mod 360/k: pick the candidate nearest the builder's +X (q03:131-139 tried all).
+        # The declared offset must be folded in HERE, before the nearest-candidate choice: applying
+        # it only at the end (after `best` was already picked) can make a different, wrong candidate
+        # look nearer to bx than the true one (DRM replay: picked the wrong flat, 73 deg off).
         bx = math.degrees(math.atan2(xb @ R0[1], xb @ R0[0]))
         cands = [ph + j * 360.0 / k for j in range(k)]
-        best = min(cands, key=lambda c: abs(((c - bx + 180) % 360) - 180))
+        best = min(cands, key=lambda c: abs((((c + offset) - bx + 180) % 360) - 180))
         d = ((th - best + 180) % 360) - 180
         s = np.abs(d) < ck.get("refine_window_deg", 25.0)
         best += math.degrees(np.angle(np.exp(1j * np.radians(d[s])).sum()))
-        best += float(ck.get("offset_deg", 0.0))
+        best += offset
         xdir = math.cos(math.radians(best)) * R0[0] + math.sin(math.radians(best)) * R0[1]
         clock_audited = True
         out["clock"] = {"type": "fourier", "order": k, "phase_deg_local": best,

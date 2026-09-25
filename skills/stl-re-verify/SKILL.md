@@ -18,8 +18,8 @@ Independent QA for one part's STEP. Inputs are the frozen `build/` STEP, the raw
   (`analysis/SYNTHESIS.md` CHK-CIRCULAR; facet-film T12, T18).
 
 **Independence.** Run in a fresh agent/context that did not build the model. If you cannot,
-write that in `review.json` → `independence` and set CHK-INDEP to `finding`. B02 did not declare
-this at first (A13, `analysis/golden/OOM-B02.md` §9).
+write that in `review.json` → `independence` and set CHK-INDEP to `finding`. B02 ran QA in the
+builder's own context and declared it (A13, `analysis/golden/OOM-B02.md` §2, §10).
 
 **Honesty.**
 - A miss is reported with its number, per region, with its cause and options. Never loosen a
@@ -45,8 +45,10 @@ this at first (A13, `analysis/golden/OOM-B02.md` §9).
 2. Confirm that the scan is the **full-resolution original**.
    - With only a decimated copy, every deviation number is labelled INSPECTION ONLY and no
      official grade is possible (`golden-examples/README.md`).
-   - The verdict then cannot be better than REVISE or HALT, with "full-res scan needed" as the
-     blocker.
+   - This is a declared **limitation**, not a blocker: the verdict can still be
+     `APPROVED_WITH_LIMITATIONS` (DRM screw golden: scan-only, decimated, approved with the
+     limitation declared) with re-run trigger "full-res scan available" — it is never forced to
+     REVISE/HALT for this reason alone. Plain `APPROVED` still needs the full-res original.
 3. `pip install trimesh scipy numpy matplotlib rtree build123d`. Scripts need Python ≥ 3.10.
    Every script prints its numbers and writes JSON with the run-contract §2 header.
 
@@ -77,6 +79,11 @@ A changed hash invalidates QA, so re-run it (M02 `qa_report.json` checks[0], [21
 5. The builder matrix only *selects* named regions. All fits are QA code on the raw scan: normal
    vote, SVD plane, IRLS Cauchy circle with the wall side fixed empirically, k-fold Fourier clock
    (`q03_datum_full.py`, generalised).
+6. `position.wall` (`inner`/`outer`) needs a real outer/inner wall **pair** inside `position.region`
+   to fix its sign convention off. If `region` is deliberately a single wall (a bore or a boss with
+   no counter-wall), write `position.single_wall: "inner"|"outer"` instead — `datum_audit.py` will
+   otherwise either refuse with a clear error (no wall pair detected) or crash. See gate-protocol §2
+   (review D6, and the "bore-only, wall inner" fix).
 
 ## 3. Validity and surface census
 
@@ -86,7 +93,8 @@ python $S/step_check.py check --step build/<part>_datum.step build/<part>.step -
 
 - **Validity** needs exactly one solid, BRepCheck valid, closed shells, 0 naked edges, V > 0, and a
   watertight fine tessellation (0.005 mm / 0.05 rad) in **both** frames (SYNTHESIS D12, D14;
-  B02 `q10`, `q01`). A failure here is a band fail → REVISE.
+  B02 `q10`, `q01`). A failure here is a geometry fail → **REVISE (or HALT at loop 3), never
+  BAND_NOT_MET** (review V6: a non-solid STEP is not a band a human can accept).
 - **Census** gives face count and count/area per surface type, and the analytic area share. It is
   **reported, not gated** (QUESTIONS.md Q3).
 - Use the census to answer CHK-PATCHWORK in `review.json`:
@@ -121,7 +129,8 @@ python $S/step_check.py check --step build/<part>_datum.step build/<part>.step -
 4. On a Tier-1 miss, check achievability before blaming the geometry. Run the same jaw on the
    **scan** section (CHK-ACHIEVABLE).
    - B02 F06 caliper 24.84 lay 1.15 mm below the achievable window 25.99…27.08 on a 3-lobed
-     skirt. That was attribution, not modelling (`OOM-B02.md` §8).
+     skirt. That was attribution, not modelling (`OOM-B02.md` §8; window disputed: `QUESTIONS.md`
+     §C records this skill's own jaw on the full-res scan giving 24.99–27.25).
    - Record which it is in the miss explanation.
 
 ## 5. Tier-2: independent registration
@@ -134,11 +143,24 @@ python $S/tier2_icp.py --scan input/scan.stl --scan-kind full --align intake/ali
 - ICP is point-to-point with masked correspondences (B02 `q20_tier2.py`; its parameters are the
   defaults).
 - **converged = false ⇒ the gate is INVALID** (`re-qa-verifier.md:37-38`; the W01 ICP hit its cap).
-  You may raise `--max-iter` once and record both runs. Axisymmetric parts slide about their
-  axis and converge slowly.
+  You may raise `--max-iter` once and record both runs, with the reason (e.g. "axisymmetric part,
+  slides slowly": a DRM new-skill replay needed 90 where the default 60 was not enough). `--max-iter`
+  is a parameter, not a threshold to tune until it passes -- never invent a new default; keep raising
+  it (and recording why) only as far as the part's geometry actually explains. Axisymmetric parts
+  slide about their axis and converge slowly.
 - Report iterations, Δ° and Δmm.
-- RE_SPEC grades after ICP (`RE_SPEC.md:174`). OD and DRM graded in the alignment frame. The
-  regime decides. If you apply ICP, pass `--registration` to the deviation gate.
+- **Always run ICP, in every regime** (run-contract §12): independence means verify never grades in
+  the builder's alignment frame alone. The DRM official gates were graded after ICP too --
+  `registration_converged: true` is recorded
+  (`golden-examples/dreame_brush-caps/report/screw_official_gate.json:5`,
+  `snap_official_gate.json:5`), not "graded in the alignment frame".
+- Run `deviation_gate.py` **twice**: once without `--registration` (`--out qa/deviation_datum.json`,
+  the builder's datum frame) and once with it (`--out qa/deviation.json`). `qa/deviation.json` is
+  the gate; `verdict.py` reports both and flags a limitation when the two frames' p95 differ by
+  more than the regime's p95 band (a large gap is a datum finding, not something ICP should quietly
+  absorb).
+- Passing `--registration` is required for a run to be labelled `OFFICIAL`. Without it,
+  `deviation_gate.py` labels the run `NO QA REGISTRATION` and `gate_valid: false`.
 - **CHK-CIRCULAR.** `T_refine` is QA-only. Never write it back into `alignment.json`, and never
   let the builder re-gate with it (P03).
 
@@ -158,7 +180,9 @@ python $S/tier2_icp.py --scan input/scan.stl --scan-kind full --align intake/ali
      --zones qa/zones.json --masks qa/masks.json --out qa/deviation.json --save-arrays qa/dev_arrays.npz
    ```
    - Distance is exact point-to-triangle over KD candidates, seeded. The defaults reproduce the OD
-     golden bit-exact. It can only over-estimate.
+     golden bit-exact **when `--cad` is `OD-H12-Pump_datum.stl`**, the builder's own tessellation, as
+     OD did; passing the STEP instead re-tessellates at 0.005 mm and will not match bit-exact. It
+     can only over-estimate.
    - Stats: n, rms, mean, p50, p95, p99, max, with sampling and seeds (SYNTHESIS E1–E3).
 4. Read the output in this order:
    1. **Unmasked vs masked**, both directions, side by side.
@@ -258,7 +282,7 @@ without reporting both runs.
 
 **Test record** (see verdict-template §4):
 - The OD-H12 full-res gate reproduces `report/deviation_gate.json` with **zero** difference in
-  every statistic.
+  every statistic (with `--cad OD-H12-Pump_datum.stl`, as OD did).
 - B02 datum audit, ICP, Tier-1 and STEP checks agree with the golden QA JSONs.
 - The DRM screw was run on the decimated scan, labelled inspection only.
 

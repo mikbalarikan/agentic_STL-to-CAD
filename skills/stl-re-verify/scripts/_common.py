@@ -103,6 +103,36 @@ def stats(d: np.ndarray) -> dict[str, Any]:
     }
 
 
+CANONICAL_BAND_KEYS = ("p95_mm", "max_mm", "tier1_abs_mm", "interface_max_mm")
+
+
+class RegimeError(ValueError):
+    """Raised when a regime's bands cannot be graded (run-contract §12)."""
+
+
+def normalise_bands(bands: Mapping[str, Any] | None) -> dict[str, float | None]:
+    """Read only the canonical flat band keys (run-contract §12, "Band keys (canonical)", fixed
+    after review V1): `p95_mm`, `max_mm`, `tier1_abs_mm`, `interface_max_mm`, each `null` when the
+    regime has no such band. Never falls back to a default and never accepts an old/aliased key
+    (e.g. `tier2_p95_mm`, `p95`) -- an unknown key means the regime file is stale or wrong, which is
+    exactly how the gate failed open in review V1.
+
+    Raises RegimeError when a key outside `CANONICAL_BAND_KEYS` is present, or when every gated key
+    (p95_mm/max_mm/tier1_abs_mm; interface_max_mm alone never grades the whole part) is null --
+    a caller must refuse to grade (non-zero exit, error recorded in qa/gate.json#errors).
+    """
+    b = dict(bands or {})
+    unknown = sorted(k for k in b if k not in CANONICAL_BAND_KEYS)
+    if unknown:
+        raise RegimeError(
+            f"unknown band key(s) {unknown}; canonical keys are {CANONICAL_BAND_KEYS} (run-contract §12)")
+    out = {k: b.get(k) for k in CANONICAL_BAND_KEYS}
+    if out["p95_mm"] is None and out["max_mm"] is None and out["tier1_abs_mm"] is None:
+        raise RegimeError("regime has no gated band (p95_mm, max_mm, tier1_abs_mm all null); "
+                          "refusing to grade -- a missing regime never falls back to a default (run-contract §12)")
+    return out
+
+
 def band_result(s: Mapping[str, Any], p95: float | None, mx: float | None) -> dict[str, Any] | None:
     """Compare stats to a band. Returns None when no band applies (reported only)."""
     if p95 is None and mx is None:
