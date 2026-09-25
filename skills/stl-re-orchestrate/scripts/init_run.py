@@ -400,13 +400,15 @@ def cmd_supersede(run: Path, route: str, carry: bool) -> dict[str, Any]:
 
 
 # --------------------------------------------------------------------------- doctor
-DOCTOR_DEPS = ("numpy", "scipy", "trimesh", "build123d", "rtree", "shapely", "fast_simplification")
+DOCTOR_DEPS = ("numpy", "scipy", "trimesh", "build123d", "rtree", "shapely", "fast_simplification", "networkx")
 
 
 def cmd_doctor(skills_root: Path) -> dict[str, Any]:
     # O-17: rtree (intake datum fitting), shapely (measure) and fast_simplification (intake
     # decimation) are all required by sibling skills; doctor must catch their absence too,
     # not just numpy/scipy/trimesh/build123d.
+    # networkx: trimesh mesh sectioning (section / section_multiplane) assembles paths with it;
+    # the baseline replay failed on its absence (evals/replay/artifacts/baseline_notes.md).
     deps: dict[str, str | None] = {}
     for mod in DOCTOR_DEPS:
         try:
