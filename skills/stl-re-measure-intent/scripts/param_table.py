@@ -109,12 +109,12 @@ def validate(doc: dict[str, Any], noise: Optional[float]) -> tuple[list[str], li
             if not str(p["evidence"]).strip():
                 E.append(f"{tag} caliper-photo needs the photo id in evidence (C5)")
             if not str(p.get("attribution", "")).strip():
-                E.append(f"{tag} caliper-photo needs 'attribution' = who confirmed which feature/jaw placement (C5; B02 D-09/10/12 unconfirmed -> unused)")
+                E.append(f"{tag} caliper-photo needs 'attribution' = who confirmed which feature/jaw placement (C5; see analysis/golden/OOM-B02.md for a case with unconfirmed readings left unused)")
             if (p["uncertainty_mm"] or 0) < PHOTO_UNC:
                 E.append(f"{tag} caliper-photo uncertainty {p['uncertainty_mm']} < {PHOTO_UNC} mm effective (B02 MEASUREMENTS.md:24)")
         if rule == "std-size-snap" and src not in ("caliper", "caliper-photo", "operator-spec"):
             E.append(f"{tag} std-size-snap only for caliper values (RE_SPEC.md:92); source is '{src}'" +
-                     (" - C9: never snap an uncalipered critical interface (B02 hex AF 7.358)" if p["critical"] else ""))
+                     (" - C9: never snap an uncalipered critical interface (see analysis/golden/OOM-B02.md)" if p["critical"] else ""))
         if rule == "std-size-snap":
             W.append(f"{tag} std-size-snap is a heuristic: no golden applied it (SYNTHESIS §6)")
         if rule == "round-within-noise" and noise is None:

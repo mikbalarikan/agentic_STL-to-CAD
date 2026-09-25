@@ -76,8 +76,9 @@ python scripts/intake.py stats input/scan.stl --out-dir intake --work-faces <N> 
   is only known after levelling, run `align.py` once, then re-run `intake.py stats` with the datum-frame
   direction mapped back to raw (or remove it at the gate and say so).
 - Normals: on a watertight mesh the signed volume decides. On an open mesh `intake.py` uses a
-  seeded ray vote, because the signed volume of an open mesh depends on the origin. B02 raw volume is
-  −2434 mm³ with outward normals (measured; `references/datum-cookbook.md` §4). If
+  seeded ray vote, because the signed volume of an open mesh depends on the origin: a part can
+  measure with a negative signed volume while its normals are genuinely outward (see
+  `references/datum-cookbook.md` §4 for the case that surfaced this). If
   `orientation.verdict` is `undecided`, stop and inspect.
 
 ### Step 2 — Units and scale: CHK-SCALE (SYNTHESIS A6; RE_SPEC.md:98-101)
@@ -89,14 +90,17 @@ python scripts/intake.py scale --pair ENV-X <caliper> <scan> <unc> ... --scan-no
 ```
 
 - Needs ≥ 3 envelope dims (`ENV-*`). Fewer → decision `FLAG`: scale unverified, none applied,
-  said in the card (B02: ENV empty, 4 mid-size ratios 0.984–0.996 → non-uniform → no scale).
+  said in the card (a part with no envelope calipers and only a few mid-size ratios that disagree
+  with each other is non-uniform, not scaled — see `analysis/golden/OOM-B02.md` for the worked
+  case).
 - **ONE uniform scale** only if every ratio agrees with the pooled ratio within its uncertainty
   (caliper uncertainty + noise) and all differ from 1. Pass it to `align.py` as `scale_factor`,
   and log it in `alignment.json` and the parameter table.
 - Non-uniform → flag and apply no scale. The calipers drive their own dimensions (B02).
-  Thin-section oversize is scanner dilation (an offset, not a scale); B02 read arms 0.4–0.8 mm
-  oversize (`B02/6_RE_work/INTAKE_CARD.md` R6). A single axis check (P03, ratio 0.998) is not
-  enough to scale.
+  Thin-section oversize is scanner dilation (an offset, not a scale) — thin ribs and arms can read
+  measurably oversize on a scan versus caliper without that being a global scale error
+  (`B02/6_RE_work/INTAKE_CARD.md` R6). A single axis check on one part alone is not enough to
+  justify a scale factor (P03).
 - No calipers at all (DRM, OD) → "units assumed mm, scale unverified" is a declared limitation.
   OD's unverified mm is why CHK-SCALE exists.
 
@@ -113,12 +117,12 @@ python scripts/datum_fit.py noise intake/aligned_work.stl --circle-z <z> --r-ran
 
 - Pick a moulded or machined surface free of texture, wear or bridging, never a velcro/textured
   field (P03, `INTAKE_CARD.md:42-44`).
-- Golden noise floors: DRM plane rms 0.007 / 0.029 (screw / snap); B02 rim rms 0.052; P03 rim
-  circle resSD 0.039; OD p95 0.13 on a clean cylinder (SYNTHESIS A7). RANSAC tol ≈ noise, in the
-  0.05–0.1 band (RE_SPEC.md:127). Golden DRM used 0.05.
+- Golden noise floors vary by part and surface quality; see `analysis/golden/*.md` §"noise" for
+  the recorded values if you need a reference point (SYNTHESIS A7). RANSAC tol ≈ noise, in the
+  0.05–0.1 band (RE_SPEC.md:127).
 - Measure the plane noise for plane fits and the circle noise for circle fits
-  (`noise_secondary`). Plane rms is not comparable to section-circle residuals: DRM plane 0.007 vs
-  counterbore circle 0.031.
+  (`noise_secondary`). Plane rms is not comparable to section-circle residuals — the two metrics
+  can differ by several times on the same part, so don't gate one against the other's floor.
 - If the only clean primitive is the primary itself (DRM), the STOP rule is trivially met for the
   primary. Say so in the card.
 
@@ -130,9 +134,9 @@ After the first `align.py` run:
 python scripts/intake.py coverage intake/aligned_work.stl --out intake/coverage.json
 ```
 
-- Open-boundary loops with r / z / θ ranges fill the occlusion table. On B02 this reproduces the
-  golden map: 21 loops, including the hex wall r 2.45–4.09, cup wall r 9.67–10.59 and SAF-1 hole
-  (`references/datum-cookbook.md` §2.2).
+- Open-boundary loops with r / z / θ ranges fill the occlusion table. Expect several distinct
+  loops on a part with multiple occluded features (a hex wall, a cup wall, a labelled hole, etc.)
+  — see `references/datum-cookbook.md` §2.2 for the worked case and loop count.
 - `radial_bands[].theta_covered_deg < 360` on a round part is partial angular coverage. State it
   in the card, not first in the report (P03 "~270°" was only in the report, `analysis/golden/OOM-P03.md` §3).
 - The map cannot see scanner-bridged cavities (DRM hook underside, P03 socket). Add those from
@@ -224,13 +228,15 @@ Worked specs and golden numbers are in `references/datum-cookbook.md`. Rules:
    - A non-circular feature (DRM double-D) gives a valid centre by symmetry, but its residual is
      shape error. Use a true circle for the residual check, or declare it.
 3. **Clock.** Name the feature and the rule, and store the angle:
-   - `polygon_flat`: DRM pentagon, −34.23°.
-   - `min_radius`: DRM snap flat cut, −42.19°.
+   - `polygon_flat`: e.g. a pentagon flat feature (DRM screw; see `analysis/golden/DRM.md` for
+     the measured clock angle).
+   - `min_radius`: e.g. a flat cut nearest a minimum radius (DRM snap; angle in the golden report).
    - `fourier_mass`: B02 arms. State the label rule, because the candidates are mod 360/n.
    - `plane_normal`: OD side plate.
    - `none`: only a fully axisymmetric part, with a `why`.
-   - Choose a section z on straight flats. On the DRM screw, z = −1.0 (near a fillet) moved the
-     clock 0.5°.
+   - Choose a section z on straight flats, away from a fillet or chamfer transition — picking a z
+     near such a transition measurably shifts the clock angle (see `analysis/golden/DRM.md` §2 for
+     the worked sensitivity).
    - P03 never recorded its clock (B6).
 4. **Origin.** A named intersection ("bore axis ∩ top face"), never "the centre".
 5. **CHK-TILT.**
@@ -251,21 +257,25 @@ Worked specs and golden numbers are in `references/datum-cookbook.md`. Rules:
        re-measure on a longer clean span.
      - If it persists, record it. Decide from function whether the bore or the plane is primary,
        and tell measure/rebuild. Never silently re-level.
-     - DRM screw: fit independently, double-D 0.72° ± 0.11° (dir 117°) vs counterbore F08
-       2.8° ± 0.56° (dir −111°) — about 10× the combined stderr apart, so tilt is **not
-       resolvable** from these two features (`reviews/stl-re-intake-datum.md` M2; the golden
-       assumed 0). On B02, partial coverage similarly made tilt unresolvable (2.9°–9.2°
-       depending on the features used). Report it as such, never as a single measured value.
+     - On the DRM screw, two independent per-feature tilt fits disagreed by roughly an order of
+       magnitude more than their combined stderr, so tilt was **not resolvable** from those two
+       features (`reviews/stl-re-intake-datum.md` M2; the golden run had assumed 0 — see
+       `analysis/golden/DRM.md` §2 for the fitted values). On B02, partial angular coverage
+       similarly made tilt unresolvable depending on which features were used (see
+       `analysis/golden/OOM-B02.md`). Report it as such, never as a single measured value.
 6. **Sanity landmarks (B11; facet-film T3).**
    - `align.py` checks automatically that the primary lands at z = 0 within the noise floor.
-   - Add 3–5 landmarks from the photos or the card, e.g. B02 dome apex z = 10.97 (observed 10.96),
-     DRM part bottom z = −5.12 (observed −5.15). Each `tol` needs a source.
+   - Add 3–5 landmarks from the photos or the card, e.g. a dome apex or a part-bottom extreme
+     compared against a predicted z (see `analysis/golden/OOM-B02.md` / `analysis/golden/DRM.md`
+     for worked examples). Each `tol` needs a source.
    - `status: CHECK_LANDMARKS` means a landmark failed. Suspect the sign, side or feature choice
      before anything else.
 7. **Freeze.** After `alignment.json` is OK, it is frozen. Never refine it by ICP against your own
    CAD (P03 did; CHK-CIRCULAR, SYNTHESIS B9). A later datum change resets measurement and rebuild
    (RE_SPEC.md:131-136). Angles downstream are recorded only in this frozen frame, with the
-   sign convention stated (CHK-FRAME: B02 intake −71° vs frozen +59°).
+   sign convention stated (CHK-FRAME: an intake-stage angle and the frozen-frame angle for the
+   same feature can differ in sign convention as well as value — declare the convention, don't
+   assume it carries over; see `analysis/golden/OOM-B02.md` for the case this caught).
 
 ### Step 9 — Write the intake card
 

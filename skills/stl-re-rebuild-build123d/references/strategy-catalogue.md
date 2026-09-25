@@ -1,9 +1,11 @@
-# Strategy catalogue: the five golden feature trees
+# Strategy catalogue: lessons from the five golden feature trees
 
-Each entry records the part class, the dominant strategy, the tree as built, the face
-result and what to copy or avoid. The full trees are in `analysis/golden/<p>.md` §6, and the
-reusable code in §11. The face counts are observed results, **not bands**
-(`QUESTIONS.md` A/Q3).
+This file used to reproduce each golden part's full, numbered build sequence with its own
+measured coordinates. That is the actual solution for a part in the golden set, so it is not
+restated here: read `analysis/golden/<part>.md` §6 (the tree) and §11 (the reusable code) for
+the real sequence and numbers if you need them. What follows is the strategy each part used,
+the general lesson, and what to copy or avoid — enough to plan a rebuild without reading the
+answer.
 
 ## Choosing a strategy (decision order)
 
@@ -23,126 +25,94 @@ reusable code in §11. The face counts are observed results, **not bands**
 
 ---
 
-## DRM screw cap: prismatic + envelope (56 faces, the only unmasked clean pass)
+## DRM screw cap: prismatic + envelope
 
 `golden-examples/dreame_brush-caps/report/source/build_screw.py`; `analysis/golden/dreame_brush-caps.md` §6.
 
-1. Pentagon prism (`pent_apothem`) → ∩ cylinder (`corner_dia`) for turned corners.
-2. Taper zone: box minus 5 rotated half-spaces at `chamfer_angle_deg`. Corner edges are
-   filleted **on the tool** (local fillet), then the tool is intersected with the body.
-3. Revolved disc cone, unioned. The top edge is filleted right after (local).
-4. 5× tilted-cylinder dimple cuts (`dimple_R`, tilt derived from two measured depths).
-5. Double-D (Circle ∩ Rectangle) cut, web bore, counterbore.
-6. Web fillets, counterbore chamfer and the bottom outer fillet come last. Every one is in
-   try/except with an OK/FAILED log (`report/screw_build_log.txt`: all OK).
-
-Result: 56 faces, 1 solid (`dreame_brush_screw_cap.log:26`). The census from this skill's
-`face_stats.py` is 22 plane, 24 cylinder, 2 cone, 3 torus and 5 B-spline (fillet corners),
-with an analytic area share of 0.995. Scan gate p95 0.085 / max 0.245 on the full-res scan
-(`analysis/golden/dreame_brush-caps.md` §7).
+Strategy: a prismatic silhouette intersected with a turned envelope for the corners, a
+revolved cone body, a set of tilted-cylinder dimple cuts with a computed tilt, a compound cut
+for a non-round drive hole, and fillets applied throughout with a full OK/FAILED log kept
+(rather than assumed). See the golden source for the exact sequence, dimensions and derived
+angles.
 
 **Copy:** geometric edge selection (type + Z + radius), logged fillets, dual-frame export
 (`frames.py`). **Avoid:** the hard-coded output path at the call site (`build_screw.py:106`).
 
-## DRM snap cap: revolve + span-revolved legs (63 faces; official max band missed)
+## DRM snap cap: revolve + span-revolved legs (official max band missed)
 
 `golden-examples/dreame_brush-caps/report/source/build_snap.py`.
 
-1. Revolve a 7-point (r,z) profile (bore, OD, step, bore chamfer).
-2. Underside ramp: a tilted slab cut. The flat cut at `flat_x` gets two vertical fillets.
-3. **OD top-edge fillet before the legs.** This is the local-fillet exception: after the leg
-   union, the edge would be split (`build_snap.py:44-48`).
-4. Leg + hook: one 10-point (r,z) profile revolved over ±`leg_half_angle`. Its inner-top
-   fillet is applied to the instance, and the instance is unioned at the measured, unequal
-   `leg_thetas`.
-5. 4 cone-frustum cups at the measured `cup_thetas`, then the bore top fillet.
+Strategy: a revolved body, an underside ramp cut, a top-edge fillet applied *before* a later
+union would have split it (the local-fillet exception), then a repeated leg/hook feature
+revolved over a measured half-angle and unioned at its measured (unequal) placement angles,
+plus a repeated frustum-cup feature at its own measured placement angles. See the golden
+source for the exact profile points and angles.
 
-Declared simplifications: identical legs even though one sits ~0.1 mm further out, and a
-common PCD for the cups (`README.md:82-83`). Official gate `overall_pass: false`,
-max 1.226 > 0.80 (`analysis/SYNTHESIS.md` §0.1). The build itself was valid; the miss is a
-verify/deliver matter.
+Declared simplifications include treating legs as identical despite a small measured
+difference, and using one common placement-circle diameter for the cups (`README.md:82-83`).
+The official scan-deviation gate on this part failed on the whole-part max band
+(`analysis/SYNTHESIS.md` §0.1) — the build itself was judged valid; the miss is a verify/deliver
+matter, not a modelling error.
 
-## OD-H12 pump: assembly as one solid via sub-bodies (213 faces, 100 % analytic)
+## OD-H12 pump: assembly as one solid via sub-bodies (100% analytic)
 
 `golden-examples/OD-H12_delonghi-dedica-pump/report/src/build_pump.py:269-287`; `analysis/golden/OD-H12.md` §6.
 
-1. `revolve_body()`: two (r,z) half-profiles (outlet, inlet) revolved and unioned. Bores
-   and ±X wrench flats are cut from it.
-2. `coil()`: an off-axis cylinder, centre (−0.2, 0.1) kept as measured, not snapped. Its end
-   edges are filleted inside the sub-body.
-3. **Core tube**: an *invented*, hidden connector tying the coil to the frame, declared in
-   `README.md:54,65-66`.
-4. `frame()`: rounded-rect sheet ring with notches and slots.
-5. `diamond_flange()`: hull of hub + 2 lobes, with an underside pocket from an inward offset.
-6. `screws()`: a revolved dome head placed at the measured centres, with crossed recess cuts.
-7. `terminal_block()`: YZ profile extrude, fillets inside the sub-body, pockets, tabs, rib
-   and a rotated housing.
-8. **U-windows cut last**, "because the hub fills them otherwise" (`:279-286`).
+Strategy: a revolved main body (two half-profiles, unioned, with bores and flats cut from
+it), an off-axis coil cylinder kept at its measured (not snapped) centre, an invented hidden
+core-tube connector (declared as invented, `README.md:54,65-66`), a sheet-metal-like frame
+body, a flange as a hull of a hub and lobes, a repeated screw-boss feature at measured
+centres, a terminal-block sub-body, and openings cut last so an earlier body does not refill
+them. See the golden source for the exact profile points and placement coordinates.
 
-Result: 213 faces = 139 plane / 48 cylinder / 24 cone / 2 torus
-(`OD-H12-Pump.log`). `face_stats.py` reproduces this exactly. Band NOT MET (p95 0.448) for
-scan-coverage and simplification reasons, not because of CAD quality
-(`analysis/golden/OD-H12.md` §7).
+Band NOT MET on this part's scan-deviation gate for scan-coverage and simplification reasons,
+not CAD quality (`analysis/golden/OD-H12.md` §7).
 
 **Copy:** sub-body functions, declared invented connectors, SVD-orthonormalised
-dual-frame export (`export_final.py`). **Avoid:** bare radii and z-stations inside profiles
-(3.05, 2.95, 2.6, −21.0 …) and position-lambda edge filters that break when params change.
+dual-frame export (`export_final.py`). **Avoid:** bare, unnamed numeric literals inside
+profiles and position-lambda edge filters that break when params change.
 
-## OOM-B02 side brush: revolve + lobed cut + lofted arm × 3 (185 faces; APPROVED with 3 limitations)
+## OOM-B02 side brush: revolve + lobed cut + lofted arm × 3 (APPROVED with limitations)
 
 `golden-examples/OOM-B02_side-brush-3-arm/6_RE_work/build_OOM-B02.py`; `analysis/golden/OOM-B02.md` §6.
 
-1. Hub revolve: a meridian of lines, `ThreePointArc` groove and a `Spline` dome through
-   fitted points.
-2. Hex pocket cut: vertices from `HEX_AF` and phase, corner fillet in the sketch.
-3. Skirt 3-lobe + recess: a smoothstep R(θ) outline sampled into a `Spline`, cut as
-   Circle − outline. The **tool is held 0.02 mm clear** of the lobe to avoid a tangent
-   boolean (`:182-185`; heuristic, n=1).
-4. Nub, internal boss (`polar_sector`) and a radial hole on a `Plane(z_dir=u)`.
-5. Arm: **non-ruled loft** through 22 `RectangleRounded` sections normal to the r–z path,
-   plus a tuft slot cut from the end face.
-6. `Rotation(0,0,120k)` × 3 union, then a radial trim `& Cylinder(ARM_R_END)`.
-7. Fillets last: seam edges selected by a z/r box, trying R0.8 → 0.5 → 0.3. **The radius
-   actually used was never stored** (CHK-FILLET, silent fallback).
-
-Result: 185 faces, including 40 B-spline from the loft and the spline cut (STEP entity grep,
-inspection only).
+Strategy: a hub revolve including a fitted spline dome, a hex-pocket cut from measured
+across-flats and phase, a 3-lobed skirt cut built as a sampled outline, an internal boss and
+radial hole, an arm built as a non-ruled loft through many sections normal to a fitted path
+(with a tool held a small clearance off a tangent face to avoid an OCC boolean failure), a
+3-fold rotational union, and a final radial trim. Fillets are applied last, with a fallback
+chain of radii tried until one succeeded — **and the golden never stored which radius was
+actually used**, which is the silent-fallback failure mode CHK-FILLET exists to catch. See the
+golden source for the exact parameters.
 
 **Copy:** fitted-section loft and the superseded-iteration folder. **Fix:** log the used
 fillet radius (`fillet_log.py`), and make `polar_sector` keep true arcs.
 
-## OOM-P03 mop bracket: revolve + polar cut tools (500 faces; it1 REVISE)
+## OOM-P03 mop bracket: revolve + polar cut tools (it1 REVISE)
 
 `golden-examples/OOM-P03_mop-pad-bracket/6_RE_work/rebuild_OOM-P03.py`; `analysis/golden/OOM-P03.md` §6.
 
-1. Base revolve: an 8-point closed (r,z) half-section. A safety mirror is applied if the
-   volume is ≤ 0.
-2. Hex boss: `RegularPolygon(HEX_AF/√3, 6, major_radius=True)` extruded.
-3. Drive stem (added in it2 after it1 **missed** it: CHK-ENUM, CHK-CLUSTER) and a square
-   socket tool.
-4. `sector_tool` cut tools: 8 kidney windows + 51 tread slots. All tools are fused and then
-   subtracted once.
-5. Stem-top fillet R0.4 in try/except with an `if top_edges:` guard, which is a **possible
-   silent skip**. `FILLET_SMALL` is defined but unused.
+Strategy: a base revolve from a closed half-section with a safety mirror if the volume comes
+out negative, a hex boss, a drive stem (added only in it2, after it1 missed it entirely —
+CHK-ENUM, CHK-CLUSTER), a square socket tool, several repeated cut-tool families fused and
+subtracted once, and a stem-top fillet applied inside a guard that can silently skip it. See
+the golden source for the exact counts and dimensions.
 
-Result: 500 faces (559 in another record; `QUESTIONS.md` B). **Copy:** fused cut tools with
-true-arc sectors. **Avoid:** the stale "6-fold" comment beside `N_KIDNEY = 8` (a
-param/comment drift) and silent fillet skips.
+**Copy:** fused cut tools with true-arc sectors. **Avoid:** stale comments that drift from
+the parameter they describe, and silent fillet skips.
 
-## M02 gear pair: one tooth + pattern + bridge core (2,354 faces: counter-example)
+## M02 gear pair: one tooth + pattern + bridge core (counter-example)
 
 `golden-examples/M02-02-03_watertight-design-intent/model.py`; `analysis/golden/M02-02-03.md` §6.
 
-1. One tooth face per gear, extruded, fused N times around a root cylinder (explicit loop).
-2. A **continuous core bridge** cylinder at the smaller root radius joins the two gears across
-   a coplanar axial transition (`model.py:76-81`; heuristic, n=1).
-3. Through-bore cut. Re-import self-check that raises on failure (`model.py:85-101`).
+Strategy: one tooth face per gear, patterned around a root cylinder by an explicit loop, a
+continuous core-bridge cylinder joining two coplanar gears across their shared transition, and
+a through-bore cut guarded by a re-import self-check that raises on failure.
 
-The involute flank was a **polygonal** `Wire.make_polygon` of 20 samples per flank, which
-gives 2,306 planar facets (inspection count). This is not a scan re-tile, but the type
-census does **not** flag it: planar facets count as analytic (`face_stats.py` gives
-`analytic_area_share = 1.0`, `ruled_like_faces = 0` on this STEP). Only the face count
-against the plan, and `plane_face_count` / `plane_face_median_area_mm2`, expose it. Use a
+The involute flank was built as a **polygonal** approximation (a many-sided polyline per
+flank), which produces a large number of small planar facets that a naive analytic-vs-ruled
+face census does not flag, because planar facets count as analytic. Only comparing the face
+count against the plan, or looking at the plane-face count and median area, exposes it. Use a
 `Spline` through computed involute points instead
 (`../stl-re-measure-intent/references/gears.md`, heuristic, n=1: M02).
 

@@ -65,7 +65,7 @@ class FilletLog:
         self.lines: list[str] = []
 
     def log(self, line: str) -> None:
-        """Free-text build-log line (non-fillet features: 'F05 dimples: tilt 5.15 deg')."""
+        """Free-text build-log line (non-fillet features: e.g. 'F05 dimples: tilt <deg> deg')."""
         self.lines.append(line)
         print(line)
 

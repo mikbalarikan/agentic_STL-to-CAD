@@ -6,8 +6,9 @@ Provenance: lifted from
   (`densify` ds 0.02 mm, `jaws` support-function width over jaw azimuth step 0.05 deg,
   `zsec`, and the outer-envelope R(theta) block at :80-82 with 0.25 deg stations and a
   +/-0.3 deg window) and 6_RE_work/40_verify.py:62-65 (support_width) / inside-jaw bore block.
-  B02 used it (a) to prove caliper F06 = 24.84 unachievable on the scan (window
-  25.99...27.08, PARAM_TABLE.md:108-121) and (b) for Tier-1 on the finished STEP.
+  B02 used it (a) to prove one Tier-1 caliper reading unachievable on the scan (see
+  analysis/golden/OOM-B02.md and PARAM_TABLE.md:108-121 for the reading and window) and
+  (b) for Tier-1 on the finished STEP.
 Changes: generalised (any z station, any mesh, optional r-band filter, optional arbitrary
 section plane), empty envelope bins are skipped and reported as angular gaps instead of
 raising, a reading is classified against the window (CHK-ACHIEVABLE), typed, argparse,
@@ -24,7 +25,7 @@ widen it.
 
 Scan dilation (`--scan-offset`, orchestrator decision B2, 2026-09-25): a caliper reading can
 sit legitimately below the scan window when the scan itself reads oversize at that station
-(B02 F10 arm width: caliper 5.33 vs scan mean 5.89 at the same station, `MEASUREMENTS.md:61`,
+(B02 arm width is a worked case: see analysis/golden/OOM-B02.md, `MEASUREMENTS.md:61`,
 `PARAM_TABLE.md:41`). `d` is measured per scan by the caller (the largest scan-minus-caliper
 gap among the *other* calipered dims of the same scan) and passed in; it is never a constant.
 A margin below the window but within `d` is `UNPROVEN`, not struck: only a miss that exceeds
@@ -173,8 +174,8 @@ def main() -> None:
                     help="reading uncertainty, mm (photo-transcribed: 0.1 effective, OOM-B02 MEASUREMENTS.md:24)")
     ap.add_argument("--scan-offset", type=float, default=None,
                     help="d: measured per-scan dilation, mm (largest scan-minus-caliper gap among "
-                         "the OTHER calipered dims of this same scan, e.g. B02 F10: scan 5.89 - "
-                         "caliper 5.33 = 0.56, MEASUREMENTS.md:61 / PARAM_TABLE.md:41). Not a "
+                         "the OTHER calipered dims of this same scan; see analysis/golden/OOM-B02.md "
+                         "for a worked case, MEASUREMENTS.md:61 / PARAM_TABLE.md:41). Not a "
                          "threshold, and never invented: omit it when no other caliper exists on "
                          "this scan, and a below-window reading is then UNPROVEN, not struck (B2)")
     ap.add_argument("--name", default="caliper")

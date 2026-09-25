@@ -3,11 +3,9 @@
 
 PROVENANCE
   NEW CODE in this form. The golden records counted surface types by grepping STEP
-  entities or reading an NX import log:
-    golden-examples/OD-H12_delonghi-dedica-pump/OD-H12-Pump.log (213 faces: 139 plane /
-      48 cylinder / 24 cone / 2 torus),
-    analysis/golden/OOM-B02.md section 6 (185 faces, 40 B-spline, entity grep),
-    analysis/golden/M02-02-03.md section 6 (2354 faces, 2306 planar facets).
+  entities or reading an NX import log (see `OD-H12-Pump.log`, `analysis/golden/OOM-B02.md`
+  section 6, and `analysis/golden/M02-02-03.md` section 6 for their actual face-type
+  breakdowns; not restated here since they are per-part results, not a threshold).
   The W01 Tier-0 script `6_RE_work/surftypes.py` named in baseline/oomwoo-re-pipeline/TRACKER.md:32
   is not in the repo, so this is written from the RE_SPEC Tier-0 wording
   (baseline/oomwoo-re-pipeline/RE_SPEC.md:265-270: "dominant area on analytic surfaces
@@ -23,10 +21,11 @@ PLANAR-FACET PATCHWORK IS NOT WHAT THIS CENSUS FLAGS
   A patchwork of planar facets (stacked prisms, a polygonal profile in place of a curve) is
   INVISIBLE to `analytic_area_share` and `ruled_like_faces`: every facet is a plane, so it
   counts as analytic, and it is not a B-spline, so `ruled_like_faces` stays 0. M02's polygonal
-  involute (`Wire.make_polygon`, 20 samples/flank) produced 2,354 faces, 2,306 of them planar
-  facets, with analytic_area_share == 1.0 and ruled_like_faces == 0
-  (analysis/golden/M02-02-03.md section 6) - a cold read of this census alone would call that
-  clean. `plane_face_count` and `plane_face_median_area_mm2` are reported (never gated, no
+  involute (`Wire.make_polygon`, a fixed sample count per flank) produced a large number of
+  planar facets with analytic_area_share == 1.0 and ruled_like_faces == 0
+  (analysis/golden/M02-02-03.md section 6 has the actual counts) - a cold read of this census
+  alone would call that clean. `plane_face_count` and `plane_face_median_area_mm2` are
+  reported (never gated, no
   invented threshold) so a face count far above the plan, together with a small median plane
   area, can be inspected by eye instead of missed entirely.
 
@@ -144,8 +143,8 @@ def surface_census(shape: TopoDS_Shape) -> dict[str, Any]:
         # (stacked prisms, a polygonal curve) is all-plane and non-ruled, so it does not move
         # analytic_area_share or ruled_like_faces at all. A high plane_face_count together
         # with a small plane_face_median_area_mm2, against the plan's expected face count,
-        # is the signal to inspect by eye. Evidence case: M02's polygonal involute gave 2,354
-        # faces, 2,306 of them planar facets (analysis/golden/M02-02-03.md section 6).
+        # is the signal to inspect by eye. Evidence case: M02's polygonal involute (see
+        # analysis/golden/M02-02-03.md section 6 for the actual face/facet counts).
         "plane_face_count": int(len(plane_areas)),
         "plane_face_median_area_mm2": r6(statistics.median(plane_areas)) if plane_areas else None,
     }

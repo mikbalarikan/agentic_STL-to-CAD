@@ -56,8 +56,8 @@ Every `functional_interface` zone is always gated against `interface_max`.
 ### Report-only numbers (never blocking)
 
 - **Datum audit**: ≤ 0.3° / ≤ 0.15 mm (`RE_SPEC.md:241`). This is report-only
-  (QUESTIONS.md Q2). Both approved OOM goldens exceeded it: B02 0.429° / 0.451 mm, P03
-  0.154° / 0.600 mm (`analysis/golden/OOM-B02.md` §3, `OOM-P03.md` §3).
+  (QUESTIONS.md Q2). Both approved OOM goldens exceeded this reference band and were still
+  approved — see `analysis/golden/OOM-B02.md` §3 and `OOM-P03.md` §3 for the actual figures.
 - **Face count / surface census**: reported, not gated (QUESTIONS.md Q3). The only numeric form
   is the W01 tracker cell (≤ ~600 faces, ≥ 60 % analytic area,
   `baseline/oomwoo-re-pipeline/TRACKER.md:32`). You may quote it for context. Never gate on it.
@@ -102,13 +102,15 @@ the raw scan.
   (a bore, or a boss with no matching counter-wall), that fix has nothing to read a convention off:
   - `datum_audit.py` now detects this (inner- and outer-radius faces of the selection agree in
     normal sign) and **refuses with a clear error** rather than silently keeping a near-random half
-    of the points (B02 replay D6: a false 17.8°/9.2 mm audit).
+    of the points (B02 replay D6: this silently produced a badly wrong audit result — see the
+    replay report for the actual figures it gave).
   - Write `position.single_wall: "inner"` or `"outer"` instead of relying on `wall` when `region`
     is deliberately a single wall (a bore-only or boss-only selection, DRM replay). This asserts the
     wall's identity rather than inferring it, and every point in `region` is used.
 - **`clock.offset_deg`** is folded in before the nearest-360°/k-candidate choice against the
   builder's declared +X, not after: applying it only at the end can make a different candidate look
-  nearer and pick the wrong flat (a DRM replay was 73° off before this fix).
+  nearer and pick the wrong flat (a DRM replay picked the wrong flat by a large margin before this
+  fix — see the replay report for the actual angle).
 
 ### Predicate language (zones, masks, datum regions)
 
@@ -152,8 +154,8 @@ Zone and mask names must not contain `:` (`verdict.py`'s `regime.gated` entries 
     cap 60, stop at step < 1e-6.
   - You may raise the cap once. Record both runs.
   - Axisymmetric parts converge slowly: they slide about their axis. Inspection example: the DRM
-    screw decimated did not converge in 60 iterations and converged in 109 (see
-    `verdict-template.md` §Worked numbers).
+    screw decimated scan did not converge at the default cap and needed substantially more
+    iterations (see `verdict-template.md` §Worked numbers for the actual count).
 - **Observability.** (heuristic, n=1: OD; B02 used the open-boundary mask for the same purpose.)
   - Method: CAD points with CAD→scan distance > 0.5 mm are ray-tested. One ray goes along the
     normal and 6 more sit on a 60° cone, all starting 0.05 mm off the surface. The point is
@@ -165,7 +167,8 @@ Zone and mask names must not contain `:` (`verdict.py`'s `regime.gated` entries 
   - Points over the max band (default: the regime max; 0.8 if the regime has none) are grouped
     by a KD radius graph: eps 1.0 mm, ≥ 20 points (parameters; 20 is the DRM fastgate bin floor).
   - A scan→CAD cluster means scan material the CAD lacks. That is either a missing feature
-    (P03 stem: 4907 points at r < 6.4) or an artefact (DRM flap).
+    (P03's drive stem is a worked case — see `analysis/golden/OOM-P03.md` §8 for the point
+    count and location) or an artefact (DRM flap).
   - A CAD→scan cluster means CAD material with no scan behind it: either invented or
     unobservable.
 
@@ -175,8 +178,8 @@ Zone and mask names must not contain `:` (`verdict.py`'s `regime.gated` entries 
 |---|---|
 | Validity | Wrong feature boundaries or extents. A well-formed solid can be the wrong part (T11). |
 | Surface census | Whether the analytic faces are the *right* ones. It only catches re-tiled / faceted skin (W01, M02 2354 planar facets). |
-| Tier-1 | Every dimension that was not calipered. B02 gated 5 of 24; the other 17 are ABSENT, not passed. |
-| Tier-1 on a lobed OD | Jaw placement. A two-jaw caliper reads R(θ)+R(θ+180), and some readings are unachievable (B02 F06 Δ +0.647, CHK-ACHIEVABLE). |
+| Tier-1 | Every dimension that was not calipered. B02 gated only a minority of its dims; the rest are ABSENT, not passed. |
+| Tier-1 on a lobed OD | Jaw placement. A two-jaw caliper reads R(θ)+R(θ+180), and some readings are unachievable (B02's flagged skirt reading, CHK-ACHIEVABLE). |
 | Scan deviation | Patchwork. W01 attempt 1 sat on the scan and was garbage CAD. It is also blind to occluded interiors, to dimensions the scanner cannot resolve (noise floor), and to soft features. |
 | Scan→CAD only | Invented CAD material. Run CAD→scan too (SYNTHESIS E1; P03 ran one-way). |
 | CAD→scan only | Missing features. Run scan→CAD too (W01 lesson; P03 stem). |

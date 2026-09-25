@@ -13,8 +13,8 @@ a limitation, never a clean pass (`analysis/SYNTHESIS.md` E5, CHK-MASK).
    `snap_masked_gate.json#masks.*.{n, frac, p50, p95, max}`.
 3. **Masked and unmasked side by side.** Report both for the whole part and for every zone. Never
    report masked numbers alone.
-4. **Sensitivity sweep.** Run leave-one-out per mask. Run a radius sweep for open-boundary masks.
-   The golden radii were 0, 0.2, 0.4, 0.8, 1.5 and 2.5 mm (B02 `q20_tier2.py:181-190`, parameters).
+4. **Sensitivity sweep.** Run leave-one-out per mask. Run a radius sweep for open-boundary masks
+   (B02 `q20_tier2.py:181-190` has a worked set of sweep radii, as parameters not thresholds).
 5. **Mask-dependent pass.** A gated item that passes masked and fails unmasked is listed in
    `deviation.mask_dependent_passes`. It forces `APPROVED_WITH_LIMITATIONS` at best, and the
    limitation text must say that the pass is masked, with the unmasked number.
@@ -26,8 +26,9 @@ a limitation, never a clean pass (`analysis/SYNTHESIS.md` E5, CHK-MASK).
    located the hex-wall gap from scan faces with a wall-only normal filter (`q20_tier2.py:122-138`).
    Including the pocket floor made every azimuth look covered, and the mask became a no-op.
 8. **Masking never turns a FAIL into a PASS silently.** The DRM snap is the counter-example that
-   stays honest: 6 artefact masks removed 4.9 %, but the max stayed 1.246 > 0.80, and the official
-   `overall_pass: false` stands (`analysis/golden/dreame_brush-caps.md` §7, §9).
+   stays honest: a handful of named artefact masks removed only a small fraction of points, the
+   whole-part max stayed over its band regardless, and the official failing result stands
+   (`analysis/golden/dreame_brush-caps.md` §7, §9 — see there for the actual fractions and max).
 
 ## Mask types (`qa/masks.json`)
 
@@ -50,26 +51,33 @@ a limitation, never a clean pass (`analysis/SYNTHESIS.md` E5, CHK-MASK).
 
 ## Golden examples
 
-| Project | Mask | Why | Fraction | Effect |
-|---|---|---|---|---|
-| B02 | M1 bristles r > 38.5 | soft, not modelled (A10) | 18.8 % of scan faces | reference only |
-| B02 | M2 screw head + end | COTS, not modelled (A9) | 19,222 faces (log) vs 16,610 (verdict): conflict, see QUESTIONS B | reference only |
-| B02 | M3 open boundary < 0.8 mm | hole edge ≠ surface | drops 20.76 % | hex pocket passes only with M3 + A6. Unmasked max **1.624**, 0.824 over the 0.8 band. |
-| B02 | M4 skin \|n·n\| < cos 70° | occluded correspondence | drops 5.91 % | none |
-| B02 | A6 hex coverage gap | scan saw 263/360° of the wall | 43.4 % of the hex zone | "masked pass", declared |
-| DRM snap | 6 artefact regions (bore-edge fuzz 1.44 %, OD top burr 0.93 %, hook fringe 0.20 %, hook underside 0.92 %, table remnant 1.21 %, flat-corner skirt 0.22 %) | scanner artefacts | 4.9 % total | max still 1.246 > 0.80. **FAIL stands.** |
+The kinds of masks each golden part used, and what they were for:
 
-Sources: `analysis/golden/OOM-B02.md` §7, §9; `analysis/golden/dreame_brush-caps.md` §7, §9.
+| Project | Mask | Why | Effect |
+|---|---|---|---|
+| B02 | bristles beyond a radius | soft, not modelled (A10) | reference only |
+| B02 | a COTS screw head + end | not modelled (A9) | reference only — the golden's own records disagreed on the exact face count removed; a conflict like this is itself a finding (see QUESTIONS B) |
+| B02 | open-boundary mask | hole edge ≠ surface | a critical hex-pocket feature passes only with this mask plus a coverage-gap mask; **unmasked, it misses the band** — see `analysis/golden/OOM-B02.md` §7 for the actual numbers |
+| B02 | skin normal-disagreement mask | occluded correspondence | none (doesn't change the result) |
+| B02 | hex coverage-gap mask | scan saw only part of the wall | "masked pass", declared |
+| DRM snap | several named artefact regions (scanner fuzz, a burr, fringe/underside effects, a table remnant, a corner artefact) | scanner artefacts | removes only a small total fraction; **the whole-part max still fails the band. FAIL stands.** |
 
-## Wording for a masked pass (copy the pattern, fill the numbers from gate.json)
+Sources: `analysis/golden/OOM-B02.md` §7, §9; `analysis/golden/dreame_brush-caps.md` §7, §9
+(read these for the actual fractions and numbers).
 
-> "The hex-pocket PASS is a **masked** pass: with the open-boundary mask (0.8 mm) and the scan-
-> located coverage-gap mask it reads max 0.316; **unmasked it reads 1.624, 0.824 over the 0.8
-> band**, on the feature with no caliper reading. **Re-run trigger:** one caliper reading on F01."
-> — modelled on `golden-examples/OOM-B02_side-brush-3-arm/6_RE_work/VERDICT.md:138-145`.
+## Wording for a masked pass (fill the numbers from gate.json — this is a pattern, not a template
+with real numbers to copy)
+
+> "The [feature] PASS is a **masked** pass: with the open-boundary mask and the scan-located
+> coverage-gap mask it reads max <masked value>; **unmasked it reads <unmasked value>, <delta>
+> over the band**, on the feature with no caliper reading. **Re-run trigger:** one caliper
+> reading on [feature]." — modelled on
+> `golden-examples/OOM-B02_side-brush-3-arm/6_RE_work/VERDICT.md:138-145` (read it for the real
+> wording and numbers).
 
 Wording for a band not met despite masks:
 
-> "Scan→CAD max 1.226 > 0.80 (band not met). Six named artefact masks (4.9 %) do not clear it: the
-> residual is a floating scan flap at the 150° leg top (315 of 570k points > 0.8 mm). Delivery needs
-> a recorded human acceptance." (modelled on the dreame README artefact list)
+> "Scan→CAD max <value> > <band> (band not met). Several named artefact masks (<fraction>) do not
+> clear it: the residual is a floating scan flap at one location (<point count> of <total> points
+> over band). Delivery needs a recorded human acceptance." (modelled on the dreame README
+> artefact list — read it for the real numbers)

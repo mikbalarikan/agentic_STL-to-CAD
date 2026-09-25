@@ -143,7 +143,7 @@ into `_itN_SUPERSEDED/` (never edited in place — the same loss CHK-SUPERSEDED 
 | Finding | `--route` | Re-enter at | Golden precedent |
 |---|---|---|---|
 | Missing feature, dismissed cluster (CHK-ENUM, CHK-CLUSTER) | `datum` | intake (feature enumeration), then measure | P03 it1 stem: `golden-examples/OOM-P03_mop-pad-bracket/6_RE_work/PARAM_TABLE.md:4`, `VERDICT.md:8,41` |
-| Caliper reading not achievable / misattributed (CHK-ACHIEVABLE) | `measure` | measure | B02 it1 F06 Δ +0.647: `golden-examples/OOM-B02_side-brush-3-arm/6_RE_work/VERDICT.md` §2, §6 |
+| Caliper reading not achievable / misattributed (CHK-ACHIEVABLE) | `measure` | measure | B02 it1 flagged reading, built anyway, outside Tier-1: `golden-examples/OOM-B02_side-brush-3-arm/6_RE_work/VERDICT.md` §2, §6 |
 | Wrong count (CHK-COUNT) | `measure` | measure | M02 27T candidate: `golden-examples/M02-02-03_watertight-design-intent/DESIGN_NOTES.md:5` |
 | Geometry, fillet, patchwork (CHK-FILLET, CHK-PATCHWORK) | `geometry` | rebuild | `analysis/SYNTHESIS.md` §2 |
 

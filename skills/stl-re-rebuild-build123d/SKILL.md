@@ -135,10 +135,10 @@ Details and worked golden trees are in `references/strategy-catalogue.md`. Idiom
 |---|---|---|
 | **Revolve a closed (r,z) profile** about the datum axis | Every turned region: hubs, bores, discs, steps, chamfers in the profile | RULE D2: OD, B02, P03, DRM |
 | **Sub-bodies built separately, then unioned** | Assemblies-as-one-solid, arms, cores, bridges. Declare every invented connector in the plan. | RULE D3: all 5. OD core tube (`build_pump.py:272-274`); M02 continuous core bridge (`model.py:74-81`) |
-| **One instance + placements** | Repeated features. Place the instance at the *measured* angles, which may be unequal. Enforce equal pitch only when the measured scatter is within noise. | RULE D4, C10. DRM legs at 60°/150°/−60°, "not equally spaced, measured" (`golden-examples/dreame_brush-caps/README.md:50`) |
+| **One instance + placements** | Repeated features. Place the instance at the *measured* angles, which may be unequal. Enforce equal pitch only when the measured scatter is within noise. | RULE D4, C10. DRM's legs were kept at their measured, unequal angles rather than symmetrised (`golden-examples/dreame_brush-caps/README.md:50`) |
 | **Cut tools as separate solids** | Sectors, slots, pockets, holes. Build the tool, fuse the tools, subtract once. | RULE D5. P03 `sector_tool` (`rebuild_OOM-P03.py:103-146`) |
 | **Sketch + extrude** | Prismatic silhouettes: hex, pentagon, double-D, rounded-rect frame | DRM F01, F06; OD frame; P03 hex |
-| **Intersect with an envelope** | Turned corners on a prism (pentagon ∩ cylinder), radial trims | DRM F02 (`build_screw.py:29-31`); B02 radial trim (`build_OOM-B02.py:283`) |
+| **Intersect with an envelope** | Turned corners on a prism (e.g. a polygon intersected with a cylinder), radial trims | DRM F02 (`build_screw.py:29-31`); B02 radial trim (`build_OOM-B02.py:283`) |
 | **Non-ruled loft through fitted sections** | Only when no analytic profile exists. See Step 5. | D15; B02 arm (`build_OOM-B02.py:255-268`) |
 
 **Dropped as a default:** tri-axis extrude-intersect. No golden build used it
@@ -176,7 +176,8 @@ Start from `templates/model_template.py`.
   - The DRM build call site wrote to a fixed Windows path (`build_screw.py:106`). Do not
     copy that.
 - Log one line per feature to `build_log.txt` (`FilletLog.log`). Include the parameters a
-  feature derived, e.g. DRM's dimple tilt 5.15° (`report/screw_build_log.txt`).
+  feature derived, e.g. a tilt angle computed from measured depths (see
+  `report/screw_build_log.txt` for a worked case).
 - End with `.clean()`, then `export_frames(...)` (Step 6).
 
 ## Step 4: fillets and chamfers, logged (D7, D8, CHK-FILLET)
@@ -193,8 +194,8 @@ Apply every fillet and chamfer through `FilletLog.apply(shape, feature, selector
 - A result that is invalid, or that changes the solid count, counts as a failed attempt.
 
 **Why:**
-- B02 tried R0.8, then 0.5, then 0.3 and never stored which radius shipped. That is a
-  silent fallback (`build_OOM-B02.py:288-298`).
+- B02 tried a target fillet radius, then successively smaller fallbacks, and never stored
+  which radius actually shipped. That is a silent fallback (`build_OOM-B02.py:288-298`).
 - P03's `if top_edges:` guard and bare `except` could skip its fillet with only a print. That
   is a silent skip (`rebuild_OOM-P03.py:148-156`).
 - DRM wrapped every fillet and logged OK/FAILED, and both final logs show all OK
@@ -206,7 +207,8 @@ Apply every fillet and chamfer through `FilletLog.apply(shape, feature, selector
   or split the edge. Log the reason in the plan. Golden examples:
   - DRM snap filleted the OD top edge *before* adding the legs
     (`build_snap.py:44-48`).
-  - DRM screw filleted the frustum corners before intersecting (`build_screw.py:44-48`).
+  - DRM screw filleted a feature's corners before a later boolean would have destroyed the
+    edge (`build_screw.py:44-48`; see the source for the exact operation order).
   - OD filleted inside its sub-bodies (coil, terminal block).
 - The baseline "fillets strictly last" rule is rewritten accordingly
   (`analysis/SYNTHESIS.md` §3).
@@ -227,7 +229,7 @@ Apply every fillet and chamfer through `FilletLog.apply(shape, feature, selector
   count is not gated (`QUESTIONS.md` A/Q3).
 - **Allowed:** a *non-ruled* loft through a few **fitted** sections. Each section is an
   analytic or param-driven profile (e.g. `RectangleRounded(w, t, r)` from measured
-  stations), placed normal to a measured path. B02 lofted its arm through 22 such sections
+  stations), placed normal to a measured path. B02 lofted its arm through many such sections
   (`build_OOM-B02.py:255-268`). Also allowed: a `Spline` through a fitted (r,z) meridian
   inside a revolve profile (B02 dome, `build_OOM-B02.py:152`; `RE_SPEC.md:262` "fitted
   `Spline` profiles").
@@ -317,8 +319,8 @@ python3 <skill>/scripts/face_stats.py <run>/build/<part>_datum.step --expect-fac
   signals are the face count against the plan and `face_stats.py`'s `plane_face_count` /
   `plane_face_median_area_mm2` (a plan-sized part with far more planes than expected, or an
   unexpectedly small median plane area, needs a by-eye look). No threshold is set here.
-- Tested reference: this script reproduces OD's NX-log census exactly (213 faces = 139
-  plane / 48 cylinder / 24 cone / 2 torus; `OD-H12-Pump.log`).
+- Tested reference: this script reproduces OD's NX-log census exactly (see `OD-H12-Pump.log`
+  for the recorded face-type breakdown).
 
 ## Step 8: hand off
 

@@ -55,8 +55,8 @@ omit it with `aligned_work.stl`.
 
 1. Read `scan_noise_mm` from `alignment.json`. If it is missing, stop rounding. Measure it on a
    clean primitive, e.g. `fits.py plane-ransac --tol <0.05–0.1> --z … --r …` on a flat
-   functional face, and record it as a finding for intake. Golden noise floors: B02 rim rms
-   0.052, P03 rim resSD 0.039, DRM plane rms 0.007 / 0.029, OD cylinder p95 0.13 (SYN A7).
+   functional face, and record it as a finding for intake. Golden noise floors vary by part and
+   surface; see `analysis/golden/*.md` if you need a reference point (SYN A7).
 2. Copy the frame text (primary, secondary, clock rule, θ sign convention) into
    `params.json#frame`. Every angle you record is in this frame (CHK-FRAME, step 11).
 3. Open one params row per INTAKE_CARD feature, plus every feature you find later. A feature
@@ -135,8 +135,9 @@ python scripts/pattern_count.py --mesh <scan> --alignment A --signal mass --stat
   pattern clock, in the datum frame.
 - **Never count crest peaks.** On exact CAD they gave 31 and 16 for 30 and 17
   (`qa_report.json#gears.*.station_details[*].diagnostic_peak_count`). The script reports them
-  as a diagnostic only. P03's intake "6+6" was an eyeball count that FFT corrected to 8
-  (`OOM-P03/6_RE_work/PARAM_TABLE.md:59`).
+  as a diagnostic only. On P03, an eyeball count at intake was wrong and the FFT count
+  corrected it (`OOM-P03/6_RE_work/PARAM_TABLE.md:59`; see `analysis/golden/OOM-P03.md` for the
+  counts).
 - Gears: `references/gears.md` (heuristic, n=1: M02).
 
 ### 6. Authority: caliper/operator > scan > photo (SYN C4, C5; `RE_SPEC.md:86-98`)
@@ -164,9 +165,10 @@ For every width or diameter reading:
   in `--mode inside`: an open scan section has no single closed "innermost loop" to pick, so
   the script pools the in-band points instead (B1, 2026-09-25).
 - `d` (`--scan-offset`) is the measured, per-scan dilation: the largest scan-minus-caliper gap
-  among the *other* calipered dims of the *same* scan (B02 F10: caliper 5.33 vs scan mean
-  5.89, `MEASUREMENTS.md:61`/`PARAM_TABLE.md:41`). Compute it from those other rows before
-  running this step; never invent it, and omit it when this scan has no other caliper.
+  among the *other* calipered dims of the *same* scan (B02's arm-width reading is a worked
+  case: see `analysis/golden/OOM-B02.md`, `MEASUREMENTS.md:61`/`PARAM_TABLE.md:41`). Compute it
+  from those other rows before running this step; never invent it, and omit it when this scan
+  has no other caliper.
 - **Within the window** → use it.
   **Below min − u − d** → **strike**: add a `struck[]` entry with the window, the proof and a
   re-measure hook, and build that feature from the scan. The proof holds even with gaps,
@@ -178,10 +180,11 @@ For every width or diameter reading:
 - For depths and heights, compare against the scan-predicted value from the measurement
   request (`RE_SPEC.md:197-202`). If they differ by more than u + noise, investigate the
   attribution before building. (No golden struck a depth, so there is no stronger rule.)
-- **A flagged impossibility is a stop.** B02 it1 flagged F06 and still built 24.84/2 "per the
-  rebuild brief". The solid read back Δ +0.647, and the loop went to REVISE
-  (`analysis/golden/OOM-B02.md` §8). It2 struck F06 and changed exactly one parameter,
-  `SKIRT_R_FLAT` 12.420 → 12.550.
+- **A flagged impossibility is a stop.** On B02 it1, a caliper reading was flagged as an
+  unachievable two-jaw window and still built to that reading "per the rebuild brief" instead of
+  being struck; the built solid read back outside tolerance and the loop went to REVISE
+  (`analysis/golden/OOM-B02.md` §8). It2 struck that reading and changed exactly one parameter
+  (see the golden analysis for which one and its value).
 
 ### 8. Rounding and snapping: noise-bounded, never a fixed grid (SYN C8, C9, C10)
 
@@ -193,9 +196,10 @@ Apply `references/intent-rules.md` §2 and §5. In short:
 - A standard-size snap is allowed only for caliper values within ±0.1 mm (`RE_SPEC.md:92`).
   Label it **(heuristic, doctrine only: no golden applied it; SYN §6)**.
 - **Never snap an uncalipered critical interface.** Hold the scan fit and set
-  `critical: true` and a `rerun_trigger`. B02 held hex AF 7.358, "deliberately NOT
-  intent-snapped to 7.0 or 7.5 … One caliper reading on F01 should trigger a re-run"
-  (`OOM-B02/6_RE_work/VERDICT.md:28-30`).
+  `critical: true` and a `rerun_trigger`. On B02, a critical hex-across-flats interface was
+  deliberately held at its scan fit rather than snapped to a nearby standard size, with the
+  rerun trigger "one caliper reading on this feature should trigger a re-run"
+  (`OOM-B02/6_RE_work/VERDICT.md:28-30`; see `analysis/golden/OOM-B02.md` for the held value).
 - Enforce symmetry or equal pitch when the measured scatter is within noise. When it isn't,
   enforce it only with a `scatter_note` giving the intent reason and the residual it leaves
   (B02 arms 120°; DRM cup PCD). Otherwise keep the measured values and declare the asymmetry
@@ -217,19 +221,21 @@ expected top, density in the (r,z) map with no planned feature.
 `python scripts/sections.py cluster --mesh <scan> --z-band lo,hi --r-band lo,hi --top-band <noise-scale> --out measure/figures/cluster_<n>.json`
 
 - **One connected component with a flat top is a feature.** Cross-check the profile photos,
-  then add it to the params and record a CHK-ENUM finding for intake. P03 it1 "wrongly
-  dismissed [the stem] as occlusion". QA later proved it real (158k coherent verts, solid flat
-  top), and it cost an iteration (`golden-examples/OOM-P03_mop-pad-bracket/6_RE_work/PARAM_TABLE.md:4-6,43`).
-  The profile photo `Context images/IMG_20260729_140345.jpg` already showed it.
+  then add it to the params and record a CHK-ENUM finding for intake. On P03 it1, a real feature
+  (a drive stem) was wrongly dismissed as occlusion; a later QA pass proved it real from a large,
+  coherent, flat-topped cluster that a profile photo had already shown, and it cost an iteration
+  (`golden-examples/OOM-P03_mop-pad-bracket/6_RE_work/PARAM_TABLE.md:4-6,43`; see
+  `analysis/golden/OOM-P03.md` for the specifics).
 - Dismiss a cluster as an artefact only with evidence: many small components, no flat top, and
   photos showing nothing there. Record that evidence in the check note.
 
 ### 11. CHK-FRAME: angles only in the frozen datum frame (SYN B10)
 
 - Re-measure every angle on the aligned scan. **Never copy an angle from the intake card**:
-  its frame or sign may differ. B02's intake said SAF-1 at −71° and hex phase 50.7°. In the
-  frozen frame they are +59° and 59.04° (`OOM-B02/6_RE_work/PARAM_TABLE.md:49,72-74`,
-  `OOM-B02/2_mesh_cleaned/alignment.json#notes`).
+  its frame or sign may differ. On B02, two angles recorded at intake used a different sign
+  convention than the frozen datum frame, and copying them forward would have been wrong
+  (`OOM-B02/6_RE_work/PARAM_TABLE.md:49,72-74`, `OOM-B02/2_mesh_cleaned/alignment.json#notes`;
+  see `analysis/golden/OOM-B02.md` for the values in each frame).
 - The scripts report θ CCW about +Z from +X in the datum frame. State that in
   `params.json#frame`. If an intake angle disagrees beyond the measured spread, record a
   CHK-FRAME finding with both values.
@@ -238,10 +244,10 @@ expected top, density in the (r,z) map with no planned feature.
 
 Wherever the model will be simpler than the scan (a single cylinder over a taper, a mean path
 over free-state droop, a plane over a wave), measure the cost on the scan and add a
-`simplifications[]` entry. Use the fit residual or the per-instance spread. Golden examples:
-OD coil ±0.1 mm, B02 arm path +0.74 / −0.51 mm, DRM ramp ±0.07 mm
-(`references/intent-rules.md` §7). An undeclared simplification becomes an unexplained band
-miss at verify, as OD's p95 0.448 shows.
+`simplifications[]` entry. Use the fit residual or the per-instance spread. Golden examples
+(coil path, arm path, ramp geometry) are in `references/intent-rules.md` §7 with pointers to the
+recorded costs, not restated here. An undeclared simplification becomes an unexplained band
+miss at verify — see `analysis/golden/OD-H12.md` for a worked case.
 
 ### 13. Write, validate, render, hand off
 
@@ -296,15 +302,14 @@ Golden-number reproduction and its discrepancies: `references/validation.md`.
 
 ## Open questions (do not resolve silently)
 
-- **B02 scan window.** This skill's port reproduces the CAD window exactly (25.617–26.850).
-  On the full-res scan it gives 24.99–27.25, not the recorded 25.99–27.08. The explanation:
-  the golden applied the analytic lobe+flat argument (`VERDICT.md:64-66`) and left the SAF-1
-  recess (G-5) out of it; the support-function window with the recess included, which is what
-  a real caliper section sees, is 24.99 (`references/validation.md`). F06's margin below this
-  window is 0.148 mm — smaller than the measured F10 scan dilation on the same scan (0.56 mm,
-  `MEASUREMENTS.md:61`) — so per orchestrator decision B2 this reproduction classifies F06 as
-  **unproven**, not struck. D-06 = 25.79, recorded as "below the window" (A3), falls inside
-  this window and combined with B2 is "use/ask", not "below window".
+- **B02 scan window.** This skill's port of the two-jaw window computation reproduces the
+  golden's CAD-based window exactly, but on the full-res scan it gives a wider window than the
+  one recorded in the golden report. The explanation: the golden's analytic argument
+  (`VERDICT.md:64-66`) left one recess feature out of the envelope, while a real caliper section
+  would see it. That changes a flagged reading's classification (struck vs. unproven) under
+  orchestrator decision B2. The exact numbers and the margin math are worked in
+  `references/validation.md` and `analysis/golden/OOM-B02.md` — read those, not this summary,
+  before relying on a specific value.
 - Photo-transcribed uncertainty for P03 is not stated (`analysis/golden/OOM-P03.md`
   Questions). This skill applies B02's ±0.1 to all photo readings.
 - No golden recorded a residual tolerance for counting on **scans**. The scan rule (FFT

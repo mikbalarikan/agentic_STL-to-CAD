@@ -1,9 +1,12 @@
-# Datum cookbook: plane-primary vs axis-primary, with golden numbers
+# Datum cookbook: plane-primary vs axis-primary
 
-Read this before you write the `align.py` spec. Each example shows what the golden project
-did, the numbers it recorded, and what the new skill changes. Paths are abbreviated:
-`DRM/` = `golden-examples/dreame_brush-caps/`, `B02/` = `golden-examples/OOM-B02_side-brush-3-arm/`,
-`P03/` = `golden-examples/OOM-P03_mop-pad-bracket/`, `OD/` = `golden-examples/OD-H12_delonghi-dedica-pump/`.
+Read this before you write the `align.py` spec. Each example shows the *method* the golden
+project used and the *lesson* it teaches; it does not restate the golden numbers. If you need
+the actual figures for comparison, they live in the golden report and in `analysis/golden/*.md`
+— reading those on a blind run defeats the point of the run, so treat them as answer-key files,
+not skill references. Paths are abbreviated: `DRM/` = `golden-examples/dreame_brush-caps/`,
+`B02/` = `golden-examples/OOM-B02_side-brush-3-arm/`, `P03/` = `golden-examples/OOM-P03_mop-pad-bracket/`,
+`OD/` = `golden-examples/OD-H12_delonghi-dedica-pump/`.
 
 ## 1. The DOF ladder (RE_SPEC.md:109-124)
 
@@ -16,8 +19,10 @@ did, the numbers it recorded, and what the new skill changes. Paths are abbrevia
 
 Rules (all SYNTHESIS §1B):
 - Primary = the functional or mating surface, or the axis of an axis-primary part. **Never the
-  largest facet by default.** On the DRM raw scan the largest trimesh facets are ~0.27 mm²
-  fragments (`DRM/report/intake.json#top_facets`; SYNTHESIS §3).
+  largest facet by default.** On a raw decimated scan, arbitrary connectivity can leave the
+  largest trimesh facets as tiny fragments unrelated to any real feature
+  (`DRM/report/intake.json#top_facets`; SYNTHESIS §3) — always pick the primary by function, and
+  verify by area, not the reverse.
 - Axis from section circle fits (Kåsa or IRLS) or from normals with the **correct** eigen form:
   axis = eigenvector of the smallest eigenvalue of Σ n nᵀ. The baseline form
   "smallest eigenvector of Σ(I − n nᵀ)" is wrong (`analysis/baseline/stl2step-skills.md` §5.1).
@@ -26,19 +31,17 @@ Rules (all SYNTHESIS §1B):
 
 ## 2. Plane-primary worked examples
 
-### 2.1 DRM screw cap (the only unmasked clean pass, SYNTHESIS §0.1)
+### 2.1 DRM screw cap (plane-primary, functional flat)
 
-Golden (`DRM/report/source/align.py`, `DRM/report/screw_alignment.json`):
-- Primary: top disc face. Faces within 10° of an approximate normal given on the CLI,
-  area-weighted offset histogram (0.1 mm bins), peak bin ±0.15 mm, RANSAC tol 0.05 / 300 iters /
-  seed 0, widen to 2·tol, SVD refine. 19,219 faces, 33.09 mm², **rms 0.0072, max 0.055 mm**.
-- Origin X/Y: Kåsa circles on 25 Z stations filtered by radius hint; **10 stations,
-  r_mean 1.873** (this is the double-D drive hole: arcs r 1.949, flats ±1.64, `DRM/README.md` F06).
-- Clock: `pent@z` 5-fold phase of r-peaks, flat centre → +X, **clock −34.23°**.
-- Tilt: **hard-coded 0.0** (`align.py:79`) → CHK-TILT.
+Method (`DRM/report/source/align.py`): primary from an area-weighted, RANSAC+SVD-refined plane
+fit on a functional flat face, restricted to faces near an approximate normal given up front;
+XY origin from Kåsa circle fits on a drive-hole feature sampled over many Z stations, filtered
+by a radius hint; clock from the phase of a polygonal-flat feature aligned to +X; tilt was not
+independently measured in the golden run (hard-coded to 0) — see `analysis/golden/DRM.md` §2
+and `DRM/report/screw_alignment.json` for the exact fit values, radius, clock angle and any
+follow-up tilt estimate.
 
-Replay with this skill on the decimated inspection copy
-(`DRM/dreame_brush_screw_cap_scan_decimated.stl`; labelled inspection only, never a regrade):
+Spec shape used for the replay:
 
 ```json
 {"mesh": "intake/work.stl", "raw_scan": "input/scan.stl", "intake_json": "intake/intake.json",
@@ -46,83 +49,80 @@ Replay with this skill on the decimated inspection copy
  "noise": {"from": "intake/noise_primary.json"},
  "primary": {"type": "plane", "approx_normal": [0, 0, 1], "material_side": "-z",
              "desc": "top disc face", "why": "flat top face; the delivered datum frame (DRM README)"},
- "origin": {"xy": {"method": "kasa", "r_hint": 1.87, "r_tol": 0.1, "rms_max": 0.2,
-                   "z_range": [-2.5, -0.1], "stations": 25, "desc": "double-D drive hole F06"},
+ "origin": {"xy": {"method": "kasa", "r_hint": "<see DRM/report; not restated here>", "r_tol": 0.1, "rms_max": 0.2,
+                   "z_range": "<golden report>", "stations": 25, "desc": "double-D drive hole F06"},
             "definition": "drive-hole axis ∩ top face"},
- "clock": {"rule": "polygon_flat", "n": 5, "z": -1.5,
+ "clock": {"rule": "polygon_flat", "n": 5, "z": "<golden report>",
            "desc": "pentagon flat centre -> +X", "why": "drive flats are parallel to a pentagon flat"}}
 ```
 
-| Quantity | Golden (full-res) | This skill (decimated work copy, 300k faces) |
-|---|---|---|
-| Primary rms / max | 0.0072 / 0.055 | 0.0069 / 0.031 (17,997 faces) |
-| Origin stations, r_mean | 10, 1.873 | 25, 1.886 (z window differs; golden window not recorded) |
-| Clock | −34.23° | −34.25° (z = −1.5); −34.75° at z = −1.0 (chamfer/fillet zone; pick a z on straight flats) |
-| Matrix vs golden | — | rotation 0.020°, point disagreement max 0.014 mm (60k seeded pts) |
-| Tilt | 0 (not measured) | double-D alone **0.72° ± 0.11°** (dir 117°, 25 stations over 2.4 mm); counterbore F08 alone **2.82° ± 0.56°** (dir −111°, span 0.8 mm) — the vectors differ by ~1.1°, over 10× the combined stderr, so **not resolvable** from these two features (review M2). Do not pool them into one number. |
-
 Lessons:
-- The DRM origin feature is not a circle: the double-D Kåsa residual is ~0.11 mm median. The
-  centre is right by symmetry, but the residual is shape error, not noise. With a clean-circle
-  noise reference (counterbore F08 IRLS rms 0.031 mm) `align.py` STOPs on it. Use a true circle
-  (counterbore) for the residual check, or use the double-D only for the centre and say so.
-- The two independent tilt estimates (double-D 0.72°, counterbore 2.82°) disagree by more than
-  their combined stderr, so CHK-TILT reports `resolvable: false`, not a single measured value.
-  A 0.7°–2.8° tilt over the 5.12 mm part height is 0.06–0.25 mm lateral: small, but it was
-  assumed 0 in the golden. Record the disagreement; do not re-level the part on it unless the
-  bore is the functional primary, and do not silently pool short and long spans into one number.
-- Tilt from a short span is noisy: the counterbore alone (0.8 mm span) gave 2.82° ± 0.56°.
-  Prefer the longest clean coaxial span, and always report per-feature, not pooled-only.
+- A non-circular origin feature (here, a double-D flat-sided hole) still has a well-defined
+  centre by symmetry, but its Kåsa fit residual is shape error, not noise, and is typically much
+  larger than a clean-circle fit on the same part. Don't gate that residual against a clean-circle
+  noise floor; use a genuinely round feature for the noise reference, or use the flat-sided
+  feature only for the centre and say so.
+- When a part offers two independent short-baseline tilt estimates (e.g. two separate coaxial
+  features), they can disagree by more than their combined standard error. In that case CHK-TILT
+  should report `resolvable: false` rather than a single pooled value — see
+  `analysis/golden/DRM.md` §2 for the worked disagreement and the part-height context that makes
+  it material.
+- Tilt estimated from a short axial span is noisy. Prefer the longest clean coaxial span, and
+  always report per-feature, not pooled-only.
 
 ### 2.2 B02 side brush (plane primary with material in +Z)
 
-Golden (`B02/6_RE_work/INTAKE_CARD.md` §5, `B02/2_mesh_cleaned/alignment.json`, `B02/6_RE_work/qa/q03_datum_full.py`):
-- Primary (A): cup rim annulus → XY, z = 0, material +Z. Plane rms **0.052** over 30,342 raw faces;
-  QA re-fit rms 0.0080 (`_datum_indep.json`).
-- Secondary (B): common axis of cup bore + skirt + hex → +Z, "iterated rim-plane fit + robust circle fit".
-  QA used an IRLS Cauchy circle fit on the cup-bore wall faces, inner wall separated by the sign of
-  n·r̂: **bore R 10.2419**.
-- Clock (C): arm 1 → +X. QA used the 3-fold Fourier phase of the angular mass in r 20–34.
-- Scale: none; four photo-caliper ratios 0.984–0.996 judged non-uniform (CHK-SCALE flag).
-- Independent audit vs the frozen frame: **0.429° / point disagreement max 0.451 mm** (VERDICT.md:153-163).
+Method (`B02/6_RE_work/INTAKE_CARD.md` §5, `B02/2_mesh_cleaned/alignment.json`,
+`B02/6_RE_work/qa/q03_datum_full.py`): primary from the cup rim annulus (material above the
+plane); secondary from the common axis of the cup bore, skirt and hex, found by an IRLS
+(Cauchy) circle fit on the bore wall faces, inner wall selected by the sign of n·r̂; clock from
+the 3-fold Fourier phase of angular mass, arm 1 aligned to +X; no single global scale factor
+(photo-caliper ratios were judged non-uniform, CHK-SCALE flag). The independent audit against
+the frozen frame is reported in `VERDICT.md` — see `analysis/golden/OOM-B02.md` for the actual
+angular/point-disagreement figures rather than restating them here.
 
-Replay with this skill on the full-resolution scan `B02/2_mesh_cleaned/OOM-B02.stl` (work copy 199,999 faces):
+Spec shape used for the replay (`B02/2_mesh_cleaned/OOM-B02.stl`):
 
 ```json
-{"primary": {"type": "plane", "approx_normal": [0.3207, -0.3428, -0.8830], "material_side": "+z",
+{"primary": {"type": "plane", "approx_normal": "<measure from the planes survey>", "material_side": "+z",
              "desc": "cup rim annular face", "why": "axial seat against the motor boss (F02)"},
  "origin": {"xy": {"method": "wall_faces", "wall": "inner", "perp_max": 0.30, "r_min": 9.0,
-                   "r_max": 14.0, "r_hint": 10.35, "r_tol": 0.4, "rms_max": 0.3,
+                   "r_max": 14.0, "r_hint": "<measure from D-08>", "r_tol": 0.4, "rms_max": 0.3,
                    "z_range": [0.3, 2.2], "stations": 5, "desc": "cup bore wall faces"},
             "definition": "cup bore axis ∩ rim plane"},
  "clock": {"rule": "fourier_mass", "n": 3, "r_range": [20, 34], "pick_nearest_deg": 0.0,
            "desc": "arm 1 centreline -> +X", "why": "arms carry the sweep; SAF-1 labels arm 1"}}
 ```
 
-| Quantity | Golden | This skill |
-|---|---|---|
-| Rim plane rms | 0.052 (intake), 0.0080 (QA) | 0.0186 (6,091 work faces) |
-| Bore radius | 10.2419 (QA, faces z 0.3–2.2) | 10.39 mean over 5 slabs (10.48 → 10.21 up the draft) |
-| Matrix vs frozen golden | QA audit 0.429° / max 0.451 | 0.428° / mean 0.187, p95 0.398, max 0.526 mm |
-| Normals | "volume −2434 → inward, flip" | ray vote: **outward** (7 % vs 73 % hits); no flip. See §4. |
-| Open boundary loops | 21 | 21 (hex wall r 2.45–4.09, cup wall r 9.67–10.59, SAF-1 hole r 11.96–14.81) |
-| Tilt | not measured | not resolvable: 9.2° ± 2.9° (bore, 1.5 mm span) and 2.9° ± 0.46° (bore + hex) — partial coverage biases centres (hex centre sits ~0.2 mm off the bore centre) |
-
-Lessons: wall-face IRLS survives partial angular coverage where section loops never close
-(`allow_open_arcs` is the fallback for sections). The arm label is a convention: `fourier_mass`
-returns all n candidates; state the label rule (the golden compared mod 120°).
+Lessons:
+- Wall-face IRLS survives partial angular coverage where section loops never close
+  (`allow_open_arcs` is the fallback for sections). Expect several open boundary loops on a
+  part like this (hex wall, cup wall, a labelled hole) — count them at intake, don't assume a
+  closed ring.
+- The arm/feature label used for clocking is a convention, not a measurement: `fourier_mass`
+  returns all n candidates, so the skill must state the label rule explicitly (the golden
+  project compared candidates modulo the feature's own symmetry period).
+- Normal direction should be settled by a ray vote on the actual mesh, not assumed from a
+  volume-sign heuristic (see §4 below) — a naive flip can be wrong even when it looks confident.
+- Two independent tilt estimates from different features on the same part can disagree enough
+  that neither should be trusted alone, and partial angular coverage biases a feature's fitted
+  centre; see `analysis/golden/OOM-B02.md` for the worked numbers.
 
 ### 2.3 P03 mop bracket (what not to do, and partial coverage)
 
-Golden (`P03/2_mesh_cleaned/alignment.json`, `analysis/golden/OOM-P03.md` §3):
-- Primary: disc normal from **PCA** of flat-face vertices (126k), z = 0 on the textured velcro
-  field median (scanner-unresolvable surface, `INTAKE_CARD.md:42-44`). No rms/max recorded.
-- Origin X/Y: Kåsa rim circle, **resSD 0.039**.
-- Clock: **not recorded**; tread slots given phase 0 ("phase unaligned", TRACKER.md:31).
-- Refinement: the matrix was ICP-refined **to its own CAD** (0.405° / 0.093 mm) → CHK-CIRCULAR.
-  The verifier's own fit still sat **0.154° / 0.600 mm** away.
-- Coverage: "partial scan ~270°" appeared only in the report, not at intake (A9).
-- A raw-frame PCA radial p99.9 read OD 139 mm (tilt-inflated); the datum frame gave 128.6.
+Method used in the golden run, and what to avoid (`P03/2_mesh_cleaned/alignment.json`,
+`analysis/golden/OOM-P03.md` §3):
+- The primary plane was fit by PCA on a textured, scanner-unresolvable field (a velcro surface)
+  rather than a clean functional face, and no rms/max was recorded for it.
+- The clock rotation was never resolved and a feature was left at an arbitrary phase — flag
+  this rather than silently defaulting.
+- The datum matrix was refined post hoc using the part's own rebuilt CAD (an ICP fit "to match
+  the verifier's frame") — this is circular (CHK-CIRCULAR) and must not happen after the build.
+- Scan coverage (the mesh only spans part of the full revolution) was disclosed only in the
+  report, not recorded at intake.
+- A naive radial percentile computed in the raw (untilted) frame overstated the OD; measuring in
+  the levelled datum frame corrected it. See `analysis/golden/OOM-P03.md` §3 for the actual
+  figures.
 
 What the skill does instead: RANSAC+SVD plane with rms/max on a clean functional face (not a
 textured field), a stated clock rule, `intake.py coverage` at intake (angular coverage per radial
@@ -130,13 +130,14 @@ band), never measure radii before the datum, and never touch `alignment.json` af
 
 ## 3. Axis-primary worked example: OD-H12 pump
 
-Golden (`OD/README.md:14`, `OD/report/alignment_T1.json`, `analysis/golden/OD-H12.md` §3):
-- Primary: pump revolution axis → +Z (outlet −Z, inlet barb +Z). Secondary: side-plate normal → +X.
-  Origin "on the axis"; the z origin is not a named feature.
-- Fit method and residuals: **not recorded** (bare 4×4). Noise: **p95 0.13** on a "clean cylinder"
-  self-fit (which cylinder is not recorded). Coil kept 0.2 mm off-axis, measured, not snapped.
+Method (`OD/README.md`, `OD/report/alignment_T1.json`, `analysis/golden/OD-H12.md` §3): primary
+from the shared revolution axis of the body/outlet-tube cylinders; secondary from a side-plate
+normal; origin lives on the axis with no named z-zero feature. The golden record did not keep
+the fit method or residuals for the primary axis, and its stated noise floor came from a self-fit
+on an unnamed "clean cylinder" — treat an unnamed noise source as a gap to close, not a value to
+reuse. See `analysis/golden/OD-H12.md` §3 for whatever figures were recorded.
 
-Skill spec shape for this class (not replayed: the OD scan is 980k faces and the record has no
+Skill spec shape for this class (not replayed: the OD scan is large and the record has no
 datum numbers to compare against):
 
 ```json
@@ -163,15 +164,14 @@ and the line through the section centres (two independent estimators).
 
 ## 4. Normal orientation (correction to SYNTHESIS A5)
 
-SYNTHESIS A5 and B02 `INTAKE_CARD.md:36` flip normals when the signed volume is negative. On an
-open (non-watertight) scan the signed volume depends on the coordinate origin, so its sign is
-not evidence. Measured on the B02 raw scan: in the golden datum frame the dome-top faces have
-mean n_z **+0.93** and the rim faces **−0.99**, i.e. the normals are already outward, while the
-volume is −2434 mm³ (and −5397 mm³ after the rigid transform). `intake.py` therefore uses the
-volume sign only for watertight meshes and a seeded ray vote otherwise. If you flip on the B02
-volume sign, the rim-facing faces end up pointing into the material and `level_plane` picks the
-dome (z ≈ 11) instead of the rim. (This was found while testing this skill; it is listed as an
-open question for the owner.)
+SYNTHESIS A5 flips normals when the signed volume is negative. On an open (non-watertight) scan
+the signed volume depends on the coordinate origin, so its sign is not evidence: a part can have
+outward-facing normals on both a top feature and a rim feature while the signed volume still
+reads negative (and can even change sign after a rigid transform). `intake.py` therefore uses
+the volume sign only for watertight meshes and a seeded ray vote otherwise. Flipping on volume
+sign alone can point rim-facing faces into the material and make `level_plane` pick the wrong
+candidate face. See `analysis/golden/OOM-B02.md` (normals section) for the case that surfaced
+this. (This was found while testing this skill; it is listed as an open question for the owner.)
 
 ## 5. Spec reference (`align.py`)
 
@@ -190,5 +190,6 @@ open question for the owner.)
 | `landmarks` | `[{"name", "stat": "zmax|zmin|rmax|xmin…", "r_range", "z_range", "expected", "tol", "tol_source"}]` |
 | `tilt_reference_deg` | default 0.3 (RE_SPEC.md:241, report-only) |
 
-Defaults marked with numbers are the values the golden code used (DRM `align.py`, B02 `q03_datum_full.py`);
-they are parameters, not thresholds.
+The numeric defaults above (`cone_deg`, `tol`, `bin_mm`, `halfwidth_mm`, `perp_max`, `iters`,
+`tilt_reference_deg`) are algorithm parameters cited from `RE_SPEC.md`/the golden code, not a
+specific part's measured answers — they apply regardless of which part you are running.

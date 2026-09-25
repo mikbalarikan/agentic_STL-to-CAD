@@ -20,8 +20,8 @@ Independence statement written into the output: the builder's matrix is used ONL
 faces belong to a named region (selection); every fit is done by this script on raw-scan data.
 
 Reference band ≤0.3 deg / ≤0.15 mm is RE_SPEC.md:241 and is REPORT-ONLY (QUESTIONS.md Q2,
-run-contract.md §9). Both approved OOM goldens exceeded it: B02 0.429 deg / 0.451 mm max point
-disagreement; P03 0.154 deg / 0.600 mm (analysis/golden/OOM-B02.md §3, OOM-P03.md §3).
+run-contract.md §9). Both approved OOM goldens exceeded this reference band and were still
+approved (analysis/golden/OOM-B02.md §3, OOM-P03.md §3 have the actual figures).
 """
 from __future__ import annotations
 
@@ -208,7 +208,8 @@ def main(argv: list[str] | None = None) -> int:
             # (inner) and high-radius (outer) faces disagree in sign. Detect that BEFORE trusting
             # `outer_sign` -- without it, the "outermost 10%" reference is not really the outer
             # wall, it is an arbitrary subset of the SAME wall, and the resulting filter silently
-            # keeps a near-random half of the points (B02 replay D6: a false 17.8 deg / 9.2 mm).
+            # keeps a near-random half of the points (B02 replay D6: this produced a badly wrong
+            # audit result -- see the replay report for the actual figures).
             inner_ref = rq <= np.percentile(rq, 10)
             inner_sign = np.sign(np.average(ndr[inner_ref], weights=W[inner_ref])) or 1.0
             if inner_sign == outer_sign:
@@ -249,7 +250,8 @@ def main(argv: list[str] | None = None) -> int:
         # labelling mod 360/k: pick the candidate nearest the builder's +X (q03:131-139 tried all).
         # The declared offset must be folded in HERE, before the nearest-candidate choice: applying
         # it only at the end (after `best` was already picked) can make a different, wrong candidate
-        # look nearer to bx than the true one (DRM replay: picked the wrong flat, 73 deg off).
+        # look nearer to bx than the true one (DRM replay: picked the wrong flat by a large margin
+        # -- see the replay report for the actual angle).
         bx = math.degrees(math.atan2(xb @ R0[1], xb @ R0[0]))
         cands = [ph + j * 360.0 / k for j in range(k)]
         best = min(cands, key=lambda c: abs((((c + offset) - bx + 180) % 360) - 180))
@@ -292,8 +294,9 @@ def main(argv: list[str] | None = None) -> int:
         "reference_band": "≤0.3° / ≤0.15 mm (RE_SPEC.md:241)", "reference": REF_BAND,
         "within_reference": bool(ang <= 0.3 and np.linalg.norm(o_b) <= 0.15),
         "blocking": False,
-        "note": "REPORT-ONLY (QUESTIONS.md Q2). Golden precedent: B02 0.429°/0.451 mm max and P03 "
-                "0.154°/0.600 mm were both approved with this recorded.",
+        "note": "REPORT-ONLY (QUESTIONS.md Q2). Golden precedent: both B02 and P03 exceeded this "
+                "reference band and were still approved with it recorded (see "
+                "analysis/golden/OOM-B02.md and OOM-P03.md for the actual figures).",
         "T_qa": Tq.tolist(),
     }
     out.update(res)

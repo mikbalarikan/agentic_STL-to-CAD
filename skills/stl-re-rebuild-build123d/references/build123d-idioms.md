@@ -42,8 +42,9 @@ body = revolve_rz([(rb, z0), (ro, z0), (ro, z1), ...])      # every r, z is a P[
   (`baseline/oomwoo-re-pipeline/RE_SPEC.md:260-262`).
 - For curved meridians, use `ThreePointArc` / `CenterArc` for arcs and `Spline` through
   **fitted** points (B02 groove and dome, `build_OOM-B02.py:140-157`).
-- Keep every profile vertex a param expression. OD's profile carried three bare radii
-  (3.05, 2.95, 2.6), which is a D6 violation to avoid (`analysis/golden/OD-H12.md` §6).
+- Keep every profile vertex a param expression. OD's profile carried several bare numeric
+  radii instead of named params, which is a D6 violation to avoid (`analysis/golden/OD-H12.md`
+  §6).
 - If the result has volume ≤ 0, the profile orientation is reversed. P03 mirrored the body
   as a safety net (`rebuild_OOM-P03.py:78-79`). `validate_step.py` fails on volume ≤ 0
   either way.
@@ -57,8 +58,8 @@ for th in P.group("leg_theta"):            # measured, possibly unequal
     body = body + Rot(0, 0, th) * leg
 ```
 
-- DRM used explicit `Rot` loops because its angles are unequal (legs at 60°, 150° and −60°;
-  `build_snap.py:63-64`; `README.md:50`).
+- DRM used explicit `Rot` loops because its leg angles are unequal, not a fixed pitch
+  (`build_snap.py:63-64`; `README.md:50`).
 - M02 fused rotated copies of one tooth in a loop (`model.py:57-64`). B02 used
   `Rotation(0,0,120k)` (`build_OOM-B02.py:279-280`).
 - `PolarLocations` is fine for equal pitch, but it has to wrap the **objects**, not the

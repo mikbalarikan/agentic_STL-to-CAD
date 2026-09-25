@@ -160,8 +160,8 @@ CHK-PUBLISH, CHK-LIKE4LIKE, CHK-NUMBERS, CHK-INDEP. Definitions and evidence:
 ## 11. Clarifications added by the orchestrator session (2026-09-25)
 
 - **List values in `params.json`.** `value` and `measured` may be a number or a list of
-  numbers. Use a list for placements measured at unequal angles (DRM legs at 60°/150°/−60°,
-  `golden-examples/dreame_brush-caps/report/snap_params.json`). Numbered keys
+  numbers. Use a list for placements measured at unequal angles (DRM's leg angles are a
+  worked example, `golden-examples/dreame_brush-caps/report/snap_params.json`). Numbered keys
   (`leg_theta_1`, …) are also valid. A consumer must accept both.
 - **Scale correction.** When CHK-SCALE applies one uniform `scale_factor ≠ 1`, it is folded
   into `matrix_4x4` (raw scan → scaled datum frame), so the CAD is built in true mm

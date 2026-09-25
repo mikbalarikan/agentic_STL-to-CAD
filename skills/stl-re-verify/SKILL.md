@@ -72,8 +72,9 @@ A changed hash invalidates QA, so re-run it (M02 `qa_report.json` checks[0], [21
    ```
 3. Report the rotation difference, origin offset, and point disagreement (mean / p95 / max)
    against ≤0.3° / ≤0.15 mm (`RE_SPEC.md:241`). It is **never blocking**
-   (QUESTIONS.md Q2, run-contract §9). Both approved OOM goldens exceeded it: B02 0.429° /
-   0.451 mm, P03 0.154° / 0.600 mm.
+   (QUESTIONS.md Q2, run-contract §9). Both approved OOM goldens exceeded this reference band
+   and were still approved — see `analysis/golden/OOM-B02.md` / `analysis/golden/OOM-P03.md`
+   for the actual figures.
 4. If the offset is large compared with the bands, say so in the verdict. It also explains ICP
    deltas.
 5. The builder matrix only *selects* named regions. All fits are QA code on the raw scan: normal
@@ -128,10 +129,13 @@ python $S/step_check.py check --step build/<part>_datum.step build/<part>.step -
      T15). Photo-transcribed readings carry ±0.1 effective (`MEASUREMENTS.md:10` via SYNTHESIS §4).
 4. On a Tier-1 miss, check achievability before blaming the geometry. Run the same jaw on the
    **scan** section (CHK-ACHIEVABLE).
-   - B02 F06 caliper 24.84 lay 1.15 mm below the achievable window 25.99…27.08 on a 3-lobed
-     skirt. That was attribution, not modelling (`OOM-B02.md` §8; window disputed: `QUESTIONS.md`
-     §C records this skill's own jaw on the full-res scan giving 24.99–27.25).
-   - Record which it is in the miss explanation.
+   - On B02, a Tier-1 caliper reading fell below the achievable window on a 3-lobed skirt.
+     That was an attribution problem (the caliper reading applied as the wrong kind of
+     dimension), not a modelling error (`OOM-B02.md` §8; the window itself is disputed —
+     `QUESTIONS.md` §C records this skill's own jaw on the full-res scan giving a different,
+     wider window than the golden recorded). See the cited files for the actual reading and
+     window figures.
+   - Record which it is (attribution vs. modelling) in the miss explanation.
 
 ## 5. Tier-2: independent registration
 
@@ -144,7 +148,8 @@ python $S/tier2_icp.py --scan input/scan.stl --scan-kind full --align intake/ali
   defaults).
 - **converged = false ⇒ the gate is INVALID** (`re-qa-verifier.md:37-38`; the W01 ICP hit its cap).
   You may raise `--max-iter` once and record both runs, with the reason (e.g. "axisymmetric part,
-  slides slowly": a DRM new-skill replay needed 90 where the default 60 was not enough). `--max-iter`
+  slides slowly": a DRM replay needed more iterations than the default before convergence — see
+  `references/gate-protocol.md` or the replay report for the actual count). `--max-iter`
   is a parameter, not a threshold to tune until it passes -- never invent a new default; keep raising
   it (and recording why) only as far as the part's geometry actually explains. Axisymmetric parts
   slide about their axis and converge slowly.
@@ -187,18 +192,20 @@ python $S/tier2_icp.py --scan input/scan.stl --scan-kind full --align intake/ali
 4. Read the output in this order:
    1. **Unmasked vs masked**, both directions, side by side.
       `mask_dependent_passes` non-empty ⇒ CHK-MASK finding ⇒ at best APPROVED_WITH_LIMITATIONS,
-      and the limitation quotes the unmasked number (B02 hex 1.624).
+      and the limitation quotes the unmasked number (B02's masked hex-pocket pass is a worked
+      case: see `analysis/golden/OOM-B02.md` for the unmasked figure).
    2. **Sensitivity.** Leave-one-out per mask plus the open-boundary radius sweep. A pass that
       flips inside the sweep is fragile, so say so.
    3. **Observability split** of CAD→scan (heuristic, n=1: OD; B02 used the open-boundary mask
       for the same purpose).
-      - The unobservable fraction is a coverage fact, not a pass. OD: 25.65 % unobservable, and
-        the observable p95 0.567 still missed.
-      - Parameters are recorded; they are OD's (0.5 mm, 60°, 6 rays, 20k seed 5).
+      - The unobservable fraction is a coverage fact, not a pass. On OD, a large fraction of the
+        CAD surface was unobservable from the scan, and the observable-only number *still*
+        missed the band — see `analysis/golden/OD-H12.md` for the actual figures.
+      - Record the ray-test parameters used (offset, cone angle, ray count, seed).
    4. **Over-band clusters** (CHK-CLUSTER, CHK-ENUM). Treat every scan→CAD cluster as a real
       missing feature until disproven: count the points, look for a flat top, check the photos.
-      - P03 it1 dismissed a coherent axis cluster as "occlusion". It was the drive stem:
-        158k raw verts and 4907 skin points > 4 mm (`OOM-P03.md` §8).
+      - P03 it1 dismissed a coherent axis cluster as "occlusion". It was the drive stem, and a
+        large fraction of its skin points sat outside the Tier-2 band (`OOM-P03.md` §8).
       - Explain each cluster in `review.json` → `cluster_explanations`. Unexplained clusters stay
         findings.
    5. **Zones.** Every functional interface passes or misses on its own. A zone passing does not
@@ -222,8 +229,9 @@ python $S/overlay.py --scan input/scan.stl --align intake/alignment.json --cad b
 
 - **Photo plausibility / CHK-ENUM** (SYNTHESIS E15, A8). Walk every photo. Every photographed
   feature must exist in the CAD, and no CAD feature may be absent from photos and scan (nothing
-  hallucinated). P03 G4 listed 8 kidneys, the hex, ~51 tread slots, the pad boss, the stem and the
-  socket. Tick each one against the intake feature list.
+  hallucinated). P03's own checklist enumerated every distinct feature family on the part
+  (`golden-examples/OOM-P03_mop-pad-bracket/6_RE_work/VERDICT.md` §G4 for the list). Tick each
+  one against the intake feature list.
 - **CHK-CIRCULAR**:
   - `fail` if the grading gate itself compares the result with itself: datum ICP'd to own CAD
     and graded in that frame, or expected values derived from this scan.
@@ -231,10 +239,12 @@ python $S/overlay.py --scan input/scan.stl --align intake/alignment.json --cad b
     Label such validators "consistency check, not independent evidence" (OD 13/13).
 - **CHK-LIKE4LIKE.** When comparing with a previous iteration (`_itN_SUPERSEDED/qa/gate.json`),
   compare only runs with the same protocol: same regime, masks, ICP and sampling.
-  - Otherwise report both runs and say which part of the "improvement" came from protocol. B02
-    it1 → it2: hex 1.846 → 0.316 came from masking, not geometry (`OOM-B02.md` §8).
+  - Otherwise report both runs and say which part of the "improvement" came from protocol. On
+    B02, the it1 → it2 hex-pocket improvement came from masking, not a geometry fix
+    (`OOM-B02.md` §8).
 - **CHK-INDEP, CHK-FILLET, CHK-PATCHWORK**: from §0, §3.
-- **Limitations.** Each needs `rerun_trigger`, e.g. "one caliper reading on F01 → re-run" (B02 L3).
+- **Limitations.** Each needs `rerun_trigger`, e.g. "one caliper reading on the uncalipered
+  critical feature → re-run" (B02 L3).
   Also add a **claim boundary**: what this result is not fit for.
 
 ## 9. Verdict
@@ -288,6 +298,7 @@ without reporting both runs.
 
 ## Open questions (not decided here)
 
-- The ICP cap/tolerance (60, 1e-6) comes from one project (B02). The DRM decimated screw needed 109
-  iterations. (Non-convergence is reported and invalidates the Tier-2 gate regardless of cap;
+- The ICP cap/tolerance (60, 1e-6) comes from one project (B02). A DRM decimated-scan replay
+  needed well more than the default cap to converge (see the replay report for the count).
+  (Non-convergence is reported and invalidates the Tier-2 gate regardless of cap;
   run-contract §12.)

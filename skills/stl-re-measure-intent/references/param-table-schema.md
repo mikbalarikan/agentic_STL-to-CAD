@@ -41,22 +41,23 @@ from it. The table is never edited by hand (run-contract §4; CHK-NUMBERS downst
 | `evidence` | yes | Figure/JSON path, photo id, or `file:line`. | C13 |
 | `critical` | yes | A functional interface (mating, drive, seat). | C9 |
 | `attribution` | caliper-photo | Who confirmed which feature and which jaw placement, and when. | C5; B02 `MEASUREMENTS.md:19-24` |
-| `derivation` | when value ≠ measured under `caliper-direct` | E.g. `"radius = D/2"`, `"AF·2/√3"`. | B02 `SKIRT_R_LOBE = 26.85/2` (`PARAM_TABLE.md:38`) |
+| `derivation` | when value ≠ measured under `caliper-direct` | E.g. `"radius = D/2"`, `"AF·2/√3"`. | B02 derives a radius from a caliper diameter reading this way (`PARAM_TABLE.md:38`) |
 | `scatter_mm` | `symmetry` | Measured spread across instances. | C10 |
-| `scatter_note` | `symmetry` beyond noise, or on a `deg` value | Intent reason plus the residual it leaves. | C10; B02 arms 120° |
+| `scatter_note` | `symmetry` beyond noise, or on a `deg` value | Intent reason plus the residual it leaves. | C10; e.g. B02's arm spacing |
 | `rerun_trigger` | critical and not calipered | What reading would force a re-run. | B02 `VERDICT.md:28-30` |
-| `frame` | angles | Frame and sign convention if it differs from the top level (it should not). | CHK-FRAME, B02 −71° vs +59° |
+| `frame` | angles | Frame and sign convention if it differs from the top level (it should not). | CHK-FRAME — see `analysis/golden/OOM-B02.md` for a case where the intake-frame and frozen-frame angles differed |
 | `note` | optional | Free text; rendered under the table. | — |
 
 ## 3. `struck[]` (CHK-ACHIEVABLE)
 
 ```json
-{"name": "F06 skirt OD MIN", "reading": 24.84, "source": "caliper-photo D-05",
- "window": "24.99..27.25 at z=1.00 (sim_caliper.json)",
- "proof": "3-lobed skirt: two jaws read a support width; reading + 0.1 < window min",
- "rerun_trigger": "if 24.84 was taken another way (flat-to-axis x2 ...), re-measure with a jaw-placement photo"}
+{"name": "<feature> OD MIN", "reading": "<illustrative>", "source": "caliper-photo <id>",
+ "window": "<window lo>..<window hi> at z=<station> (sim_caliper.json)",
+ "proof": "e.g. a lobed cross-section: two jaws read a support width, not a radius; reading + u < window min",
+ "rerun_trigger": "if the reading was taken another way (e.g. flat-to-axis x2), re-measure with a jaw-placement photo"}
 ```
-All five keys except `source` are required. Template: `OOM-B02/6_RE_work/PARAM_TABLE.md:108-121`.
+All five keys except `source` are required. Template: `OOM-B02/6_RE_work/PARAM_TABLE.md:108-121`
+(a real worked case — read it for the actual figures, not restated here).
 
 ## 4. `simplifications[]`
 
@@ -82,7 +83,7 @@ re-measure, re-count), then record the check as `finding` with a note on what wa
 | `symmetry` with `scatter_mm` > noise and no `scatter_note` | error | C10 |
 | `symmetry` without `scatter_mm`, or with a scalar/prose `measured` instead of a per-instance list | error | C10 (round 1, M1) |
 | Critical `scan` value with a snapping rule | error | C9 |
-| Critical `scan` value moved beyond the scan noise floor by ANY rule, `scatter_note` included | error | C9 (round 1, M1: closes the symmetry/`scatter_note` bypass — B02 hex AF 7.358) |
+| Critical `scan` value moved beyond the scan noise floor by ANY rule, `scatter_note` included | error | C9 (round 1, M1: closes the symmetry/`scatter_note` bypass — a B02 critical hex feature was the case that surfaced this; see `analysis/golden/OOM-B02.md`) |
 | Critical and uncalipered without `rerun_trigger` | warning | B02 limitation 3 |
 | `count` from scan whose estimator doesn't name rotational order/FFT | error | CHK-COUNT |
 | `photo-inferred`/`assumed`/`standard` source with a measuring rule, **or** `assumed`/`photo-inferred` rule with a measured source (e.g. `source: scan, rule: assumed`), **or** an unmeasured source with non-null `measured` | error | C11 (round 1, M4: enforced both ways) |
