@@ -1,0 +1,37 @@
+{
+ "schema": "stl-re/datum_audit@1",
+ "tool": "datum_audit.py",
+ "tool_version": "fixture",
+ "inputs": {},
+ "seed": 0,
+ "created": "1970-01-01T00:00:00+00:00",
+ "independence": "builder matrix used only to select named regions; all fits are QA code on raw scan",
+ "primary": {
+  "type": "plane",
+  "method": "region SVD",
+  "faces": 120,
+  "fit_rms_mm": 0.004,
+  "fit_max_mm": 0.01
+ },
+ "angle_deg": 0.05,
+ "axis_angle_deg": 0.05,
+ "clock_audited": false,
+ "origin_offset_mm": 0.02,
+ "origin_offset_vec_mm": [
+  0.01,
+  0.01,
+  0.0
+ ],
+ "point_disagreement_mean_mm": 0.01,
+ "point_disagreement_p95_mm": 0.03,
+ "point_disagreement_max_mm": 0.05,
+ "reference_band": "\u22640.3\u00b0 / \u22640.15 mm (RE_SPEC.md:241)",
+ "reference": {
+  "angle_deg": 0.3,
+  "origin_offset_mm": 0.15,
+  "source": "baseline/oomwoo-re-pipeline/RE_SPEC.md:241"
+ },
+ "within_reference": true,
+ "blocking": false,
+ "note": "REPORT-ONLY (QUESTIONS.md Q2)."
+}

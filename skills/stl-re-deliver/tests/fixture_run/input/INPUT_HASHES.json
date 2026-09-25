@@ -1,0 +1,22 @@
+{
+  "schema": "stl-re/INPUT_HASHES@1",
+  "tool": "init_run.py",
+  "tool_version": "fixture",
+  "inputs": {
+    "input/scan.stl": "ccfdd29e54f153d510fed2ae85d59a8f24da55513d968d2c636001ef1f85eb23"
+  },
+  "seed": 0,
+  "created": "1970-01-01T00:00:00+00:00",
+  "part": "fixture_part",
+  "scan_resolution": "full",
+  "files": [
+    {
+      "path": "input/scan.stl",
+      "role": "scan",
+      "sha256": "ccfdd29e54f153d510fed2ae85d59a8f24da55513d968d2c636001ef1f85eb23",
+      "bytes": 1451,
+      "source": "synthetic",
+      "mode": "copy"
+    }
+  ]
+}

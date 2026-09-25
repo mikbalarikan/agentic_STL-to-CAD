@@ -1,0 +1,225 @@
+{
+ "schema": "stl-re/deviation@1",
+ "tool": "deviation_gate.py",
+ "tool_version": "fixture",
+ "inputs": {},
+ "seed": 0,
+ "created": "1970-01-01T00:00:00+00:00",
+ "scan": {
+  "path": "input/scan.stl",
+  "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+  "kind": "full",
+  "full_res": true,
+  "vertices": 20000,
+  "faces": 40000
+ },
+ "cad": {
+  "path": "build/fixture_part_datum.step",
+  "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+  "tessellated_by_qa": true,
+  "tessellation": {
+   "tolerance": 0.005,
+   "angular_tolerance": 0.05
+  },
+  "faces": 400
+ },
+ "frame": "datum",
+ "registration": {
+  "method": "trimmed ICP",
+  "iterations": 12,
+  "max_iterations": 60,
+  "converged": true,
+  "delta_deg": 0.01,
+  "delta_mm": 0.004,
+  "file": "qa/registration.json"
+ },
+ "sampling": {
+  "s2c_points": "all",
+  "s2c_seed": 0,
+  "c2s_samples": 300000,
+  "c2s_seed": 2,
+  "k": 8,
+  "n_samp": 3000000,
+  "dist_seed": 0,
+  "vertex_candidates": false,
+  "method": "KD candidates -> exact point-to-triangle (OD gate.py:8-17)"
+ },
+ "regime": {
+  "name": "RE_SPEC",
+  "source": "baseline/oomwoo-re-pipeline/RE_SPEC.md:170-175",
+  "bands": {
+   "p95_mm": 1.6,
+   "max_mm": 4.0,
+   "tier1_abs_mm": 0.15,
+   "interface_max_mm": 0.8
+  }
+ },
+ "scan_to_cad": {
+  "n": 20000,
+  "rms": 0.041,
+  "mean": 0.041,
+  "p50": 0.03,
+  "p95": 0.088,
+  "p99": 0.12,
+  "max": 0.31
+ },
+ "cad_to_scan": {
+  "n": 20000,
+  "rms": 0.9,
+  "mean": 0.9,
+  "p50": 0.02,
+  "p95": 3.9,
+  "p99": 4.0,
+  "max": 4.0
+ },
+ "scan_to_cad_masked": {
+  "n": 20000,
+  "rms": 0.041,
+  "mean": 0.041,
+  "p50": 0.03,
+  "p95": 0.088,
+  "p99": 0.12,
+  "max": 0.31
+ },
+ "cad_to_scan_masked": {
+  "n": 20000,
+  "rms": 0.9,
+  "mean": 0.9,
+  "p50": 0.02,
+  "p95": 3.9,
+  "p99": 4.0,
+  "max": 4.0
+ },
+ "unmasked": {
+  "scan_to_cad": {
+   "n": 20000,
+   "rms": 0.041,
+   "mean": 0.041,
+   "p50": 0.03,
+   "p95": 0.088,
+   "p99": 0.12,
+   "max": 0.31
+  },
+  "cad_to_scan": {
+   "n": 20000,
+   "rms": 0.9,
+   "mean": 0.9,
+   "p50": 0.02,
+   "p95": 3.9,
+   "p99": 4.0,
+   "max": 4.0
+  }
+ },
+ "masked_fraction": {
+  "scan_to_cad": 0.0,
+  "cad_to_scan": 0.0
+ },
+ "bands": {
+  "scan_to_cad": {
+   "unmasked": null,
+   "masked": null
+  },
+  "cad_to_scan": {
+   "unmasked": null,
+   "masked": null
+  }
+ },
+ "masks": [],
+ "cad_to_scan_observable": {
+  "n": 18000,
+  "rms": 0.05,
+  "mean": 0.05,
+  "p50": 0.02,
+  "p95": 0.09,
+  "p99": 0.14,
+  "max": 0.29
+ },
+ "unobservable_fraction": 0.1,
+ "observability": {
+  "note": "fixture"
+ },
+ "zones": {
+  "bore_wall": {
+   "kind": "functional_interface",
+   "note": "bore wall vs mating shaft",
+   "band": [
+    null,
+    0.8
+   ],
+   "scan_to_cad": {
+    "unmasked": {
+     "n": 900,
+     "rms": 0.05,
+     "mean": 0.05,
+     "p50": 0.03,
+     "p95": 0.1,
+     "p99": 0.2,
+     "max": 0.4
+    },
+    "masked": {
+     "n": 900,
+     "rms": 0.05,
+     "mean": 0.05,
+     "p50": 0.03,
+     "p95": 0.1,
+     "p99": 0.2,
+     "max": 0.4
+    },
+    "masked_fraction": 0.0,
+    "band_unmasked": null,
+    "band_masked": null
+   },
+   "cad_to_scan": {
+    "unmasked": {
+     "n": 900,
+     "rms": 0.05,
+     "mean": 0.05,
+     "p50": 0.03,
+     "p95": 0.1,
+     "p99": 0.2,
+     "max": 0.4
+    },
+    "masked": {
+     "n": 900,
+     "rms": 0.05,
+     "mean": 0.05,
+     "p50": 0.03,
+     "p95": 0.1,
+     "p99": 0.2,
+     "max": 0.4
+    },
+    "masked_fraction": 0.0,
+    "band_unmasked": null,
+    "band_masked": null
+   }
+  }
+ },
+ "sensitivity": [],
+ "mask_dependent_passes": [],
+ "over_band_clusters": {
+  "scan_to_cad": {
+   "threshold_mm": 0.8,
+   "eps_mm": 1.0,
+   "min_pts": 20,
+   "n_over": 0,
+   "fraction_over": 0.0,
+   "clusters": [],
+   "n_clusters_ge_min": 0,
+   "points_in_small_clusters": 0
+  },
+  "cad_to_scan": {
+   "threshold_mm": 0.8,
+   "eps_mm": 1.0,
+   "min_pts": 20,
+   "n_over": 0,
+   "fraction_over": 0.0,
+   "clusters": [],
+   "n_clusters_ge_min": 0,
+   "points_in_small_clusters": 0
+  },
+  "reading": "scan_to_cad clusters = scan material the CAD lacks (missing feature or artefact); cad_to_scan clusters = CAD material with no scan (invented or unobservable)"
+ },
+ "gate_valid": true,
+ "gate_invalid_reasons": [],
+ "label": "OFFICIAL (full-res)"
+}
