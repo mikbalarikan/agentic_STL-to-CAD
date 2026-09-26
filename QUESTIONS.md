@@ -99,3 +99,23 @@ Alternatively, can the M02 scan be added?
   UNPROVEN (margin smaller than the measured scan offset), not struck.
 - **B02 open-edge count:** the intake records 3561; the skill counts 11,466 on the full-res
   scan. The counting convention is not recorded.
+
+## E. Findings from the real run `dreame_mop_bottom_cover` (2026-09-26, prismatic frame, scan-only)
+
+Open for the owner; the run worked around each one and declared it in its `DECISIONS.md`.
+
+- **No prismatic datum in `align.py`.** `origin.xy` accepts only circle / wall-face fits, so a
+  rectangular frame with no round feature cannot be datumed. The run used a run-local
+  `align_prismatic.py` (3 planes via `datum_fit.level_plane`, same STOP rule, same
+  `alignment.json` keys). Candidate: add a `plane` method to `origin.xy` + a tertiary plane.
+- **`trimesh` sections drop open chains.** `Path3D.discrete` only returns closed paths; open
+  (dangling) section chains of an open scan are silently missing. Use `entities[*].discrete()`
+  when you need every trace (`stl-re-measure-intent/scripts/sections.py` should be checked).
+- **Warped part vs flat design intent.** The flange drooped ~1.1 mm over 190 mm. No skill says how
+  to measure design intent on a warped scan. The run fitted a smooth dz(x,y) field to the flange top
+  and measured on a de-warped copy (declared), keeping verify on the original scan. Needs an owner rule.
+- **Nested list params.** `param_table.py` rejects lists of points (meridians, outlines); the run
+  flattened them into n-tuples with a `note`. A `points` type would be cleaner.
+- **Station-profile extrusions and CHK-PATCHWORK.** Extruding fitted scan sections per constant
+  x-range gives many narrow planar strips (median plane area ≪ 1 mm²). Not ruled/polyline, but a
+  planar-facet warning sign; the census reported it, no rule decides it.

@@ -1,6 +1,6 @@
 ---
 name: stl-re-deliver
-description: Packages a verified STL→CAD (STEP) reverse-engineering run. Renders README.md from the gate and parameter JSON, writes MANIFEST.json with sha256 and roles, and re-runs the build in fresh processes. Use only after stl-re-verify has written qa/VERDICT.md and qa/gate.json, when asked to deliver, package, document or hand off the result.
+description: Packages a verified STL→CAD (STEP) reverse-engineering run. Renders README.md from the gate and parameter JSON, writes MANIFEST.json with sha256 and roles, re-runs the build in fresh processes, and zips deliverables + all source files into one downloadable package. Use only after stl-re-verify has written qa/VERDICT.md and qa/gate.json, when asked to deliver, package, document or hand off the result.
 ---
 
 # stl-re-deliver
@@ -27,7 +27,8 @@ layout, the JSON keys, the verdicts, `DECISIONS.md` and the check ids used below
 | `qa/gate.json`, `qa/VERDICT.md` (required, CHK-PUBLISH) | `deliver/limitations.json` (you write it, step 2) |
 | `measure/params.json`, `build/export_check.json`, `intake/alignment.json`, `intake/regime.json` | `deliver/repro.json` (`scripts/repro_check.py`) |
 | `build/model.py`, `build/*.step`, `input/INPUT_HASHES.json`, `DECISIONS.md` | `deliver/README.md` (`scripts/make_readme.py`) |
-| `_itN_SUPERSEDED/` | `deliver/MANIFEST.json` (`scripts/make_manifest.py`, always last) |
+| `_itN_SUPERSEDED/` | `deliver/MANIFEST.json` (`scripts/make_manifest.py`, last file inside the run) |
+| `deliver/MANIFEST.json` (must exist) | `<job folder>/<part>_RE_<VERDICT>_<date>.zip` + `.sha256` (`scripts/package_zip.py`, after the manifest) |
 
 Scripts live in `scripts/`. All take `--run <run folder>`. Exit 0 means done, 2 means
 refused (the message names the check and the next action), 1 means `repro_check.py`
@@ -183,6 +184,19 @@ the golden `MANIFEST.json` shape (`golden-examples/*/MANIFEST.json`) and facet-f
   if `README.md` or a reproducible `repro.json` is missing (definition of done, facet-film T36).
 - If any role is `unclassified`, look at the file. It may be a stray intermediate that
   belongs in a stage folder.
+
+### 5b. Package the delivery zip (standing owner decision, 2026-09-26)
+
+```
+python scripts/package_zip.py --run <run> [--out-dir <job folder>] [--include-scan]
+```
+
+Every job is handed over as ONE zip with `deliverables/` (STEPs, CAD STL, README, VERDICT, gate,
+PARAM_TABLE, MANIFEST, DECISIONS, overlays) and `source/` (the rest of the run tree), plus
+`PACKAGE_INDEX.md` listing every excluded file with its sha256 and reason. It refuses without
+`deliver/MANIFEST.json`, so it can never ship an ungated run. Layout and exclusion rules:
+`references/delivery-package.md`. Do not ask the owner for the delivery format again; send the zip
+(and its `.sha256`) with the step-6 report.
 
 ### 6. Report to the user
 
