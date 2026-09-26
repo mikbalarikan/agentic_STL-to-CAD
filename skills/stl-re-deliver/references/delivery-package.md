@@ -9,7 +9,7 @@ Last step of `stl-re-deliver`, after `make_manifest.py` succeeded (so CHK-PUBLIS
 hash freeze and repro are already enforced). A run without `deliver/MANIFEST.json` is never zipped.
 
 ```
-python scripts/package_zip.py --run <run> [--out-dir <dir>] [--include-scan] [--max-source-mb 25]
+python scripts/package_zip.py --run <run> [--out-dir <dir>] [--include-scan] [--max-source-mb 5]
 ```
 
 ## What the zip contains
@@ -35,8 +35,9 @@ Merging `deliverables/` and `source/` gives back the complete run tree, so the r
 
 - `input/scan.stl`: the owner's own raw scan, identified by its sha256 in `input/INPUT_HASHES.json`.
   Ship it with `--include-scan` when the recipient does not have it.
-- Regenerable intermediates larger than `--max-source-mb` (working / aligned meshes, point caches,
-  de-warped measurement copies, wip STLs). The stage script that writes each one is in `source/`.
+- Regenerable intermediates larger than `--max-source-mb` (default 5 MB): working / aligned meshes,
+  point and distance caches (`*.npy`, `*.npz`, `*.pkl`, `*.ply`), de-warped measurement copies, `wip/`,
+  `qa/work/`. First real run: without this the zip was 662 MB, mostly caches. The stage script that writes each one is in `source/`.
 - `__pycache__/`, `*.pyc`.
 
 ## Where it goes
