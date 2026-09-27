@@ -286,6 +286,7 @@ is 3 per part (`RE_SPEC.md:248-250`), and the orchestrator counts it.
 | `scripts/pattern_count.py` | **new code**; method from M02 `qa_report.json` and P03 PARAM_TABLE FFT | rotational-order count, CHK-COUNT |
 | `scripts/sim_caliper.py` | B02 `q10_solid_tess_tier1.py:jaws/densify/zsec` | two-jaw window, CHK-ACHIEVABLE; shared with stl-re-verify for Tier-1 |
 | `scripts/param_table.py` | new | validate params.json, render PARAM_TABLE.md |
+| `scripts/sketchfit.py` | new (real run dreame_mop_bottom_cover it2) | design-intent line/arc sketch fitted to an averaged section; the rebuild extrudes it once (see rebuild SKILL Step 5) |
 | `scripts/common.py` | new helpers; `densify` from B02 | header, hashing, alignment, sections |
 
 All scripts are deterministic: fixed seeds, and no wall-clock value except the `created`
