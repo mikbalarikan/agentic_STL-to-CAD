@@ -39,7 +39,8 @@ DELIVERABLE_GLOBS = [
     "measure/PARAM_TABLE.md", "DECISIONS.md", "decisions/*",
 ]
 ALWAYS_SKIP = ["*/__pycache__/*", "__pycache__/*", "*.pyc"]
-REGENERABLE = ["intake/work.stl", "intake/aligned_work.stl", "*.npy", "*.ply", "*/wip/*.stl",
+# *.npz: verify's deviation arrays (qa/dev_arrays.npz, ~18 MB each), rewritten by deviation_gate.py
+REGENERABLE = ["intake/work.stl", "intake/aligned_work.stl", "*.npy", "*.npz", "*.ply", "*/wip/*.stl",
                "measure/figures/*.stl", "intake/explore/*.stl", "_it*_SUPERSEDED/*.stl"]
 
 

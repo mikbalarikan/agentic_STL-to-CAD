@@ -38,6 +38,15 @@ Merging `deliverables/` and `source/` gives back the complete run tree, so the r
 - Regenerable intermediates larger than `--max-source-mb` (working / aligned meshes, point caches,
   de-warped measurement copies, wip STLs). The stage script that writes each one is in `source/`.
 - `__pycache__/`, `*.pyc`.
+- Verify's deviation arrays (`qa/dev_arrays.npz`, one per iteration, ~18 MB each) count as regenerable
+  (`*.npz`, `*.npy`).
+
+## Size limit (found on the OD-E02 real run, 2026-09-28)
+
+SendUserFile refuses files over **30 MiB**. With three iterations the default `--max-source-mb 25` gave an
+89 MiB zip (three `dev_arrays.npz` plus the working meshes). If the zip is over 30 MiB, re-run with
+`--max-source-mb 5`: only regenerable intermediates drop out, each still listed in PACKAGE_INDEX.md with
+bytes, sha256 and reason. Deliverables are never dropped.
 
 ## Where it goes
 
