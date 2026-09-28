@@ -28,10 +28,14 @@ the deliverables and all source files of the run**:
    (`deliverables/`, `source/`, `PACKAGE_INDEX.md`) and exclusion rules:
    `skills/stl-re-deliver/references/delivery-package.md`.
 3. Copy the zip and its `.sha256` into a folder the owner can open (cloud session: the
-   scratchpad or the working directory) and send both with `SendUserFile` (`display: attach`),
+   scratchpad or the working directory) and send both with `SendUserFile` (`display: attach`;
+   upload limit 30 MiB: if the zip is larger, re-package with `--max-source-mb 10`),
    together with the verdict, regime, iteration (n of 3), limitations with re-run triggers,
    and whether verify was independent.
-4. A `BAND_NOT_MET` verdict gets no zip until the owner's `ACCEPT-BAND` is recorded.
+4. A `BAND_NOT_MET` verdict gets no zip until the owner's `ACCEPT-BAND` is recorded. A `HALT`
+   gets no zip unless the owner explicitly overrides; then record it (`OTHER` + a file under
+   `decisions/` citing the gate hash), keep the verdict word HALT in the zip name and README,
+   and state "no official grade" (precedent: `evals/real-runs/OD-G10.md`).
 
 ## After a real run
 

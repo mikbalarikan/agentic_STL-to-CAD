@@ -39,6 +39,14 @@ Merging `deliverables/` and `source/` gives back the complete run tree, so the r
   de-warped measurement copies, wip STLs). The stage script that writes each one is in `source/`.
 - `__pycache__/`, `*.pyc`.
 
+## Size (upload limit)
+
+`SendUserFile` refuses files over 30 MiB (found on the OD-G10 run, 2026-09-28: a 52.9 MiB zip was
+not delivered). Keep the zip under that: re-package with a lower `--max-source-mb` (e.g. 10) so the
+regenerable intermediates (working meshes, `qa/dev_arrays*.npz`) are listed in PACKAGE_INDEX.md
+instead of shipped. Never drop a deliverable or a hand-written source file to make it fit; if it
+still does not fit, split the zip and say so.
+
 ## Where it goes
 
 Next to the run folder (the job folder the owner gave), plus `<zip>.sha256`. Then send the zip to the

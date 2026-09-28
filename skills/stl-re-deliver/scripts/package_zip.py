@@ -40,6 +40,7 @@ DELIVERABLE_GLOBS = [
 ]
 ALWAYS_SKIP = ["*/__pycache__/*", "__pycache__/*", "*.pyc"]
 REGENERABLE = ["intake/work.stl", "intake/aligned_work.stl", "*.npy", "*.ply", "*/wip/*.stl",
+               "qa/dev_arrays*.npz",  # deviation_gate.py --save-arrays output (OD-G10 run: 2 x 15 MB)
                "measure/figures/*.stl", "intake/explore/*.stl", "_it*_SUPERSEDED/*.stl"]
 
 
