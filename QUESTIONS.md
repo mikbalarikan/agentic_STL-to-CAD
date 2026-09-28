@@ -119,3 +119,24 @@ Open for the owner; the run worked around each one and declared it in its `DECIS
 - **Station-profile extrusions and CHK-PATCHWORK.** Extruding fitted scan sections per constant
   x-range gives many narrow planar strips (median plane area ≪ 1 mm²). Not ruled/polyline, but a
   planar-facet warning sign; the census reported it, no rule decides it.
+
+## F. Findings from the real run `OD-E01_Power-PCB` (2026-09-28, populated PCB, scan-only, baseline-skill plastic)
+
+Open for the owner; the run declared each one in its `DECISIONS.md` / `MODELING_PLAN.md`.
+
+- **ICP on parts with an invented back face.** `tier2_icp.py` matches CAD↔scan normals sign-free
+  (|n·n| > cos 70°) within 3.0 mm. On a thin plate whose back face was never scanned (PCB solder side,
+  1.56 mm), the invented bottom face matches the scanned top face and ICP lifts the CAD by ~0.7 mm, which
+  alone fails the scan→CAD p95 band. Candidates: a signed normal test, a CAD-side ICP mask for declared
+  invented faces, or a match radius tied to the thinnest wall. Needs an owner/skill decision.
+- **Observability counts surfaces the scanner never saw.** `observability.py` only tests self-occlusion of
+  the CAD, so an unscanned-but-geometrically-visible face (board bottom, deep fin sides) counts as
+  observable. On an assembly scanned from one side, the observable CAD→scan band is then set by
+  scanner coverage, not by the model.
+- **Assemblies need run-local measurement.** The measure scripts target turned/prismatic single parts.
+  This run used a seeded height map + per-part fits in `measure/measure_pcb.py`. Candidate: a
+  `sections.py heightmap` / component-segmentation mode.
+- **Datum STOP from board warp.** A populated PCB is bowed/twisted (±0.2 mm here), so the board-top
+  plane rms exceeds a clean flat's noise floor. The run used the OD-H22 self-referential noise path.
+- **Top-view footprints read flares and lead toes.** For boxes, side-wall faces (area-weighted peak, upper
+  height band) were needed; worth a helper in the measure skill.
