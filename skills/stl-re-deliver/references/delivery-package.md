@@ -45,17 +45,29 @@ Next to the run folder (the job folder the owner gave), plus `<zip>.sha256`. The
 owner (SendUserFile, display `attach`) together with the verdict, regime, iteration and limitations
 (`SKILL.md` §6). For `BAND_NOT_MET` the zip exists only after a recorded `ACCEPT-BAND`.
 
-## Sending a large zip (found on the OD-S01 real run, 2026-09-28)
+## Size: ONE .zip under the 30 MiB upload limit (owner request, OD-S01 real run, 2026-09-28)
 
-The session's file upload (SendUserFile) accepts at most 30 MiB per file. If the zip is larger, it
-still stays ONE zip; only its transport is split:
+The owner wants a single `.zip` file, not parts. The session upload (SendUserFile) takes at most 30 MiB
+per file, so `package_zip.py --max-zip-mib 29` (the default) keeps the zip under it. When the first
+pass is too big, it leaves out **second-tier regenerable artefacts**, largest first, until the zip fits:
+
+- `*.npz`: QA or measure deviation arrays; `stl-re-verify/scripts/deviation_gate.py` rewrites them.
+- `*/selfcheck/*.png`: the builder's self-check renders (NOT QA); `build/selfcheck/*.py` redraws them.
+- `_it*_SUPERSEDED/build/*_cad.stl`: a superseded iteration's CAD tessellation; its `model.py` rebuilds it.
+
+Each one is listed in PACKAGE_INDEX.md with bytes, sha256 and the reason, and the script that makes it
+stays in `source/`. On OD-S01, 72 MiB became 27.8 MiB this way. Use `--max-source-mb 10` so that the
+work/aligned meshes are listed too.
+
+### Last resort: byte parts
+
+Only if the zip is still over the limit after the tier-2 exclusions (the script prints a WARNING),
+send it in byte parts:
 
 ```
 split -b 28M -d -a 2 <zip> <zip>.part          # -> <zip>.part00, .part01, ...
 cat <zip>.part* | sha256sum                    # must equal <zip>.sha256
 ```
 
-Send the `.sha256` and all parts, and give the rejoin command in the caption:
-`cat <zip>.part* > <zip>` (macOS/Linux) or `copy /b <zip>.part00+<zip>.part01+... <zip>` (Windows).
-Before splitting, keep the zip small with `--max-source-mb` (regenerable meshes over the limit are
-listed in PACKAGE_INDEX.md, never silently dropped).
+Send the `.sha256` and all parts, with the rejoin command: `cat <zip>.part* > <zip>` (macOS/Linux) or
+`copy /b <zip>.part00+<zip>.part01+... <zip>` (Windows).

@@ -37,9 +37,11 @@ delivered as one zip; see "Delivery" below.
 - The owner accepted (ACCEPT-BAND, gate `19f6d742b0ae`). Deliver produced the README, MANIFEST and
   a reproducible repro.json (2 fresh processes).
 - Delivery: `OD-S01_steam-valve_RE_BAND_NOT_MET_2026-09-28.zip`, 72 MiB. The raw scan and the
-  regenerable work meshes are excluded but listed. The app's file upload limit is 30 MiB, so the
-  one zip was sent as 3 byte-split parts plus its `.sha256`. This is now in the delivery-package
-  reference.
+  regenerable work meshes are excluded but listed. The upload limit is 30 MiB, so it was first sent
+  as 3 byte-split parts. The owner asked for a single `.zip` instead. `package_zip.py` now keeps
+  the zip under the limit with `--max-zip-mib` by listing tier-2 regenerable artefacts (npz arrays,
+  self-check renders, the superseded CAD STL) instead of zipping them. The zip was re-sent as ONE
+  27.8 MiB `.zip`.
 
 ## Lessons for the skills
 - On an assembly with many small moulded features, builder time goes into *understanding* the
@@ -62,5 +64,5 @@ delivered as one zip; see "Delivery" below.
 | 6 | `stl-re-intake-datum/scripts/align.py` | `noise_secondary` needs a circle-noise JSON measured on the *aligned* mesh, which only exists after a first align pass. A fresh re-run needs 2 passes; this is not documented | open (doc) |
 | 7 | `stl-re-orchestrate/scripts/init_run.py status` | Reports "scan-only needs a MEASUREMENTS decision" even when `DECISIONS.md` has one | open |
 | 8 | `stl-re-deliver/scripts/make_manifest.py` | `decisions/accept_band.md` gets role `unclassified` | open |
-| 9 | `stl-re-deliver` | A zip over 30 MiB cannot be sent with SendUserFile | fixed in docs: `references/delivery-package.md` "Sending a large zip" (byte-split parts + sha256) |
+| 9 | `stl-re-deliver/scripts/package_zip.py` | A zip over 30 MiB cannot be sent with SendUserFile | fixed: `--max-zip-mib` (default 29) lists tier-2 regenerable artefacts instead of zipping them; byte parts only as a last resort (`references/delivery-package.md` "Size") |
 | 10 | `stl-re-measure-intent/scripts/pattern_count.py` | On a partial arc (a D-flat and key interrupt the spline), the FFT order is unstable (24/25). The partial-arc least-squares fit also cannot separate 23–25 | open (finding) |

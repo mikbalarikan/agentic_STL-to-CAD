@@ -188,7 +188,7 @@ the golden `MANIFEST.json` shape (`golden-examples/*/MANIFEST.json`) and facet-f
 ### 5b. Package the delivery zip (standing owner decision, 2026-09-26)
 
 ```
-python scripts/package_zip.py --run <run> [--out-dir <job folder>] [--include-scan]
+python scripts/package_zip.py --run <run> --max-source-mb 10 [--out-dir <job folder>] [--include-scan] [--max-zip-mib 29]
 ```
 
 Every job is handed over as ONE zip with `deliverables/` (STEPs, CAD STL, README, VERDICT, gate,
@@ -196,7 +196,8 @@ PARAM_TABLE, MANIFEST, DECISIONS, overlays) and `source/` (the rest of the run t
 `PACKAGE_INDEX.md` listing every excluded file with its sha256 and reason. It refuses without
 `deliver/MANIFEST.json`, so it can never ship an ungated run. Layout and exclusion rules:
 `references/delivery-package.md`. Do not ask the owner for the delivery format again; send the zip
-(and its `.sha256`) with the step-6 report.
+(and its `.sha256`) with the step-6 report. The owner wants ONE `.zip` file: `--max-zip-mib` (default 29, under the
+30 MiB upload limit) lists tier-2 regenerable artefacts instead of zipping them until it fits (`delivery-package.md` "Size").
 
 ### 6. Report to the user
 
