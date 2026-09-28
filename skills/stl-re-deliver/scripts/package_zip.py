@@ -39,8 +39,11 @@ DELIVERABLE_GLOBS = [
     "measure/PARAM_TABLE.md", "DECISIONS.md", "decisions/*",
 ]
 ALWAYS_SKIP = ["*/__pycache__/*", "__pycache__/*", "*.pyc"]
-REGENERABLE = ["intake/work.stl", "intake/aligned_work.stl", "*.npy", "*.ply", "*/wip/*.stl",
-               "measure/figures/*.stl", "intake/explore/*.stl", "_it*_SUPERSEDED/*.stl"]
+REGENERABLE = ["intake/work.stl", "intake/aligned_work.stl", "*.npy", "*.npz", "*.ply", "*/wip/*.stl",
+               "measure/figures/*.stl", "intake/explore/*.stl", "_it*_SUPERSEDED/*.stl",
+               "qa/_work/*.stl", "*/qa/_work/*.stl"]   # *.npz, qa/_work: verify's deviation arrays and
+# tessellations (OD-S02 run: 3 x 17.7 MB npz made the zip 77 MiB, over the 30 MiB file-send limit)
+SEND_LIMIT_MIB = 30.0   # SendUserFile upload limit seen on the OD-S02 run
 
 
 def sha256(p: Path) -> str:
@@ -60,7 +63,7 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--run", type=Path, required=True)
     ap.add_argument("--out-dir", type=Path, help="default: the run folder's parent")
     ap.add_argument("--include-scan", action="store_true", help="also ship input/scan.stl")
-    ap.add_argument("--max-source-mb", type=float, default=25.0,
+    ap.add_argument("--max-source-mb", type=float, default=5.0,
                     help="regenerable intermediates above this size are listed, not zipped")
     a = ap.parse_args(argv)
     run = a.run.resolve()
@@ -123,6 +126,10 @@ def main(argv: list[str] | None = None) -> int:
             z.write(p, f"{root}/source/{rel}")
     digest = sha256(zpath)
     zpath.with_suffix(".zip.sha256").write_text(f"{digest}  {zpath.name}\n")
+    if zpath.stat().st_size > SEND_LIMIT_MIB * 1024 * 1024:
+        print(f"WARNING: zip is {zpath.stat().st_size / 2**20:.1f} MiB, over the {SEND_LIMIT_MIB:g} MiB file-send "
+              "limit: lower --max-source-mb or move large regenerable files out (they stay listed in PACKAGE_INDEX.md)",
+              file=sys.stderr)
     print(json.dumps({"zip": str(zpath), "sha256": digest, "bytes": zpath.stat().st_size,
                       "deliverables": len(deliv), "source": len(source), "excluded": len(excluded)}, indent=1))
     return 0

@@ -44,7 +44,7 @@ Final gate (`OD-S02/gate.json`):
 | 5 | trimesh `Path3D.discrete` | drops open section chains (known from dreame_mop) | hit again; `mesh_plane` used |
 | 6 | `stl-re-verify` (12 items, three verify agents) | ungraded interface zones when `interface_max_mm` is null, zone/whole CAD→scan split mismatch, no section-circle datum audit, overlays pre-ICP, observability blind to holes/open bores, census definition mismatch, no revise/defects section in `verdict.py render`, no CHK-LIKE4LIKE tooling, no hole-edge treatment for s→C, frame-dependent zone pass/fail not flagged, `SKILL.md:58` path, silent OOM of parallel runs | open (details in `OD-S02/VERDICT.md`, QUESTIONS F) |
 | 7 | `stl-re-deliver/scripts/make_manifest.py` | `decisions/accept_band.md` (the owner's acceptance evidence) is `unclassified` | open |
-| 8 | `package_zip.py` | default `--max-source-mb 25` kept 25 MB mesh copies (zip 158 MB); ran with 5 → 80.7 MB | open (consider a lower default) |
+| 8 | `stl-re-deliver/scripts/package_zip.py` | default `--max-source-mb 25` and no rule for verify's `*.npz` / `qa/_work/*.stl`: zip 158 MB, then 77 MiB, over the 30 MiB file-send limit | fixed (default 5 MB, `*.npz` + `qa/_work` regenerable, warning above 30 MiB); delivered zip 17.9 MB |
 
 Process deviations (declared in DECISIONS.md): the intake card and the modelling plan were written after the
 measure/self-check passes.
