@@ -119,3 +119,30 @@ Open for the owner; the run worked around each one and declared it in its `DECIS
 - **Station-profile extrusions and CHK-PATCHWORK.** Extruding fitted scan sections per constant
   x-range gives many narrow planar strips (median plane area ≪ 1 mm²). Not ruled/polyline, but a
   planar-facet warning sign; the census reported it, no rule decides it.
+
+## F. Findings from the real run `OD-S02_steam-rod` (2026-09-28, axis datum, scan-only, one fused assembly)
+
+Open for the owner. Details and status: `evals/real-runs/OD-S02.md`.
+
+- **STOP-rule estimators do not match.** `datum_fit.py noise --circle-z` is IRLS on ONE loop (0.0144); the
+  axis-primary residual is a face radial residual and the origin circles are Kåsa station rms (0.021–0.026).
+  The cleanest surface of the part stopped the run; the run took the self-referential path (same class as
+  OD-H22 D1). Proposal: the noise tool reports the same estimator the gate compares against.
+- **Multi-axis parts.** The measure scripts assume one datum Z. This part had 5 axes (rod, sleeve, tube B,
+  tube C, tip/bushing); the run used run-local per-axis fits (`measure/scripts/*`). Candidate: a `fits.py
+  axis` subcommand (section circles along any axis) and a frame-transform helper for `pattern_count.py`.
+- **A REVISE that moves the error to the other gate direction.** it2 deepened the bushing windows and the tip
+  bore to the depth the scan proved (scan→CAD fixed) and made observable CAD→scan worse, because the
+  observability ray test counts unscanned pocket floors and bore walls as visible. With that test,
+  "model what the scan proves" and "pass CAD→scan" conflict. Needs an owner rule (and the verify fix below).
+- **Loop bound vs a marginal geometric cause.** it3 ended REVISE on Z4 p95 0.301 vs 0.30 (an unmodelled
+  collar, 75 % of its points at scan-hole edges) → HALT; the owner accepted and delivery went through a
+  re-assembled BAND_NOT_MET + ACCEPT-BAND. Is that the intended route for a marginal miss at loop 3?
+- **Verify defects (reported by three independent verify agents, status open):** interface zones not graded
+  when `interface_max_mm` is null (`deviation_gate.py:349-350`, `verdict.py:88-92`); zone vs whole-part
+  CAD→scan graded on different splits; `datum_audit.py` has no section-circle axis / tube clock;
+  `overlay.py` has no `--registration`; observability ray test blind to scan holes and open bores;
+  analytic-share definition differs (`step_check.py:75` vs `export_frames.py`); `verdict.py render` has no
+  revise-route / skill-defects section; no CHK-LIKE4LIKE tooling; no scan-hole-edge treatment for
+  scan→CAD; frame-dependent zone pass/fail not flagged; wrong `S=` path at `stl-re-verify/SKILL.md:58`;
+  parallel deviation runs can be OOM-killed silently.
