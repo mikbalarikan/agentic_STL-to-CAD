@@ -20,6 +20,10 @@ The job is handed over as **one downloadable zip with the deliverables and all s
 (layout and exclusions: `skills/stl-re-deliver/references/delivery-package.md`).
 
 - Build it only after `make_manifest.py` succeeded (the CHK-PUBLISH / ACCEPT-BAND rules still apply).
+- It must be ≤ 30 MiB (chat upload limit). `package_zip.py` refuses above `--max-zip-mb 29`; re-run it with
+  `--max-source-mb 5` so the big regenerable intermediates are listed instead of shipped.
+- `BAND_NOT_MET` needs the owner's go-ahead first: show the band miss (numbers + heatmap) and ask; their
+  answer (e.g. "deliver") becomes the `ACCEPT-BAND` entry citing the gate sha256 prefix.
 - Copy the zip and its `.sha256` into the scratchpad `outputs/` folder and send it to the owner
   with `SendUserFile` (`display: "attach"`), together with the verdict, regime, numbers read from
   `qa/gate.json`, limitations with re-run triggers, loop count and whether verify was independent.

@@ -18,8 +18,12 @@ Rules (CHK-PUBLISH still applies: this runs only after make_manifest.py succeede
 - Nothing is dropped silently: every file left out is listed in PACKAGE_INDEX.md with bytes,
   sha256 and the reason. Default exclusions: input/scan.stl (the owner's own scan; pass
   --include-scan to ship it), files larger than --max-source-mb that are regenerable
-  intermediates (work/aligned meshes, point caches), __pycache__/ and *.pyc.
+  intermediates (work/aligned meshes, point caches, *.npy/*.npz arrays), __pycache__/ and *.pyc.
 - The zip is written next to the run folder (or --out-dir) with a sidecar <zip>.sha256.
+- The zip must fit the chat upload limit (--max-zip-mb, default 29; the SendUserFile limit is 30 MiB,
+  found on the OD-H21 real run where QA's dev_arrays.npz made a 55.5 MiB zip). Over the limit the zip
+  is deleted and the run refused: lower --max-source-mb so more regenerable intermediates are listed
+  instead of shipped. Deliverables are never dropped to make it fit.
 Exit codes: 0 written; 2 refused; 3 internal error.
 """
 from __future__ import annotations
@@ -39,7 +43,7 @@ DELIVERABLE_GLOBS = [
     "measure/PARAM_TABLE.md", "DECISIONS.md", "decisions/*",
 ]
 ALWAYS_SKIP = ["*/__pycache__/*", "__pycache__/*", "*.pyc"]
-REGENERABLE = ["intake/work.stl", "intake/aligned_work.stl", "*.npy", "*.ply", "*/wip/*.stl",
+REGENERABLE = ["intake/work.stl", "intake/aligned_work.stl", "*.npy", "*.npz", "*.ply", "*/wip/*.stl",
                "measure/figures/*.stl", "intake/explore/*.stl", "_it*_SUPERSEDED/*.stl"]
 
 
@@ -62,6 +66,8 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--include-scan", action="store_true", help="also ship input/scan.stl")
     ap.add_argument("--max-source-mb", type=float, default=25.0,
                     help="regenerable intermediates above this size are listed, not zipped")
+    ap.add_argument("--max-zip-mb", type=float, default=29.0,
+                    help="refuse a zip larger than this (MiB); SendUserFile uploads at most 30 MiB")
     a = ap.parse_args(argv)
     run = a.run.resolve()
     for need in ("deliver/MANIFEST.json", "deliver/README.md", "qa/VERDICT.md"):
@@ -121,6 +127,13 @@ def main(argv: list[str] | None = None) -> int:
             z.write(p, f"{root}/deliverables/{rel}")
         for p, rel in source:
             z.write(p, f"{root}/source/{rel}")
+    zip_mib = zpath.stat().st_size / 2**20
+    if zip_mib > a.max_zip_mb:
+        zpath.unlink()
+        print(f"REFUSED: zip is {zip_mib:.1f} MiB > --max-zip-mb {a.max_zip_mb:g} (chat upload limit). "
+              f"Re-run with a lower --max-source-mb (e.g. 5) so regenerable intermediates are listed "
+              f"in PACKAGE_INDEX.md instead of shipped.", file=sys.stderr)
+        return 2
     digest = sha256(zpath)
     zpath.with_suffix(".zip.sha256").write_text(f"{digest}  {zpath.name}\n")
     print(json.dumps({"zip": str(zpath), "sha256": digest, "bytes": zpath.stat().st_size,

@@ -9,8 +9,14 @@ Last step of `stl-re-deliver`, after `make_manifest.py` succeeded (so CHK-PUBLIS
 hash freeze and repro are already enforced). A run without `deliver/MANIFEST.json` is never zipped.
 
 ```
-python scripts/package_zip.py --run <run> [--out-dir <dir>] [--include-scan] [--max-source-mb 25]
+python scripts/package_zip.py --run <run> [--out-dir <dir>] [--include-scan] [--max-source-mb 25] [--max-zip-mb 29]
 ```
+
+**Size limit.** The zip goes to the owner through the chat upload (SendUserFile), which takes at most
+30 MiB. `package_zip.py` refuses (exit 2, zip deleted) above `--max-zip-mb` (default 29). Then re-run
+with `--max-source-mb 5`, which lists the big regenerable intermediates (meshes, `*.npy`/`*.npz` QA and
+measure arrays) in PACKAGE_INDEX.md instead of shipping them. Deliverables are never dropped to make it
+fit. On OD-H21 this took the zip from 55.5 to 19 MiB.
 
 ## What the zip contains
 
@@ -36,7 +42,7 @@ Merging `deliverables/` and `source/` gives back the complete run tree, so the r
 - `input/scan.stl`: the owner's own raw scan, identified by its sha256 in `input/INPUT_HASHES.json`.
   Ship it with `--include-scan` when the recipient does not have it.
 - Regenerable intermediates larger than `--max-source-mb` (working / aligned meshes, point caches,
-  de-warped measurement copies, wip STLs). The stage script that writes each one is in `source/`.
+  `*.npy`/`*.npz` arrays, de-warped measurement copies, wip STLs). The stage script that writes each one is in `source/`.
 - `__pycache__/`, `*.pyc`.
 
 ## Where it goes
