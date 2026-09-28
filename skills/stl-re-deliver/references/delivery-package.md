@@ -44,3 +44,18 @@ Merging `deliverables/` and `source/` gives back the complete run tree, so the r
 Next to the run folder (the job folder the owner gave), plus `<zip>.sha256`. Then send the zip to the
 owner (SendUserFile, display `attach`) together with the verdict, regime, iteration and limitations
 (`SKILL.md` §6). For `BAND_NOT_MET` the zip exists only after a recorded `ACCEPT-BAND`.
+
+## Sending a large zip (found on the OD-S01 real run, 2026-09-28)
+
+The session's file upload (SendUserFile) accepts at most 30 MiB per file. If the zip is larger, it
+still stays ONE zip; only its transport is split:
+
+```
+split -b 28M -d -a 2 <zip> <zip>.part          # -> <zip>.part00, .part01, ...
+cat <zip>.part* | sha256sum                    # must equal <zip>.sha256
+```
+
+Send the `.sha256` and all parts, and give the rejoin command in the caption:
+`cat <zip>.part* > <zip>` (macOS/Linux) or `copy /b <zip>.part00+<zip>.part01+... <zip>` (Windows).
+Before splitting, keep the zip small with `--max-source-mb` (regenerable meshes over the limit are
+listed in PACKAGE_INDEX.md, never silently dropped).

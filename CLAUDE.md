@@ -23,7 +23,9 @@ Every job ends with **one downloadable zip that contains all deliverables AND al
   The layout (`deliverables/` + `source/` + `PACKAGE_INDEX.md`) and the exclusion rules are in
   `skills/stl-re-deliver/references/delivery-package.md`.
 - Send the zip to the owner with `SendUserFile` (display `attach`), together with its `.sha256`
-  and a short report: verdict, regime, loop count, limitations.
+  and a short report: verdict, regime, loop count, limitations. Uploads are limited to 30 MiB per
+  file: split a bigger zip into byte parts and give the rejoin command (see "Sending a large zip"
+  in `delivery-package.md`).
 - For `BAND_NOT_MET`, the zip exists only after a recorded `ACCEPT-BAND`. Ask the owner first,
   showing the missed band and the options.
 
