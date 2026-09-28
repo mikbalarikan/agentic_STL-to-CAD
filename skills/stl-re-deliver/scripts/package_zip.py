@@ -40,6 +40,7 @@ DELIVERABLE_GLOBS = [
 ]
 ALWAYS_SKIP = ["*/__pycache__/*", "__pycache__/*", "*.pyc"]
 REGENERABLE = ["intake/work.stl", "intake/aligned_work.stl", "*.npy", "*.ply", "*/wip/*.stl",
+               "qa/dev_arrays*.npz",  # deviation_gate.py --save-arrays point dumps (OD-W03: 3 x 16 MB)
                "measure/figures/*.stl", "intake/explore/*.stl", "_it*_SUPERSEDED/*.stl"]
 
 
@@ -60,7 +61,7 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--run", type=Path, required=True)
     ap.add_argument("--out-dir", type=Path, help="default: the run folder's parent")
     ap.add_argument("--include-scan", action="store_true", help="also ship input/scan.stl")
-    ap.add_argument("--max-source-mb", type=float, default=25.0,
+    ap.add_argument("--max-source-mb", type=float, default=10.0,
                     help="regenerable intermediates above this size are listed, not zipped")
     a = ap.parse_args(argv)
     run = a.run.resolve()
