@@ -37,7 +37,7 @@ import json
 import math
 import sys
 from pathlib import Path
-from typing import Any
+from typing import Any, Sequence
 
 import numpy as np
 import trimesh
@@ -211,6 +211,52 @@ def tilt_from_stations(st: list[dict[str, float]]) -> dict[str, Any]:
     return pooled
 
 
+def refine_axis_sections(m: trimesh.Trimesh, point: np.ndarray, direction: np.ndarray, crop_radius: float,
+                         axial: Sequence[float], step: float = 0.5, halfw: float = 0.2,
+                         iters: int = 5) -> dict[str, Any]:
+    """Axis from section-circle centres (datum-cookbook §1: "axis from section circle fits"):
+    slice the cropped VERTICES perpendicular to the current axis every `step` mm (slab
+    +/- halfw), Kasa circle per slice (>= 30 points), least-squares line through the centres,
+    repeat. Normals-eigen alone is biased on a cone or a partially covered cylinder (OD-S02 run:
+    0.44 deg / 0.16 mm off the section-circle axis on the rod taper, residual 0.080 vs 0.022)."""
+    p0 = np.asarray(point, float)
+    d = unit(direction)
+    V = m.vertices
+    stations: list[list[float]] = []
+    for _ in range(max(1, iters)):
+        a = np.array([1.0, 0, 0]) if abs(d[0]) < 0.9 else np.array([0, 1.0, 0])
+        u = unit(np.cross(d, a))
+        v = np.cross(d, u)
+        q = V - p0
+        t = q @ d
+        x, y = q @ u, q @ v
+        keep = (np.hypot(x, y) < crop_radius) & (t >= axial[0]) & (t <= axial[1])
+        stations = []
+        for z in np.arange(axial[0] + halfw, axial[1] - halfw + 1e-9, step):
+            sl = keep & (np.abs(t - z) < halfw)
+            if sl.sum() < 30:
+                continue
+            xy = np.c_[x[sl], y[sl]]
+            A = np.c_[2 * xy, np.ones(len(xy))]
+            sol = np.linalg.lstsq(A, (xy ** 2).sum(1), rcond=None)[0]
+            r = math.sqrt(max(sol[2] + sol[0] ** 2 + sol[1] ** 2, 0.0))
+            res = np.hypot(xy[:, 0] - sol[0], xy[:, 1] - sol[1]) - r
+            stations.append([float(z), float(sol[0]), float(sol[1]), r, float(np.sqrt((res ** 2).mean()))])
+        if len(stations) < 3:
+            raise SpecError("refine section_circles: fewer than 3 stations with >= 30 points")
+        st = np.array(stations)
+        A = np.c_[np.ones(len(st)), st[:, 0]]
+        cx = np.linalg.lstsq(A, st[:, 1], rcond=None)[0]
+        cy = np.linalg.lstsq(A, st[:, 2], rcond=None)[0]
+        p0 = p0 + cx[0] * u + cy[0] * v
+        d = unit(d + cx[1] * u + cy[1] * v)
+    st = np.array(stations)
+    return {"point": p0, "direction": d, "stations": len(st),
+            "station_rms_median_mm": float(np.median(st[:, 4])), "station_rms_max_mm": float(st[:, 4].max()),
+            "method": f"Kasa circles on vertex slabs every {step} mm (+/-{halfw}), line through centres, "
+                      f"{iters} iterations"}
+
+
 # ----------------------------------------------------------------------------- clock
 def largest_loop(m: trimesh.Trimesh, z: float) -> np.ndarray:
     loops = closed_loops_at_z(m, z)
@@ -270,6 +316,55 @@ def clock_angle(m: trimesh.Trimesh, R_cur: np.ndarray, c: dict[str, Any], seed: 
         return -math.degrees(math.atan2(nrm[1], nrm[0])), {
             "plane_fit_rms_mm": pl["fit_rms_mm"], "plane_fit_max_mm": pl["fit_max_mm"],
             "plane_n_faces": pl["n_faces"], "plane_out_of_perpendicular_deg": perp}
+    if rule == "axis_direction":
+        # clock by the direction of a second (non-coaxial) cylinder axis, e.g. a tube leaving an
+        # elbow: fit its axis (normals-eigen, cropped like an axis primary), project it onto XY
+        # and rotate so it points at target_deg (OD-S02 run, 2026-09-28: the only flat clocking
+        # face was noisier than the scan noise floor; the tube axis is the functional exit).
+        for k in ("approx_axis_raw", "crop_point_raw", "crop_radius"):
+            if k not in c:
+                raise SpecError(f"clock axis_direction requires {k}")
+        ax0 = unit(R_cur[:3, :3] @ unit(c["approx_axis_raw"]))
+        cp = (R_cur @ np.r_[np.asarray(c["crop_point_raw"], float), 1.0])[:3]
+        ax = ax0
+        sel = np.zeros(len(m.faces), bool)
+        for _ in range(max(1, int(c.get("iters", 3)))):
+            q = m.triangles_center - cp
+            sel = np.abs(m.face_normals @ ax) < c.get("perp_max", 0.30)
+            sel &= np.linalg.norm(q - np.outer(q @ ax, ax), axis=1) < c["crop_radius"]
+            if "crop_axial" in c:
+                t_ax = q @ ax
+                sel &= (t_ax >= c["crop_axial"][0]) & (t_ax <= c["crop_axial"][1])
+            if sel.sum() < 10:
+                raise SpecError("clock axis_direction: fewer than 10 faces in the crop")
+            af = axis_from_normals(m.triangles_center[sel], m.face_normals[sel], m.area_faces[sel])
+            d = af["direction"]
+            ax = d if d @ ax0 >= 0 else -d
+        refine = None
+        if c.get("refine") == "section_circles":
+            if "crop_axial" not in c:
+                raise SpecError("clock refine section_circles needs crop_axial")
+            t_shift = float((af["point"] - cp) @ ax)
+            rf = refine_axis_sections(m, af["point"], ax, c["crop_radius"],
+                                      [c["crop_axial"][0] - t_shift, c["crop_axial"][1] - t_shift],
+                                      c.get("refine_step", 0.5), c.get("refine_halfw", 0.2))
+            refine = {k: v for k, v in rf.items() if k not in ("point", "direction")}
+            refine["normals_eigen_vs_refined_deg"] = ang_between(ax, rf["direction"])
+            ax = rf["direction"] if rf["direction"] @ ax0 >= 0 else -rf["direction"]
+            af = dict(af, point=rf["point"], direction=ax)
+        qc = m.triangles_center[sel] - af["point"]
+        rad = np.linalg.norm(qc - np.outer(qc @ ax, ax), axis=1)
+        rres = rad - np.median(rad)
+        ang = math.degrees(math.atan2(ax[1], ax[0]))
+        target = float(c.get("target_deg", 0.0))
+        return -(ang - target), {
+            "axis_dir_before_clock": ax.tolist(), "axis_point_before_clock": af["point"].tolist(),
+            "axis_azimuth_deg": ang, "target_deg": target,
+            "axis_elevation_deg": float(math.degrees(math.asin(float(np.clip(ax[2], -1, 1))))),
+            "median_radius_mm": float(np.median(rad)), "n_faces": int(sel.sum()),
+            "fit_rms_mm": float(np.sqrt((rres ** 2).mean())), "fit_max_mm": float(np.max(np.abs(rres))),
+            "fit_metric": "radial residual of the cropped cylinder faces about the fitted axis",
+            "refine": refine}
     raise SpecError(f"unknown clock rule {rule!r}")
 
 
@@ -365,11 +460,32 @@ def run(spec: dict[str, Any], spec_path: Path) -> tuple[int, dict[str, Any]]:
             q = m.triangles_center - np.asarray(P["crop_point"], float)
             dist = np.linalg.norm(q - np.outer(q @ ax, ax), axis=1)
             sel &= dist < P["crop_radius"]
+            if "crop_axial" in P:
+                # crop_radius alone is an infinite cylinder about the line through crop_point;
+                # a long axis part (a stepped rod, a cone next to a cylinder) needs an axial
+                # window too, or the radial residual mixes radii (OD-S02 run, 2026-09-28)
+                t_ax = q @ ax
+                sel &= (t_ax >= P["crop_axial"][0]) & (t_ax <= P["crop_axial"][1])
             if sel.sum() < 10:
                 raise SpecError("axis primary: fewer than 10 faces perpendicular to approx_axis")
             af = axis_from_normals(m.triangles_center[sel], m.face_normals[sel], m.area_faces[sel])
             d = af["direction"]
             ax = d if d @ unit(P["approx_axis"]) >= 0 else -d
+        refine = None
+        if P.get("refine") == "section_circles":
+            if "crop_axial" not in P:
+                raise SpecError("refine section_circles needs crop_axial")
+            # the axial window is kept on the same stretch of the part as the face crop
+            cp = np.asarray(P["crop_point"], float)
+            t_shift = float((af["point"] - cp) @ ax)
+            rf = refine_axis_sections(m, af["point"], ax, P["crop_radius"],
+                                      [P["crop_axial"][0] - t_shift, P["crop_axial"][1] - t_shift],
+                                      P.get("refine_step", 0.5), P.get("refine_halfw", 0.2))
+            refine = {k: v for k, v in rf.items() if k not in ("point", "direction")}
+            refine["normals_eigen_vs_refined_deg"] = ang_between(ax, rf["direction"])
+            d_r = rf["direction"]
+            ax = d_r if d_r @ ax >= 0 else -d_r
+            af = dict(af, point=rf["point"], direction=ax)
         T1 = trimesh.geometry.align_vectors(ax, [0, 0, 1])
         pt = T1[:3, :3] @ af["point"]
         T2 = np.eye(4)
@@ -384,7 +500,18 @@ def run(spec: dict[str, Any], spec_path: Path) -> tuple[int, dict[str, Any]]:
         a_pt, d_ax = af["point"], af["direction"]
         qc = m.triangles_center[sel] - a_pt
         rad = np.linalg.norm(qc - np.outer(qc @ d_ax, d_ax), axis=1)
-        rres = rad - np.median(rad)
+        cone: dict[str, Any] | None = None
+        if P.get("surface", "cylinder") == "cone":
+            # a conical crop (tapered spigot): residual about the fitted line r = a + b*t along
+            # the axis instead of about one median radius, which would read the taper itself
+            # as residual (OD-S02 run, 2026-09-28). A cylinder is the b = 0 case.
+            t_c = qc @ d_ax
+            b_c, a_c = np.polyfit(t_c, rad, 1)
+            rres = rad - (a_c + b_c * t_c)
+            cone = {"half_angle_deg": float(math.degrees(math.atan(abs(b_c)))),
+                    "dr_dt": float(b_c), "t_range_mm": [float(t_c.min()), float(t_c.max())]}
+        else:
+            rres = rad - np.median(rad)
         axis_rms = float(np.sqrt((rres ** 2).mean()))
         axis_max = float(np.max(np.abs(rres)))
         primary = {"type": "axis", "mesh_region_desc": P["desc"], "why": P["why"],
@@ -393,7 +520,13 @@ def run(spec: dict[str, Any], spec_path: Path) -> tuple[int, dict[str, Any]]:
                                  "fitted axis, vs the median radius (review B1)",
                    "normal_line_dist": ld,
                    "eig_ratio": af["eig_ratio"], "n_faces": int(sel.sum()),
-                   "direction_raw": ax.tolist(), "point_raw": af["point"].tolist()}
+                   "direction_raw": ax.tolist(), "point_raw": af["point"].tolist(),
+                   "crop": {"point": list(P["crop_point"]), "radius": P["crop_radius"],
+                            "axial": P.get("crop_axial")},
+                   "surface": P.get("surface", "cylinder"), "cone": cone, "refine": refine}
+        if cone:
+            primary["fit_metric"] = ("radial residual of the cropped cone faces about the fitted "
+                                     "axis, vs a linear r(t) fit along the axis (surface: cone)")
         prim_faces = None
     else:
         raise SpecError(f"primary.type must be plane|axis, got {P['type']!r}")
@@ -496,6 +629,29 @@ def run(spec: dict[str, Any], spec_path: Path) -> tuple[int, dict[str, Any]]:
     Rz = rot_z(cdeg)
     T = Rz @ T
     mc = apply(Rz, mc)
+    if P["type"] == "axis" and C["rule"] == "axis_direction":
+        if secondary is None:   # origin.xy circle stations, when given, stay the secondary record
+            secondary = {"type": "axis", "mesh_region_desc": C.get("desc", ""), "why": C.get("why", ""),
+                         "fit_rms_mm": cdet["fit_rms_mm"], "fit_max_mm": cdet["fit_max_mm"],
+                         "fit_metric": cdet["fit_metric"]}
+        # a clock cylinder of another material (e.g. a steel tube on a plastic part) may carry its
+        # own noise floor measured on a DISJOINT stretch of the same material (clock.noise.from);
+        # otherwise the circle noise floor (noise_secondary) gates it
+        ns = spec.get("noise_secondary")
+        cn = C.get("noise")
+        if cn and cn.get("from"):
+            cn = json.loads((base / cn["from"]).read_text())["scan_noise_mm"]
+        if cn:
+            if not cn.get("method"):
+                raise SpecError("clock.noise needs {value, method} (or from: a noise JSON)")
+            ns = cn
+        if ns:
+            cdet["noise_ref"] = ns
+            if cdet["fit_rms_mm"] > ns["value"]:
+                stop.append(f"clock axis rms {cdet['fit_rms_mm']:.4f} > secondary (circle) noise "
+                            f"floor {ns['value']:.4f} ({ns['method']})")
+        else:
+            findings.append("clock axis residual not compared: no noise_secondary measured")
     if P["type"] == "axis" and C["rule"] == "plane_normal":
         secondary = {"type": "plane", "mesh_region_desc": C.get("desc", ""), "why": C.get("why", ""),
                      "fit_rms_mm": cdet["plane_fit_rms_mm"], "fit_max_mm": cdet["plane_fit_max_mm"]}

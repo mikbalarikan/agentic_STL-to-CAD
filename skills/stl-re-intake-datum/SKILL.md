@@ -221,6 +221,8 @@ Worked specs and golden numbers are in `references/datum-cookbook.md`. Rules:
      cropped cylinder faces about the fitted axis vs the median radius, compared with
      `noise_secondary` (a circle noise floor) — not the normal-line distance vs the flat noise
      floor, which is a different metric (review B1; `normal_line_dist` is kept as a diagnostic).
+   - Long stepped rods / tapered spigots: add `crop_axial`, `surface: "cone"` and
+     `refine: "section_circles"` (datum-cookbook §3.1; heuristic, n=1: OD-S02).
    - Record `why` for every datum (RE_SPEC.md:124).
 2. **Secondary / origin X-Y.** Circle fits on a true circle:
    - Kåsa on closed section loops, or IRLS (Cauchy, golden scale 0.30) when outliers are present.
@@ -233,6 +235,8 @@ Worked specs and golden numbers are in `references/datum-cookbook.md`. Rules:
    - `min_radius`: e.g. a flat cut nearest a minimum radius (DRM snap; angle in the golden report).
    - `fourier_mass`: B02 arms. State the label rule, because the candidates are mod 360/n.
    - `plane_normal`: OD side plate.
+   - `axis_direction`: a second, non-coaxial cylinder (a tube leaving an elbow) turned to
+     `target_deg`, with its own same-material noise floor (datum-cookbook §3.1; n=1: OD-S02).
    - `none`: only a fully axisymmetric part, with a `why`.
    - Choose a section z on straight flats, away from a fillet or chamfer transition — picking a z
      near such a transition measurably shifts the clock angle (see `analysis/golden/DRM.md` §2 for
