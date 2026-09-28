@@ -119,3 +119,14 @@ Open for the owner; the run worked around each one and declared it in its `DECIS
 - **Station-profile extrusions and CHK-PATCHWORK.** Extruding fitted scan sections per constant
   x-range gives many narrow planar strips (median plane area ≪ 1 mm²). Not ruled/polyline, but a
   planar-facet warning sign; the census reported it, no rule decides it.
+
+## F. Findings from the real run OD-G11 portafilter (2026-09-28)
+
+Open for the owner; details and the defect table in `evals/real-runs/OD-G11.md`.
+
+- **Assemblies as one fused solid.** The owner chose one fused solid of cup + insert + grip + screws + wire. Declared
+  simplifications of small parts (a wire spring, screw recesses) then set the whole-part max, so a baseline-skill max
+  band is unreachable by design. Should the regime allow a named, pre-declared scan-side mask for such parts, or
+  should small assembly parts be delivered as separate bodies?
+- **Observable CAD→scan on open scans.** The ray test counts unscanned strips and pocket mouths as observable, so the
+  observable max is set by holes in the scan, not by the model (OD-H22 #3 again).

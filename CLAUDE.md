@@ -13,7 +13,8 @@ with build123d, plus the evidence they were distilled from. Read `README.md` for
    `<scratchpad>/jobs/<part>/run`, created with `init_run.py init`. Attached files arrive under
    `/root/.claude/uploads/...`; pass them to `init` so they are hashed read-only.
 3. **Drive the job with `skills/stl-re-orchestrate/SKILL.md`** (intake → measure → rebuild → verify →
-   deliver). Verify always runs in a fresh subagent (CHK-INDEP).
+   deliver). Verify always runs in a fresh subagent (CHK-INDEP). Run the builder self-check on every vertex of
+   the full-res scan (datum frame), not on the working copy: the working copy under-read p95 by ~0.08 mm on OD-G11.
 4. **Standing owner defaults** (record each one in the run's `DECISIONS.md`, quoting the message):
    - "p95 plastik (parça) toleransı" / "tolerans = p95" → regime `baseline-skill`, class `plastic`
      (p95 ≤ 0.30 / max ≤ 0.80 mm). "machined/işlenmiş" → class `machined`.
@@ -28,7 +29,8 @@ with build123d, plus the evidence they were distilled from. Read `README.md` for
    (layout and exclusions: `skills/stl-re-deliver/references/delivery-package.md`). Send the zip and its
    `.sha256` to the owner with `SendUserFile` (`display: attach`) together with the report: verdict,
    regime, numbers from `qa/gate.json`, limitations with re-run triggers, loop count, independence.
-   For `BAND_NOT_MET` the zip exists only after the owner's recorded `ACCEPT-BAND`.
+   For `BAND_NOT_MET` the zip exists only after the owner's recorded `ACCEPT-BAND`. `SendUserFile` refuses files
+   over 30 MiB: keep the default `--max-source-mb 5` (regenerable meshes and QA arrays are listed, not shipped).
 6. **After the job:** record it under `evals/real-runs/<part-id>.md` with copies of the small records
    (`README.md`, `VERDICT.md`, `gate.json`, `DECISIONS.md`, one overlay) in `evals/real-runs/<part-id>/`
    (see `OD-H22.md`), add any skill defect you hit to that file's defect table and open owner questions

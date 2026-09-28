@@ -18,7 +18,8 @@ Rules (CHK-PUBLISH still applies: this runs only after make_manifest.py succeede
 - Nothing is dropped silently: every file left out is listed in PACKAGE_INDEX.md with bytes,
   sha256 and the reason. Default exclusions: input/scan.stl (the owner's own scan; pass
   --include-scan to ship it), files larger than --max-source-mb that are regenerable
-  intermediates (work/aligned meshes, point caches), __pycache__/ and *.pyc.
+  intermediates (work/aligned meshes, point caches, QA deviation arrays, superseded CAD STL), __pycache__/ and *.pyc.
+- Warns when the zip exceeds the 30 MiB SendUserFile limit (default --max-source-mb 5 keeps a typical job under it).
 - The zip is written next to the run folder (or --out-dir) with a sidecar <zip>.sha256.
 Exit codes: 0 written; 2 refused; 3 internal error.
 """
@@ -39,8 +40,9 @@ DELIVERABLE_GLOBS = [
     "measure/PARAM_TABLE.md", "DECISIONS.md", "decisions/*",
 ]
 ALWAYS_SKIP = ["*/__pycache__/*", "__pycache__/*", "*.pyc"]
-REGENERABLE = ["intake/work.stl", "intake/aligned_work.stl", "*.npy", "*.ply", "*/wip/*.stl",
+REGENERABLE = ["intake/work.stl", "intake/aligned_work.stl", "*.npy", "*.npz", "*.ply", "*/wip/*.stl",
                "measure/figures/*.stl", "intake/explore/*.stl", "_it*_SUPERSEDED/*.stl"]
+SEND_LIMIT_MIB = 30.0   # SendUserFile upload limit (OD-G11 run, 2026-09-28: a 77 MiB zip could not be sent)
 
 
 def sha256(p: Path) -> str:
@@ -60,7 +62,7 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--run", type=Path, required=True)
     ap.add_argument("--out-dir", type=Path, help="default: the run folder's parent")
     ap.add_argument("--include-scan", action="store_true", help="also ship input/scan.stl")
-    ap.add_argument("--max-source-mb", type=float, default=25.0,
+    ap.add_argument("--max-source-mb", type=float, default=5.0,
                     help="regenerable intermediates above this size are listed, not zipped")
     a = ap.parse_args(argv)
     run = a.run.resolve()
@@ -123,6 +125,10 @@ def main(argv: list[str] | None = None) -> int:
             z.write(p, f"{root}/source/{rel}")
     digest = sha256(zpath)
     zpath.with_suffix(".zip.sha256").write_text(f"{digest}  {zpath.name}\n")
+    mib = zpath.stat().st_size / 2**20
+    if mib > SEND_LIMIT_MIB:
+        print(f"WARNING: zip is {mib:.1f} MiB > the {SEND_LIMIT_MIB:g} MiB send limit; lower --max-source-mb or ship the "
+              f"large deliverable separately (the zip stays the record)", file=sys.stderr)
     print(json.dumps({"zip": str(zpath), "sha256": digest, "bytes": zpath.stat().st_size,
                       "deliverables": len(deliv), "source": len(source), "excluded": len(excluded)}, indent=1))
     return 0
