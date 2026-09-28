@@ -19,6 +19,12 @@ Verdicts: `APPROVED`, `APPROVED_WITH_LIMITATIONS`, `BAND_NOT_MET` (delivery need
 human `ACCEPT-BAND`), `REVISE`, `HALT`. The band regime (RE_SPEC, baseline-skill or a project
 spec) is declared at intake and named in the verdict; there is no silent default.
 
+## Running a job in a Claude session
+
+`CLAUDE.md` (repo root) is the standing brief every session reads: where the run folder goes, the
+owner's standing defaults ("p95 plastik" regime, scan-only when no calipers) and the **standing delivery
+format: one zip with all deliverables + all source files**, sent to the owner at the end of every job.
+
 ## Install
 
 The six skills are meant to sit side by side, because they call each other's scripts by
