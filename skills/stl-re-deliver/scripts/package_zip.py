@@ -40,7 +40,12 @@ DELIVERABLE_GLOBS = [
 ]
 ALWAYS_SKIP = ["*/__pycache__/*", "__pycache__/*", "*.pyc"]
 REGENERABLE = ["intake/work.stl", "intake/aligned_work.stl", "*.npy", "*.ply", "*/wip/*.stl",
-               "measure/figures/*.stl", "intake/explore/*.stl", "_it*_SUPERSEDED/*.stl"]
+               "measure/figures/*.stl", "intake/explore/*.stl", "_it*_SUPERSEDED/*.stl",
+               # verify's raw per-point arrays (deviation_gate.py --save-arrays) and cached rasters:
+               # regenerable from the scripts in source/, and they alone can push the zip past the
+               # 30 MiB chat upload limit (OD-E01 real run: 6 x 15 MB)
+               "*dev_arrays*.npz", "qa/*.npz", "_it*_SUPERSEDED/qa/*.npz", "measure/figures/*.npz",
+               "_it*_SUPERSEDED/measure/figures/*.npz"]
 
 
 def sha256(p: Path) -> str:
@@ -60,7 +65,7 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--run", type=Path, required=True)
     ap.add_argument("--out-dir", type=Path, help="default: the run folder's parent")
     ap.add_argument("--include-scan", action="store_true", help="also ship input/scan.stl")
-    ap.add_argument("--max-source-mb", type=float, default=25.0,
+    ap.add_argument("--max-source-mb", type=float, default=1.0,
                     help="regenerable intermediates above this size are listed, not zipped")
     a = ap.parse_args(argv)
     run = a.run.resolve()

@@ -9,7 +9,7 @@ Last step of `stl-re-deliver`, after `make_manifest.py` succeeded (so CHK-PUBLIS
 hash freeze and repro are already enforced). A run without `deliver/MANIFEST.json` is never zipped.
 
 ```
-python scripts/package_zip.py --run <run> [--out-dir <dir>] [--include-scan] [--max-source-mb 25]
+python scripts/package_zip.py --run <run> [--out-dir <dir>] [--include-scan] [--max-source-mb 1]
 ```
 
 ## What the zip contains
@@ -38,6 +38,12 @@ Merging `deliverables/` and `source/` gives back the complete run tree, so the r
 - Regenerable intermediates larger than `--max-source-mb` (working / aligned meshes, point caches,
   de-warped measurement copies, wip STLs). The stage script that writes each one is in `source/`.
 - `__pycache__/`, `*.pyc`.
+
+**Size.** The chat file upload limit is **30 MiB**. The default `--max-source-mb 1` makes every regenerable
+intermediate above 1 MB (work / aligned meshes, verify's `*dev_arrays*.npz`, cached rasters) is excluded and
+listed; the OD-E01 run (populated PCB, 398k-face scan) went from 126 MiB to about 10 MiB this way. If the zip is
+still over 30 MiB, say so and publish it another way (e.g. commit it to a release or a shared folder the owner
+names); never drop a deliverable to make it fit.
 
 ## Where it goes
 

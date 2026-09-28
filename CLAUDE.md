@@ -11,7 +11,9 @@ owner hands you a scan (STL) + photos and asks for reverse engineering ("tersine
    `skills/stl-re-deliver/scripts/package_zip.py` after `make_manifest.py`; layout and exclusions in
    `skills/stl-re-deliver/references/delivery-package.md`. Send the zip to the owner
    (`SendUserFile`, display `attach`) with the verdict, regime, iteration (n of 3), limitations with
-   re-run triggers, and whether verify was independent. Never ask which format.
+   re-run triggers, and whether verify was independent. Never ask which format. The chat upload
+   limit is 30 MiB: `package_zip.py` now excludes (and lists with sha256) regenerable intermediates
+   above 1 MB by default, which kept the OD-E01 zip at about 9 MB.
 2. **Band regime shorthand.** "p95 plastik parça toleransı" / "plastic tolerance" = regime
    `baseline-skill`, material class `plastic` (p95 ≤ 0.30 / max ≤ 0.80 mm,
    `baseline/skills/stl2step-build123d/SKILL.md:87`). "machined" = p95 ≤ 0.15 / max ≤ 0.50.
