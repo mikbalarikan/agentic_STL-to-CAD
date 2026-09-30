@@ -1,0 +1,128 @@
+{
+ "mesh": "work.stl",
+ "raw_scan": "../input/scan.stl",
+ "intake_json": "intake.json",
+ "out_dir": ".",
+ "seed": 0,
+ "noise": {
+  "from": "noise_sidewall.json"
+ },
+ "chk_scale": {
+  "ran": true,
+  "result": "finding",
+  "note": "FLAG: no calipers (scan-only run, DECISIONS.md MEASUREMENTS); units assumed mm, scale unverified, no scale applied"
+ },
+ "primary": {
+  "type": "plane",
+  "approx_normal": [
+   -0.912319,
+   -0.232305,
+   0.337207
+  ],
+  "material_side": "-z",
+  "desc": "top face, clear-cover plateau (datum x -14.5..-1.5; crop excludes the cover/cap seam groove at x=-1.2 and the crowned cap)",
+  "why": "largest continuous moulded flat; the housing's back face that seats against the bumper pocket; both housing halves are flush on it",
+  "crop_point_raw": [
+   13.344,
+   -38.694,
+   -170.752
+  ],
+  "crop_radius": 6.5
+ },
+ "origin": {
+  "xy_planes": {
+   "x": {
+    "approx_normal_datum": [
+     1,
+     0,
+     0
+    ],
+    "desc": "rear wall of the lower body (x=+10 in the rough frame, below the connector shelf)",
+    "crop_point_raw": [
+     22.042,
+     -33.722,
+     -162.548
+    ],
+    "crop_radius": 3.5
+   },
+   "y": [
+    {
+     "approx_normal_datum": [
+      0,
+      1,
+      0
+     ],
+     "desc": "+Y side wall between nose blend and tab",
+     "crop_point_raw": [
+      12.873,
+      -19.163,
+      -172.436
+     ],
+     "crop_radius": 2.6
+    },
+    {
+     "approx_normal_datum": [
+      0,
+      -1,
+      0
+     ],
+     "desc": "-Y side wall between nose blend and tab",
+     "crop_point_raw": [
+      14.178,
+      -47.374,
+      -188.316
+     ],
+     "crop_radius": 2.6
+    }
+   ]
+  },
+  "definition": "top face (z=0) ∩ side-wall mid-plane (y=0) ∩ lower-body rear wall (x=0)"
+ },
+ "clock": {
+  "rule": "plane_normal",
+  "approx_normal_raw": [
+   -0.035332,
+   0.865087,
+   0.500375
+  ],
+  "target_deg": 90,
+  "desc": "+Y side wall (between nose blend and tab) normal -> +Y",
+  "why": "the long side walls carry the mounting tabs; X runs nose(-) to connector shelf(+)",
+  "crop_point_raw": [
+   12.873,
+   -19.163,
+   -172.436
+  ],
+  "crop_radius": 2.6
+ },
+ "landmarks": [
+  {
+   "name": "lowest point = bottom rib tips (try2 expected -9.6 was the bottom FACE; zmin lands on the two bottom ribs, which the rough section x=-8 shows 0.4 mm proud of that face)",
+   "stat": "zmin",
+   "expected": -10.0,
+   "tol": 0.3,
+   "tol_source": "rough-frame section x=-8: face -4.25 / rib -4.65 vs top 4.85, plus face slope toward rear"
+  },
+  {
+   "name": "connector shelf rear end",
+   "stat": "xmax",
+   "expected": 7.1,
+   "tol": 0.3,
+   "tol_source": "rough-frame section y=0.11: rear end x=17.1, lower-body wall x=10.0"
+  },
+  {
+   "name": "nose tip",
+   "stat": "xmin",
+   "expected": -27.3,
+   "tol": 0.5,
+   "tol_source": "rough-frame section y=0.11: nose at x=-17.3"
+  },
+  {
+   "name": "tab tip",
+   "stat": "ymax",
+   "expected": 19.0,
+   "tol": 0.3,
+   "tol_source": "rough-frame section x=0: tab to y=19.0"
+  }
+ ]
+}
