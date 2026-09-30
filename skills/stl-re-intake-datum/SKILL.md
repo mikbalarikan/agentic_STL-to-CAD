@@ -238,6 +238,10 @@ Worked specs and golden numbers are in `references/datum-cookbook.md`. Rules:
      near such a transition measurably shifts the clock angle (see `analysis/golden/DRM.md` §2 for
      the worked sensitivity).
    - P03 never recorded its clock (B6).
+   - Prismatic part with no round feature: `origin.xy_planes` (end wall + side-wall
+     mid-plane, clock on a side wall with `target_deg`) and, where a datum face is crowned or
+     two-piece, `crop_point_raw`/`crop_radius` to fit its clean flat only
+     (`references/datum-cookbook.md` §3.1, §5).
 4. **Origin.** A named intersection ("bore axis ∩ top face"), never "the centre".
 5. **CHK-TILT.**
    - `align.py` fits a COMMON slope with a PER-FEATURE intercept through the circle centres

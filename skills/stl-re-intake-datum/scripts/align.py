@@ -19,7 +19,10 @@ PROVENANCE
     * STOP when a datum fit rms exceeds the measured noise floor (RE_SPEC.md:126-129);
     * sanity landmarks (SYNTHESIS B11, facet-film T3);
     * plotting removed (use the measure skill's section tools);
-    * shapely dependency removed (shoelace area).
+    * shapely dependency removed (shoelace area);
+    * origin.xy_planes + clock target_deg for prismatic parts with no round feature, and
+      raw-frame crop spheres (crop_point_raw / crop_radius) on plane fits (new code,
+      2026-09-30, cliff-sensor real run; references/datum-cookbook.md SS3.1).
 
 Exit codes: 0 OK, 2 STOP (fit residual > noise floor; alignment.json written with
 status STOP), 3 spec/geometry error (nothing trustworthy written).
@@ -63,6 +66,23 @@ def apply(T: np.ndarray, m: trimesh.Trimesh) -> trimesh.Trimesh:
 
 def ang_between(a: np.ndarray, b: np.ndarray) -> float:
     return math.degrees(math.acos(float(np.clip(abs(unit(a) @ unit(b)), -1, 1))))
+
+
+def crop_sphere(mc: trimesh.Trimesh, T: np.ndarray, q: dict[str, Any]) -> tuple[trimesh.Trimesh, np.ndarray]:
+    """Optional raw-frame crop for plane fits (keys crop_point_raw + crop_radius): keeps the
+    faces whose centre, mapped back to the RAW scan frame, lies inside the sphere, so a datum
+    plane can be restricted to its clean flat (a crowned or two-piece face would otherwise
+    read form error as fit residual; RE_SPEC.md:126-129 'pick a cleaner region').
+    Returns (sub-mesh, kept face indices of mc)."""
+    if "crop_point_raw" not in q:
+        return mc, np.arange(len(mc.faces))
+    Ti = np.linalg.inv(T)
+    craw = trimesh.transform_points(mc.triangles_center, Ti)
+    keep = np.where(np.linalg.norm(craw - np.asarray(q["crop_point_raw"], float), axis=1)
+                    <= float(q["crop_radius"]))[0]
+    if len(keep) < 3:
+        raise SpecError(f"crop sphere {q['crop_point_raw']} r={q['crop_radius']} keeps no faces")
+    return mc.submesh([keep], append=True), keep
 
 
 # ----------------------------------------------------------------------------- origin / tilt
@@ -263,11 +283,14 @@ def clock_angle(m: trimesh.Trimesh, R_cur: np.ndarray, c: dict[str, Any], seed: 
                          "label_rule": c.get("label_rule", "candidate nearest pick_nearest_deg")}
     if rule == "plane_normal":
         an = R_cur[:3, :3] @ unit(c["approx_normal_raw"])
+        m, _ = crop_sphere(m, R_cur, c)
         pl = level_plane(m, an, c.get("cone_deg", 10.0), c.get("tol", 0.05),
                          offset_range=c.get("offset_range"), seed=seed)
         nrm = pl["normal"]
         perp = 90.0 - ang_between(nrm, np.array([0, 0, 1.0]))
-        return -math.degrees(math.atan2(nrm[1], nrm[0])), {
+        # target_deg: where the wall normal should point (0 = +X default, 90 = +Y)
+        tgt = float(c.get("target_deg", 0.0))
+        return tgt - math.degrees(math.atan2(nrm[1], nrm[0])), {"target_deg": tgt,
             "plane_fit_rms_mm": pl["fit_rms_mm"], "plane_fit_max_mm": pl["fit_max_mm"],
             "plane_n_faces": pl["n_faces"], "plane_out_of_perpendicular_deg": perp}
     raise SpecError(f"unknown clock rule {rule!r}")
@@ -328,7 +351,8 @@ def run(spec: dict[str, Any], spec_path: Path) -> tuple[int, dict[str, Any]]:
     res: dict[str, Any] = {}
     # ---- primary
     if P["type"] == "plane":
-        pl = level_plane(m, P["approx_normal"], P.get("cone_deg", 10.0), P.get("tol", 0.05),
+        m_fit, keep_idx = crop_sphere(m, S, P)
+        pl = level_plane(m_fit, P["approx_normal"], P.get("cone_deg", 10.0), P.get("tol", 0.05),
                          P.get("bin_mm", 0.1), P.get("halfwidth_mm", 0.15), P.get("offset_range"),
                          seed=seed)
         n = pl["normal"]
@@ -350,7 +374,7 @@ def run(spec: dict[str, Any], spec_path: Path) -> tuple[int, dict[str, Any]]:
                    "normal_raw": n.tolist(), "centroid_raw": pl["centroid"].tolist(),
                    "material_side": side, "ransac": pl["ransac"]}
         res["primary_inlier_z_median"] = None
-        prim_faces = pl["faces"]
+        prim_faces = keep_idx[pl["faces"]]
     elif P["type"] == "axis":
         # review B1: crop to ONE clean cylinder is required, because the STOP-check
         # residual below is a radial residual about the fitted axis, which is only
@@ -421,6 +445,7 @@ def run(spec: dict[str, Any], spec_path: Path) -> tuple[int, dict[str, Any]]:
     O = spec["origin"]
     secondary: dict[str, Any] | None = None
     tilt: dict[str, Any] = {"value": None, "method": "not measured"}
+    clock_done: tuple[float, dict[str, Any]] | None = None
     if "xy" in O:
         feats = O["xy"] if isinstance(O["xy"], list) else [O["xy"]]
         c0 = (np.median(mc.triangles_center[prim_faces][:, :2], axis=0) if prim_faces is not None
@@ -469,8 +494,65 @@ def run(spec: dict[str, Any], spec_path: Path) -> tuple[int, dict[str, Any]]:
             secondary["noise_ref"] = None
             findings.append("secondary circle residual not compared: no noise_secondary measured on a "
                             "clean circle (plane noise is not comparable to section-circle residuals)")
+    elif P["type"] == "plane" and "xy_planes" in O:
+        # Prismatic plane-primary part with no round feature (added 2026-09-30, cliff bumper
+        # sensor run): clock first on a named wall (plane_normal), then X and Y each come
+        # from one datum plane or the mid-plane of two opposed planes, fitted with the same
+        # level_plane recipe as the primary. CHK-TILT for this case is the measured
+        # out-of-perpendicularity of the clock wall to the primary (no axis to drift).
+        C = spec["clock"]
+        if C["rule"] != "plane_normal":
+            raise SpecError("origin.xy_planes needs clock.rule 'plane_normal' (a wall pins the rotation)")
+        cdeg, cdet = clock_angle(mc, T @ S, C, seed)
+        Rz = rot_z(cdeg)
+        T = Rz @ T
+        mc = apply(Rz, mc)
+        clock_done = (cdeg, cdet)
+        fits = {}
+        shift = np.zeros(2)
+        for k, axis in (("x", 0), ("y", 1)):
+            spec_k = O["xy_planes"][k]
+            planes = spec_k if isinstance(spec_k, list) else [spec_k]
+            if len(planes) not in (1, 2):
+                raise SpecError(f"origin.xy_planes.{k}: one plane or two opposed planes (mid-plane)")
+            offs, det = [], []
+            for q in planes:
+                try:
+                    mq, _ = crop_sphere(mc, T @ S, q)
+                    pq = level_plane(mq, q["approx_normal_datum"], q.get("cone_deg", 10.0), q.get("tol", 0.05),
+                                     offset_range=q.get("offset_range"), seed=seed)
+                except RuntimeError as e:
+                    raise SpecError(f"origin.xy_planes.{k}: {e}") from None
+                nq = pq["normal"]
+                if abs(nq[axis]) < math.cos(math.radians(10.0)):
+                    raise SpecError(f"origin.xy_planes.{k}: plane normal {nq.tolist()} is not along {k}")
+                # where the fitted plane crosses the datum axis (z=0, other coordinate 0 ignored)
+                offs.append(float(pq["centroid"][axis]))
+                det.append({"desc": q.get("desc", ""), "fit_rms_mm": pq["fit_rms_mm"],
+                            "fit_max_mm": pq["fit_max_mm"], "n_faces": pq["n_faces"],
+                            "coord_mm": float(pq["centroid"][axis]),
+                            "out_of_perpendicular_to_primary_deg": 90.0 - ang_between(nq, np.array([0, 0, 1.0]))})
+                if pq["fit_rms_mm"] > noise["value"]:
+                    stop.append(f"origin {k} plane '{q.get('desc', '')}' rms {pq['fit_rms_mm']:.4f} > noise "
+                                f"floor {noise['value']:.4f}")
+            shift[axis] = float(np.mean(offs))
+            fits[k] = {"planes": det, "origin_coord_mm": shift[axis],
+                       "rule": "mid-plane of two opposed planes" if len(planes) == 2 else "single plane"}
+        T3 = np.eye(4)
+        T3[0, 3], T3[1, 3] = -shift[0], -shift[1]
+        T = T3 @ T
+        mc = apply(T3, mc)
+        perp = cdet["plane_out_of_perpendicular_deg"]
+        secondary = {"type": "plane", "mesh_region_desc": C.get("desc", ""), "why": C.get("why", ""),
+                     "fit_rms_mm": cdet["plane_fit_rms_mm"], "fit_max_mm": cdet["plane_fit_max_mm"],
+                     "origin_planes": fits}
+        if cdet["plane_fit_rms_mm"] > noise["value"]:
+            stop.append(f"clock plane rms {cdet['plane_fit_rms_mm']:.4f} > noise floor {noise['value']:.4f}")
+        tilt = {"value": abs(float(perp)), "stderr_deg": None, "z_span_mm": None,
+                "method": "clock wall out-of-perpendicularity to the primary plane (prismatic part, "
+                          "no coaxial stations); a draft or a moulding error reads the same"}
     elif P["type"] == "plane":
-        raise SpecError("plane primary needs origin.xy (axis or feature that pins X/Y)")
+        raise SpecError("plane primary needs origin.xy (axis or feature that pins X/Y) or origin.xy_planes")
     if P["type"] == "axis":
         Z = O.get("z")
         if not Z:
@@ -492,10 +574,13 @@ def run(spec: dict[str, Any], spec_path: Path) -> tuple[int, dict[str, Any]]:
 
     # ---- clock
     C = spec["clock"]
-    cdeg, cdet = clock_angle(mc, T, C, seed)
-    Rz = rot_z(cdeg)
-    T = Rz @ T
-    mc = apply(Rz, mc)
+    if clock_done is not None:
+        cdeg, cdet = clock_done
+    else:
+        cdeg, cdet = clock_angle(mc, T @ S, C, seed)
+        Rz = rot_z(cdeg)
+        T = Rz @ T
+        mc = apply(Rz, mc)
     if P["type"] == "axis" and C["rule"] == "plane_normal":
         secondary = {"type": "plane", "mesh_region_desc": C.get("desc", ""), "why": C.get("why", ""),
                      "fit_rms_mm": cdet["plane_fit_rms_mm"], "fit_max_mm": cdet["plane_fit_max_mm"]}

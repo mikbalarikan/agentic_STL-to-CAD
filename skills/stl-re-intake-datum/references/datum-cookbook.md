@@ -162,6 +162,17 @@ a diagnostic, not gated. `eig_ratio` (smallest/second eigenvalue) near 0 means a
 axis. The `origin.xy` circle stations then give CHK-TILT as the angle between the normals-axis
 and the line through the section centres (two independent estimators).
 
+## 3.1 Prismatic plane-primary part with no round feature (cliff sensor, 2026-09-30)
+
+A moulded box (sensor housing) has no bore or boss, so `origin.xy` circle fits have nothing to
+fit. Use `origin.xy_planes`: primary = the broad functional flat, clock = a long side wall
+(`plane_normal`, `target_deg: 90` to put its normal on +Y), Y origin = mid-plane of the two side
+walls, X origin = a named end wall. Lesson from that run: the broad top face was two moulded
+pieces with a ~0.1 mm crown, so the whole-face rms (0.038) exceeded the wall noise (0.0275) and
+STOPped; cropping each datum plane to its clean flat (`crop_point_raw`/`crop_radius`) gave rms
+0.012–0.023 and OK. A crop is a region choice, not a threshold: name the region and why in the
+intake card. Worked spec: `evals/real-runs/cliff_bumper_sensor/datum_spec.json`.
+
 ## 4. Normal orientation (correction to SYNTHESIS A5)
 
 SYNTHESIS A5 flips normals when the signed volume is negative. On an open (non-watertight) scan
@@ -184,6 +195,9 @@ this. (This was found while testing this skill; it is listed as an open question
 | `noise_secondary` | same, measured on a clean circle; enables the STOP check on circle residuals |
 | `primary` | `plane`: `approx_normal`, `material_side` (`-z`: material behind the outward normal), `cone_deg` 10, `tol` 0.05, `bin_mm` 0.1, `halfwidth_mm` 0.15, `offset_range` · `axis`: `approx_axis`, `perp_max` 0.30, `crop_point`/`crop_radius` (required, review B1), `iters` 3 |
 | `origin.xy` | one feature or a list: `method` `kasa`/`irls` (sections, `allow_open_arcs`) or `wall_faces` (`wall` inner/outer, `r_min`, `r_max`, `perp_max`); `r_hint`, `r_tol`, `rms_max`, `z_range`, `stations` |
+| `origin.xy_planes` | plane primary, prismatic part with no round feature (added 2026-09-30, cliff-sensor run): `{"x": <plane> or [<plane>, <plane>], "y": ...}`; one plane = that plane is the origin, two opposed planes = their mid-plane. `<plane>` = `approx_normal_datum`, optional `offset_range`, `cone_deg`, `tol`, `desc`, crop keys. Needs `clock.rule: plane_normal`; the clock runs first. Each plane rms is STOP-checked against `noise`. CHK-TILT = the clock wall's out-of-perpendicularity to the primary (a draft reads the same; say so). |
+| `crop_point_raw`, `crop_radius` | optional on `primary` (plane), on a `plane_normal` clock and on each `xy_planes` plane: fit only faces whose centre, mapped back to the RAW scan frame, lies in this sphere. Use it to restrict a datum plane to its clean flat (a crowned or two-piece face otherwise reads form error as fit residual and trips STOP). Record why in the card. |
+| `clock.target_deg` | `plane_normal` only: where the wall normal should point, 0 = +X (default), 90 = +Y |
 | `origin.z` | axis primary only: `plane` (`approx_normal_datum`, `offset_range`) or `extreme` (`which` min/max) |
 | `origin.definition` | the named intersection |
 | `clock` | `polygon_flat`/`polygon_corner` (`n`, `z`), `min_radius` (`z`), `fourier_mass` (`n`, `r_range`, `z_range`, `pick_nearest_deg`, `label_rule`), `plane_normal` (`approx_normal_raw`), `none` (needs `why`) |
