@@ -49,3 +49,4 @@ kept in this repo.
 | 8 | `stl-re-measure-intent/scripts` | Tools target turned or lobed parts; a prismatic part needed a run-local fitter | open |
 | 9 | `stl-re-verify/scripts/observability.py` | Unobservable fraction 0.02 % although the slot roof and pocket corners were never scanned (same as OD-H22 #3) | open |
 | 10 | `stl-re-deliver/scripts/make_manifest.py` | `decisions/accept_band.md` classified as `unclassified` | open (minor) |
+| 11 | `stl-re-deliver/scripts/package_zip.py` | verify's `qa/dev_arrays*.npz` point caches were not in the regenerable list, so the zip came out at 45 MiB, over the 30 MiB `SendUserFile` limit | fixed: `*.npz` is now regenerable, and the size note is in `delivery-package.md`. The re-packaged zip is 2.4 MB and the fixture test passes 33/33 |

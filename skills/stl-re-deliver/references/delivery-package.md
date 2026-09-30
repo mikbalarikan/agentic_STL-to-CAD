@@ -35,9 +35,16 @@ Merging `deliverables/` and `source/` gives back the complete run tree, so the r
 
 - `input/scan.stl`: the owner's own raw scan, identified by its sha256 in `input/INPUT_HASHES.json`.
   Ship it with `--include-scan` when the recipient does not have it.
-- Regenerable intermediates larger than `--max-source-mb` (working / aligned meshes, point caches,
-  de-warped measurement copies, wip STLs). The stage script that writes each one is in `source/`.
+- Regenerable intermediates larger than `--max-source-mb` (working / aligned meshes, point caches
+  such as verify's `qa/dev_arrays*.npz`, de-warped measurement copies, wip STLs). The stage script
+  that writes each one is in `source/`.
 - `__pycache__/`, `*.pyc`.
+
+## Size
+
+`SendUserFile` refuses files over 30 MiB. If the zip is larger, re-run with a smaller
+`--max-source-mb` (e.g. 5): only regenerable intermediates are dropped, and each one stays listed
+in `PACKAGE_INDEX.md` with bytes and sha256 (cliff-sensor run: 45 MiB -> under 30 MiB).
 
 ## Where it goes
 
