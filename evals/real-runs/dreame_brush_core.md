@@ -36,3 +36,13 @@ the delivery zip (+ `_part1.zip` with the scan).
 | 4 | `stl-re-measure-intent/scripts/param_table.py` | every scan `count` must cite "order/FFT"; a linear pattern (tuft rows) had to be counted by an FFT along z to pass | open (rule wording) |
 | 5 | intake skill | no guidance for twisted/helical profiles (untwist by entropy minimisation was improvised) and for undercuts seen only through a narrow neck | open |
 | 6–17 | `stl-re-verify` scripts | 12 defects listed in `dreame_brush_core/VERDICT.md` "Skill defects found" (observability OOM and CAD masks, cluster list on unmasked points, zones ungated under baseline-skill, no helical mask term, ICP cap 60 too low for a screw-sliding part, …) | open |
+
+## Add-on (2026-10-01): bristles as one fitted body ("max volume occupied")
+- Owner asked for the brush wires as a single fitted body. Built in `<run>/addons/bristles/` on top of the verified
+  core (build/ and qa/ untouched): per tuft row, a 0.2/99.8 % percentile (r, Δθ_u) section extruded with the core
+  twist and trimmed by a revolved (r, z) ramp profile; tuft holes filled as roots; fused with the core → one valid
+  solid. Volumes and the independent containment check (PASS on the ±3 mm soft band): `dreame_brush_core/bristles/`.
+- Defects/lessons: OCC returned nothing for fin ∩ revolve at some revolve-seam angles (retry with a turned seam,
+  logged); the fins closed the tuft-hole mouths and left 26 internal voids until the holes were filled as roots;
+  the main zip went over 30 MiB because of two CAD STL meshes → `package_zip.py` now moves large deliverable
+  meshes to the companion zips as well.

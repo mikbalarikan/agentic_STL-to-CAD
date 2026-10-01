@@ -22,9 +22,9 @@ Rules (CHK-PUBLISH still applies: this runs only after make_manifest.py succeede
   --include-scan to ship it), files larger than --max-source-mb that are regenerable
   intermediates (work/aligned meshes, point caches), __pycache__/ and *.pyc.
 - The zip is written next to the run folder (or --out-dir) with a sidecar <zip>.sha256.
-- --max-zip-mb N (cloud sessions: 29, the chat upload limit is 30 MiB): source files larger than
-  --part-file-mb move out of the main zip into companion zips <root>_part<k>.zip, each kept under N MB
-  (greedy by compressed size), with the same <root>/source/ prefix, so unzipping all of them into one
+- --max-zip-mb N (cloud sessions: 29, the chat upload limit is 30 MiB): files larger than
+  --part-file-mb (source files and big deliverable meshes; STEPs normally stay) move out of the main zip into companion zips <root>_part<k>.zip, each kept under N MB
+  (greedy by compressed size), with the same <root>/deliverables|source/ prefix, so unzipping all of them into one
   folder gives the whole package. PACKAGE_INDEX.md lists which file is in which part. Nothing is dropped.
 Exit codes: 0 written; 2 refused; 3 internal error.
 """
@@ -111,8 +111,12 @@ def main(argv: list[str] | None = None) -> int:
     parts: list[list[tuple[Path, str, int]]] = []
     if a.max_zip_mb > 0:
         import zlib
-        big = [(p, rel) for p, rel in source if p.stat().st_size / 1e6 > a.part_file_mb]
+        # large files (source, and deliverable meshes such as *_cad.stl) move to companion zips; their
+        # archive path keeps the deliverables/ or source/ prefix, so unzipping every part rebuilds the tree
+        big = [(p, f"source/{rel}") for p, rel in source if p.stat().st_size / 1e6 > a.part_file_mb]
+        big += [(p, f"deliverables/{rel}") for p, rel in deliv if p.stat().st_size / 1e6 > a.part_file_mb]
         source = [(p, rel) for p, rel in source if p.stat().st_size / 1e6 <= a.part_file_mb]
+        deliv = [(p, rel) for p, rel in deliv if p.stat().st_size / 1e6 <= a.part_file_mb]
         sized = sorted(((p, rel, len(zlib.compress(p.read_bytes(), 6))) for p, rel in big), key=lambda t: -t[2])
         cap = a.max_zip_mb * 1e6 * 0.98
         for item in sized:
@@ -142,11 +146,11 @@ def main(argv: list[str] | None = None) -> int:
     if not excluded:
         lines.append("| - | - | - | nothing excluded |")
     if parts:
-        lines += ["", "## Companion zips (large source files, same folder layout)", "",
+        lines += ["", "## Companion zips (large files, same folder layout)", "",
                   "Unzip the main zip and every part into the same folder.", "", "| part | file | bytes | sha256 |", "|---|---|---|---|"]
         for k, part in enumerate(parts, 1):
             for p, rel, _c in part:
-                lines.append(f"| `{root}_part{k}.zip` | `source/{rel}` | {p.stat().st_size} | `{sha256(p)}` |")
+                lines.append(f"| `{root}_part{k}.zip` | `{rel}` | {p.stat().st_size} | `{sha256(p)}` |")
     lines += ["", f"Counts: {len(deliv)} deliverable files, {len(source)} source files in the main zip, "
               f"{sum(len(x) for x in parts)} in {len(parts)} companion zip(s), {len(excluded)} excluded.", ""]
     index = "\n".join(lines)
@@ -162,7 +166,7 @@ def main(argv: list[str] | None = None) -> int:
         pz = out_dir / f"{root}_part{k}.zip"
         with zipfile.ZipFile(pz, "w", compression=zipfile.ZIP_DEFLATED, compresslevel=6) as z:
             for p, rel, _c in part:
-                z.write(p, f"{root}/source/{rel}")
+                z.write(p, f"{root}/{rel}")
         written.append(pz)
     for w in written:
         w.with_suffix(".zip.sha256").write_text(f"{sha256(w)}  {w.name}\n")

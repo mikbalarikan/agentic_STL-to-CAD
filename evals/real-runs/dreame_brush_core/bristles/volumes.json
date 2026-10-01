@@ -1,0 +1,14 @@
+{
+ "core_mm3": 28731.545192555586,
+ "bristle_envelope_mm3": 17416.07780186953,
+ "envelope_row_mm3": {
+  "A": 8941.163392436734,
+  "B": 8235.602699815887
+ },
+ "core_with_bristles_mm3": 46147.62299442512,
+ "swept_radius_max_mm": 19.303905442517657,
+ "note": "bristle_envelope_mm3 = total - core (includes the filled tuft holes and the parts of the fins outside the core); the envelope is a fitted max-occupancy body (q 0.2/99.8 % of the scan bristle points), not a solid-plastic volume",
+ "swept_rotation_envelope_mm3": 169966.61793410068,
+ "swept_rotation_envelope_method": "sum of pi*r_max(z)^2 over 0.1 mm z-slabs of the core+bristle CAD (b04_swept.py)",
+ "overall_length_mm": 169.75408455995
+}
