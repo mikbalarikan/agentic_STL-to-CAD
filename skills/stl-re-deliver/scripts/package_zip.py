@@ -39,7 +39,7 @@ DELIVERABLE_GLOBS = [
     "measure/PARAM_TABLE.md", "DECISIONS.md", "decisions/*",
 ]
 ALWAYS_SKIP = ["*/__pycache__/*", "__pycache__/*", "*.pyc"]
-REGENERABLE = ["intake/work.stl", "intake/aligned_work.stl", "*.npy", "*.ply", "*/wip/*.stl",
+REGENERABLE = ["intake/work.stl", "intake/aligned_work.stl", "*.npy", "*.npz", "*.ply", "*/wip/*.stl",
                "measure/figures/*.stl", "intake/explore/*.stl", "_it*_SUPERSEDED/*.stl"]
 
 

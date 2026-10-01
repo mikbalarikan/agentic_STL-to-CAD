@@ -1,0 +1,19 @@
+# DECISIONS — dreame_brushes_housing
+
+Human decisions that gate this run. One entry per decision; never edit an old entry,
+append a new one. Format: `- <date> | <who> | <decision id> | <decision> | <evidence path>`
+
+Decision ids: REGIME (band regime chosen at intake), MEASUREMENTS (calipers supplied /
+proceed scan-only), PART-CLASS (unsupported class: proceed or stop), ACCEPT-BAND
+(BAND_NOT_MET accepted for delivery), HALT (reason and options), INDEP (verify could not
+run in a fresh context), OTHER.
+
+- 2026-09-30 | owner (session message) | REGIME | baseline-skill, material_class plastic: p95 <= 0.30 / max <= 0.80 mm (baseline/skills/stl2step-build123d/SKILL.md:87). Owner wrote "p95 plastik parça toleransı kullan"; declared before any gate numbers exist. | intake/regime.json
+- 2026-09-30 | owner (session message) | MEASUREMENTS | No calipers or photos supplied (the message attaches only the STL); proceed scan-only. Limitations carried to the verdict: "Tier-1 not run" and "absolute scale not caliper-verified (units assumed mm)", re-run trigger: any caliper reading. | session message; input/INPUT_HASHES.json
+- 2026-09-30 | orchestrator (agent) | OTHER | inspection-only, no full-res scan: the only scan supplied is the owner's own decimated export (file name "dreame_brushes_housing_decimated_20MB.stl", 392k faces, ~20 MB upload limit). Graded as inspection-only per orchestrate §6: verdict at most APPROVED_WITH_LIMITATIONS, re-run trigger "full-res scan available". The owner can overturn this entry by supplying the full-resolution scan. | input/INPUT_HASHES.json#scan_resolution
+- 2026-09-30 | orchestrator (agent) | OTHER | Datum: align.py run on a documented crop (intake/datum_crop.py, pass 2, from the pass-1 frame intake/alignment_pass1.json) because the infinite-cylinder axis crop also took the gearbox block and open +X end (pass-1 radial rms 0.33 mm). Final crop: +Y trough bore x 85-125 mm, arc -100..-10 deg; axis radial rms 0.0128 <= circle noise 0.0133 (intake/noise_circle.py, self-referential on the same bore, stated). The bore axis bows ~0.3 deg along the part (span test in datum_crop.py docstring): recorded as a CHK-TILT finding, not forced. | intake/alignment.json; intake/datum_crop.json
+- 2026-10-01 | owner (decision card) | PART-CLASS | Scan is a rigid assembly (housing + gearbox end cover with 4 screws + drive motor + loose wires). Owner chose "Gövde+dişli kutusu+motor tek katı": deliver ONE fused solid of housing + gearbox block + motor envelope; wires and screw-head detail are not modelled and are declared. | session decision card
+- 2026-10-01 | owner (decision card) | OTHER | Builder self-check after the main-geometry model (dev v7): p50 0.09 mm, ~31% of scan area > 0.30 mm, p95 ~2.9 mm (NOT an official gate). Owner chose "Devam et, detaylandır": continue detailed modelling before verify. | session decision card
+- 2026-10-01 | orchestrator (agent) | OTHER | it1 verify verdict REVISE (gate errors empty; allowed REVISE/HALT): STEP fails BRepCheck (2 non-manifold edges at the +X window/latch boxes) plus band misses. Superseded with --route geometry (loop 1 of 3); it2 fixes validity and the largest geometry misses named in _it1_SUPERSEDED/qa/VERDICT.md. | _it1_SUPERSEDED/qa/VERDICT.md
+- 2026-10-01 | owner (decision card) | OTHER | it2 gate 15818f79d016 (created 2026-10-01T02:43:13+00:00) allowed BAND_NOT_MET/REVISE/HALT. Owner chose "BAND_NOT_MET kabul, teslim et": no third geometry loop; verify to re-assemble the it2 verdict as BAND_NOT_MET (an allowed verdict) so the miss can be accepted for delivery. | qa/VERDICT.md
+- 2026-10-01 | owner (decision card) | ACCEPT-BAND | accept scan_to_cad and cad_to_scan_observable band misses, gate 6a97111efe32 (created 2026-10-01T07:05:48+00:00): scan->CAD masked p95 1.161 / max 5.965 and observable CAD->scan p95 1.004 / max 7.693 vs 0.30 / 0.80 (baseline-skill plastic); deliver as BAND_NOT_MET, no loop 3 | decisions/accept_band.md

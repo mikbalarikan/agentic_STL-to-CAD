@@ -39,6 +39,13 @@ Merging `deliverables/` and `source/` gives back the complete run tree, so the r
   de-warped measurement copies, wip STLs). The stage script that writes each one is in `source/`.
 - `__pycache__/`, `*.pyc`.
 
+## Size limit
+
+SendUserFile rejects files over **30 MiB**. Package with `--max-source-mb 5` (regenerable meshes and
+`*.npy`/`*.npz` arrays above that size are listed in PACKAGE_INDEX.md with sha256, not zipped). If the zip is
+still over the limit, say so and name what is excluded; never drop deliverables or scripts silently.
+(Found on the DRM-BH01 real run: 90 MB with QA arrays, 26 MB without.)
+
 ## Where it goes
 
 Next to the run folder (the job folder the owner gave), plus `<zip>.sha256`. Then send the zip to the
