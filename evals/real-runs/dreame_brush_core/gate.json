@@ -1,0 +1,4501 @@
+{
+ "schema": "stl-re/gate@1",
+ "tool": "verdict.py",
+ "tool_version": "stl-re-verify@1",
+ "inputs": {
+  "qa/datum_audit.json": "0bb0010d06435134ec954a7463060d11c17631501f2199c1c059103537780322",
+  "qa/datum_spec.json": "7a565bd5f4583ba10f6f62c5689642421e6c27a42553bb5b5a62bf69a0d31481",
+  "qa/deviation.json": "fad130d42ddf637a240d9bb98048c0a8b476e2f0ff73e85c74c67596b3d94d15",
+  "qa/deviation_datum.json": "4d34b3b5cbe29fd8ba00b6157a5c9d2afb56145d634a0f1b95283ccbf513ffe2",
+  "qa/dims.json": "b936eb683e76ac2b6359d5831ebfd32ce23623a0c52d329061ad1421cc97b8a6",
+  "qa/hash_freeze.json": "84cc9c7a992402e0e80306c2071d2e2cad1f081196093d602e13617c4913d425",
+  "qa/icp_scan_masks.json": "150cdd8e0ffb1838bb0aaf440bfc4e06a4bcd548d319b161091a7ec4a8c046b3",
+  "qa/it2_diagnostic.json": "163e3af5a888d74297bc11529e3fca12a89818aaa35bec16b2420fe94b02ba58",
+  "qa/m6_slot_occupants.json": "e1b73d652fbdea5ba0bf18e7f21ffab67b925c4563edb6c37080224006d817d8",
+  "qa/masks.json": "c33ddcb0d044a5b3e903fb31c24dbc6be61aa0797d1ce28957f443bde4da7fe8",
+  "qa/regime.json": "9c66ef85ecfba857c2ed4d852f26a314210ee2ff6f1e88c3b2d270e3814cf5c4",
+  "qa/registration.json": "9887a9d5119f0f01b5ebcfc244b208e59c5677416e1837bbc10601b441f6b6e3",
+  "qa/review.json": "82195f46ddf0517f3022f2b8645d4619ebeafd833e8222140b745192ac0b987d",
+  "qa/step_check.json": "060c24cd7eb8dd530ef473eb27d2f2b6808bfd50e9eb7e5888061d3284adf391",
+  "qa/zones.json": "359012361c7304791c79af28b286ff31bc345571db0e756dd141e5bd3f6e6fb2"
+ },
+ "seed": null,
+ "created": "2026-10-01T01:11:47+00:00",
+ "regime": {
+  "name": "baseline-skill",
+  "source": "baseline/skills/stl2step-build123d/SKILL.md:87",
+  "bands": {
+   "p95_mm": 0.3,
+   "max_mm": 0.8,
+   "tier1_abs_mm": null,
+   "interface_max_mm": null
+  },
+  "declared_in": null
+ },
+ "hash_frozen": {
+  "inputs": {
+   "build/dreame_brush_core_datum.step": "69ca2aba4441218e15ec75a8140075e9b02666f38f9b94d7c41937c5cb7faf63",
+   "build/dreame_brush_core.step": "8b48c98d8bd2b9df88cd1374b5c253b2d4660d9bd5c5b299a399e0a8c0bd3e94"
+  },
+  "seed": null,
+  "before": {
+   "build/dreame_brush_core_datum.step": "69ca2aba4441218e15ec75a8140075e9b02666f38f9b94d7c41937c5cb7faf63",
+   "build/dreame_brush_core.step": "8b48c98d8bd2b9df88cd1374b5c253b2d4660d9bd5c5b299a399e0a8c0bd3e94"
+  },
+  "after": {
+   "build/dreame_brush_core_datum.step": "69ca2aba4441218e15ec75a8140075e9b02666f38f9b94d7c41937c5cb7faf63",
+   "build/dreame_brush_core.step": "8b48c98d8bd2b9df88cd1374b5c253b2d4660d9bd5c5b299a399e0a8c0bd3e94"
+  },
+  "unchanged": true
+ },
+ "datum_audit": {
+  "inputs": {
+   "input/scan.stl": "4be5e49d2ab6e2a930a41aa017551eac8f08b1974ddfd1294b1b1455961f011a",
+   "intake/alignment.json": "09d955099db399c512f0e3d9befa7399920c2c3b0c8dfe25a0ae8e0cc31dabcb",
+   "qa/datum_spec.json": "7a565bd5f4583ba10f6f62c5689642421e6c27a42553bb5b5a62bf69a0d31481"
+  },
+  "seed": 0,
+  "independence": "builder matrix used only to select named regions; all fits are QA code on raw scan",
+  "primary": {
+   "type": "plane",
+   "method": "region SVD",
+   "faces": 2621,
+   "fit_rms_mm": 0.0782370699265893,
+   "fit_max_mm": 0.2225494217498562
+  },
+  "position": {
+   "type": "circle",
+   "wall": "outer",
+   "single_wall": "outer",
+   "faces": 931,
+   "R_mm": 15.199953209109216,
+   "fit_rms_mm": 0.019184141465280944,
+   "method": "IRLS Cauchy circle (q03:88-100)"
+  },
+  "clock": {
+   "type": "fourier",
+   "order": 4,
+   "phase_deg_local": 273.2490998464098,
+   "order_strength": 0.7887512708129317
+  },
+  "angle_deg": 0.8882911062553902,
+  "axis_angle_deg": 0.046218769056048284,
+  "clock_audited": true,
+  "origin_offset_mm": 0.03374422102962807,
+  "origin_offset_vec_mm": [
+   0.000329354140873761,
+   0.002512427116954541,
+   -0.0336489478101214
+  ],
+  "point_disagreement_mean_mm": 0.19575111177463503,
+  "point_disagreement_p95_mm": 0.322229706482777,
+  "point_disagreement_max_mm": 0.49916525846570997,
+  "reference_band": "\u22640.3\u00b0 / \u22640.15 mm (RE_SPEC.md:241)",
+  "reference": {
+   "angle_deg": 0.3,
+   "origin_offset_mm": 0.15,
+   "source": "baseline/oomwoo-re-pipeline/RE_SPEC.md:241"
+  },
+  "within_reference": false,
+  "blocking": false,
+  "note": "REPORT-ONLY (QUESTIONS.md Q2). Golden precedent: both B02 and P03 exceeded this reference band and were still approved with it recorded (see analysis/golden/OOM-B02.md and OOM-P03.md for the actual figures).",
+  "T_qa": [
+   [
+    0.9976070432192347,
+    0.06911832605798626,
+    0.001686511879024806,
+    5.697657158969523
+   ],
+   [
+    -0.056632509622534334,
+    0.830901564043517,
+    -0.5535298995753443,
+    -93.51594493226311
+   ],
+   [
+    -0.03966038543975271,
+    0.5521098150485817,
+    0.8328275967772628,
+    225.25360835417177
+   ],
+   [
+    0.0,
+    0.0,
+    0.0,
+    1.0
+   ]
+  ]
+ },
+ "validity": {
+  "inputs": {
+   "build/dreame_brush_core_datum.step": "69ca2aba4441218e15ec75a8140075e9b02666f38f9b94d7c41937c5cb7faf63",
+   "build/dreame_brush_core.step": "8b48c98d8bd2b9df88cd1374b5c253b2d4660d9bd5c5b299a399e0a8c0bd3e94"
+  },
+  "seed": null,
+  "steps": {
+   "build/dreame_brush_core_datum.step": {
+    "validity": {
+     "counts": {
+      "solid": 1,
+      "shell": 1,
+      "face": 200,
+      "edge": 798,
+      "vertex": 1596
+     },
+     "brepcheck_valid": true,
+     "shells_closed": [
+      true
+     ],
+     "naked_edges": 0,
+     "volume_mm3": 28731.545224374317,
+     "area_mm2": 15587.003335366482,
+     "bbox": [
+      -16.436,
+      -16.436,
+      -6.471,
+      16.436,
+      16.436,
+      163.28400010000004
+     ],
+     "single_valid_closed_solid": true
+    },
+    "tessellation": {
+     "tolerance": 0.005,
+     "angular_tolerance": 0.05,
+     "tris": 456418,
+     "watertight": true,
+     "winding": true,
+     "euler": 2,
+     "components": 1,
+     "degenerate_faces": 0,
+     "volume_mm3": 28717.790246438453,
+     "volume_vs_brep_mm3": -13.75497793586328
+    },
+    "surface_census": {
+     "faces": 200,
+     "by_type": {
+      "plane": {
+       "count": 91,
+       "area_mm2": 1937.0861942446966
+      },
+      "cylinder": {
+       "count": 73,
+       "area_mm2": 1641.5959285799659
+      },
+      "bspline": {
+       "count": 32,
+       "area_mm2": 11933.06445537022
+      },
+      "torus": {
+       "count": 4,
+       "area_mm2": 75.25675717157885
+      }
+     },
+     "analytic_area_share": 0.23442215295518412,
+     "gated": false,
+     "note": "reported, not gated (QUESTIONS.md Q3)"
+    }
+   },
+   "build/dreame_brush_core.step": {
+    "validity": {
+     "counts": {
+      "solid": 1,
+      "shell": 1,
+      "face": 200,
+      "edge": 798,
+      "vertex": 1596
+     },
+     "brepcheck_valid": true,
+     "shells_closed": [
+      true
+     ],
+     "naked_edges": 0,
+     "volume_mm3": 28731.545224374313,
+     "area_mm2": 15587.003335366482,
+     "bbox": [
+      -18.340933072446845,
+      -64.31788420815928,
+      -253.82427828746683,
+      14.635616501518447,
+      49.27078511656301,
+      -99.18680908084825
+     ],
+     "single_valid_closed_solid": true
+    },
+    "tessellation": {
+     "tolerance": 0.005,
+     "angular_tolerance": 0.05,
+     "tris": 504894,
+     "watertight": true,
+     "winding": true,
+     "euler": 2,
+     "components": 1,
+     "degenerate_faces": 0,
+     "volume_mm3": 28717.67829927085,
+     "volume_vs_brep_mm3": -13.866925103462563
+    },
+    "surface_census": {
+     "faces": 200,
+     "by_type": {
+      "plane": {
+       "count": 91,
+       "area_mm2": 1937.086194244697
+      },
+      "cylinder": {
+       "count": 73,
+       "area_mm2": 1641.5959285799665
+      },
+      "bspline": {
+       "count": 32,
+       "area_mm2": 11933.06445537022
+      },
+      "torus": {
+       "count": 4,
+       "area_mm2": 75.25675717157885
+      }
+     },
+     "analytic_area_share": 0.23442215295518415,
+     "gated": false,
+     "note": "reported, not gated (QUESTIONS.md Q3)"
+    }
+   }
+  },
+  "all_single_valid_closed_solid": true
+ },
+ "surface_census": {
+  "build/dreame_brush_core_datum.step": {
+   "faces": 200,
+   "by_type": {
+    "plane": {
+     "count": 91,
+     "area_mm2": 1937.0861942446966
+    },
+    "cylinder": {
+     "count": 73,
+     "area_mm2": 1641.5959285799659
+    },
+    "bspline": {
+     "count": 32,
+     "area_mm2": 11933.06445537022
+    },
+    "torus": {
+     "count": 4,
+     "area_mm2": 75.25675717157885
+    }
+   },
+   "analytic_area_share": 0.23442215295518412,
+   "gated": false,
+   "note": "reported, not gated (QUESTIONS.md Q3)"
+  },
+  "build/dreame_brush_core.step": {
+   "faces": 200,
+   "by_type": {
+    "plane": {
+     "count": 91,
+     "area_mm2": 1937.086194244697
+    },
+    "cylinder": {
+     "count": 73,
+     "area_mm2": 1641.5959285799665
+    },
+    "bspline": {
+     "count": 32,
+     "area_mm2": 11933.06445537022
+    },
+    "torus": {
+     "count": 4,
+     "area_mm2": 75.25675717157885
+    }
+   },
+   "analytic_area_share": 0.23442215295518415,
+   "gated": false,
+   "note": "reported, not gated (QUESTIONS.md Q3)"
+  }
+ },
+ "tier1": null,
+ "registration": {
+  "inputs": {
+   "input/scan.stl": "4be5e49d2ab6e2a930a41aa017551eac8f08b1974ddfd1294b1b1455961f011a",
+   "intake/alignment.json": "09d955099db399c512f0e3d9befa7399920c2c3b0c8dfe25a0ae8e0cc31dabcb",
+   "build/dreame_brush_core_datum.step": "69ca2aba4441218e15ec75a8140075e9b02666f38f9b94d7c41937c5cb7faf63",
+   "qa/icp_scan_masks.json": "150cdd8e0ffb1838bb0aaf440bfc4e06a4bcd548d319b161091a7ec4a8c046b3"
+  },
+  "seed": 11,
+  "method": "point-to-point ICP, CAD samples -> scan samples, masked correspondences (B02 q20_tier2.py)",
+  "scan_kind": "decimated",
+  "iterations": 94,
+  "max_iterations": 1000,
+  "converged": true,
+  "delta_deg": 0.4349386613815691,
+  "delta_mm": 0.045428858362367,
+  "max_point_move_mm": 0.17030374411939161,
+  "final_kept_fraction": 0.47187,
+  "T_refine": [
+   [
+    0.9999713414247264,
+    -0.007543438205779995,
+    0.000642549036408057,
+    -0.029510677381582348
+   ],
+   [
+    0.007543080703962739,
+    0.9999713954338552,
+    0.0005569987130475164,
+    -0.025944566836337998
+   ],
+   [
+    -0.0006467323419429825,
+    -0.0005521359510207111,
+    0.9999996384415188,
+    -0.02279869610883387
+   ],
+   [
+    0.0,
+    0.0,
+    0.0,
+    1.0
+   ]
+  ],
+  "T_refine_meaning": "maps datum-frame CAD onto the aligned scan; deviation_gate applies its inverse to the scan. QA-only: never written back to alignment.json (CHK-CIRCULAR).",
+  "trace_tail": [
+   {
+    "it": 88,
+    "step": 4.9564903716295735e-05,
+    "rot_deg": 3.542903461874375e-05,
+    "trans_mm": 1.4135869097551983e-05,
+    "kept_fraction": 0.47187,
+    "mean_d_kept": 0.10058494199904736
+   },
+   {
+    "it": 89,
+    "step": 2.5568441323944867e-05,
+    "rot_deg": 1.3819533748532954e-05,
+    "trans_mm": 1.1748907575411915e-05,
+    "kept_fraction": 0.47187,
+    "mean_d_kept": 0.10058502678200677
+   },
+   {
+    "it": 90,
+    "step": 1.734221998681114e-05,
+    "rot_deg": 9.035490975690211e-06,
+    "trans_mm": 8.30672901112093e-06,
+    "kept_fraction": 0.47187,
+    "mean_d_kept": 0.10058493790482602
+   },
+   {
+    "it": 91,
+    "step": 6.250910268472259e-06,
+    "rot_deg": 2.4148365394514667e-06,
+    "trans_mm": 3.8360737290207924e-06,
+    "kept_fraction": 0.47187,
+    "mean_d_kept": 0.10058466366537921
+   },
+   {
+    "it": 92,
+    "step": 7.2635036207053675e-06,
+    "rot_deg": 3.818191820832846e-06,
+    "trans_mm": 3.445311799872522e-06,
+    "kept_fraction": 0.47187,
+    "mean_d_kept": 0.10058459022404456
+   },
+   {
+    "it": 93,
+    "step": 6.330652032805845e-07,
+    "rot_deg": 0.0,
+    "trans_mm": 6.330652032805845e-07,
+    "kept_fraction": 0.47187,
+    "mean_d_kept": 0.10058457865041193
+   }
+  ],
+  "reference_masks_removed": [
+   {
+    "name": "M1 bristle tufts and loose bristle fragments",
+    "why": "soft feature, not modelled: two helical rows of bristle tufts (and loose bristle bits) = scan material radially outside the \u00d814.93 core (r 7.465); no rigid feature of the part lies at r>7.6 for z>0 (INTAKE_CARD \u00a71, \u00a74 Z5, \u00a75 #6)",
+    "faces": 231803,
+    "fraction": 0.5913372007000036
+   },
+   {
+    "name": "M2 scanner table remnants",
+    "why": "scanner turntable surface under the hub rim (the part stood on its drive end); not part of the part; the rim r16.44 is the largest radius of the part",
+    "faces": 9936,
+    "fraction": 0.02534706809728621
+   },
+   {
+    "name": "M2b scanner table fringe upturn",
+    "why": "same table remnant curling up to z -3.5 at theta 210-330 deg, r 18.5-32; the part has no material beyond the rim r16.44 below the hub disc; the scan shows an empty radial gap r 17.5-19.5 between rim surface and fringe, so r>=18 cannot hold rim surface",
+    "faces": 3280,
+    "fraction": 0.008367389629538926
+   },
+   {
+    "name": "M3 tuft holes (bristle-filled)",
+    "why": "54 radial tuft holes \u00d82.0 are filled with bristle tufts: scan points there are bristle roots (soft), and the CAD hole walls/bottoms (depth assumed) were never seen by the scanner; region = hole cylinder +0.25 mm, located from the 54 \u00d82 hole-bottom faces of the frozen STEP and cross-checked against scan tuft roots (52 scan clusters, median offset 1.05 mm = tuft lean)",
+    "faces": 4296,
+    "fraction": 0.010959239587957081
+   },
+   {
+    "name": "M6s slot occupants (scan side)",
+    "why": "declared slot-occupant occlusion (DECISIONS.md 2026-10-01 OTHER, before the it2 re-grade): material lodged in the slots (ragged surface at r 6-7.2: hair/bristle/debris) is not part of the rigid core, and where it hides the slot floor the CAD slot walls/foot/floor were never seen. Located from the scan per slot and 1 mm z-bin; bins without an occupant are not masked",
+    "faces": 1616,
+    "fraction": 0.004122470012602105
+   }
+  ],
+  "params": {
+   "ns": 3000000,
+   "scan_seed": 11,
+   "nc": 300000,
+   "cad_seed": 13,
+   "normal_deg": 70.0,
+   "boundary_mm": 0.8,
+   "max_corr_mm": 3.0,
+   "max_iter": 1000,
+   "tol": 1e-06
+  },
+  "notes": [
+   "welded: 210548 verts / 391998 faces"
+  ]
+ },
+ "deviation": {
+  "inputs": {
+   "input/scan.stl": "4be5e49d2ab6e2a930a41aa017551eac8f08b1974ddfd1294b1b1455961f011a",
+   "build/dreame_brush_core_datum.step": "69ca2aba4441218e15ec75a8140075e9b02666f38f9b94d7c41937c5cb7faf63",
+   "intake/alignment.json": "09d955099db399c512f0e3d9befa7399920c2c3b0c8dfe25a0ae8e0cc31dabcb",
+   "qa/registration.json": "9887a9d5119f0f01b5ebcfc244b208e59c5677416e1837bbc10601b441f6b6e3",
+   "qa/regime.json": "9c66ef85ecfba857c2ed4d852f26a314210ee2ff6f1e88c3b2d270e3814cf5c4",
+   "qa/zones.json": "359012361c7304791c79af28b286ff31bc345571db0e756dd141e5bd3f6e6fb2",
+   "qa/masks.json": "c33ddcb0d044a5b3e903fb31c24dbc6be61aa0797d1ce28957f443bde4da7fe8"
+  },
+  "seed": 0,
+  "scan": {
+   "path": "input/scan.stl",
+   "sha256": "4be5e49d2ab6e2a930a41aa017551eac8f08b1974ddfd1294b1b1455961f011a",
+   "kind": "decimated",
+   "full_res": false,
+   "vertices": 210548,
+   "faces": 391998
+  },
+  "cad": {
+   "path": "build/dreame_brush_core_datum.step",
+   "sha256": "69ca2aba4441218e15ec75a8140075e9b02666f38f9b94d7c41937c5cb7faf63",
+   "tessellated_by_qa": true,
+   "tessellation": {
+    "tolerance": 0.005,
+    "angular_tolerance": 0.05
+   },
+   "faces": 456418
+  },
+  "frame": "datum",
+  "registration": {
+   "method": "point-to-point ICP, CAD samples -> scan samples, masked correspondences (B02 q20_tier2.py)",
+   "iterations": 94,
+   "max_iterations": 1000,
+   "converged": true,
+   "delta_deg": 0.4349386613815691,
+   "delta_mm": 0.045428858362367,
+   "file": "qa/registration.json"
+  },
+  "sampling": {
+   "s2c_points": "all",
+   "s2c_seed": 0,
+   "c2s_samples": 300000,
+   "c2s_seed": 2,
+   "k": 8,
+   "n_samp": 3000000,
+   "dist_seed": 0,
+   "vertex_candidates": false,
+   "method": "KD candidates -> exact point-to-triangle (OD gate.py:8-17)"
+  },
+  "regime": {
+   "name": "baseline-skill",
+   "source": "baseline/skills/stl2step-build123d/SKILL.md:87",
+   "bands": {
+    "p95_mm": 0.3,
+    "max_mm": 0.8,
+    "tier1_abs_mm": null,
+    "interface_max_mm": null
+   }
+  },
+  "scan_to_cad": {
+   "n": 210548,
+   "rms": 5.5563543994669615,
+   "mean": 3.942841359089071,
+   "p50": 3.1155332343738484,
+   "p95": 10.44931350818098,
+   "p99": 11.378089175745384,
+   "max": 15.61376915249735
+  },
+  "cad_to_scan": {
+   "n": 300000,
+   "rms": 1.1093695190153605,
+   "mean": 0.47991173617866917,
+   "p50": 0.07479817566896607,
+   "p95": 2.318338726222052,
+   "p99": 5.223339480391089,
+   "max": 6.690954621210265
+  },
+  "scan_to_cad_masked": {
+   "n": 78181,
+   "rms": 0.1031862207568874,
+   "mean": 0.07031919965785272,
+   "p50": 0.0480777422713588,
+   "p95": 0.21301889548843572,
+   "p99": 0.34712861647071963,
+   "max": 1.1770642896977164
+  },
+  "cad_to_scan_masked": {
+   "n": 237843,
+   "rms": 0.34836660596715224,
+   "mean": 0.15541536074068554,
+   "p50": 0.052502608853652,
+   "p95": 0.6604084293069195,
+   "p99": 1.8534519928733508,
+   "max": 2.6550348149520584
+  },
+  "unmasked": {
+   "scan_to_cad": {
+    "n": 210548,
+    "rms": 5.5563543994669615,
+    "mean": 3.942841359089071,
+    "p50": 3.1155332343738484,
+    "p95": 10.44931350818098,
+    "p99": 11.378089175745384,
+    "max": 15.61376915249735
+   },
+   "cad_to_scan": {
+    "n": 300000,
+    "rms": 1.1093695190153605,
+    "mean": 0.47991173617866917,
+    "p50": 0.07479817566896607,
+    "p95": 2.318338726222052,
+    "p99": 5.223339480391089,
+    "max": 6.690954621210265
+   }
+  },
+  "masked_fraction": {
+   "scan_to_cad": 0.6286784961149001,
+   "cad_to_scan": 0.20719
+  },
+  "bands": {
+   "scan_to_cad": {
+    "unmasked": {
+     "p95_band": 0.3,
+     "max_band": 0.8,
+     "pass": false,
+     "p95_over_by": 10.14931350818098,
+     "max_over_by": 14.813769152497349
+    },
+    "masked": {
+     "p95_band": 0.3,
+     "max_band": 0.8,
+     "pass": false,
+     "max_over_by": 0.3770642896977163
+    }
+   },
+   "cad_to_scan": {
+    "unmasked": {
+     "p95_band": 0.3,
+     "max_band": 0.8,
+     "pass": false,
+     "p95_over_by": 2.0183387262220522,
+     "max_over_by": 5.890954621210265
+    },
+    "masked": {
+     "p95_band": 0.3,
+     "max_band": 0.8,
+     "pass": false,
+     "p95_over_by": 0.36040842930691946,
+     "max_over_by": 1.8550348149520584
+    }
+   },
+   "cad_to_scan_observable": {
+    "p95_band": 0.3,
+    "max_band": 0.8,
+    "pass": false,
+    "p95_over_by": 0.11493392475673037,
+    "max_over_by": 1.8360810524406237
+   }
+  },
+  "masks": [
+   {
+    "name": "M1 bristle tufts and loose bristle fragments",
+    "type": "region",
+    "why": "soft feature, not modelled: two helical rows of bristle tufts (and loose bristle bits) = scan material radially outside the \u00d814.93 core (r 7.465); no rigid feature of the part lies at r>7.6 for z>0 (INTAKE_CARD \u00a71, \u00a74 Z5, \u00a75 #6)",
+    "evidence": "intake/INTAKE_CARD.md \u00a72 artefact zones 'bristle tufts (soft, r > 7.6 in two helical rows)'; DECISIONS.md PART-CLASS",
+    "fraction": 0.5751657579269335,
+    "stats_inside": {
+     "n": 121100,
+     "rms": 7.080810076395938,
+     "mean": 6.386065866653737,
+     "p50": 6.5903218885948665,
+     "p95": 10.703504387025063,
+     "p99": 11.371381037674439,
+     "max": 13.31313414986913
+    },
+    "direction": "scan_to_cad"
+   },
+   {
+    "name": "M2 scanner table remnants",
+    "type": "region",
+    "why": "scanner turntable surface under the hub rim (the part stood on its drive end); not part of the part; the rim r16.44 is the largest radius of the part",
+    "evidence": "intake/INTAKE_CARD.md \u00a72 'table remnants at the rim (z < -6.4, r > 16.5)'; QA scan histogram: table plane median z -6.4..-6.9 per 30\u00b0 sector",
+    "fraction": 0.027979368125083115,
+    "stats_inside": {
+     "n": 5891,
+     "rms": 6.526158139513155,
+     "mean": 5.578825862970837,
+     "p50": 5.069263231432069,
+     "p95": 12.337779200504778,
+     "p99": 13.916898114017439,
+     "max": 15.034117969676595
+    },
+    "direction": "scan_to_cad"
+   },
+   {
+    "name": "M2b scanner table fringe upturn",
+    "type": "region",
+    "why": "same table remnant curling up to z -3.5 at theta 210-330 deg, r 18.5-32; the part has no material beyond the rim r16.44 below the hub disc; the scan shows an empty radial gap r 17.5-19.5 between rim surface and fringe, so r>=18 cannot hold rim surface",
+    "evidence": "QA scan histogram (main body, z in [-6.4,-1.9), r>16.6): r 16.5-17.5 109 faces, 17.5-19.5 13 faces, 19.5-32 3267 faces with |nz| median 0.84; INTAKE_CARD \u00a72 table removed 3.0271%",
+    "fraction": 0.009798240781199537,
+    "stats_inside": {
+     "n": 2063,
+     "rms": 9.254294539898906,
+     "mean": 8.703732361903572,
+     "p50": 8.262967343392427,
+     "p95": 14.13195272551178,
+     "p99": 15.036404749978828,
+     "max": 15.61376915249735
+    },
+    "direction": "scan_to_cad"
+   },
+   {
+    "name": "M3 tuft holes (bristle-filled)",
+    "type": "region",
+    "why": "54 radial tuft holes \u00d82.0 are filled with bristle tufts: scan points there are bristle roots (soft), and the CAD hole walls/bottoms (depth assumed) were never seen by the scanner; region = hole cylinder +0.25 mm, located from the 54 \u00d82 hole-bottom faces of the frozen STEP and cross-checked against scan tuft roots (52 scan clusters, median offset 1.05 mm = tuft lean)",
+    "evidence": "intake/INTAKE_CARD.md \u00a73 'Tuft holes ... filled with bristles: hole walls and depth not seen; depth assumed'; build/MODELING_PLAN.md \u00a76",
+    "fraction": 0.010871630222087125,
+    "stats_inside": {
+     "n": 2289,
+     "rms": 0.09867464424929721,
+     "mean": 0.06920134398913136,
+     "p50": 0.04721943983778499,
+     "p95": 0.2131848497064083,
+     "p99": 0.35419348872700934,
+     "max": 0.4663675918927058
+    },
+    "direction": "scan_to_cad"
+   },
+   {
+    "name": "M6s slot occupants (scan side)",
+    "type": "region",
+    "why": "declared slot-occupant occlusion (DECISIONS.md 2026-10-01 OTHER, before the it2 re-grade): material lodged in the slots (ragged surface at r 6-7.2: hair/bristle/debris) is not part of the rigid core, and where it hides the slot floor the CAD slot walls/foot/floor were never seen. Located from the scan per slot and 1 mm z-bin; bins without an occupant are not masked",
+    "evidence": "qa/m6_slot_occupants.json (per-bin occupant/floor counts); _it1_SUPERSEDED/qa/overlays/slot_floor_profile_qa.png",
+    "fraction": 0.004863499059596862,
+    "stats_inside": {
+     "n": 1024,
+     "rms": 0.3585866225884048,
+     "mean": 0.32040603076994395,
+     "p50": 0.29613642506830706,
+     "p95": 0.5934199162212869,
+     "p99": 0.642118153342682,
+     "max": 0.7120660122208935
+    },
+    "direction": "scan_to_cad"
+   },
+   {
+    "name": "M3 tuft holes (bristle-filled)",
+    "type": "region",
+    "why": "54 radial tuft holes \u00d82.0 are filled with bristle tufts: scan points there are bristle roots (soft), and the CAD hole walls/bottoms (depth assumed) were never seen by the scanner; region = hole cylinder +0.25 mm, located from the 54 \u00d82 hole-bottom faces of the frozen STEP and cross-checked against scan tuft roots (52 scan clusters, median offset 1.05 mm = tuft lean)",
+    "evidence": "intake/INTAKE_CARD.md \u00a73 'Tuft holes ... filled with bristles: hole walls and depth not seen; depth assumed'; build/MODELING_PLAN.md \u00a76",
+    "fraction": 0.07756,
+    "stats_inside": {
+     "n": 23268,
+     "rms": 1.386089577757974,
+     "mean": 1.136976733647832,
+     "p50": 1.1578003191019106,
+     "p95": 2.418018461715058,
+     "p99": 2.542389506438958,
+     "max": 2.672741410411469
+    },
+    "direction": "cad_to_scan"
+   },
+   {
+    "name": "M4 rim end face (assumed, rested on table)",
+    "type": "region",
+    "why": "the hub rim end face z -6.47 rested on the scanner table and was never scanned; the CAD closes it flat (assumed); its CAD->scan distance is a coverage fact, not a surface deviation",
+    "evidence": "intake/INTAKE_CARD.md \u00a73 'Hub rim end face ... not seen'; build/MODELING_PLAN.md \u00a76 'rim end face + hub interior: assumed'",
+    "fraction": 0.05488,
+    "stats_inside": {
+     "n": 16464,
+     "rms": 3.9726665326453166,
+     "mean": 3.4765236014389997,
+     "p50": 4.32913672969371,
+     "p95": 5.968884938440659,
+     "p99": 6.446337199655299,
+     "max": 6.690954621210265
+    },
+    "direction": "cad_to_scan"
+   },
+   {
+    "name": "M5 idler bore bottom (assumed)",
+    "type": "region",
+    "why": "idler bore seen only to 3.8 mm depth; the flat bottom at the deepest seen z (158.17) is assumed geometry, never scanned",
+    "evidence": "intake/INTAKE_CARD.md \u00a73 'Idler bore ... seen to 3.8 mm depth only; bottom assumed flat'; build/MODELING_PLAN.md \u00a76",
+    "fraction": 0.003926666666666667,
+    "stats_inside": {
+     "n": 1178,
+     "rms": 1.7940209782055498,
+     "mean": 1.5878809708586783,
+     "p50": 1.5784538150671987,
+     "p95": 2.9442105457020817,
+     "p99": 3.3163276738220406,
+     "max": 3.6227022002016582
+    },
+    "direction": "cad_to_scan"
+   },
+   {
+    "name": "M6c slot occupants (CAD side, floor hidden)",
+    "type": "region",
+    "why": "declared slot-occupant occlusion (DECISIONS.md 2026-10-01 OTHER, before the it2 re-grade): material lodged in the slots (ragged surface at r 6-7.2: hair/bristle/debris) is not part of the rigid core, and where it hides the slot floor the CAD slot walls/foot/floor were never seen. Located from the scan per slot and 1 mm z-bin; bins without an occupant are not masked",
+    "evidence": "qa/m6_slot_occupants.json (per-bin occupant/floor counts); _it1_SUPERSEDED/qa/overlays/slot_floor_profile_qa.png",
+    "fraction": 0.07082333333333334,
+    "stats_inside": {
+     "n": 21247,
+     "rms": 1.227512207926385,
+     "mean": 1.0093604844294684,
+     "p50": 1.07090667303725,
+     "p95": 2.1727749928421116,
+     "p99": 2.4171969764574563,
+     "max": 2.5468796796283444
+    },
+    "direction": "cad_to_scan"
+   }
+  ],
+  "cad_to_scan_observable": {
+   "n": 15209,
+   "rms": 0.26297097649118517,
+   "mean": 0.11691036719364951,
+   "p50": 0.04781146956042137,
+   "p95": 0.41493392475673035,
+   "p99": 1.2158283430572763,
+   "max": 2.6360810524406237
+  },
+  "unobservable_fraction": 0.06669999999999998,
+  "observability": {
+   "observable": {
+    "n": 15209,
+    "rms": 0.26297097649118517,
+    "mean": 0.11691036719364951,
+    "p50": 0.04781146956042137,
+    "p95": 0.41493392475673035,
+    "p99": 1.2158283430572763,
+    "max": 2.6360810524406237
+   },
+   "unobservable_fraction": 0.06669999999999998,
+   "n_subsample": 20000,
+   "n_far_tested": 4249,
+   "params": {
+    "method": "ray cone on CAD (OD gate.py:57-84)",
+    "subsample": 20000,
+    "seed": 5,
+    "far_mm": 0.5,
+    "cone_deg": 60.0,
+    "n_ring": 6,
+    "offset_mm": 0.05,
+    "max_range_mm": null,
+    "helper": [
+     0.3,
+     0.5,
+     0.8
+    ],
+    "helper_switched_for_n_points": 101,
+    "ray_engine": "trimesh.ray.ray_triangle.RayMeshIntersector",
+    "chunk_used": 100,
+    "workaround": "qa/workaround_deviation_wrapper.py (D-a chunk, D-b CAD masks on observable)"
+   },
+   "observable_unmasked": {
+    "n": 18666,
+    "rms": 1.0907231180044024,
+    "mean": 0.42449042862738523,
+    "p50": 0.06462407304062076,
+    "p95": 2.3092284799810088,
+    "p99": 5.300374645815408,
+    "max": 6.48101918029555
+   },
+   "observable_masks_applied": {
+    "masks": {
+     "M3 tuft holes (bristle-filled)": 0.0773,
+     "M4 rim end face (assumed, rested on table)": 0.05475,
+     "M5 idler bore bottom (assumed)": 0.00365,
+     "M6c slot occupants (CAD side, floor hidden)": 0.06805
+    },
+    "union_fraction_of_subsample": 0.20375,
+    "unobservable_and_masked_fraction": 0.0309
+   }
+  },
+  "zones": {
+   "Z1 drive dog (blades + gap floor)": {
+    "kind": "whole",
+    "note": "functional (INTAKE_CARD \u00a74 Z1, band = regime); kind 'whole' gates it at the regime p95/max because baseline-skill has no interface_max",
+    "band": [
+     0.3,
+     0.8
+    ],
+    "scan_to_cad": {
+     "unmasked": {
+      "n": 4486,
+      "rms": 0.10856516976869422,
+      "mean": 0.07158252514465278,
+      "p50": 0.04757597803503011,
+      "p95": 0.22491455716651998,
+      "p99": 0.41608759298885617,
+      "max": 0.8526337018196973
+     },
+     "masked": {
+      "n": 4486,
+      "rms": 0.10856516976869422,
+      "mean": 0.07158252514465278,
+      "p50": 0.04757597803503011,
+      "p95": 0.22491455716651998,
+      "p99": 0.41608759298885617,
+      "max": 0.8526337018196973
+     },
+     "masked_fraction": 0.0,
+     "band_unmasked": {
+      "p95_band": 0.3,
+      "max_band": 0.8,
+      "pass": false,
+      "max_over_by": 0.05263370181969729
+     },
+     "band_masked": {
+      "p95_band": 0.3,
+      "max_band": 0.8,
+      "pass": false,
+      "max_over_by": 0.05263370181969729
+     }
+    },
+    "cad_to_scan": {
+     "unmasked": {
+      "n": 17459,
+      "rms": 0.09939178466675215,
+      "mean": 0.07040192186257828,
+      "p50": 0.05202865299984319,
+      "p95": 0.20316577164560096,
+      "p99": 0.3472816777401102,
+      "max": 0.734470536751098
+     },
+     "masked": {
+      "n": 17459,
+      "rms": 0.09939178466675215,
+      "mean": 0.07040192186257828,
+      "p50": 0.05202865299984319,
+      "p95": 0.20316577164560096,
+      "p99": 0.3472816777401102,
+      "max": 0.734470536751098
+     },
+     "masked_fraction": 0.0,
+     "band_unmasked": {
+      "p95_band": 0.3,
+      "max_band": 0.8,
+      "pass": true
+     },
+     "band_masked": {
+      "p95_band": 0.3,
+      "max_band": 0.8,
+      "pass": true
+     }
+    }
+   },
+   "Z2 hub discs r15.20 r16.44": {
+    "kind": "whole",
+    "note": "functional (INTAKE_CARD \u00a74 Z2, band = regime)",
+    "band": [
+     0.3,
+     0.8
+    ],
+    "scan_to_cad": {
+     "unmasked": {
+      "n": 6451,
+      "rms": 0.14592813906479732,
+      "mean": 0.10650072926334442,
+      "p50": 0.0770323425536593,
+      "p95": 0.30925651816660776,
+      "p99": 0.4572187077029376,
+      "max": 0.8161701551019822
+     },
+     "masked": {
+      "n": 6451,
+      "rms": 0.14592813906479732,
+      "mean": 0.10650072926334442,
+      "p50": 0.0770323425536593,
+      "p95": 0.30925651816660776,
+      "p99": 0.4572187077029376,
+      "max": 0.8161701551019822
+     },
+     "masked_fraction": 0.0,
+     "band_unmasked": {
+      "p95_band": 0.3,
+      "max_band": 0.8,
+      "pass": false,
+      "p95_over_by": 0.009256518166607774,
+      "max_over_by": 0.016170155101982164
+     },
+     "band_masked": {
+      "p95_band": 0.3,
+      "max_band": 0.8,
+      "pass": false,
+      "p95_over_by": 0.009256518166607774,
+      "max_over_by": 0.016170155101982164
+     }
+    },
+    "cad_to_scan": {
+     "unmasked": {
+      "n": 10975,
+      "rms": 0.09182113279499088,
+      "mean": 0.06921861308243302,
+      "p50": 0.051375145705314124,
+      "p95": 0.19024788249799007,
+      "p99": 0.2682261434423256,
+      "max": 0.46197565116546563
+     },
+     "masked": {
+      "n": 10975,
+      "rms": 0.09182113279499088,
+      "mean": 0.06921861308243302,
+      "p50": 0.051375145705314124,
+      "p95": 0.19024788249799007,
+      "p99": 0.2682261434423256,
+      "max": 0.46197565116546563
+     },
+     "masked_fraction": 0.0,
+     "band_unmasked": {
+      "p95_band": 0.3,
+      "max_band": 0.8,
+      "pass": true
+     },
+     "band_masked": {
+      "p95_band": 0.3,
+      "max_band": 0.8,
+      "pass": true
+     }
+    }
+   },
+   "Z3 idler counterbore and bore": {
+    "kind": "whole",
+    "note": "functional (INTAKE_CARD \u00a74 Z3, band = regime)",
+    "band": [
+     0.3,
+     0.8
+    ],
+    "scan_to_cad": {
+     "unmasked": {
+      "n": 1992,
+      "rms": 0.1536664088679186,
+      "mean": 0.10942117742310138,
+      "p50": 0.07737388696088707,
+      "p95": 0.30276747174770074,
+      "p99": 0.5401194623930664,
+      "max": 0.8648785103401622
+     },
+     "masked": {
+      "n": 1969,
+      "rms": 0.14708875433344093,
+      "mean": 0.10592553743864383,
+      "p50": 0.07670181933456875,
+      "p95": 0.28821224955951363,
+      "p99": 0.48072674123434156,
+      "max": 0.8648785103401622
+     },
+     "masked_fraction": 0.011546184738955823,
+     "band_unmasked": {
+      "p95_band": 0.3,
+      "max_band": 0.8,
+      "pass": false,
+      "p95_over_by": 0.002767471747700756,
+      "max_over_by": 0.06487851034016212
+     },
+     "band_masked": {
+      "p95_band": 0.3,
+      "max_band": 0.8,
+      "pass": false,
+      "max_over_by": 0.06487851034016212
+     }
+    },
+    "cad_to_scan": {
+     "unmasked": {
+      "n": 6989,
+      "rms": 0.9278625620530442,
+      "mean": 0.5930902355185728,
+      "p50": 0.23622238112310281,
+      "p95": 2.208490071443291,
+      "p99": 2.888632561602633,
+      "max": 3.6227022002016582
+     },
+     "masked": {
+      "n": 5785,
+      "rms": 0.6145710482866149,
+      "mean": 0.3877189143521859,
+      "p50": 0.15709419790863807,
+      "p95": 1.3639006151816115,
+      "p99": 2.1174706511204295,
+      "max": 2.5313180049423147
+     },
+     "masked_fraction": 0.1722707111174703,
+     "band_unmasked": {
+      "p95_band": 0.3,
+      "max_band": 0.8,
+      "pass": false,
+      "p95_over_by": 1.908490071443291,
+      "max_over_by": 2.8227022002016584
+     },
+     "band_masked": {
+      "p95_band": 0.3,
+      "max_band": 0.8,
+      "pass": false,
+      "p95_over_by": 1.0639006151816115,
+      "max_over_by": 1.7313180049423147
+     }
+    }
+   },
+   "Z4 core profile (twisted, slots, grooves)": {
+    "kind": "whole",
+    "note": "functional (INTAKE_CARD \u00a74 Z4, band = regime); tuft holes inside it are masked by M3",
+    "band": [
+     0.3,
+     0.8
+    ],
+    "scan_to_cad": {
+     "unmasked": {
+      "n": 67523,
+      "rms": 0.10501068299222374,
+      "mean": 0.06969693497942593,
+      "p50": 0.04630721405038199,
+      "p95": 0.21277973164879377,
+      "p99": 0.3855932178178176,
+      "max": 1.1770642896977164
+     },
+     "masked": {
+      "n": 64228,
+      "rms": 0.09622337680741058,
+      "mean": 0.06582336208114299,
+      "p50": 0.04529910430961703,
+      "p95": 0.19574770200035194,
+      "p99": 0.3135779207072613,
+      "max": 1.1770642896977164
+     },
+     "masked_fraction": 0.048798187284332745,
+     "band_unmasked": {
+      "p95_band": 0.3,
+      "max_band": 0.8,
+      "pass": false,
+      "max_over_by": 0.3770642896977163
+     },
+     "band_masked": {
+      "p95_band": 0.3,
+      "max_band": 0.8,
+      "pass": false,
+      "max_over_by": 0.3770642896977163
+     }
+    },
+    "cad_to_scan": {
+     "unmasked": {
+      "n": 250558,
+      "rms": 0.6592727847478521,
+      "mean": 0.3360074533402395,
+      "p50": 0.07096125980562898,
+      "p95": 1.7628614116976988,
+      "p99": 2.390983332980742,
+      "max": 3.6227022002016582
+     },
+     "masked": {
+      "n": 204865,
+      "rms": 0.37228224899380824,
+      "mean": 0.1680022202873187,
+      "p50": 0.052250532271721516,
+      "p95": 0.7273837146825495,
+      "p99": 1.9890127280398489,
+      "max": 2.6550348149520584
+     },
+     "masked_fraction": 0.1823649614061415,
+     "band_unmasked": {
+      "p95_band": 0.3,
+      "max_band": 0.8,
+      "pass": false,
+      "p95_over_by": 1.4628614116976988,
+      "max_over_by": 2.8227022002016584
+     },
+     "band_masked": {
+      "p95_band": 0.3,
+      "max_band": 0.8,
+      "pass": false,
+      "p95_over_by": 0.4273837146825495,
+      "max_over_by": 1.8550348149520584
+     }
+    }
+   },
+   "Z5 bristle zone": {
+    "kind": "region",
+    "note": "soft, excluded from gate (INTAKE_CARD \u00a74 Z5); reported only",
+    "band": [
+     null,
+     null
+    ],
+    "scan_to_cad": {
+     "unmasked": {
+      "n": 121100,
+      "rms": 7.080810076395938,
+      "mean": 6.386065866653737,
+      "p50": 6.5903218885948665,
+      "p95": 10.703504387025063,
+      "p99": 11.371381037674439,
+      "max": 13.31313414986913
+     },
+     "masked": {
+      "n": 0,
+      "rms": null,
+      "mean": null,
+      "p50": null,
+      "p95": null,
+      "p99": null,
+      "max": null
+     },
+     "masked_fraction": 1.0,
+     "band_unmasked": null,
+     "band_masked": null
+    },
+    "cad_to_scan": {
+     "unmasked": {
+      "n": 0,
+      "rms": null,
+      "mean": null,
+      "p50": null,
+      "p95": null,
+      "p99": null,
+      "max": null
+     },
+     "masked": {
+      "n": 0,
+      "rms": null,
+      "mean": null,
+      "p50": null,
+      "p95": null,
+      "p99": null,
+      "max": null
+     },
+     "masked_fraction": 0.0,
+     "band_unmasked": null,
+     "band_masked": null
+    }
+   },
+   "I1 rim end face (unscanned)": {
+    "kind": "interior",
+    "note": "assumed, reported only",
+    "band": [
+     null,
+     null
+    ],
+    "cad_to_scan": {
+     "unmasked": {
+      "n": 16464,
+      "rms": 3.9726665326453166,
+      "mean": 3.4765236014389997,
+      "p50": 4.32913672969371,
+      "p95": 5.968884938440659,
+      "p99": 6.446337199655299,
+      "max": 6.690954621210265
+     },
+     "masked": {
+      "n": 0,
+      "rms": null,
+      "mean": null,
+      "p50": null,
+      "p95": null,
+      "p99": null,
+      "max": null
+     },
+     "masked_fraction": 1.0,
+     "band_unmasked": null,
+     "band_masked": null
+    }
+   },
+   "I2 idler bore bottom (unscanned)": {
+    "kind": "interior",
+    "note": "assumed, reported only",
+    "band": [
+     null,
+     null
+    ],
+    "cad_to_scan": {
+     "unmasked": {
+      "n": 1178,
+      "rms": 1.7940209782055498,
+      "mean": 1.5878809708586783,
+      "p50": 1.5784538150671987,
+      "p95": 2.9442105457020817,
+      "p99": 3.3163276738220406,
+      "max": 3.6227022002016582
+     },
+     "masked": {
+      "n": 0,
+      "rms": null,
+      "mean": null,
+      "p50": null,
+      "p95": null,
+      "p99": null,
+      "max": null
+     },
+     "masked_fraction": 1.0,
+     "band_unmasked": null,
+     "band_masked": null
+    }
+   },
+   "B hub z<0": {
+    "kind": "region",
+    "note": "z-band bucket",
+    "band": [
+     null,
+     null
+    ],
+    "scan_to_cad": {
+     "unmasked": {
+      "n": 18451,
+      "rms": 4.814988580313864,
+      "mean": 2.8080327588741336,
+      "p50": 0.19027414060708,
+      "p95": 11.382773246699815,
+      "p99": 14.006304813611123,
+      "max": 15.61376915249735
+     },
+     "masked": {
+      "n": 10497,
+      "rms": 0.13406885216824488,
+      "mean": 0.09434594766298582,
+      "p50": 0.06493314983994547,
+      "p95": 0.288828180907405,
+      "p99": 0.4436715870537731,
+      "max": 0.8526337018196973
+     },
+     "masked_fraction": 0.43108774592163024,
+     "band_unmasked": null,
+     "band_masked": null
+    },
+    "cad_to_scan": {
+     "unmasked": {
+      "n": 38603,
+      "rms": 2.595499777920676,
+      "mean": 1.5233419727761344,
+      "p50": 0.12303848317156185,
+      "p95": 5.521029583638629,
+      "p99": 6.28894585288801,
+      "max": 6.690954621210265
+     },
+     "masked": {
+      "n": 22139,
+      "rms": 0.09912943770452837,
+      "mean": 0.07082910705024754,
+      "p50": 0.050203190800774594,
+      "p95": 0.2086780916131428,
+      "p99": 0.3191829347348178,
+      "max": 0.734470536751098
+     },
+     "masked_fraction": 0.42649535010232364,
+     "band_unmasked": null,
+     "band_masked": null
+    }
+   },
+   "B core z 0-80": {
+    "kind": "region",
+    "note": "z-band bucket",
+    "band": [
+     null,
+     null
+    ],
+    "scan_to_cad": {
+     "unmasked": {
+      "n": 114552,
+      "rms": 6.003498003938672,
+      "mean": 4.544944212647988,
+      "p50": 4.336525591574454,
+      "p95": 10.682301644911782,
+      "p99": 11.380248995117217,
+      "max": 12.909636082123836
+     },
+     "masked": {
+      "n": 33113,
+      "rms": 0.09795766260077111,
+      "mean": 0.06470133088341316,
+      "p50": 0.044142216428760976,
+      "p95": 0.19009910834492139,
+      "p99": 0.32580322406896306,
+      "max": 1.1770642896977164
+     },
+     "masked_fraction": 0.7109347719812836,
+     "band_unmasked": null,
+     "band_masked": null
+    },
+    "cad_to_scan": {
+     "unmasked": {
+      "n": 131336,
+      "rms": 0.4811791862126693,
+      "mean": 0.22346192151596345,
+      "p50": 0.05855305712133336,
+      "p95": 1.3087899242565915,
+      "p99": 2.1444987538483056,
+      "max": 2.603752578139268
+     },
+     "masked": {
+      "n": 115500,
+      "rms": 0.1936481936272444,
+      "mean": 0.11034776215852556,
+      "p50": 0.04909422170159096,
+      "p95": 0.44256264922050287,
+      "p99": 0.7176729428621097,
+      "max": 1.5727962598206562
+     },
+     "masked_fraction": 0.12057623195468112,
+     "band_unmasked": null,
+     "band_masked": null
+    }
+   },
+   "B core z 80-140": {
+    "kind": "region",
+    "note": "z-band bucket",
+    "band": [
+     null,
+     null
+    ],
+    "scan_to_cad": {
+     "unmasked": {
+      "n": 64865,
+      "rms": 5.410078962589474,
+      "mean": 3.87459194877972,
+      "p50": 3.1295685153824526,
+      "p95": 10.057674730946562,
+      "p99": 10.66340024198471,
+      "max": 13.31313414986913
+     },
+     "masked": {
+      "n": 22876,
+      "rms": 0.08231774379533692,
+      "mean": 0.05944595818822586,
+      "p50": 0.042187843951375446,
+      "p95": 0.1758718989564061,
+      "p99": 0.26253591880599153,
+      "max": 0.5275946205212253
+     },
+     "masked_fraction": 0.6473290680644416,
+     "band_unmasked": null,
+     "band_masked": null
+    },
+    "cad_to_scan": {
+     "unmasked": {
+      "n": 92245,
+      "rms": 0.7752056602956755,
+      "mean": 0.4260979849054555,
+      "p50": 0.0795567043933727,
+      "p95": 1.9970782120141666,
+      "p99": 2.4463466098543316,
+      "max": 2.672741410411469
+     },
+     "masked": {
+      "n": 69038,
+      "rms": 0.460683605945561,
+      "mean": 0.20644784961123938,
+      "p50": 0.04902096498803801,
+      "p95": 1.0602803564991292,
+      "p99": 2.2897766045485226,
+      "max": 2.5195658951645123
+     },
+     "masked_fraction": 0.2515800314380183,
+     "band_unmasked": null,
+     "band_masked": null
+    }
+   },
+   "B idler end z>140": {
+    "kind": "region",
+    "note": "z-band bucket",
+    "band": [
+     null,
+     null
+    ],
+    "scan_to_cad": {
+     "unmasked": {
+      "n": 12680,
+      "rms": 1.889731406387752,
+      "mean": 0.5038244349093294,
+      "p50": 0.06794401600598741,
+      "p95": 5.568582031895368,
+      "p99": 9.532183716467832,
+      "max": 10.431965965224594
+     },
+     "masked": {
+      "n": 11695,
+      "rms": 0.12091678630147919,
+      "mean": 0.08592860425616981,
+      "p50": 0.06115548666913245,
+      "p95": 0.2503125404162171,
+      "p99": 0.4151670770441696,
+      "max": 0.8648785103401622
+     },
+     "masked_fraction": 0.0776813880126183,
+     "band_unmasked": null,
+     "band_masked": null
+    },
+    "cad_to_scan": {
+     "unmasked": {
+      "n": 37816,
+      "rms": 0.7851787397393035,
+      "mean": 0.43669206517609815,
+      "p50": 0.10600804878842472,
+      "p95": 2.01028552473545,
+      "p99": 2.4577242627506095,
+      "max": 3.6227022002016582
+     },
+     "masked": {
+      "n": 31166,
+      "rms": 0.5568440682527361,
+      "mean": 0.26947496864823844,
+      "p50": 0.07860603107011573,
+      "p95": 1.4191808846851246,
+      "p99": 2.387830827114062,
+      "max": 2.6550348149520584
+     },
+     "masked_fraction": 0.175851491432198,
+     "band_unmasked": null,
+     "band_masked": null
+    }
+   },
+   "N1 hub recess beside slot entry (named local miss, not masked)": {
+    "kind": "region",
+    "note": "DECISIONS.md 2026-10-01: not modelled, not masked; reported as a named local miss (it1 cluster 3)",
+    "band": [
+     null,
+     null
+    ],
+    "scan_to_cad": {
+     "unmasked": {
+      "n": 172,
+      "rms": 0.6160434425673652,
+      "mean": 0.5392980795695294,
+      "p50": 0.5359307266935291,
+      "p95": 1.047239422377695,
+      "p99": 1.1472296800029098,
+      "max": 1.1770642896977164
+     },
+     "masked": {
+      "n": 172,
+      "rms": 0.6160434425673652,
+      "mean": 0.5392980795695294,
+      "p50": 0.5359307266935291,
+      "p95": 1.047239422377695,
+      "p99": 1.1472296800029098,
+      "max": 1.1770642896977164
+     },
+     "masked_fraction": 0.0,
+     "band_unmasked": null,
+     "band_masked": null
+    },
+    "cad_to_scan": {
+     "unmasked": {
+      "n": 143,
+      "rms": 0.28149760361597603,
+      "mean": 0.23957021406222717,
+      "p50": 0.1902556514260732,
+      "p95": 0.46594774136321787,
+      "p99": 0.49458257602095856,
+      "max": 0.5224913898239945
+     },
+     "masked": {
+      "n": 143,
+      "rms": 0.28149760361597603,
+      "mean": 0.23957021406222717,
+      "p50": 0.1902556514260732,
+      "p95": 0.46594774136321787,
+      "p99": 0.49458257602095856,
+      "max": 0.5224913898239945
+     },
+     "masked_fraction": 0.0,
+     "band_unmasked": null,
+     "band_masked": null
+    }
+   }
+  },
+  "sensitivity": [
+   {
+    "direction": "scan_to_cad",
+    "variant": "all masks except M1 bristle tufts and loose bristle fragments",
+    "stats": {
+     "n": 199281,
+     "rms": 5.520162202441296,
+     "mean": 3.9083013523628343,
+     "p50": 3.0363655571417025,
+     "p95": 10.404882577152756,
+     "p99": 11.196888233776455,
+     "max": 13.31313414986913
+    },
+    "band": {
+     "p95_band": 0.3,
+     "max_band": 0.8,
+     "pass": false,
+     "p95_over_by": 10.104882577152756,
+     "max_over_by": 12.51313414986913
+    }
+   },
+   {
+    "direction": "scan_to_cad",
+    "variant": "all masks except M2 scanner table remnants",
+    "stats": {
+     "n": 84072,
+     "rms": 1.7303966176479273,
+     "mean": 0.45630517303277873,
+     "p50": 0.05294678527126258,
+     "p95": 3.3529440287937873,
+     "p99": 9.411004872562307,
+     "max": 15.034117969676595
+    },
+    "band": {
+     "p95_band": 0.3,
+     "max_band": 0.8,
+     "pass": false,
+     "p95_over_by": 3.0529440287937875,
+     "max_over_by": 14.234117969676594
+    }
+   },
+   {
+    "direction": "scan_to_cad",
+    "variant": "all masks except M2b scanner table fringe upturn",
+    "stats": {
+     "n": 80244,
+     "rms": 1.4873299826066961,
+     "mean": 0.29227637220300157,
+     "p50": 0.04975918003220746,
+     "p95": 0.2694350733060953,
+     "p99": 9.64886727340081,
+     "max": 15.61376915249735
+    },
+    "band": {
+     "p95_band": 0.3,
+     "max_band": 0.8,
+     "pass": false,
+     "max_over_by": 14.813769152497349
+    }
+   },
+   {
+    "direction": "scan_to_cad",
+    "variant": "all masks except M3 tuft holes (bristle-filled)",
+    "stats": {
+     "n": 80470,
+     "rms": 0.10306061632870052,
+     "mean": 0.0702874018248006,
+     "p50": 0.048041682607999465,
+     "p95": 0.21301926000514324,
+     "p99": 0.3473238426632505,
+     "max": 1.1770642896977164
+    },
+    "band": {
+     "p95_band": 0.3,
+     "max_band": 0.8,
+     "pass": false,
+     "max_over_by": 0.3770642896977163
+    }
+   },
+   {
+    "direction": "scan_to_cad",
+    "variant": "all masks except M6s slot occupants (scan side)",
+    "stats": {
+     "n": 79205,
+     "rms": 0.11032742870175785,
+     "mean": 0.0735524414362604,
+     "p50": 0.04891199334379685,
+     "p95": 0.2253207924432701,
+     "p99": 0.4063883688707091,
+     "max": 1.1770642896977164
+    },
+    "band": {
+     "p95_band": 0.3,
+     "max_band": 0.8,
+     "pass": false,
+     "max_over_by": 0.3770642896977163
+    }
+   },
+   {
+    "direction": "cad_to_scan",
+    "variant": "all masks except M3 tuft holes (bristle-filled)",
+    "stats": {
+     "n": 261111,
+     "rms": 0.5308010886377442,
+     "mean": 0.24288379380096828,
+     "p50": 0.059557884586333106,
+     "p95": 1.4280137706418565,
+     "p99": 2.345858424315831,
+     "max": 2.672741410411469
+    },
+    "band": {
+     "p95_band": 0.3,
+     "max_band": 0.8,
+     "pass": false,
+     "p95_over_by": 1.1280137706418565,
+     "max_over_by": 1.872741410411469
+    }
+   },
+   {
+    "direction": "cad_to_scan",
+    "variant": "all masks except M4 rim end face (assumed, rested on table)",
+    "stats": {
+     "n": 254307,
+     "rms": 1.0654785124772963,
+     "mean": 0.37042606070119405,
+     "p50": 0.05861808169160172,
+     "p95": 2.258601239937704,
+     "p99": 5.343970986937542,
+     "max": 6.690954621210265
+    },
+    "band": {
+     "p95_band": 0.3,
+     "max_band": 0.8,
+     "pass": false,
+     "p95_over_by": 1.958601239937704,
+     "max_over_by": 5.890954621210265
+    }
+   },
+   {
+    "direction": "cad_to_scan",
+    "variant": "all masks except M5 idler bore bottom (assumed)",
+    "stats": {
+     "n": 239021,
+     "rms": 0.3696260425506754,
+     "mean": 0.1624751776133411,
+     "p50": 0.05291879284991825,
+     "p95": 0.6963250624077799,
+     "p99": 2.0102591445897624,
+     "max": 3.6227022002016582
+    },
+    "band": {
+     "p95_band": 0.3,
+     "max_band": 0.8,
+     "pass": false,
+     "p95_over_by": 0.3963250624077799,
+     "max_over_by": 2.8227022002016584
+    }
+   },
+   {
+    "direction": "cad_to_scan",
+    "variant": "all masks except M6c slot occupants (CAD side, floor hidden)",
+    "stats": {
+     "n": 259090,
+     "rms": 0.48474009828047093,
+     "mean": 0.22544420030614762,
+     "p50": 0.059463563583034285,
+     "p95": 1.2909924554333687,
+     "p99": 2.18492990759418,
+     "max": 2.6550348149520584
+    },
+    "band": {
+     "p95_band": 0.3,
+     "max_band": 0.8,
+     "pass": false,
+     "p95_over_by": 0.9909924554333687,
+     "max_over_by": 1.8550348149520584
+    }
+   }
+  ],
+  "mask_dependent_passes": [],
+  "over_band_clusters": {
+   "scan_to_cad": {
+    "threshold_mm": 0.8,
+    "eps_mm": 1.0,
+    "min_pts": 20,
+    "n_over": 125157,
+    "fraction_over": 0.5944345232441058,
+    "clusters": [
+     {
+      "n": 59806,
+      "centroid": [
+       5.17,
+       -6.494,
+       63.853
+      ],
+      "bbox_min": [
+       -18.398,
+       -18.597,
+       2.481
+      ],
+      "bbox_max": [
+       19.625,
+       9.72,
+       145.424
+      ],
+      "r_range": [
+       8.14,
+       20.777
+      ],
+      "theta_deg_range": [
+       0.0,
+       360.0
+      ],
+      "d_p50": 6.785108870974342,
+      "d_max": 13.31313414986913
+     },
+     {
+      "n": 57658,
+      "centroid": [
+       -4.404,
+       6.897,
+       64.335
+      ],
+      "bbox_min": [
+       -19.265,
+       -12.494,
+       2.637
+      ],
+      "bbox_max": [
+       17.8,
+       18.287,
+       142.619
+      ],
+      "r_range": [
+       7.989,
+       19.626
+      ],
+      "theta_deg_range": [
+       0.0,
+       360.0
+      ],
+      "d_p50": 6.70599376669324,
+      "d_max": 12.16302996982223
+     },
+     {
+      "n": 7649,
+      "centroid": [
+       -4.424,
+       -3.776,
+       -6.416
+      ],
+      "bbox_min": [
+       -25.751,
+       -26.302,
+       -8.39
+      ],
+      "bbox_max": [
+       23.244,
+       21.458,
+       -3.5
+      ],
+      "r_range": [
+       17.216,
+       32.049
+      ],
+      "theta_deg_range": [
+       0.0,
+       359.9
+      ],
+      "d_p50": 6.066381936317094,
+      "d_max": 15.61376915249735
+     },
+     {
+      "n": 35,
+      "centroid": [
+       1.998,
+       5.933,
+       1.268
+      ],
+      "bbox_min": [
+       1.553,
+       5.326,
+       0.665
+      ],
+      "bbox_max": [
+       2.467,
+       6.451,
+       1.632
+      ],
+      "r_range": [
+       5.721,
+       6.655
+      ],
+      "theta_deg_range": [
+       68.0,
+       76.3
+      ],
+      "d_p50": 0.9338251975080343,
+      "d_max": 1.1770642896977164
+     }
+    ],
+    "n_clusters_ge_min": 4,
+    "points_in_small_clusters": 9
+   },
+   "cad_to_scan": {
+    "threshold_mm": 0.8,
+    "eps_mm": 1.0,
+    "min_pts": 20,
+    "n_over": 50989,
+    "fraction_over": 0.16996333333333333,
+    "clusters": [
+     {
+      "n": 14089,
+      "centroid": [
+       -0.012,
+       0.054,
+       -6.471
+      ],
+      "bbox_min": [
+       -15.44,
+       -15.235,
+       -6.471
+      ],
+      "bbox_max": [
+       15.551,
+       15.146,
+       -6.471
+      ],
+      "r_range": [
+       0.04,
+       15.582
+      ],
+      "theta_deg_range": [
+       0.0,
+       360.0
+      ],
+      "d_p50": 4.558749242417919,
+      "d_max": 6.690954621210265
+     },
+     {
+      "n": 12730,
+      "centroid": [
+       3.545,
+       0.554,
+       136.858
+      ],
+      "bbox_min": [
+       -4.141,
+       -6.224,
+       101.142
+      ],
+      "bbox_max": [
+       6.851,
+       6.245,
+       161.556
+      ],
+      "r_range": [
+       0.114,
+       6.957
+      ],
+      "theta_deg_range": [
+       0.0,
+       360.0
+      ],
+      "d_p50": 1.6939271476368623,
+      "d_max": 3.6227022002016582
+     },
+     {
+      "n": 6699,
+      "centroid": [
+       -4.405,
+       -0.976,
+       114.037
+      ],
+      "bbox_min": [
+       -6.726,
+       -6.74,
+       79.612
+      ],
+      "bbox_max": [
+       -0.127,
+       4.542,
+       143.004
+      ],
+      "r_range": [
+       4.862,
+       6.869
+      ],
+      "theta_deg_range": [
+       120.2,
+       268.6
+      ],
+      "d_p50": 1.4299841616612976,
+      "d_max": 2.672741410411469
+     },
+     {
+      "n": 2638,
+      "centroid": [
+       -3.834,
+       -3.326,
+       144.368
+      ],
+      "bbox_min": [
+       -6.121,
+       -6.198,
+       114.553
+      ],
+      "bbox_max": [
+       -0.824,
+       -0.264,
+       160.69
+      ],
+      "r_range": [
+       4.862,
+       6.505
+      ],
+      "theta_deg_range": [
+       182.9,
+       262.3
+      ],
+      "d_p50": 1.4149701511595294,
+      "d_max": 2.4608969152373565
+     },
+     {
+      "n": 1836,
+      "centroid": [
+       3.02,
+       -3.771,
+       88.423
+      ],
+      "bbox_min": [
+       -0.387,
+       -5.908,
+       74.275
+      ],
+      "bbox_max": [
+       5.334,
+       -1.268,
+       110.099
+      ],
+      "r_range": [
+       4.862,
+       5.908
+      ],
+      "theta_deg_range": [
+       265.6,
+       345.5
+      ],
+      "d_p50": 1.235593301966323,
+      "d_max": 1.5722753427997198
+     },
+     {
+      "n": 1231,
+      "centroid": [
+       -4.711,
+       -1.399,
+       46.963
+      ],
+      "bbox_min": [
+       -5.444,
+       -3.547,
+       37.857
+      ],
+      "bbox_max": [
+       -3.621,
+       1.015,
+       56.419
+      ],
+      "r_range": [
+       4.862,
+       5.792
+      ],
+      "theta_deg_range": [
+       168.3,
+       223.4
+      ],
+      "d_p50": 1.2548856897574538,
+      "d_max": 1.7626938372442649
+     },
+     {
+      "n": 1037,
+      "centroid": [
+       2.101,
+       4.602,
+       84.501
+      ],
+      "bbox_min": [
+       -0.579,
+       2.296,
+       80.458
+      ],
+      "bbox_max": [
+       4.747,
+       6.692,
+       88.634
+      ],
+      "r_range": [
+       4.863,
+       6.804
+      ],
+      "theta_deg_range": [
+       26.9,
+       96.4
+      ],
+      "d_p50": 1.251899625218644,
+      "d_max": 2.6018991946568137
+     },
+     {
+      "n": 297,
+      "centroid": [
+       5.013,
+       -2.301,
+       37.594
+      ],
+      "bbox_min": [
+       4.128,
+       -3.573,
+       36.588
+      ],
+      "bbox_max": [
+       6.394,
+       -1.128,
+       38.588
+      ],
+      "r_range": [
+       4.964,
+       6.774
+      ],
+      "theta_deg_range": [
+       324.7,
+       347.1
+      ],
+      "d_p50": 1.5945695834776592,
+      "d_max": 2.456772858279043
+     },
+     {
+      "n": 297,
+      "centroid": [
+       5.54,
+       0.628,
+       18.066
+      ],
+      "bbox_min": [
+       4.809,
+       -0.359,
+       16.993
+      ],
+      "bbox_max": [
+       6.755,
+       1.803,
+       18.992
+      ],
+      "r_range": [
+       4.964,
+       6.816
+      ],
+      "theta_deg_range": [
+       0.0,
+       359.9
+      ],
+      "d_p50": 1.6015915075569807,
+      "d_max": 2.542878558256836
+     },
+     {
+      "n": 289,
+      "centroid": [
+       -2.51,
+       5.069,
+       62.049
+      ],
+      "bbox_min": [
+       -3.802,
+       3.996,
+       61.083
+      ],
+      "bbox_max": [
+       -1.337,
+       6.301,
+       63.083
+      ],
+      "r_range": [
+       4.964,
+       6.709
+      ],
+      "theta_deg_range": [
+       105.3,
+       128.0
+      ],
+      "d_p50": 1.5743040176426677,
+      "d_max": 2.4790791103289505
+     },
+     {
+      "n": 287,
+      "centroid": [
+       5.407,
+       1.39,
+       13.122
+      ],
+      "bbox_min": [
+       4.543,
+       0.319,
+       12.093
+      ],
+      "bbox_max": [
+       6.665,
+       2.649,
+       14.093
+      ],
+      "r_range": [
+       4.964,
+       6.715
+      ],
+      "theta_deg_range": [
+       3.6,
+       26.1
+      ],
+      "d_p50": 1.6602196327107224,
+      "d_max": 2.515965177258132
+     },
+     {
+      "n": 286,
+      "centroid": [
+       5.353,
+       -1.565,
+       32.667
+      ],
+      "bbox_min": [
+       4.482,
+       -2.811,
+       31.689
+      ],
+      "bbox_max": [
+       6.534,
+       -0.467,
+       33.689
+      ],
+      "r_range": [
+       4.964,
+       6.83
+      ],
+      "theta_deg_range": [
+       332.3,
+       354.7
+      ],
+      "d_p50": 1.4803732445859998,
+      "d_max": 2.4604352399156686
+     }
+    ],
+    "n_clusters_ge_min": 54,
+    "points_in_small_clusters": 208
+   },
+   "reading": "scan_to_cad clusters = scan material the CAD lacks (missing feature or artefact); cad_to_scan clusters = CAD material with no scan (invented or unobservable)"
+  },
+  "gate_valid": false,
+  "gate_invalid_reasons": [
+   "decimated scan: INSPECTION ONLY, not an official grade"
+  ],
+  "label": "INSPECTION ONLY"
+ },
+ "deviation_datum_frame": {
+  "inputs": {
+   "input/scan.stl": "4be5e49d2ab6e2a930a41aa017551eac8f08b1974ddfd1294b1b1455961f011a",
+   "build/dreame_brush_core_datum.step": "69ca2aba4441218e15ec75a8140075e9b02666f38f9b94d7c41937c5cb7faf63",
+   "intake/alignment.json": "09d955099db399c512f0e3d9befa7399920c2c3b0c8dfe25a0ae8e0cc31dabcb",
+   "qa/regime.json": "9c66ef85ecfba857c2ed4d852f26a314210ee2ff6f1e88c3b2d270e3814cf5c4",
+   "qa/zones.json": "359012361c7304791c79af28b286ff31bc345571db0e756dd141e5bd3f6e6fb2",
+   "qa/masks.json": "c33ddcb0d044a5b3e903fb31c24dbc6be61aa0797d1ce28957f443bde4da7fe8"
+  },
+  "seed": 0,
+  "scan": {
+   "path": "input/scan.stl",
+   "sha256": "4be5e49d2ab6e2a930a41aa017551eac8f08b1974ddfd1294b1b1455961f011a",
+   "kind": "decimated",
+   "full_res": false,
+   "vertices": 210548,
+   "faces": 391998
+  },
+  "cad": {
+   "path": "build/dreame_brush_core_datum.step",
+   "sha256": "69ca2aba4441218e15ec75a8140075e9b02666f38f9b94d7c41937c5cb7faf63",
+   "tessellated_by_qa": true,
+   "tessellation": {
+    "tolerance": 0.005,
+    "angular_tolerance": 0.05
+   },
+   "faces": 456418
+  },
+  "frame": "datum",
+  "registration": {
+   "method": "alignment only (no QA registration)",
+   "iterations": null,
+   "converged": null,
+   "delta_deg": null,
+   "delta_mm": null
+  },
+  "sampling": {
+   "s2c_points": "all",
+   "s2c_seed": 0,
+   "c2s_samples": 300000,
+   "c2s_seed": 2,
+   "k": 8,
+   "n_samp": 3000000,
+   "dist_seed": 0,
+   "vertex_candidates": false,
+   "method": "KD candidates -> exact point-to-triangle (OD gate.py:8-17)"
+  },
+  "regime": {
+   "name": "baseline-skill",
+   "source": "baseline/skills/stl2step-build123d/SKILL.md:87",
+   "bands": {
+    "p95_mm": 0.3,
+    "max_mm": 0.8,
+    "tier1_abs_mm": null,
+    "interface_max_mm": null
+   }
+  },
+  "scan_to_cad": {
+   "n": 210548,
+   "rms": 5.557454597165484,
+   "mean": 3.944088901482167,
+   "p50": 3.113283180312489,
+   "p95": 10.45464694862687,
+   "p99": 11.377425152435126,
+   "max": 15.617083538424277
+  },
+  "cad_to_scan": {
+   "n": 300000,
+   "rms": 1.1072847490910451,
+   "mean": 0.4800882235683272,
+   "p50": 0.07723971762218707,
+   "p95": 2.3312880370862206,
+   "p99": 5.206139437059677,
+   "max": 6.697847810709646
+  },
+  "scan_to_cad_masked": {
+   "n": 77053,
+   "rms": 0.10350084999591122,
+   "mean": 0.07041797302615603,
+   "p50": 0.04855039417185481,
+   "p95": 0.20960161756480822,
+   "p99": 0.3524762589525092,
+   "max": 1.145781569169879
+  },
+  "cad_to_scan_masked": {
+   "n": 237843,
+   "rms": 0.35231373314240993,
+   "mean": 0.15706653781759192,
+   "p50": 0.05448649366525838,
+   "p95": 0.6627729907296319,
+   "p99": 1.881795913106442,
+   "max": 2.7200540394393418
+  },
+  "unmasked": {
+   "scan_to_cad": {
+    "n": 210548,
+    "rms": 5.557454597165484,
+    "mean": 3.944088901482167,
+    "p50": 3.113283180312489,
+    "p95": 10.45464694862687,
+    "p99": 11.377425152435126,
+    "max": 15.617083538424277
+   },
+   "cad_to_scan": {
+    "n": 300000,
+    "rms": 1.1072847490910451,
+    "mean": 0.4800882235683272,
+    "p50": 0.07723971762218707,
+    "p95": 2.3312880370862206,
+    "p99": 5.206139437059677,
+    "max": 6.697847810709646
+   }
+  },
+  "masked_fraction": {
+   "scan_to_cad": 0.6340359442977374,
+   "cad_to_scan": 0.20719
+  },
+  "bands": {
+   "scan_to_cad": {
+    "unmasked": {
+     "p95_band": 0.3,
+     "max_band": 0.8,
+     "pass": false,
+     "p95_over_by": 10.15464694862687,
+     "max_over_by": 14.817083538424276
+    },
+    "masked": {
+     "p95_band": 0.3,
+     "max_band": 0.8,
+     "pass": false,
+     "max_over_by": 0.3457815691698789
+    }
+   },
+   "cad_to_scan": {
+    "unmasked": {
+     "p95_band": 0.3,
+     "max_band": 0.8,
+     "pass": false,
+     "p95_over_by": 2.0312880370862207,
+     "max_over_by": 5.897847810709647
+    },
+    "masked": {
+     "p95_band": 0.3,
+     "max_band": 0.8,
+     "pass": false,
+     "p95_over_by": 0.36277299072963193,
+     "max_over_by": 1.9200540394393417
+    }
+   },
+   "cad_to_scan_observable": {
+    "p95_band": 0.3,
+    "max_band": 0.8,
+    "pass": false,
+    "p95_over_by": 0.11459518156662357,
+    "max_over_by": 1.9048824297709241
+   }
+  },
+  "masks": [
+   {
+    "name": "M1 bristle tufts and loose bristle fragments",
+    "type": "region",
+    "why": "soft feature, not modelled: two helical rows of bristle tufts (and loose bristle bits) = scan material radially outside the \u00d814.93 core (r 7.465); no rigid feature of the part lies at r>7.6 for z>0 (INTAKE_CARD \u00a71, \u00a74 Z5, \u00a75 #6)",
+    "evidence": "intake/INTAKE_CARD.md \u00a72 artefact zones 'bristle tufts (soft, r > 7.6 in two helical rows)'; DECISIONS.md PART-CLASS",
+    "fraction": 0.578504664019606,
+    "stats_inside": {
+     "n": 121803,
+     "rms": 7.060998640549077,
+     "mean": 6.3504361638230105,
+     "p50": 6.5586723951315475,
+     "p95": 10.703888409658177,
+     "p99": 11.367475297980361,
+     "max": 13.24863289164173
+    },
+    "direction": "scan_to_cad"
+   },
+   {
+    "name": "M2 scanner table remnants",
+    "type": "region",
+    "why": "scanner turntable surface under the hub rim (the part stood on its drive end); not part of the part; the rim r16.44 is the largest radius of the part",
+    "evidence": "intake/INTAKE_CARD.md \u00a72 'table remnants at the rim (z < -6.4, r > 16.5)'; QA scan histogram: table plane median z -6.4..-6.9 per 30\u00b0 sector",
+    "fraction": 0.028435321161920324,
+    "stats_inside": {
+     "n": 5987,
+     "rms": 6.540110843323808,
+     "mean": 5.601548103627702,
+     "p50": 5.087851813998029,
+     "p95": 12.350637888467666,
+     "p99": 13.918860341035895,
+     "max": 15.079003622205931
+    },
+    "direction": "scan_to_cad"
+   },
+   {
+    "name": "M2b scanner table fringe upturn",
+    "type": "region",
+    "why": "same table remnant curling up to z -3.5 at theta 210-330 deg, r 18.5-32; the part has no material beyond the rim r16.44 below the hub disc; the scan shows an empty radial gap r 17.5-19.5 between rim surface and fringe, so r>=18 cannot hold rim surface",
+    "evidence": "QA scan histogram (main body, z in [-6.4,-1.9), r>16.6): r 16.5-17.5 109 faces, 17.5-19.5 13 faces, 19.5-32 3267 faces with |nz| median 0.84; INTAKE_CARD \u00a72 table removed 3.0271%",
+    "fraction": 0.00932328970116078,
+    "stats_inside": {
+     "n": 1963,
+     "rms": 9.3861094922959,
+     "mean": 8.848764499204227,
+     "p50": 8.432777127854036,
+     "p95": 14.200238233791271,
+     "p99": 15.074537971955841,
+     "max": 15.617083538424277
+    },
+    "direction": "scan_to_cad"
+   },
+   {
+    "name": "M3 tuft holes (bristle-filled)",
+    "type": "region",
+    "why": "54 radial tuft holes \u00d82.0 are filled with bristle tufts: scan points there are bristle roots (soft), and the CAD hole walls/bottoms (depth assumed) were never seen by the scanner; region = hole cylinder +0.25 mm, located from the 54 \u00d82 hole-bottom faces of the frozen STEP and cross-checked against scan tuft roots (52 scan clusters, median offset 1.05 mm = tuft lean)",
+    "evidence": "intake/INTAKE_CARD.md \u00a73 'Tuft holes ... filled with bristles: hole walls and depth not seen; depth assumed'; build/MODELING_PLAN.md \u00a76",
+    "fraction": 0.010743393430476662,
+    "stats_inside": {
+     "n": 2262,
+     "rms": 0.10367029745078726,
+     "mean": 0.0751250394022454,
+     "p50": 0.054696747169108606,
+     "p95": 0.22847345914659203,
+     "p99": 0.34311038595445714,
+     "max": 0.4386762920659111
+    },
+    "direction": "scan_to_cad"
+   },
+   {
+    "name": "M6s slot occupants (scan side)",
+    "type": "region",
+    "why": "declared slot-occupant occlusion (DECISIONS.md 2026-10-01 OTHER, before the it2 re-grade): material lodged in the slots (ragged surface at r 6-7.2: hair/bristle/debris) is not part of the rigid core, and where it hides the slot floor the CAD slot walls/foot/floor were never seen. Located from the scan per slot and 1 mm z-bin; bins without an occupant are not masked",
+    "evidence": "qa/m6_slot_occupants.json (per-bin occupant/floor counts); _it1_SUPERSEDED/qa/overlays/slot_floor_profile_qa.png",
+    "fraction": 0.007029275984573589,
+    "stats_inside": {
+     "n": 1480,
+     "rms": 0.31878764502588164,
+     "mean": 0.2806836784216465,
+     "p50": 0.23914924085175115,
+     "p95": 0.5733219777666209,
+     "p99": 0.6398353767772104,
+     "max": 0.7022850685599473
+    },
+    "direction": "scan_to_cad"
+   },
+   {
+    "name": "M3 tuft holes (bristle-filled)",
+    "type": "region",
+    "why": "54 radial tuft holes \u00d82.0 are filled with bristle tufts: scan points there are bristle roots (soft), and the CAD hole walls/bottoms (depth assumed) were never seen by the scanner; region = hole cylinder +0.25 mm, located from the 54 \u00d82 hole-bottom faces of the frozen STEP and cross-checked against scan tuft roots (52 scan clusters, median offset 1.05 mm = tuft lean)",
+    "evidence": "intake/INTAKE_CARD.md \u00a73 'Tuft holes ... filled with bristles: hole walls and depth not seen; depth assumed'; build/MODELING_PLAN.md \u00a76",
+    "fraction": 0.07756,
+    "stats_inside": {
+     "n": 23268,
+     "rms": 1.3821398186209304,
+     "mean": 1.134975048104369,
+     "p50": 1.1534460647862916,
+     "p95": 2.4141183154372365,
+     "p99": 2.5435624222845084,
+     "max": 2.7028247779559376
+    },
+    "direction": "cad_to_scan"
+   },
+   {
+    "name": "M4 rim end face (assumed, rested on table)",
+    "type": "region",
+    "why": "the hub rim end face z -6.47 rested on the scanner table and was never scanned; the CAD closes it flat (assumed); its CAD->scan distance is a coverage fact, not a surface deviation",
+    "evidence": "intake/INTAKE_CARD.md \u00a73 'Hub rim end face ... not seen'; build/MODELING_PLAN.md \u00a76 'rim end face + hub interior: assumed'",
+    "fraction": 0.05488,
+    "stats_inside": {
+     "n": 16464,
+     "rms": 3.961327762128212,
+     "mean": 3.467962255430465,
+     "p50": 4.325024986409398,
+     "p95": 5.960860913286552,
+     "p99": 6.42642590455688,
+     "max": 6.697847810709646
+    },
+    "direction": "cad_to_scan"
+   },
+   {
+    "name": "M5 idler bore bottom (assumed)",
+    "type": "region",
+    "why": "idler bore seen only to 3.8 mm depth; the flat bottom at the deepest seen z (158.17) is assumed geometry, never scanned",
+    "evidence": "intake/INTAKE_CARD.md \u00a73 'Idler bore ... seen to 3.8 mm depth only; bottom assumed flat'; build/MODELING_PLAN.md \u00a76",
+    "fraction": 0.003926666666666667,
+    "stats_inside": {
+     "n": 1178,
+     "rms": 1.7772911109224103,
+     "mean": 1.567650325311091,
+     "p50": 1.5506857812319859,
+     "p95": 2.9617960851804424,
+     "p99": 3.3274452403646557,
+     "max": 3.59027092520373
+    },
+    "direction": "cad_to_scan"
+   },
+   {
+    "name": "M6c slot occupants (CAD side, floor hidden)",
+    "type": "region",
+    "why": "declared slot-occupant occlusion (DECISIONS.md 2026-10-01 OTHER, before the it2 re-grade): material lodged in the slots (ragged surface at r 6-7.2: hair/bristle/debris) is not part of the rigid core, and where it hides the slot floor the CAD slot walls/foot/floor were never seen. Located from the scan per slot and 1 mm z-bin; bins without an occupant are not masked",
+    "evidence": "qa/m6_slot_occupants.json (per-bin occupant/floor counts); _it1_SUPERSEDED/qa/overlays/slot_floor_profile_qa.png",
+    "fraction": 0.07082333333333334,
+    "stats_inside": {
+     "n": 21247,
+     "rms": 1.222936376070413,
+     "mean": 1.0033166301328453,
+     "p50": 1.0679939605126028,
+     "p95": 2.1767581748650677,
+     "p99": 2.4224715077192087,
+     "max": 2.578044979265083
+    },
+    "direction": "cad_to_scan"
+   }
+  ],
+  "cad_to_scan_observable": {
+   "n": 15215,
+   "rms": 0.2657197577135313,
+   "mean": 0.1183188748682322,
+   "p50": 0.049527341975632036,
+   "p95": 0.41459518156662356,
+   "p99": 1.2291131628772796,
+   "max": 2.704882429770924
+  },
+  "unobservable_fraction": 0.06620000000000004,
+  "observability": {
+   "observable": {
+    "n": 15215,
+    "rms": 0.2657197577135313,
+    "mean": 0.1183188748682322,
+    "p50": 0.049527341975632036,
+    "p95": 0.41459518156662356,
+    "p99": 1.2291131628772796,
+    "max": 2.704882429770924
+   },
+   "unobservable_fraction": 0.06620000000000004,
+   "n_subsample": 20000,
+   "n_far_tested": 4238,
+   "params": {
+    "method": "ray cone on CAD (OD gate.py:57-84)",
+    "subsample": 20000,
+    "seed": 5,
+    "far_mm": 0.5,
+    "cone_deg": 60.0,
+    "n_ring": 6,
+    "offset_mm": 0.05,
+    "max_range_mm": null,
+    "helper": [
+     0.3,
+     0.5,
+     0.8
+    ],
+    "helper_switched_for_n_points": 101,
+    "ray_engine": "trimesh.ray.ray_triangle.RayMeshIntersector",
+    "chunk_used": 100,
+    "workaround": "qa/workaround_deviation_wrapper.py (D-a chunk, D-b CAD masks on observable)"
+   },
+   "observable_unmasked": {
+    "n": 18676,
+    "rms": 1.0879788956367322,
+    "mean": 0.424537733723119,
+    "p50": 0.06602267071813069,
+    "p95": 2.33476662103218,
+    "p99": 5.270956306271934,
+    "max": 6.474275117431697
+   },
+   "observable_masks_applied": {
+    "masks": {
+     "M3 tuft holes (bristle-filled)": 0.0773,
+     "M4 rim end face (assumed, rested on table)": 0.05475,
+     "M5 idler bore bottom (assumed)": 0.00365,
+     "M6c slot occupants (CAD side, floor hidden)": 0.06805
+    },
+    "union_fraction_of_subsample": 0.20375,
+    "unobservable_and_masked_fraction": 0.0307
+   }
+  },
+  "zones": {
+   "Z1 drive dog (blades + gap floor)": {
+    "kind": "whole",
+    "note": "functional (INTAKE_CARD \u00a74 Z1, band = regime); kind 'whole' gates it at the regime p95/max because baseline-skill has no interface_max",
+    "band": [
+     0.3,
+     0.8
+    ],
+    "scan_to_cad": {
+     "unmasked": {
+      "n": 4577,
+      "rms": 0.10711849145296388,
+      "mean": 0.0672752638485143,
+      "p50": 0.037459453820417744,
+      "p95": 0.24007543297868583,
+      "p99": 0.3969052777984802,
+      "max": 0.7915312187857269
+     },
+     "masked": {
+      "n": 4577,
+      "rms": 0.10711849145296388,
+      "mean": 0.0672752638485143,
+      "p50": 0.037459453820417744,
+      "p95": 0.24007543297868583,
+      "p99": 0.3969052777984802,
+      "max": 0.7915312187857269
+     },
+     "masked_fraction": 0.0,
+     "band_unmasked": {
+      "p95_band": 0.3,
+      "max_band": 0.8,
+      "pass": true
+     },
+     "band_masked": {
+      "p95_band": 0.3,
+      "max_band": 0.8,
+      "pass": true
+     }
+    },
+    "cad_to_scan": {
+     "unmasked": {
+      "n": 17459,
+      "rms": 0.09974376312259847,
+      "mean": 0.06593683307303701,
+      "p50": 0.040468508892150104,
+      "p95": 0.21261004885039034,
+      "p99": 0.33103392367858414,
+      "max": 0.8035089170959234
+     },
+     "masked": {
+      "n": 17459,
+      "rms": 0.09974376312259847,
+      "mean": 0.06593683307303701,
+      "p50": 0.040468508892150104,
+      "p95": 0.21261004885039034,
+      "p99": 0.33103392367858414,
+      "max": 0.8035089170959234
+     },
+     "masked_fraction": 0.0,
+     "band_unmasked": {
+      "p95_band": 0.3,
+      "max_band": 0.8,
+      "pass": false,
+      "max_over_by": 0.0035089170959233806
+     },
+     "band_masked": {
+      "p95_band": 0.3,
+      "max_band": 0.8,
+      "pass": false,
+      "max_over_by": 0.0035089170959233806
+     }
+    }
+   },
+   "Z2 hub discs r15.20 r16.44": {
+    "kind": "whole",
+    "note": "functional (INTAKE_CARD \u00a74 Z2, band = regime)",
+    "band": [
+     0.3,
+     0.8
+    ],
+    "scan_to_cad": {
+     "unmasked": {
+      "n": 6384,
+      "rms": 0.14197611021307904,
+      "mean": 0.10015398693194456,
+      "p50": 0.06886905635164241,
+      "p95": 0.3052828787649062,
+      "p99": 0.4505323207150561,
+      "max": 0.8219047602034825
+     },
+     "masked": {
+      "n": 6384,
+      "rms": 0.14197611021307904,
+      "mean": 0.10015398693194456,
+      "p50": 0.06886905635164241,
+      "p95": 0.3052828787649062,
+      "p99": 0.4505323207150561,
+      "max": 0.8219047602034825
+     },
+     "masked_fraction": 0.0,
+     "band_unmasked": {
+      "p95_band": 0.3,
+      "max_band": 0.8,
+      "pass": false,
+      "p95_over_by": 0.005282878764906185,
+      "max_over_by": 0.02190476020348242
+     },
+     "band_masked": {
+      "p95_band": 0.3,
+      "max_band": 0.8,
+      "pass": false,
+      "p95_over_by": 0.005282878764906185,
+      "max_over_by": 0.02190476020348242
+     }
+    },
+    "cad_to_scan": {
+     "unmasked": {
+      "n": 10975,
+      "rms": 0.08377802138792902,
+      "mean": 0.05880012401872751,
+      "p50": 0.0386875250842241,
+      "p95": 0.18549458344762632,
+      "p99": 0.2578860560696835,
+      "max": 0.441524067470085
+     },
+     "masked": {
+      "n": 10975,
+      "rms": 0.08377802138792902,
+      "mean": 0.05880012401872751,
+      "p50": 0.0386875250842241,
+      "p95": 0.18549458344762632,
+      "p99": 0.2578860560696835,
+      "max": 0.441524067470085
+     },
+     "masked_fraction": 0.0,
+     "band_unmasked": {
+      "p95_band": 0.3,
+      "max_band": 0.8,
+      "pass": true
+     },
+     "band_masked": {
+      "p95_band": 0.3,
+      "max_band": 0.8,
+      "pass": true
+     }
+    }
+   },
+   "Z3 idler counterbore and bore": {
+    "kind": "whole",
+    "note": "functional (INTAKE_CARD \u00a74 Z3, band = regime)",
+    "band": [
+     0.3,
+     0.8
+    ],
+    "scan_to_cad": {
+     "unmasked": {
+      "n": 2000,
+      "rms": 0.1612232344944846,
+      "mean": 0.11749671075691065,
+      "p50": 0.08864693672848034,
+      "p95": 0.30995205998701303,
+      "p99": 0.5466656867836428,
+      "max": 0.8794868360708648
+     },
+     "masked": {
+      "n": 1967,
+      "rms": 0.15309137919936727,
+      "mean": 0.11282384219649204,
+      "p50": 0.0876215724477829,
+      "p95": 0.29172977318243576,
+      "p99": 0.5053503447051344,
+      "max": 0.8794868360708648
+     },
+     "masked_fraction": 0.0165,
+     "band_unmasked": {
+      "p95_band": 0.3,
+      "max_band": 0.8,
+      "pass": false,
+      "p95_over_by": 0.00995205998701304,
+      "max_over_by": 0.07948683607086471
+     },
+     "band_masked": {
+      "p95_band": 0.3,
+      "max_band": 0.8,
+      "pass": false,
+      "max_over_by": 0.07948683607086471
+     }
+    },
+    "cad_to_scan": {
+     "unmasked": {
+      "n": 6989,
+      "rms": 0.9227101049894353,
+      "mean": 0.5935870895257754,
+      "p50": 0.23890881935105787,
+      "p95": 2.1844342408465285,
+      "p99": 2.8988090131702577,
+      "max": 3.59027092520373
+     },
+     "masked": {
+      "n": 5785,
+      "rms": 0.614951301770237,
+      "mean": 0.39236094932572035,
+      "p50": 0.17262762807281137,
+      "p95": 1.3512595174634658,
+      "p99": 2.1333352270629784,
+      "max": 2.6172208358171485
+     },
+     "masked_fraction": 0.1722707111174703,
+     "band_unmasked": {
+      "p95_band": 0.3,
+      "max_band": 0.8,
+      "pass": false,
+      "p95_over_by": 1.8844342408465284,
+      "max_over_by": 2.79027092520373
+     },
+     "band_masked": {
+      "p95_band": 0.3,
+      "max_band": 0.8,
+      "pass": false,
+      "p95_over_by": 1.0512595174634658,
+      "max_over_by": 1.8172208358171484
+     }
+    }
+   },
+   "Z4 core profile (twisted, slots, grooves)": {
+    "kind": "whole",
+    "note": "functional (INTAKE_CARD \u00a74 Z4, band = regime); tuft holes inside it are masked by M3",
+    "band": [
+     0.3,
+     0.8
+    ],
+    "scan_to_cad": {
+     "unmasked": {
+      "n": 66834,
+      "rms": 0.1067839016350711,
+      "mean": 0.07161794804654675,
+      "p50": 0.04909867406751592,
+      "p95": 0.21323524840470423,
+      "p99": 0.38529835435191795,
+      "max": 1.145781569169879
+     },
+     "masked": {
+      "n": 63111,
+      "rms": 0.09678430881684331,
+      "mean": 0.06669538541641248,
+      "p50": 0.04740045702701398,
+      "p95": 0.19233560818067227,
+      "p99": 0.32325811881396666,
+      "max": 1.145781569169879
+     },
+     "masked_fraction": 0.055705179998204506,
+     "band_unmasked": {
+      "p95_band": 0.3,
+      "max_band": 0.8,
+      "pass": false,
+      "max_over_by": 0.3457815691698789
+     },
+     "band_masked": {
+      "p95_band": 0.3,
+      "max_band": 0.8,
+      "pass": false,
+      "max_over_by": 0.3457815691698789
+     }
+    },
+    "cad_to_scan": {
+     "unmasked": {
+      "n": 250558,
+      "rms": 0.659570631949614,
+      "mean": 0.337432957979981,
+      "p50": 0.07591366548377734,
+      "p95": 1.7602744667720454,
+      "p99": 2.408754637282193,
+      "max": 3.59027092520373
+     },
+     "masked": {
+      "n": 204865,
+      "rms": 0.3765936797102679,
+      "mean": 0.17071616499942202,
+      "p50": 0.05705325419574917,
+      "p95": 0.7352290687738047,
+      "p99": 2.03424196344236,
+      "max": 2.7200540394393418
+     },
+     "masked_fraction": 0.1823649614061415,
+     "band_unmasked": {
+      "p95_band": 0.3,
+      "max_band": 0.8,
+      "pass": false,
+      "p95_over_by": 1.4602744667720453,
+      "max_over_by": 2.79027092520373
+     },
+     "band_masked": {
+      "p95_band": 0.3,
+      "max_band": 0.8,
+      "pass": false,
+      "p95_over_by": 0.4352290687738047,
+      "max_over_by": 1.9200540394393417
+     }
+    }
+   },
+   "Z5 bristle zone": {
+    "kind": "region",
+    "note": "soft, excluded from gate (INTAKE_CARD \u00a74 Z5); reported only",
+    "band": [
+     null,
+     null
+    ],
+    "scan_to_cad": {
+     "unmasked": {
+      "n": 121803,
+      "rms": 7.060998640549077,
+      "mean": 6.3504361638230105,
+      "p50": 6.5586723951315475,
+      "p95": 10.703888409658177,
+      "p99": 11.367475297980361,
+      "max": 13.24863289164173
+     },
+     "masked": {
+      "n": 0,
+      "rms": null,
+      "mean": null,
+      "p50": null,
+      "p95": null,
+      "p99": null,
+      "max": null
+     },
+     "masked_fraction": 1.0,
+     "band_unmasked": null,
+     "band_masked": null
+    },
+    "cad_to_scan": {
+     "unmasked": {
+      "n": 0,
+      "rms": null,
+      "mean": null,
+      "p50": null,
+      "p95": null,
+      "p99": null,
+      "max": null
+     },
+     "masked": {
+      "n": 0,
+      "rms": null,
+      "mean": null,
+      "p50": null,
+      "p95": null,
+      "p99": null,
+      "max": null
+     },
+     "masked_fraction": 0.0,
+     "band_unmasked": null,
+     "band_masked": null
+    }
+   },
+   "I1 rim end face (unscanned)": {
+    "kind": "interior",
+    "note": "assumed, reported only",
+    "band": [
+     null,
+     null
+    ],
+    "cad_to_scan": {
+     "unmasked": {
+      "n": 16464,
+      "rms": 3.961327762128212,
+      "mean": 3.467962255430465,
+      "p50": 4.325024986409398,
+      "p95": 5.960860913286552,
+      "p99": 6.42642590455688,
+      "max": 6.697847810709646
+     },
+     "masked": {
+      "n": 0,
+      "rms": null,
+      "mean": null,
+      "p50": null,
+      "p95": null,
+      "p99": null,
+      "max": null
+     },
+     "masked_fraction": 1.0,
+     "band_unmasked": null,
+     "band_masked": null
+    }
+   },
+   "I2 idler bore bottom (unscanned)": {
+    "kind": "interior",
+    "note": "assumed, reported only",
+    "band": [
+     null,
+     null
+    ],
+    "cad_to_scan": {
+     "unmasked": {
+      "n": 1178,
+      "rms": 1.7772911109224103,
+      "mean": 1.567650325311091,
+      "p50": 1.5506857812319859,
+      "p95": 2.9617960851804424,
+      "p99": 3.3274452403646557,
+      "max": 3.59027092520373
+     },
+     "masked": {
+      "n": 0,
+      "rms": null,
+      "mean": null,
+      "p50": null,
+      "p95": null,
+      "p99": null,
+      "max": null
+     },
+     "masked_fraction": 1.0,
+     "band_unmasked": null,
+     "band_masked": null
+    }
+   },
+   "B hub z<0": {
+    "kind": "region",
+    "note": "z-band bucket",
+    "band": [
+     null,
+     null
+    ],
+    "scan_to_cad": {
+     "unmasked": {
+      "n": 18768,
+      "rms": 4.782141580826298,
+      "mean": 2.76326431707137,
+      "p50": 0.1798883520112895,
+      "p95": 11.340563908273666,
+      "p99": 14.008743395407995,
+      "max": 15.617083538424277
+     },
+     "masked": {
+      "n": 10818,
+      "rms": 0.12985509388061106,
+      "mean": 0.08821884770184203,
+      "p50": 0.05433043132121207,
+      "p95": 0.28824316219145624,
+      "p99": 0.4395562080092104,
+      "max": 0.8219047602034825
+     },
+     "masked_fraction": 0.4235933503836317,
+     "band_unmasked": null,
+     "band_masked": null
+    },
+    "cad_to_scan": {
+     "unmasked": {
+      "n": 38603,
+      "rms": 2.58799792639343,
+      "mean": 1.5146061226471506,
+      "p50": 0.11529332468722983,
+      "p95": 5.506569087447492,
+      "p99": 6.272109278053336,
+      "max": 6.697847810709646
+     },
+     "masked": {
+      "n": 22139,
+      "rms": 0.09446789654765683,
+      "mean": 0.061963484310075596,
+      "p50": 0.03736984269566497,
+      "p95": 0.20885157544360491,
+      "p99": 0.3165492890149476,
+      "max": 0.8035089170959234
+     },
+     "masked_fraction": 0.42649535010232364,
+     "band_unmasked": null,
+     "band_masked": null
+    }
+   },
+   "B core z 0-80": {
+    "kind": "region",
+    "note": "z-band bucket",
+    "band": [
+     null,
+     null
+    ],
+    "scan_to_cad": {
+     "unmasked": {
+      "n": 114267,
+      "rms": 6.011702084894304,
+      "mean": 4.5557491508322565,
+      "p50": 4.359091198482799,
+      "p95": 10.682572147566928,
+      "p99": 11.3792986111498,
+      "max": 12.911109948612536
+     },
+     "masked": {
+      "n": 32695,
+      "rms": 0.09215610057224324,
+      "mean": 0.05906026257843383,
+      "p50": 0.03848288963996937,
+      "p95": 0.17854097834045188,
+      "p99": 0.32099814376544494,
+      "max": 1.145781569169879
+     },
+     "masked_fraction": 0.7138718965230556,
+     "band_unmasked": null,
+     "band_masked": null
+    },
+    "cad_to_scan": {
+     "unmasked": {
+      "n": 131336,
+      "rms": 0.4779995758538934,
+      "mean": 0.21839228344547046,
+      "p50": 0.05094586365169393,
+      "p95": 1.2996000541154622,
+      "p99": 2.1384433330503705,
+      "max": 2.574072338201684
+     },
+     "masked": {
+      "n": 115500,
+      "rms": 0.18991195952401113,
+      "mean": 0.10535084248930325,
+      "p50": 0.042172138725128,
+      "p95": 0.4363194550343825,
+      "p99": 0.7108840967996513,
+      "max": 1.5500124953239411
+     },
+     "masked_fraction": 0.12057623195468112,
+     "band_unmasked": null,
+     "band_masked": null
+    }
+   },
+   "B core z 80-140": {
+    "kind": "region",
+    "note": "z-band bucket",
+    "band": [
+     null,
+     null
+    ],
+    "scan_to_cad": {
+     "unmasked": {
+      "n": 64846,
+      "rms": 5.411762322657375,
+      "mean": 3.876832802337786,
+      "p50": 3.1204571458137584,
+      "p95": 10.066397788865865,
+      "p99": 10.683030174899171,
+      "max": 13.24863289164173
+     },
+     "masked": {
+      "n": 22511,
+      "rms": 0.08331987084544788,
+      "mean": 0.06334302256517257,
+      "p50": 0.05020704054170001,
+      "p95": 0.16861675861749054,
+      "p99": 0.24883075840084085,
+      "max": 0.44976174129908325
+     },
+     "masked_fraction": 0.6528544551707122,
+     "band_unmasked": null,
+     "band_masked": null
+    },
+    "cad_to_scan": {
+     "unmasked": {
+      "n": 92245,
+      "rms": 0.7777290942331473,
+      "mean": 0.431671719743242,
+      "p50": 0.08854249710156956,
+      "p95": 2.0098890715308197,
+      "p99": 2.4610334099866233,
+      "max": 2.7028247779559376
+     },
+     "masked": {
+      "n": 69038,
+      "rms": 0.4628359343918475,
+      "mean": 0.21289202041777477,
+      "p50": 0.0624693013379265,
+      "p95": 1.0648723860231346,
+      "p99": 2.3003843718305097,
+      "max": 2.535673823496603
+     },
+     "masked_fraction": 0.2515800314380183,
+     "band_unmasked": null,
+     "band_masked": null
+    }
+   },
+   "B idler end z>140": {
+    "kind": "region",
+    "note": "z-band bucket",
+    "band": [
+     null,
+     null
+    ],
+    "scan_to_cad": {
+     "unmasked": {
+      "n": 12667,
+      "rms": 1.880747732383689,
+      "mean": 0.5202650357564069,
+      "p50": 0.09014062249406617,
+      "p95": 5.437009937264568,
+      "p99": 9.467723296344259,
+      "max": 10.367840704933135
+     },
+     "masked": {
+      "n": 11029,
+      "rms": 0.13767938657167472,
+      "mean": 0.10106759589984401,
+      "p50": 0.07766945854429107,
+      "p95": 0.2805734669557913,
+      "p99": 0.4601574121522069,
+      "max": 0.8794868360708648
+     },
+     "masked_fraction": 0.12931238651614432,
+     "band_unmasked": null,
+     "band_masked": null
+    },
+    "cad_to_scan": {
+     "unmasked": {
+      "n": 37816,
+      "rms": 0.7877645932101903,
+      "mean": 0.45102073703301687,
+      "p50": 0.13483147064869458,
+      "p95": 2.0087830056702063,
+      "p99": 2.519680571082684,
+      "max": 3.59027092520373
+     },
+     "masked": {
+      "n": 31166,
+      "rms": 0.5768278544476558,
+      "mean": 0.29261712641634735,
+      "p50": 0.10567016332897759,
+      "p95": 1.448867760094133,
+      "p99": 2.468997220127889,
+      "max": 2.7200540394393418
+     },
+     "masked_fraction": 0.175851491432198,
+     "band_unmasked": null,
+     "band_masked": null
+    }
+   },
+   "N1 hub recess beside slot entry (named local miss, not masked)": {
+    "kind": "region",
+    "note": "DECISIONS.md 2026-10-01: not modelled, not masked; reported as a named local miss (it1 cluster 3)",
+    "band": [
+     null,
+     null
+    ],
+    "scan_to_cad": {
+     "unmasked": {
+      "n": 167,
+      "rms": 0.5919342518438028,
+      "mean": 0.5053178985563339,
+      "p50": 0.532093417120885,
+      "p95": 1.0546175541505218,
+      "p99": 1.1169754650774302,
+      "max": 1.145781569169879
+     },
+     "masked": {
+      "n": 167,
+      "rms": 0.5919342518438028,
+      "mean": 0.5053178985563339,
+      "p50": 0.532093417120885,
+      "p95": 1.0546175541505218,
+      "p99": 1.1169754650774302,
+      "max": 1.145781569169879
+     },
+     "masked_fraction": 0.0,
+     "band_unmasked": null,
+     "band_masked": null
+    },
+    "cad_to_scan": {
+     "unmasked": {
+      "n": 143,
+      "rms": 0.2398015477726067,
+      "mean": 0.1951716024002714,
+      "p50": 0.16558624638327832,
+      "p95": 0.4179282025650055,
+      "p99": 0.4363075587604082,
+      "max": 0.4609946363629631
+     },
+     "masked": {
+      "n": 143,
+      "rms": 0.2398015477726067,
+      "mean": 0.1951716024002714,
+      "p50": 0.16558624638327832,
+      "p95": 0.4179282025650055,
+      "p99": 0.4363075587604082,
+      "max": 0.4609946363629631
+     },
+     "masked_fraction": 0.0,
+     "band_unmasked": null,
+     "band_masked": null
+    }
+   }
+  },
+  "sensitivity": [
+   {
+    "direction": "scan_to_cad",
+    "variant": "all masks except M1 bristle tufts and loose bristle fragments",
+    "stats": {
+     "n": 198856,
+     "rms": 5.526565017543668,
+     "mean": 3.9170459636003865,
+     "p50": 3.0549771667806,
+     "p95": 10.40963642410282,
+     "p99": 11.19657532604434,
+     "max": 13.24863289164173
+    },
+    "band": {
+     "p95_band": 0.3,
+     "max_band": 0.8,
+     "pass": false,
+     "p95_over_by": 10.109636424102819,
+     "max_over_by": 12.44863289164173
+    }
+   },
+   {
+    "direction": "scan_to_cad",
+    "variant": "all masks except M2 scanner table remnants",
+    "stats": {
+     "n": 83040,
+     "rms": 1.758915063596209,
+     "mean": 0.46920019956651565,
+     "p50": 0.05384116778302658,
+     "p95": 3.5705173648792914,
+     "p99": 9.502266837617421,
+     "max": 15.079003622205931
+    },
+    "band": {
+     "p95_band": 0.3,
+     "max_band": 0.8,
+     "pass": false,
+     "p95_over_by": 3.2705173648792916,
+     "max_over_by": 14.27900362220593
+    }
+   },
+   {
+    "direction": "scan_to_cad",
+    "variant": "all masks except M2b scanner table fringe upturn",
+    "stats": {
+     "n": 79016,
+     "rms": 1.4829353242756764,
+     "mean": 0.2884990481361028,
+     "p50": 0.050234132869843184,
+     "p95": 0.2683696071358076,
+     "p99": 9.673080756919452,
+     "max": 15.617083538424277
+    },
+    "band": {
+     "p95_band": 0.3,
+     "max_band": 0.8,
+     "pass": false,
+     "max_over_by": 14.817083538424276
+    }
+   },
+   {
+    "direction": "scan_to_cad",
+    "variant": "all masks except M3 tuft holes (bristle-filled)",
+    "stats": {
+     "n": 79315,
+     "rms": 0.10350568634381946,
+     "mean": 0.07055221477289642,
+     "p50": 0.04872365877673665,
+     "p95": 0.2102927676658982,
+     "p99": 0.35232201766938287,
+     "max": 1.145781569169879
+    },
+    "band": {
+     "p95_band": 0.3,
+     "max_band": 0.8,
+     "pass": false,
+     "max_over_by": 0.3457815691698789
+    }
+   },
+   {
+    "direction": "scan_to_cad",
+    "variant": "all masks except M6s slot occupants (scan side)",
+    "stats": {
+     "n": 78533,
+     "rms": 0.1114707890718812,
+     "mean": 0.07438055237477795,
+     "p50": 0.0498340899599051,
+     "p95": 0.22645822535664933,
+     "p99": 0.4093787854805984,
+     "max": 1.145781569169879
+    },
+    "band": {
+     "p95_band": 0.3,
+     "max_band": 0.8,
+     "pass": false,
+     "max_over_by": 0.3457815691698789
+    }
+   },
+   {
+    "direction": "cad_to_scan",
+    "variant": "all masks except M3 tuft holes (bristle-filled)",
+    "stats": {
+     "n": 261111,
+     "rms": 0.5322543428780682,
+     "mean": 0.24420945871082397,
+     "p50": 0.061918445002538076,
+     "p95": 1.4207371862536426,
+     "p99": 2.365697718633767,
+     "max": 2.7200540394393418
+    },
+    "band": {
+     "p95_band": 0.3,
+     "max_band": 0.8,
+     "pass": false,
+     "p95_over_by": 1.1207371862536426,
+     "max_over_by": 1.9200540394393417
+    }
+   },
+   {
+    "direction": "cad_to_scan",
+    "variant": "all masks except M4 rim end face (assumed, rested on table)",
+    "stats": {
+     "n": 254307,
+     "rms": 1.063958129821578,
+     "mean": 0.37141607241466684,
+     "p50": 0.060815754194334715,
+     "p95": 2.282315498264842,
+     "p99": 5.329052445735727,
+     "max": 6.697847810709646
+    },
+    "band": {
+     "p95_band": 0.3,
+     "max_band": 0.8,
+     "pass": false,
+     "p95_over_by": 1.9823154982648419,
+     "max_over_by": 5.897847810709647
+    }
+   },
+   {
+    "direction": "cad_to_scan",
+    "variant": "all masks except M5 idler bore bottom (assumed)",
+    "stats": {
+     "n": 239021,
+     "rms": 0.3729356420363959,
+     "mean": 0.16401851150052077,
+     "p50": 0.054912953650115975,
+     "p95": 0.7031322309651298,
+     "p99": 2.042701833844939,
+     "max": 3.59027092520373
+    },
+    "band": {
+     "p95_band": 0.3,
+     "max_band": 0.8,
+     "pass": false,
+     "p95_over_by": 0.4031322309651298,
+     "max_over_by": 2.79027092520373
+    }
+   },
+   {
+    "direction": "cad_to_scan",
+    "variant": "all masks except M6c slot occupants (CAD side, floor hidden)",
+    "stats": {
+     "n": 259090,
+     "rms": 0.48640755714486833,
+     "mean": 0.22646433669605956,
+     "p50": 0.06117844586343642,
+     "p95": 1.2810728143396788,
+     "p99": 2.200166228325846,
+     "max": 2.7200540394393418
+    },
+    "band": {
+     "p95_band": 0.3,
+     "max_band": 0.8,
+     "pass": false,
+     "p95_over_by": 0.9810728143396787,
+     "max_over_by": 1.9200540394393417
+    }
+   }
+  ],
+  "mask_dependent_passes": [],
+  "over_band_clusters": {
+   "scan_to_cad": {
+    "threshold_mm": 0.8,
+    "eps_mm": 1.0,
+    "min_pts": 20,
+    "n_over": 125141,
+    "fraction_over": 0.5943585310712997,
+    "clusters": [
+     {
+      "n": 59751,
+      "centroid": [
+       5.239,
+       -6.449,
+       63.8
+      ],
+      "bbox_min": [
+       -18.319,
+       -18.576,
+       2.45
+      ],
+      "bbox_max": [
+       19.628,
+       9.83,
+       145.411
+      ],
+      "r_range": [
+       8.097,
+       20.711
+      ],
+      "theta_deg_range": [
+       0.0,
+       360.0
+      ],
+      "d_p50": 6.768380143066167,
+      "d_max": 13.24863289164173
+     },
+     {
+      "n": 57707,
+      "centroid": [
+       -4.436,
+       6.871,
+       64.342
+      ],
+      "bbox_min": [
+       -19.284,
+       -12.615,
+       2.621
+      ],
+      "bbox_max": [
+       17.822,
+       18.291,
+       142.585
+      ],
+      "r_range": [
+       7.988,
+       19.624
+      ],
+      "theta_deg_range": [
+       0.0,
+       360.0
+      ],
+      "d_p50": 6.723932185659618,
+      "d_max": 12.160824117741281
+     },
+     {
+      "n": 7646,
+      "centroid": [
+       -4.439,
+       -3.85,
+       -6.434
+      ],
+      "bbox_min": [
+       -25.654,
+       -26.198,
+       -8.426
+      ],
+      "bbox_max": [
+       23.103,
+       21.484,
+       -3.506
+      ],
+      "r_range": [
+       17.225,
+       32.053
+      ],
+      "theta_deg_range": [
+       0.0,
+       359.9
+      ],
+      "d_p50": 6.083860514156101,
+      "d_max": 15.617083538424277
+     },
+     {
+      "n": 30,
+      "centroid": [
+       1.981,
+       5.908,
+       1.233
+      ],
+      "bbox_min": [
+       1.527,
+       5.317,
+       0.637
+      ],
+      "bbox_max": [
+       2.393,
+       6.437,
+       1.605
+      ],
+      "r_range": [
+       5.687,
+       6.623
+      ],
+      "theta_deg_range": [
+       68.5,
+       76.7
+      ],
+      "d_p50": 0.9454344885354548,
+      "d_max": 1.145781569169879
+     }
+    ],
+    "n_clusters_ge_min": 4,
+    "points_in_small_clusters": 7
+   },
+   "cad_to_scan": {
+    "threshold_mm": 0.8,
+    "eps_mm": 1.0,
+    "min_pts": 20,
+    "n_over": 51095,
+    "fraction_over": 0.17031666666666667,
+    "clusters": [
+     {
+      "n": 14092,
+      "centroid": [
+       -0.048,
+       0.033,
+       -6.471
+      ],
+      "bbox_min": [
+       -15.551,
+       -15.235,
+       -6.471
+      ],
+      "bbox_max": [
+       15.551,
+       15.144,
+       -6.471
+      ],
+      "r_range": [
+       0.04,
+       15.58
+      ],
+      "theta_deg_range": [
+       0.0,
+       360.0
+      ],
+      "d_p50": 4.536749526479657,
+      "d_max": 6.697847810709646
+     },
+     {
+      "n": 12941,
+      "centroid": [
+       3.559,
+       0.594,
+       136.825
+      ],
+      "bbox_min": [
+       -4.141,
+       -6.188,
+       101.703
+      ],
+      "bbox_max": [
+       7.102,
+       6.245,
+       161.57
+      ],
+      "r_range": [
+       0.114,
+       7.188
+      ],
+      "theta_deg_range": [
+       0.0,
+       360.0
+      ],
+      "d_p50": 1.7125728488645275,
+      "d_max": 3.59027092520373
+     },
+     {
+      "n": 6522,
+      "centroid": [
+       -4.4,
+       -0.944,
+       114.213
+      ],
+      "bbox_min": [
+       -6.619,
+       -6.74,
+       83.22
+      ],
+      "bbox_max": [
+       -0.127,
+       4.507,
+       143.004
+      ],
+      "r_range": [
+       4.862,
+       6.869
+      ],
+      "theta_deg_range": [
+       123.5,
+       268.6
+      ],
+      "d_p50": 1.4085584621416043,
+      "d_max": 2.633787861467643
+     },
+     {
+      "n": 2612,
+      "centroid": [
+       -3.826,
+       -3.29,
+       144.46
+      ],
+      "bbox_min": [
+       -5.996,
+       -6.198,
+       116.95
+      ],
+      "bbox_max": [
+       -1.235,
+       -0.154,
+       160.753
+      ],
+      "r_range": [
+       4.862,
+       6.427
+      ],
+      "theta_deg_range": [
+       181.8,
+       258.1
+      ],
+      "d_p50": 1.3552690532397822,
+      "d_max": 2.3820947490136914
+     },
+     {
+      "n": 1858,
+      "centroid": [
+       2.964,
+       -3.804,
+       88.663
+      ],
+      "bbox_min": [
+       -0.387,
+       -5.908,
+       74.466
+      ],
+      "bbox_max": [
+       5.334,
+       -1.308,
+       110.099
+      ],
+      "r_range": [
+       4.862,
+       5.908
+      ],
+      "theta_deg_range": [
+       265.6,
+       344.9
+      ],
+      "d_p50": 1.2319027389038326,
+      "d_max": 1.5934055495454902
+     },
+     {
+      "n": 1231,
+      "centroid": [
+       -4.714,
+       -1.39,
+       46.944
+      ],
+      "bbox_min": [
+       -5.455,
+       -3.547,
+       37.857
+      ],
+      "bbox_max": [
+       -3.621,
+       1.015,
+       56.419
+      ],
+      "r_range": [
+       4.862,
+       5.792
+      ],
+      "theta_deg_range": [
+       168.3,
+       223.4
+      ],
+      "d_p50": 1.2561048606187404,
+      "d_max": 1.7366787198120501
+     },
+     {
+      "n": 1041,
+      "centroid": [
+       2.107,
+       4.605,
+       84.509
+      ],
+      "bbox_min": [
+       -0.579,
+       2.296,
+       80.492
+      ],
+      "bbox_max": [
+       4.822,
+       6.692,
+       88.634
+      ],
+      "r_range": [
+       4.863,
+       6.804
+      ],
+      "theta_deg_range": [
+       26.9,
+       96.4
+      ],
+      "d_p50": 1.2800005737015085,
+      "d_max": 2.6241065126996515
+     },
+     {
+      "n": 298,
+      "centroid": [
+       5.017,
+       -2.301,
+       37.591
+      ],
+      "bbox_min": [
+       4.128,
+       -3.573,
+       36.588
+      ],
+      "bbox_max": [
+       6.394,
+       -1.128,
+       38.588
+      ],
+      "r_range": [
+       4.964,
+       6.774
+      ],
+      "theta_deg_range": [
+       324.7,
+       347.1
+      ],
+      "d_p50": 1.5736937032160494,
+      "d_max": 2.449233292085651
+     },
+     {
+      "n": 295,
+      "centroid": [
+       5.534,
+       0.621,
+       18.068
+      ],
+      "bbox_min": [
+       4.809,
+       -0.359,
+       16.993
+      ],
+      "bbox_max": [
+       6.755,
+       1.764,
+       18.992
+      ],
+      "r_range": [
+       4.964,
+       6.816
+      ],
+      "theta_deg_range": [
+       0.0,
+       359.9
+      ],
+      "d_p50": 1.5853472109770312,
+      "d_max": 2.525216085973058
+     },
+     {
+      "n": 289,
+      "centroid": [
+       -2.51,
+       5.069,
+       62.049
+      ],
+      "bbox_min": [
+       -3.802,
+       3.996,
+       61.083
+      ],
+      "bbox_max": [
+       -1.337,
+       6.301,
+       63.083
+      ],
+      "r_range": [
+       4.964,
+       6.709
+      ],
+      "theta_deg_range": [
+       105.3,
+       128.0
+      ],
+      "d_p50": 1.5668846855441807,
+      "d_max": 2.4834487029866814
+     },
+     {
+      "n": 288,
+      "centroid": [
+       5.361,
+       -1.564,
+       32.668
+      ],
+      "bbox_min": [
+       4.482,
+       -2.811,
+       31.689
+      ],
+      "bbox_max": [
+       6.649,
+       -0.467,
+       33.689
+      ],
+      "r_range": [
+       4.964,
+       6.824
+      ],
+      "theta_deg_range": [
+       332.3,
+       354.7
+      ],
+      "d_p50": 1.4591141164234602,
+      "d_max": 2.4617742980820294
+     },
+     {
+      "n": 284,
+      "centroid": [
+       -4.266,
+       3.539,
+       47.417
+      ],
+      "bbox_min": [
+       -5.628,
+       2.426,
+       46.386
+      ],
+      "bbox_max": [
+       -3.189,
+       4.972,
+       48.386
+      ],
+      "r_range": [
+       4.964,
+       6.738
+      ],
+      "theta_deg_range": [
+       128.9,
+       151.5
+      ],
+      "d_p50": 1.5217450162042203,
+      "d_max": 2.4522245395100075
+     }
+    ],
+    "n_clusters_ge_min": 55,
+    "points_in_small_clusters": 218
+   },
+   "reading": "scan_to_cad clusters = scan material the CAD lacks (missing feature or artefact); cad_to_scan clusters = CAD material with no scan (invented or unobservable)"
+  },
+  "gate_valid": false,
+  "gate_invalid_reasons": [
+   "decimated scan: INSPECTION ONLY, not an official grade",
+   "no independent QA registration (ICP) recorded: run-contract \u00a712 requires verify's own ICP in every regime; this run cannot be labelled OFFICIAL"
+  ],
+  "label": "INSPECTION ONLY"
+ },
+ "deviation_runs": [],
+ "gated_results": [
+  {
+   "item": "scan_to_cad:masked",
+   "result": {
+    "p95_band": 0.3,
+    "max_band": 0.8,
+    "pass": false,
+    "max_over_by": 0.3770642896977163
+   },
+   "stats": {
+    "n": 78181,
+    "rms": 0.1031862207568874,
+    "mean": 0.07031919965785272,
+    "p50": 0.0480777422713588,
+    "p95": 0.21301889548843572,
+    "p99": 0.34712861647071963,
+    "max": 1.1770642896977164
+   }
+  },
+  {
+   "item": "cad_to_scan_observable",
+   "result": {
+    "p95_band": 0.3,
+    "max_band": 0.8,
+    "pass": false,
+    "p95_over_by": 0.11493392475673037,
+    "max_over_by": 1.8360810524406237
+   },
+   "stats": {
+    "n": 15209,
+    "rms": 0.26297097649118517,
+    "mean": 0.11691036719364951,
+    "p50": 0.04781146956042137,
+    "p95": 0.41493392475673035,
+    "p99": 1.2158283430572763,
+    "max": 2.6360810524406237
+   }
+  },
+  {
+   "item": "zone:Z1 drive dog (blades + gap floor):scan_to_cad",
+   "result": {
+    "p95_band": 0.3,
+    "max_band": 0.8,
+    "pass": false,
+    "max_over_by": 0.05263370181969729
+   },
+   "stats": {
+    "n": 4486,
+    "rms": 0.10856516976869422,
+    "mean": 0.07158252514465278,
+    "p50": 0.04757597803503011,
+    "p95": 0.22491455716651998,
+    "p99": 0.41608759298885617,
+    "max": 0.8526337018196973
+   },
+   "unmasked": {
+    "n": 4486,
+    "rms": 0.10856516976869422,
+    "mean": 0.07158252514465278,
+    "p50": 0.04757597803503011,
+    "p95": 0.22491455716651998,
+    "p99": 0.41608759298885617,
+    "max": 0.8526337018196973
+   },
+   "band_unmasked": {
+    "p95_band": 0.3,
+    "max_band": 0.8,
+    "pass": false,
+    "max_over_by": 0.05263370181969729
+   }
+  },
+  {
+   "item": "zone:Z1 drive dog (blades + gap floor):cad_to_scan",
+   "result": {
+    "p95_band": 0.3,
+    "max_band": 0.8,
+    "pass": true
+   },
+   "stats": {
+    "n": 17459,
+    "rms": 0.09939178466675215,
+    "mean": 0.07040192186257828,
+    "p50": 0.05202865299984319,
+    "p95": 0.20316577164560096,
+    "p99": 0.3472816777401102,
+    "max": 0.734470536751098
+   },
+   "unmasked": {
+    "n": 17459,
+    "rms": 0.09939178466675215,
+    "mean": 0.07040192186257828,
+    "p50": 0.05202865299984319,
+    "p95": 0.20316577164560096,
+    "p99": 0.3472816777401102,
+    "max": 0.734470536751098
+   },
+   "band_unmasked": {
+    "p95_band": 0.3,
+    "max_band": 0.8,
+    "pass": true
+   }
+  },
+  {
+   "item": "zone:Z2 hub discs r15.20 r16.44:scan_to_cad",
+   "result": {
+    "p95_band": 0.3,
+    "max_band": 0.8,
+    "pass": false,
+    "p95_over_by": 0.009256518166607774,
+    "max_over_by": 0.016170155101982164
+   },
+   "stats": {
+    "n": 6451,
+    "rms": 0.14592813906479732,
+    "mean": 0.10650072926334442,
+    "p50": 0.0770323425536593,
+    "p95": 0.30925651816660776,
+    "p99": 0.4572187077029376,
+    "max": 0.8161701551019822
+   },
+   "unmasked": {
+    "n": 6451,
+    "rms": 0.14592813906479732,
+    "mean": 0.10650072926334442,
+    "p50": 0.0770323425536593,
+    "p95": 0.30925651816660776,
+    "p99": 0.4572187077029376,
+    "max": 0.8161701551019822
+   },
+   "band_unmasked": {
+    "p95_band": 0.3,
+    "max_band": 0.8,
+    "pass": false,
+    "p95_over_by": 0.009256518166607774,
+    "max_over_by": 0.016170155101982164
+   }
+  },
+  {
+   "item": "zone:Z2 hub discs r15.20 r16.44:cad_to_scan",
+   "result": {
+    "p95_band": 0.3,
+    "max_band": 0.8,
+    "pass": true
+   },
+   "stats": {
+    "n": 10975,
+    "rms": 0.09182113279499088,
+    "mean": 0.06921861308243302,
+    "p50": 0.051375145705314124,
+    "p95": 0.19024788249799007,
+    "p99": 0.2682261434423256,
+    "max": 0.46197565116546563
+   },
+   "unmasked": {
+    "n": 10975,
+    "rms": 0.09182113279499088,
+    "mean": 0.06921861308243302,
+    "p50": 0.051375145705314124,
+    "p95": 0.19024788249799007,
+    "p99": 0.2682261434423256,
+    "max": 0.46197565116546563
+   },
+   "band_unmasked": {
+    "p95_band": 0.3,
+    "max_band": 0.8,
+    "pass": true
+   }
+  },
+  {
+   "item": "zone:Z3 idler counterbore and bore:scan_to_cad",
+   "result": {
+    "p95_band": 0.3,
+    "max_band": 0.8,
+    "pass": false,
+    "max_over_by": 0.06487851034016212
+   },
+   "stats": {
+    "n": 1969,
+    "rms": 0.14708875433344093,
+    "mean": 0.10592553743864383,
+    "p50": 0.07670181933456875,
+    "p95": 0.28821224955951363,
+    "p99": 0.48072674123434156,
+    "max": 0.8648785103401622
+   },
+   "unmasked": {
+    "n": 1992,
+    "rms": 0.1536664088679186,
+    "mean": 0.10942117742310138,
+    "p50": 0.07737388696088707,
+    "p95": 0.30276747174770074,
+    "p99": 0.5401194623930664,
+    "max": 0.8648785103401622
+   },
+   "band_unmasked": {
+    "p95_band": 0.3,
+    "max_band": 0.8,
+    "pass": false,
+    "p95_over_by": 0.002767471747700756,
+    "max_over_by": 0.06487851034016212
+   }
+  },
+  {
+   "item": "zone:Z3 idler counterbore and bore:cad_to_scan",
+   "result": {
+    "p95_band": 0.3,
+    "max_band": 0.8,
+    "pass": false,
+    "p95_over_by": 1.0639006151816115,
+    "max_over_by": 1.7313180049423147
+   },
+   "stats": {
+    "n": 5785,
+    "rms": 0.6145710482866149,
+    "mean": 0.3877189143521859,
+    "p50": 0.15709419790863807,
+    "p95": 1.3639006151816115,
+    "p99": 2.1174706511204295,
+    "max": 2.5313180049423147
+   },
+   "unmasked": {
+    "n": 6989,
+    "rms": 0.9278625620530442,
+    "mean": 0.5930902355185728,
+    "p50": 0.23622238112310281,
+    "p95": 2.208490071443291,
+    "p99": 2.888632561602633,
+    "max": 3.6227022002016582
+   },
+   "band_unmasked": {
+    "p95_band": 0.3,
+    "max_band": 0.8,
+    "pass": false,
+    "p95_over_by": 1.908490071443291,
+    "max_over_by": 2.8227022002016584
+   }
+  },
+  {
+   "item": "zone:Z4 core profile (twisted, slots, grooves):scan_to_cad",
+   "result": {
+    "p95_band": 0.3,
+    "max_band": 0.8,
+    "pass": false,
+    "max_over_by": 0.3770642896977163
+   },
+   "stats": {
+    "n": 64228,
+    "rms": 0.09622337680741058,
+    "mean": 0.06582336208114299,
+    "p50": 0.04529910430961703,
+    "p95": 0.19574770200035194,
+    "p99": 0.3135779207072613,
+    "max": 1.1770642896977164
+   },
+   "unmasked": {
+    "n": 67523,
+    "rms": 0.10501068299222374,
+    "mean": 0.06969693497942593,
+    "p50": 0.04630721405038199,
+    "p95": 0.21277973164879377,
+    "p99": 0.3855932178178176,
+    "max": 1.1770642896977164
+   },
+   "band_unmasked": {
+    "p95_band": 0.3,
+    "max_band": 0.8,
+    "pass": false,
+    "max_over_by": 0.3770642896977163
+   }
+  },
+  {
+   "item": "zone:Z4 core profile (twisted, slots, grooves):cad_to_scan",
+   "result": {
+    "p95_band": 0.3,
+    "max_band": 0.8,
+    "pass": false,
+    "p95_over_by": 0.4273837146825495,
+    "max_over_by": 1.8550348149520584
+   },
+   "stats": {
+    "n": 204865,
+    "rms": 0.37228224899380824,
+    "mean": 0.1680022202873187,
+    "p50": 0.052250532271721516,
+    "p95": 0.7273837146825495,
+    "p99": 1.9890127280398489,
+    "max": 2.6550348149520584
+   },
+   "unmasked": {
+    "n": 250558,
+    "rms": 0.6592727847478521,
+    "mean": 0.3360074533402395,
+    "p50": 0.07096125980562898,
+    "p95": 1.7628614116976988,
+    "p99": 2.390983332980742,
+    "max": 3.6227022002016582
+   },
+   "band_unmasked": {
+    "p95_band": 0.3,
+    "max_band": 0.8,
+    "pass": false,
+    "p95_over_by": 1.4628614116976988,
+    "max_over_by": 2.8227022002016584
+   }
+  }
+ ],
+ "overlays": [
+  {
+   "inputs": {
+    "input/scan.stl": "4be5e49d2ab6e2a930a41aa017551eac8f08b1974ddfd1294b1b1455961f011a",
+    "build/dreame_brush_core_datum.step": "69ca2aba4441218e15ec75a8140075e9b02666f38f9b94d7c41937c5cb7faf63",
+    "intake/alignment.json": "09d955099db399c512f0e3d9befa7399920c2c3b0c8dfe25a0ae8e0cc31dabcb"
+   },
+   "seed": null,
+   "png": "qa/overlays/overlay.png",
+   "panels": [
+    {
+     "panel": "Z=-5.0",
+     "scan_segments": 789,
+     "scan_length_mm": 123.53163419994407,
+     "cad_segments": 504,
+     "cad_length_mm": 103.2677590276914,
+     "scan_empty": false,
+     "cad_empty": false
+    },
+    {
+     "panel": "Z=-2.6",
+     "scan_segments": 468,
+     "scan_length_mm": 98.03582801227775,
+     "cad_segments": 504,
+     "cad_length_mm": 95.52707513363461,
+     "scan_empty": false,
+     "cad_empty": false
+    },
+    {
+     "panel": "Z=-1.0",
+     "scan_segments": 745,
+     "scan_length_mm": 157.8194451859955,
+     "cad_segments": 1148,
+     "cad_length_mm": 162.23937418609287,
+     "scan_empty": false,
+     "cad_empty": false
+    },
+    {
+     "panel": "Z=1.4",
+     "scan_segments": 375,
+     "scan_length_mm": 61.94457108053228,
+     "cad_segments": 840,
+     "cad_length_mm": 74.15454526488506,
+     "scan_empty": false,
+     "cad_empty": false
+    },
+    {
+     "panel": "Z=40.0",
+     "scan_segments": 895,
+     "scan_length_mm": 119.19697501282977,
+     "cad_segments": 591,
+     "cad_length_mm": 74.14677027668674,
+     "scan_empty": false,
+     "cad_empty": false
+    },
+    {
+     "panel": "Z=80.0",
+     "scan_segments": 748,
+     "scan_length_mm": 106.49338116393022,
+     "cad_segments": 455,
+     "cad_length_mm": 74.16157528801351,
+     "scan_empty": false,
+     "cad_empty": false
+    },
+    {
+     "panel": "Z=115.0",
+     "scan_segments": 612,
+     "scan_length_mm": 84.42373477813926,
+     "cad_segments": 584,
+     "cad_length_mm": 84.17840024676946,
+     "scan_empty": false,
+     "cad_empty": false
+    },
+    {
+     "panel": "Z=150.0",
+     "scan_segments": 272,
+     "scan_length_mm": 45.47037025045745,
+     "cad_segments": 409,
+     "cad_length_mm": 74.26278414207175,
+     "scan_empty": false,
+     "cad_empty": false
+    },
+    {
+     "panel": "Z=160.0",
+     "scan_segments": 401,
+     "scan_length_mm": 64.16618138660587,
+     "cad_segments": 1122,
+     "cad_length_mm": 101.01313553505378,
+     "scan_empty": false,
+     "cad_empty": false
+    },
+    {
+     "panel": "Z=162.5",
+     "scan_segments": 494,
+     "scan_length_mm": 76.48030647761223,
+     "cad_segments": 1591,
+     "cad_length_mm": 83.88397534324558,
+     "scan_empty": false,
+     "cad_empty": false
+    },
+    {
+     "panel": "radial \u03b8=0.0\u00b0",
+     "scan_segments": 1870,
+     "scan_length_mm": 290.46268674902814,
+     "cad_segments": 2418,
+     "cad_length_mm": 289.5561366552143,
+     "scan_empty": false,
+     "cad_empty": false
+    },
+    {
+     "panel": "radial \u03b8=72.0\u00b0",
+     "scan_segments": 1556,
+     "scan_length_mm": 260.4315991274042,
+     "cad_segments": 1782,
+     "cad_length_mm": 290.48731454010095,
+     "scan_empty": false,
+     "cad_empty": false
+    },
+    {
+     "panel": "radial \u03b8=90.0\u00b0",
+     "scan_segments": 1342,
+     "scan_length_mm": 243.21446136654052,
+     "cad_segments": 1821,
+     "cad_length_mm": 280.48330712115154,
+     "scan_empty": false,
+     "cad_empty": false
+    },
+    {
+     "panel": "radial \u03b8=180.0\u00b0",
+     "scan_segments": 1887,
+     "scan_length_mm": 300.3777793111577,
+     "cad_segments": 2395,
+     "cad_length_mm": 290.64738499356673,
+     "scan_empty": false,
+     "cad_empty": false
+    },
+    {
+     "panel": "radial \u03b8=270.0\u00b0",
+     "scan_segments": 1579,
+     "scan_length_mm": 251.5960338972733,
+     "cad_segments": 1819,
+     "cad_length_mm": 280.4236385780873,
+     "scan_empty": false,
+     "cad_empty": false
+    }
+   ],
+   "empty_scan_panels": [],
+   "CHK-OVERLAY": {
+    "ran": true,
+    "result": "pass",
+    "note": "every panel shows scan"
+   }
+  }
+ ],
+ "checks": {
+  "CHK-MASK": {
+   "ran": true,
+   "result": "pass",
+   "note": "no pass depends on a mask"
+  },
+  "CHK-CLUSTER": {
+   "ran": true,
+   "result": "pass",
+   "note": "4 scan->CAD over-band clusters; unexplained: []"
+  },
+  "CHK-OVERLAY": {
+   "ran": true,
+   "result": "pass",
+   "note": "every panel shows scan"
+  },
+  "CHK-CIRCULAR": {
+   "ran": true,
+   "result": "pass",
+   "note": "graded after QA's own ICP; T_refine not written back; no expected values from params.json. M6 was located from the scan (qa/make_m6_slot_occupants.py); M3 holes come from the STEP's own hole-bottom faces, unchanged since it1"
+  },
+  "CHK-LIKE4LIKE": {
+   "ran": true,
+   "result": "finding",
+   "note": "protocol changed it1->it2 (declared M6 slot-occupant mask added to the gate and to the ICP reference), so the it2 STEP was also graded under the exact it1 protocol. it1 gate (it1 STEP, it1 protocol): scan->CAD masked p95 0.311 / max 1.392, CAD->scan observable p95 0.671 / max 2.568. it2 STEP under the IDENTICAL it1 protocol (it1 masks, it1 ICP reference; qa/it1_protocol/): scan->CAD masked p95 0.225 / max 1.170, CAD->scan observable p95 0.598 / max 2.640, so this is the geometry-only change. it2 gate (adds the declared M6 slot-occupant mask, also removed from the ICP reference): scan->CAD masked p95 0.213 / max 1.177, CAD->scan observable p95 0.415 / max 2.636, so the remaining improvement comes from the M6 mask (protocol), not from geometry"
+  },
+  "CHK-INDEP": {
+   "ran": true,
+   "result": "pass",
+   "note": "separate agent context, QA-owned scripts; organisational independence not claimed (same orchestrator session)"
+  },
+  "CHK-FILLET": {
+   "ran": true,
+   "result": "pass",
+   "note": "export_check.json fillets: []; no fillet ops planned (MODELING_PLAN \u00a75)"
+  },
+  "CHK-PATCHWORK": {
+   "ran": true,
+   "result": "pass",
+   "note": "census 200 faces, analytic area share 0.234; extra bspline faces = T-slot flare walls from the same single twisted extrude (extrude_linear_with_rotation); model.py grep: no loft / ruled loft / polyline stack"
+  },
+  "CHK-ENUM": {
+   "ran": true,
+   "result": "finding",
+   "note": "T-slot foot now modelled (it1 finding closed: stacked section qa/overlays/slot_xsection_it2_qa.png). Still open: (a) the hub recess beside one slot entry is not modelled, by DECISIONS.md 2026-10-01; (b) DECISIONS.md says INTAKE_CARD \u00a75 feature 2 'now reads 4 T-slots...', but intake/INTAKE_CARD.md is unchanged (still '4 slots, width \u22481.24, flat bottom'), so the record is inconsistent; (c) no photos"
+  },
+  "CHK-ACHIEVABLE": {
+   "ran": true,
+   "result": "n/a",
+   "note": "no Tier-1 run (no calipers)"
+  },
+  "PHOTO-PLAUSIBILITY": {
+   "ran": true,
+   "result": "n/a",
+   "note": "no photos supplied"
+  }
+ },
+ "blockers": [],
+ "evidence_blockers": [],
+ "geom_fails": [],
+ "band_fails": [
+  "scan_to_cad:masked: p95 0.213 max 1.177 vs 0.3/0.8",
+  "cad_to_scan_observable: p95 0.415 max 2.636 vs 0.3/0.8",
+  "zone:Z1 drive dog (blades + gap floor):scan_to_cad: p95 0.225 max 0.853 vs 0.3/0.8",
+  "zone:Z2 hub discs r15.20 r16.44:scan_to_cad: p95 0.309 max 0.816 vs 0.3/0.8",
+  "zone:Z3 idler counterbore and bore:scan_to_cad: p95 0.288 max 0.865 vs 0.3/0.8",
+  "zone:Z3 idler counterbore and bore:cad_to_scan: p95 1.364 max 2.531 vs 0.3/0.8",
+  "zone:Z4 core profile (twisted, slots, grooves):scan_to_cad: p95 0.196 max 1.177 vs 0.3/0.8",
+  "zone:Z4 core profile (twisted, slots, grooves):cad_to_scan: p95 0.727 max 2.655 vs 0.3/0.8"
+ ],
+ "auto_limitations": [
+  "decimated scan: INSPECTION ONLY, not an official grade; re-run trigger: full-res scan available",
+  "no Tier-1 (no calipers run)"
+ ],
+ "limitations": [
+  {
+   "id": "L1",
+   "text": "Decimated scan only: every deviation number is INSPECTION ONLY",
+   "rerun_trigger": "full-res scan available"
+  },
+  {
+   "id": "L2",
+   "text": "Tier-1 not run: no calipers. Every dimension is ABSENT, not passed",
+   "rerun_trigger": "caliper sheet intake/MEASUREMENTS.md filled"
+  },
+  {
+   "id": "L3",
+   "text": "Absolute scale not caliper-verified (CHK-SCALE)",
+   "rerun_trigger": "caliper sheet intake/MEASUREMENTS.md filled"
+  },
+  {
+   "id": "L4",
+   "text": "No photos: the hub recess cannot be classified as feature or damage",
+   "rerun_trigger": "photos of the drive end supplied"
+  },
+  {
+   "id": "L5",
+   "text": "Masked numbers: M1 bristle tufts and loose bristle fragments (scan_to_cad) 57.52 %, M2 scanner table remnants (scan_to_cad) 2.80 %, M2b scanner table fringe upturn (scan_to_cad) 0.98 %, M3 tuft holes (bristle-filled) (scan_to_cad) 1.09 %, M6s slot occupants (scan side) (scan_to_cad) 0.49 %, M3 tuft holes (bristle-filled) (cad_to_scan) 7.76 %, M4 rim end face (assumed, rested on table) (cad_to_scan) 5.49 %, M5 idler bore bottom (assumed) (cad_to_scan) 0.39 %, M6c slot occupants (CAD side, floor hidden) (cad_to_scan) 7.08 %. M6 leave-one-out: scan->CAD p95 0.225 / max 1.177, CAD->scan p95 1.291 / max 2.655. The observable CAD->scan figure excludes CAD-side masks (wrapper workaround for a skill defect)",
+   "rerun_trigger": "observable_split fixed to honour CAD masks in stl-re-verify; re-run verify"
+  },
+  {
+   "id": "L6",
+   "text": "Assumed, never-scanned surfaces (rim end face, hub interior, tuft-hole depth, idler bore bottom) unverified",
+   "rerun_trigger": "caliper sheet intake/MEASUREMENTS.md filled or a scan of the drive end face"
+  }
+ ],
+ "miss_explanations": [
+  {
+   "region": "hub recess beside one slot entry (scan->CAD whole-part max, Z1/Z4 max)",
+   "cause": "declared unmodelled local feature (DECISIONS.md 2026-10-01): 36 scan points over 0.8 mm, max 1.177; asymmetric (1 of 4 entries), so feature vs damage cannot be told without a photo. Outside the recess the masked scan->CAD has 8 isolated points over 0.8 (max 0.969, no cluster >= 20 pts). Whole-part masked scan->CAD p95 0.213 passes",
+   "options": "(a) human accepts the recess miss (ACCEPT-BAND); (b) photo of the drive end -> model it as a feature (it3) or declare damage; (c) full-res scan"
+  },
+  {
+   "region": "slot foot/flare/floor coverage, CAD->scan observable (Z4, idler end)",
+   "cause": "COVERAGE, not geometry: 97.6 % of masked CAD->scan points over 0.8 lie in the slots; 8757 of them have no scan point within 0.3 mm / 1 mm z (only 22 do). These are undercut flare/foot surfaces and floor spans the decimated scan never saw, outside the M6c bins (M6c covers only bins where an occupant hides the floor). Diagnostic only: masked CAD->scan without slot interiors p95 0.206. The ray test counts many of these surfaces as line-of-sight observable",
+   "options": "(a) full-res scan or a re-scan with cleaned slots aimed into the slots; (b) a declared coverage-gap mask located from the scan (intake decision, with leave-one-out); (c) human acceptance. More geometry cannot fix it"
+  },
+  {
+   "region": "Z2 hub discs, Z3 idler bore/counterbore (small scan->CAD overs)",
+   "cause": "hub step/rim edge break (declared simplification, hub-step chamfer) and bore wall near the assumed bottom; 215 CAD->scan points over 0.8 at z >= 158 outside the slots (bore wall just above the masked bottom, counterbore/slot crossing)",
+   "options": "optional it3: model the hub-step chamfer; bore depth needs a caliper or photo"
+  }
+ ],
+ "claim_boundary": "Not deliverable without a recorded ACCEPT-BAND. This is an iteration-2, inspection-only (decimated), scan-only result. The slot-foot shape is supported by the scan only where the foot was seen. The hub recess is absent from the CAD. Not fit for tooling or fit checks of the slots or the drive-end recess. No claim about the unscanned rim end face, hub interior, tuft-hole depth or bore bottom.",
+ "independence": "Verify ran in a separate agent context from the builder, with its own code: stl-re-verify scripts, its own ICP, and its own masks/zones/datum spec. No builder number, params.json, PARAM_TABLE, build_log or measure/figures were used. model.py was only grepped. Organisational independence is NOT claimed: the same orchestrator session spawned both builder and verifier.",
+ "cluster_explanations": {
+  "0": "bristle tuft row (soft), inside named mask M1. Clusters are computed on UNMASKED distances",
+  "1": "second bristle tuft row (soft), inside M1",
+  "2": "scanner table and its upturned fringe, inside M2/M2b",
+  "3": "NAMED LOCAL MISS, not an artefact: the hub recess beside one slot entry, NOT modelled and NOT masked by DECISIONS.md 2026-10-01. It sets the whole-part scan->CAD max (36 points over 0.8, max 1.177). It stays a band miss"
+ },
+ "allowed_verdicts": [
+  "BAND_NOT_MET",
+  "HALT",
+  "REVISE"
+ ],
+ "proposed_verdict": "BAND_NOT_MET",
+ "verdict": "BAND_NOT_MET",
+ "errors": []
+}

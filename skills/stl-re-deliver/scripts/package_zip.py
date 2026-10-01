@@ -20,6 +20,10 @@ Rules (CHK-PUBLISH still applies: this runs only after make_manifest.py succeede
   --include-scan to ship it), files larger than --max-source-mb that are regenerable
   intermediates (work/aligned meshes, point caches), __pycache__/ and *.pyc.
 - The zip is written next to the run folder (or --out-dir) with a sidecar <zip>.sha256.
+- --max-zip-mb N (cloud sessions: 29, the chat upload limit is 30 MiB): source files larger than
+  --part-file-mb move out of the main zip into companion zips <root>_part<k>.zip, each kept under N MB
+  (greedy by compressed size), with the same <root>/source/ prefix, so unzipping all of them into one
+  folder gives the whole package. PACKAGE_INDEX.md lists which file is in which part. Nothing is dropped.
 Exit codes: 0 written; 2 refused; 3 internal error.
 """
 from __future__ import annotations
@@ -39,7 +43,7 @@ DELIVERABLE_GLOBS = [
     "measure/PARAM_TABLE.md", "DECISIONS.md", "decisions/*",
 ]
 ALWAYS_SKIP = ["*/__pycache__/*", "__pycache__/*", "*.pyc"]
-REGENERABLE = ["intake/work.stl", "intake/aligned_work.stl", "*.npy", "*.ply", "*/wip/*.stl",
+REGENERABLE = ["intake/work.stl", "intake/aligned_work.stl", "*.npy", "*.npz", "*.ply", "*/wip/*.stl",
                "measure/figures/*.stl", "intake/explore/*.stl", "_it*_SUPERSEDED/*.stl"]
 
 
@@ -62,6 +66,10 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--include-scan", action="store_true", help="also ship input/scan.stl")
     ap.add_argument("--max-source-mb", type=float, default=25.0,
                     help="regenerable intermediates above this size are listed, not zipped")
+    ap.add_argument("--max-zip-mb", type=float, default=0.0,
+                    help="split large source files into companion zips so every zip stays under this size (0 = off)")
+    ap.add_argument("--part-file-mb", type=float, default=5.0,
+                    help="with --max-zip-mb: source files above this size go to the companion zips")
     a = ap.parse_args(argv)
     run = a.run.resolve()
     for need in ("deliver/MANIFEST.json", "deliver/README.md", "qa/VERDICT.md"):
@@ -97,6 +105,24 @@ def main(argv: list[str] | None = None) -> int:
         else:
             source.append((p, rel))
 
+    parts: list[list[tuple[Path, str, int]]] = []
+    if a.max_zip_mb > 0:
+        import zlib
+        big = [(p, rel) for p, rel in source if p.stat().st_size / 1e6 > a.part_file_mb]
+        source = [(p, rel) for p, rel in source if p.stat().st_size / 1e6 <= a.part_file_mb]
+        sized = sorted(((p, rel, len(zlib.compress(p.read_bytes(), 6))) for p, rel in big), key=lambda t: -t[2])
+        cap = a.max_zip_mb * 1e6 * 0.98
+        for item in sized:
+            if item[2] > cap:
+                print(f"REFUSED: {item[1]} alone compresses to {item[2] / 1e6:.1f} MB > --max-zip-mb", file=sys.stderr)
+                return 2
+            for part in parts:
+                if sum(t[2] for t in part) + item[2] <= cap:
+                    part.append(item)
+                    break
+            else:
+                parts.append([item])
+
     lines = [f"# {root}", "",
              f"Verdict **{verdict}** under regime **{regime}** (from qa/gate.json; read deliverables/qa/VERDICT.md "
              f"and deliverables/deliver/README.md before using the CAD).", "",
@@ -112,7 +138,14 @@ def main(argv: list[str] | None = None) -> int:
         lines.append(f"| `{rel}` | {p.stat().st_size} | `{sha256(p)}` | {why} |")
     if not excluded:
         lines.append("| - | - | - | nothing excluded |")
-    lines += ["", f"Counts: {len(deliv)} deliverable files, {len(source)} source files, {len(excluded)} excluded.", ""]
+    if parts:
+        lines += ["", "## Companion zips (large source files, same folder layout)", "",
+                  "Unzip the main zip and every part into the same folder.", "", "| part | file | bytes | sha256 |", "|---|---|---|---|"]
+        for k, part in enumerate(parts, 1):
+            for p, rel, _c in part:
+                lines.append(f"| `{root}_part{k}.zip` | `source/{rel}` | {p.stat().st_size} | `{sha256(p)}` |")
+    lines += ["", f"Counts: {len(deliv)} deliverable files, {len(source)} source files in the main zip, "
+              f"{sum(len(x) for x in parts)} in {len(parts)} companion zip(s), {len(excluded)} excluded.", ""]
     index = "\n".join(lines)
 
     with zipfile.ZipFile(zpath, "w", compression=zipfile.ZIP_DEFLATED, compresslevel=6) as z:
@@ -121,10 +154,22 @@ def main(argv: list[str] | None = None) -> int:
             z.write(p, f"{root}/deliverables/{rel}")
         for p, rel in source:
             z.write(p, f"{root}/source/{rel}")
-    digest = sha256(zpath)
-    zpath.with_suffix(".zip.sha256").write_text(f"{digest}  {zpath.name}\n")
-    print(json.dumps({"zip": str(zpath), "sha256": digest, "bytes": zpath.stat().st_size,
+    written = [zpath]
+    for k, part in enumerate(parts, 1):
+        pz = out_dir / f"{root}_part{k}.zip"
+        with zipfile.ZipFile(pz, "w", compression=zipfile.ZIP_DEFLATED, compresslevel=6) as z:
+            for p, rel, _c in part:
+                z.write(p, f"{root}/source/{rel}")
+        written.append(pz)
+    for w in written:
+        w.with_suffix(".zip.sha256").write_text(f"{sha256(w)}  {w.name}\n")
+    over = [w.name for w in written if a.max_zip_mb > 0 and w.stat().st_size > a.max_zip_mb * 1e6]
+    print(json.dumps({"zip": str(zpath), "sha256": sha256(zpath), "bytes": zpath.stat().st_size,
+                      "parts": [{"zip": str(w), "bytes": w.stat().st_size} for w in written[1:]],
                       "deliverables": len(deliv), "source": len(source), "excluded": len(excluded)}, indent=1))
+    if over:
+        print(f"REFUSED: still over --max-zip-mb: {over}", file=sys.stderr)
+        return 2
     return 0
 
 

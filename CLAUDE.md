@@ -17,10 +17,14 @@ Every job ends with **ONE downloadable zip holding the deliverables and all sour
 (`skills/stl-re-deliver/references/delivery-package.md`):
 
 ```bash
-python3 skills/stl-re-deliver/scripts/package_zip.py --run <run> --out-dir <dir> --include-scan
+python3 skills/stl-re-deliver/scripts/package_zip.py --run <run> --out-dir <dir> --include-scan \
+    --max-zip-mb 29 --max-source-mb 10
 ```
 
 - `--include-scan`: the owner asked for *all* source files (2026-09-30), so the input scan ships too.
+- `--max-zip-mb 29`: the chat upload limit is 30 MiB per file. Large source files (the scan) go to
+  companion zips `<root>_part<k>.zip` with the same folder layout; send all of them. `--max-source-mb 10`
+  lists (never silently drops) regenerable caches (`*.npy`, `*.npz`, work/aligned meshes) in PACKAGE_INDEX.md.
 - Cloud sessions: write the zip (and its `.sha256`) to the session scratchpad or the working directory
   — only those are downloadable — and hand it over with `SendUserFile` (`display: "attach"`), together
   with the verdict, regime, iteration, limitations and whether verify was independent.
