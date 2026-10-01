@@ -36,8 +36,10 @@ Merging `deliverables/` and `source/` gives back the complete run tree, so the r
 An add-on is built on top of the verified part without touching `build/` or `qa/` (their hashes stay frozen):
 `<run>/addons/<name>/` holds its fit script(s), `model_<name>.py` (imports `build/model.py` read-only),
 `out/` (STEPs, export_check.json, volumes.json), `qa/` (an independent check written by a separate agent) and
-`README.md`. Record a `DECISIONS.md` `OTHER` line, re-run `make_manifest.py`, then package again; the zip
-gets a new name only if the verdict/date changed, so say in the report that it supersedes the earlier zip.
+`README.md`. Record a `DECISIONS.md` `OTHER` line, re-run `make_manifest.py`, then package again with
+`--suffix with-<name>` so the new zip never shares a name with the earlier one (the owner opened the old
+same-named zip and found no bristles, 2026-10-01). Also send the add-on's main STEP directly next to the
+zip and name its path in the report.
 
 ## Exclusions (listed in PACKAGE_INDEX.md, never silent)
 

@@ -69,6 +69,9 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--include-scan", action="store_true", help="also ship input/scan.stl")
     ap.add_argument("--max-source-mb", type=float, default=25.0,
                     help="regenerable intermediates above this size are listed, not zipped")
+    ap.add_argument("--suffix", default="",
+                    help="extra name tag, e.g. 'with-bristles' when repackaging after an add-on, so the new zip "
+                         "is never mistaken for the earlier one with the same verdict/date")
     ap.add_argument("--max-zip-mb", type=float, default=0.0,
                     help="split large source files into companion zips so every zip stays under this size (0 = off)")
     ap.add_argument("--part-file-mb", type=float, default=5.0,
@@ -86,7 +89,7 @@ def main(argv: list[str] | None = None) -> int:
     part = man.get("part") or json.loads((run / "input/INPUT_HASHES.json").read_text())["part"]
     regime = gate.get("regime", {}).get("name", "?")
     date = _dt.date.today().isoformat()
-    root = f"{part}_RE_{verdict}_{date}"
+    root = f"{part}_RE_{verdict}_{date}" + (f"_{a.suffix}" if a.suffix else "")
     out_dir = (a.out_dir or run.parent).resolve()
     out_dir.mkdir(parents=True, exist_ok=True)
     zpath = out_dir / f"{root}.zip"
