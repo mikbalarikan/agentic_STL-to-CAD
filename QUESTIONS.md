@@ -119,3 +119,32 @@ Open for the owner; the run worked around each one and declared it in its `DECIS
 - **Station-profile extrusions and CHK-PATCHWORK.** Extruding fitted scan sections per constant
   x-range gives many narrow planar strips (median plane area ≪ 1 mm²). Not ruled/polyline, but a
   planar-facet warning sign; the census reported it, no rule decides it.
+
+## F. Findings from the real run `dreame_mop_assembly_bottom_cover` (2026-09-30, prismatic frame, scan-only, decimated)
+
+Open for the owner; the run worked around each one with run-local scripts and declared them.
+
+- **Prismatic datum again.** Same gap as §E: `align.py` has no plane origin. The run used a run-local
+  3-plane script on `datum_fit.level_plane` (same STOP rule). Draft on the walls (0.74° / 1.08°)
+  shows up as CHK-TILT "finding" because the prismatic squareness check has no draft allowance.
+- **Open scans → sections by generalized winding number.** Plain `trimesh` sections of this holey
+  decimated scan (6,504 boundary loops) cannot be filled. The run measured every section as the
+  0.5–0.7 iso-contour of libigl's fast winding number averaged over several stations (mean-of-n),
+  then fitted lines + arcs (`measure/occ.py`, `profile_fit.py`). Candidate for
+  `stl-re-measure-intent/scripts/sections.py` (new dependency: `libigl`, `scikit-image`).
+- **Piecewise-prismatic zones.** A moulded rail = core section + ribs/pockets at definite stations.
+  Automatic segmentation by occupancy change works; *gradual* runs (tapers, ramps) must not become
+  prism stacks: the run re-sectioned them along another axis, or used a two/three-view envelope.
+  No skill describes this; strategy-catalogue could get a "piecewise prismatic zone" row.
+- **Lofts and booleans (build123d 0.13 / OCC).** A non-ruled loft through line/arc sections was
+  BRepCheck-valid but silently lost volume in later booleans (slab test). Rebuilding each level as
+  ONE interpolating spline (241 pts) + closing line, `CheckCompatibility(False)`, fixed it. Coplanar
+  faces between a loft cap and a box face also broke unions. Worth an idiom in
+  `build123d-idioms.md`.
+- **Enclosed voids / zero-area faces after many booleans.** In-memory `is_valid` was True but the
+  STEP round-trip had 7 shells and one zero-area face; `export_frames.py` correctly refused. The run
+  kept the outer shell (voids filled, logged) and applied `ShapeFix_FixSmallFace` (logged).
+- **Build time.** ~150 prisms + 2 lofts: ~30 min per build in this container; `repro_check.py`
+  runs it twice more.
+- **Single-sided sheets.** Zero-thickness, coherent surfaces (on the wall bead and under the window
+  edge) — gasket/film or scanner artefact? CHK-CLUSTER has no rule for zero-thickness clusters.
