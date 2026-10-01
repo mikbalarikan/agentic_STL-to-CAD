@@ -21,7 +21,7 @@ python scripts/package_zip.py --run <run> [--out-dir <dir>] [--include-scan] [--
     deliverables/      build/<part>_datum.step, build/<part>.step (scan frame), build/<part>_cad.stl,
                        deliver/ (README.md, MANIFEST.json, repro.json, limitations.json, extra docs),
                        qa/VERDICT.md, qa/gate.json, qa/overlays/, measure/PARAM_TABLE.md,
-                       DECISIONS.md, decisions/
+                       DECISIONS.md, decisions/, addons/<name>/{out,qa,README.md}
     source/            everything else in the run folder with its run-relative path: input/ (photos,
                        hashes, filled MEASUREMENTS), intake/, measure/ (scripts, params.json, figures),
                        build/ (model.py, MODELING_PLAN.md, logs, export_check.json), qa/ (scripts, JSON),
@@ -30,6 +30,14 @@ python scripts/package_zip.py --run <run> [--out-dir <dir>] [--include-scan] [--
 
 Merging `deliverables/` and `source/` gives back the complete run tree, so the repro command in
 `deliver/README.md` works from the unzipped folder.
+
+## Add-on bodies (owner request after delivery, e.g. 2026-10-01 "add the bristles as one fitted body")
+
+An add-on is built on top of the verified part without touching `build/` or `qa/` (their hashes stay frozen):
+`<run>/addons/<name>/` holds its fit script(s), `model_<name>.py` (imports `build/model.py` read-only),
+`out/` (STEPs, export_check.json, volumes.json), `qa/` (an independent check written by a separate agent) and
+`README.md`. Record a `DECISIONS.md` `OTHER` line, re-run `make_manifest.py`, then package again; the zip
+gets a new name only if the verdict/date changed, so say in the report that it supersedes the earlier zip.
 
 ## Exclusions (listed in PACKAGE_INDEX.md, never silent)
 
