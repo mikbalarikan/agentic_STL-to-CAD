@@ -196,7 +196,9 @@ PARAM_TABLE, MANIFEST, DECISIONS, overlays) and `source/` (the rest of the run t
 `PACKAGE_INDEX.md` listing every excluded file with its sha256 and reason. It refuses without
 `deliver/MANIFEST.json`, so it can never ship an ungated run. Layout and exclusion rules:
 `references/delivery-package.md`. Do not ask the owner for the delivery format again; send the zip
-(and its `.sha256`) with the step-6 report.
+(and its `.sha256`) with the step-6 report. Pass `--include-scan` (owner, 2026-09-30: "all source
+files"); in a cloud session put the zip in the scratchpad or working directory and send it with
+`SendUserFile` (attach).
 
 ### 6. Report to the user
 

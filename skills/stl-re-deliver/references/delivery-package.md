@@ -34,13 +34,16 @@ Merging `deliverables/` and `source/` gives back the complete run tree, so the r
 ## Exclusions (listed in PACKAGE_INDEX.md, never silent)
 
 - `input/scan.stl`: the owner's own raw scan, identified by its sha256 in `input/INPUT_HASHES.json`.
-  Ship it with `--include-scan` when the recipient does not have it.
+  Ship it with `--include-scan` when the recipient does not have it. **Owner instruction 2026-09-30:
+  the zip carries "all source files", so pass `--include-scan` by default.**
 - Regenerable intermediates larger than `--max-source-mb` (working / aligned meshes, point caches,
   de-warped measurement copies, wip STLs). The stage script that writes each one is in `source/`.
 - `__pycache__/`, `*.pyc`.
 
 ## Where it goes
 
-Next to the run folder (the job folder the owner gave), plus `<zip>.sha256`. Then send the zip to the
+Next to the run folder (the job folder the owner gave), plus `<zip>.sha256`. In a cloud session only
+the working directory and the session scratchpad are downloadable: write the zip there with `--out-dir`
+(never commit it). Then send the zip to the
 owner (SendUserFile, display `attach`) together with the verdict, regime, iteration and limitations
 (`SKILL.md` §6). For `BAND_NOT_MET` the zip exists only after a recorded `ACCEPT-BAND`.
