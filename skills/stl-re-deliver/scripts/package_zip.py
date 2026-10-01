@@ -43,7 +43,7 @@ DELIVERABLE_GLOBS = [
     "build/*_datum.step", "build/*.step", "build/*_cad.stl",
     "deliver/*", "qa/VERDICT.md", "qa/gate.json", "qa/overlays/*",
     "measure/PARAM_TABLE.md", "DECISIONS.md", "decisions/*",
-    "addons/*/out/*", "addons/*/qa/*.md", "addons/*/qa/*.json", "addons/*/README.md",
+    "addons/*/out*/*", "addons/*/qa*/*.md", "addons/*/qa*/*.json", "addons/*/README.md", "addons/*/render/*.png",
 ]
 ALWAYS_SKIP = ["*/__pycache__/*", "__pycache__/*", "*.pyc"]
 REGENERABLE = ["intake/work.stl", "intake/aligned_work.stl", "*.npy", "*.npz", "*.ply", "*/wip/*.stl",

@@ -37,3 +37,24 @@ Free-state, splayed bristles from a decimated scan → inspection only. Not a pl
 shape. Reproduce: `python3 addons/bristles/model_bristles.py --params measure/params.json --envelope
 addons/bristles/bristle_envelope.json --alignment intake/alignment.json --out addons/bristles/out --scripts
 <skills>/stl-re-rebuild-build123d/scripts` (from the run root; re-run 2026-10-01: identical volume).
+
+
+## Tufted model ("topak topak", owner request 2026-10-01)
+`out_tufts/dreame_brush_core_with_tufts_datum.step` (datum frame) and `out_tufts/dreame_brush_core_with_tufts.step`
+(scan frame): the same core with **54 individual tufts** fused into ONE valid solid (`model_tufts.py`).
+Each tuft: a cone from its Ø2.0 hole to a tip radius 1.68 mm (measured p10..p90 tuft half-width near
+the tips), leaning +Z by 0.575 mm and along the arc by 0.075 mm per mm of radius, with a dome whose
+top reaches that tuft's own tip radius (16.71..19.26 mm, from the fitted envelope, so the row-end tufts are shorter).
+
+| | mm³ (`out_tufts/volumes.json`) |
+|---|---|
+| core | 28 732 |
+| tufts (incl. hole fills) | 4 547 |
+| **core + tufts, one body** | **33 279** |
+
+This is the **appearance** model: the scanned bristles are splayed fans that fill the gaps between tufts, so
+for "maximum volume occupied" use the envelope body above (`out/`), not this one.
+Builder self-check (not independent QA, `qa_tufts/selfcheck_tufts.json`): 34 % of the scan bristle points
+inside the tufts, 86 % within 1 mm, 99.4 % within 3 mm; the tuft surfaces lie p50/p95
+0.47/1.33 mm from a real bristle. Lean is an aesthetic fit (the two rows' fits disagree,
+`tufts_spec.json#lean_note`). Render: `render/render_tufts.png`.

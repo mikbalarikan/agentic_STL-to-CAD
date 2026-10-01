@@ -46,3 +46,7 @@ the delivery zip (+ `_part1.zip` with the scan).
   logged); the fins closed the tuft-hole mouths and left 26 internal voids until the holes were filled as roots;
   the main zip went over 30 MiB because of two CAD STL meshes → `package_zip.py` now moves large deliverable
   meshes to the companion zips as well.
+- Follow-up "topak topak" (tufted) appearance model: 54 leaned, flared, domed tufts fused with the core
+  (`model_tufts.py`); the tuft lean is an aesthetic fit because neighbouring splayed tufts overlap in the scan
+  (the two rows' grid-search fits disagree). Its 0.003 mm CAD STL was 96 MB → re-exported at 0.01 mm;
+  `package_zip.py` deliverable globs now cover `addons/*/out*/`, `qa*/` and `render/*.png`.
