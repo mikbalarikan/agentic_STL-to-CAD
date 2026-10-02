@@ -18,6 +18,10 @@ files** of the run:
   frame, CAD STL, README, VERDICT, gate.json, PARAM_TABLE, MANIFEST, repro.json, DECISIONS) and
   `source/` (the whole run tree: inputs' hashes, intake/measure/build/qa scripts and JSON).
   Every excluded file (raw scan, large regenerable meshes) is listed in `PACKAGE_INDEX.md`.
+- `SendUserFile` refuses large files (a 49 MiB zip was refused, 16 MiB parts went through, 2026-10-02):
+  if the zip is too big, send it as standalone part zips of ≤ ~20 MiB (deliverables / scan-frame
+  STEP / current source / superseded source), each unpacking into the same folder tree; keep the
+  full zip next to the run folder.
 - Send the zip to the owner with `SendUserFile` (`display: attach`) together with the verdict,
   regime, numbers from `qa/gate.json`, limitations with re-run triggers, loop count and whether
   verify was independent (`skills/stl-re-orchestrate/SKILL.md` §8).
