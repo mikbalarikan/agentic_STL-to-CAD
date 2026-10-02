@@ -36,7 +36,9 @@ Merging `deliverables/` and `source/` gives back the complete run tree, so the r
 - `input/scan.stl`: the owner's own raw scan, identified by its sha256 in `input/INPUT_HASHES.json`.
   Ship it with `--include-scan` when the recipient does not have it.
 - Regenerable intermediates larger than `--max-source-mb` (working / aligned meshes, point caches,
-  de-warped measurement copies, wip STLs). The stage script that writes each one is in `source/`.
+  de-warped measurement copies, wip STLs, `*/work/` sweep caches and dev BREP/STEP/STL files, and
+  the STEPs/STLs of `_itN_SUPERSEDED/` iterations). The stage script that writes each one is in
+  `source/`.
 - `__pycache__/`, `*.pyc`.
 
 ## Where it goes

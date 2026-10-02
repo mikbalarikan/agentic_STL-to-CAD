@@ -40,7 +40,11 @@ DELIVERABLE_GLOBS = [
 ]
 ALWAYS_SKIP = ["*/__pycache__/*", "__pycache__/*", "*.pyc"]
 REGENERABLE = ["intake/work.stl", "intake/aligned_work.stl", "*.npy", "*.ply", "*/wip/*.stl",
-               "measure/figures/*.stl", "intake/explore/*.stl", "_it*_SUPERSEDED/*.stl"]
+               "measure/figures/*.stl", "intake/explore/*.stl", "_it*_SUPERSEDED/*.stl",
+               # scratch of the stage scripts (sweep caches, dev BREPs/meshes) and the STEPs of
+               # superseded iterations (rebuilt by their own model.py); the 2026-10-01 bottom-cover
+               # run zipped to 1.5 GB without these
+               "*/work/*.npz", "*/work/*.brep", "*/work/*.step", "*/work/*.stl", "_it*_SUPERSEDED/*.step"]
 
 
 def sha256(p: Path) -> str:
