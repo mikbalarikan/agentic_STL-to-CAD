@@ -176,3 +176,10 @@ Open for the owner; the run worked around each one with run-local scripts and de
   edges = 0, non-manifold > 0) differently from a non-closed solid?
 - **Variant search cost.** Selecting zone construction variants by a STEP round-trip check made a
   build ~35–60 min in this container; `repro_check.py --timeout-s` needs ≥ 5400.
+- **Verify script gap (found by the it3 verifier).** `stl-re-verify/scripts/step_check.py` leaves the
+  fine-tessellation watertight result out of `single_valid_closed_solid`, so `verdict.py` recorded
+  `geom_fails: []` and still listed BAND_NOT_MET as allowed although SKILL §3 makes a non-watertight
+  tessellation a geometry fail; the verifier applied the rule by hand (HALT at loop 3). Fix:
+  include `tessellation.watertight` (both frames) in the validity gate, or state that it is
+  report-only. The it3 package was delivered on an explicit owner decision despite HALT
+  (`make_readme.py`/`repro_check.py` refuse HALT; README written by the orchestrator).
