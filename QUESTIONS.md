@@ -148,3 +148,31 @@ Open for the owner; the run worked around each one with run-local scripts and de
   runs it twice more.
 - **Single-sided sheets.** Zero-thickness, coherent surfaces (on the wall bead and under the window
   edge) — gasket/film or scanner artefact? CHK-CLUSTER has no rule for zero-thickness clusters.
+- **Fine-tessellation validity is a construction problem, not a repair problem (it2→it3).** The
+  verify gate (0.005 mm / 0.05 rad, exact vertex merge, BOTH frames) failed on micron-scale defects
+  that BRepCheck accepts. Causes found in it3, in order of importance:
+  1. *Independently fitted adjacent profiles.* One moulded edge comes out as two curves microns
+     apart in neighbouring segments; in the shared cap plane they cross at a grazing angle and the
+     boolean leaves tolerant (0.005–0.02 mm) vertices whose faces tessellate with mismatched nodes.
+     Fix that worked: snap each segment's vertices (0.03 mm) and supporting lines/circles to the
+     axially adjacent segment (optionally to the base), extrude profiles made identical as ONE prism,
+     and pick the first construction variant that is closed (logged per zone). Snapping inside a
+     segment, or inside a re-sectioned sub-zone, corrupted later fuses silently.
+  2. *Planes nearly parallel to a lofted wall.* Zone stations (x = const) inside the x-band of a
+     slanted cup wall, or at the x-extremes of a curved cup wall, meet the loft at grazing angles.
+     Re-sectioning that band along the perpendicular axis (`force_sub`) removed it in the datum
+     frame. Rule of thumb for `stl-re-rebuild-build123d`: no section/station plane within ~1 mm of
+     being tangent to a loft surface.
+  3. *The QA reads the STEP, not the in-memory body.* The STEP reader heals microns-wide faces into
+     degenerate ones; a body closed in memory failed after a round trip, and the scan-frame copy
+     (large coordinates) failed where the datum copy passed. A builder-side check should tessellate
+     after a STEP round trip in BOTH export frames (proposal: `export_frames.py` runs it and records
+     it in `export_check.json`, so rebuild sees what verify will see).
+  Repairs that did NOT work on the finished body: global sewing, defeaturing, ShapeFix small
+  face > 1e-5 mm, face division, fuzzy loft booleans (out of memory at 15 GB), micron jitter of the
+  loft wall (chaotic). The run ended with the scan-frame STEP still showing 21 non-manifold mesh
+  edges; the owner accepted it for delivery (run DECISIONS.md 2026-10-02). Open question: should
+  `stl-re-verify` grade a tessellation-only defect (B-rep valid, closed, 0 naked edges, open mesh
+  edges = 0, non-manifold > 0) differently from a non-closed solid?
+- **Variant search cost.** Selecting zone construction variants by a STEP round-trip check made a
+  build ~35–60 min in this container; `repro_check.py --timeout-s` needs ≥ 5400.
