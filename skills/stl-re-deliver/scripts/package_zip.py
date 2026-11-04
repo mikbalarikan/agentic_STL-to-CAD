@@ -17,8 +17,8 @@ Rules (CHK-PUBLISH still applies: this runs only after make_manifest.py succeede
 - Refuses (exit 2) unless deliver/MANIFEST.json, deliver/README.md and qa/VERDICT.md exist.
 - Nothing is dropped silently: every file left out is listed in PACKAGE_INDEX.md with bytes,
   sha256 and the reason. Default exclusions: input/scan.stl (the owner's own scan; pass
-  --include-scan to ship it), files larger than --max-source-mb that are regenerable
-  intermediates (work/aligned meshes, point caches), __pycache__/ and *.pyc.
+  --include-scan to ship it), files larger than --max-source-mb (default 5) that are regenerable
+  intermediates (work/aligned meshes, point caches .npy/.npz/.pkl/.ply, wip/, qa/work/), __pycache__/, *.pyc.
 - The zip is written next to the run folder (or --out-dir) with a sidecar <zip>.sha256.
 Exit codes: 0 written; 2 refused; 3 internal error.
 """
@@ -39,8 +39,9 @@ DELIVERABLE_GLOBS = [
     "measure/PARAM_TABLE.md", "DECISIONS.md", "decisions/*",
 ]
 ALWAYS_SKIP = ["*/__pycache__/*", "__pycache__/*", "*.pyc"]
-REGENERABLE = ["intake/work.stl", "intake/aligned_work.stl", "*.npy", "*.ply", "*/wip/*.stl",
-               "measure/figures/*.stl", "intake/explore/*.stl", "_it*_SUPERSEDED/*.stl"]
+REGENERABLE = ["intake/work.stl", "intake/aligned_work.stl", "*.npy", "*.npz", "*.pkl", "*.ply",
+               "*/wip/*", "measure/figures/*.stl", "intake/explore/*.stl", "_it*_SUPERSEDED/*.stl",
+               "qa/work/*"]
 
 
 def sha256(p: Path) -> str:
@@ -60,7 +61,7 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--run", type=Path, required=True)
     ap.add_argument("--out-dir", type=Path, help="default: the run folder's parent")
     ap.add_argument("--include-scan", action="store_true", help="also ship input/scan.stl")
-    ap.add_argument("--max-source-mb", type=float, default=25.0,
+    ap.add_argument("--max-source-mb", type=float, default=5.0,
                     help="regenerable intermediates above this size are listed, not zipped")
     a = ap.parse_args(argv)
     run = a.run.resolve()
