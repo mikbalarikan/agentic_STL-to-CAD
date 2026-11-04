@@ -221,6 +221,19 @@ Apply every fillet and chamfer through `FilletLog.apply(shape, feature, selector
 
 ## Step 5: loft policy (D15, anti-patchwork)
 
+- **Never build a region as many per-station scan-section extrusions** (one extrude per x-range between
+  section change points, each from a traced/RDP section). Even when every profile fits the scan, the part
+  becomes a "slice slice" patchwork of steps and thousands of narrow planar strips. Owner rejected exactly
+  this on the real run `dreame_mop_bottom_cover` it1 (2026-09-26: 54 station extrusions, 5,301 faces, 4,460
+  planar strips) and required a model "drawn like in SolidWorks". The it2 rebuild used one fitted sketch per
+  region and landed at ~700 faces with the same deviation.
+- **Do instead:** per region, choose the design topology (which corners, which lines, which arcs) like a
+  designer, and fit it by least squares to the AVERAGED section of the whole constant range
+  (`../stl-re-measure-intent/scripts/sketchfit.py`: spec = rough corners + L/A types, soft-L1 fit, data-driven
+  arc bulges, self-intersection check). Extrude each sketch ONCE over its range; repeated features are one
+  instance + placements; pockets/tunnels/windows/slots are cut features. If a region seems to need more than a
+  few sketches, redesign the feature tree instead of adding stations.
+
 - **Never** use `loft(..., ruled=True)` or `Polyline` stacks of raw scan slices, and never
   stack prisms to approximate a smooth face. W01 attempt 1 did exactly that and was
   WITHDRAWN: 5,485 faces with 4,753 B-splines, while the Tier-2 deviation could not see the
