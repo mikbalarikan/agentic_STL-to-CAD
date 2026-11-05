@@ -22,6 +22,7 @@ Deterministic: output depends only on the input files (no timestamps in README.m
 """
 from __future__ import annotations
 
+import json
 import argparse
 import re
 import sys
@@ -29,7 +30,8 @@ from pathlib import Path
 from typing import Any
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from _common import (MAX_LOOPS, DeliverError, check_repro_fresh, fail, load_json, preflight,  # noqa: E402
+from _common import (MAX_LOOPS, DeliverError, check_repro_fresh, design_sources, fail, load_json,  # noqa: E402
+                     part_name, preflight,
                      run_main, sha256_file)
 
 PLACEHOLDER = re.compile(r"\{\{(gate|params|export|align|repro):([A-Za-z0-9_.\-\[\] ]+)\}\}")
@@ -207,7 +209,7 @@ def render(run: Path, limitations_path: Path, out: Path) -> str:
         if "export_check.json" not in declared_blob_fillet:
             raise DeliverError(f"CHK-FILLET fail: build/export_check.json has non-OK fillet(s) "
                                f"{bad_fillets}; declare a limitation whose evidence names "
-                               "export_check.json (stl-re-rebuild-build123d/SKILL.md:194).")
+                               "export_check.json (stl-re-build/SKILL.md, step 4).")
 
     if verdict == "BAND_NOT_MET" and not gate.get("miss_explanations"):
         raise DeliverError("qa/gate.json#miss_explanations is empty for BAND_NOT_MET; verdict.py should "
@@ -216,7 +218,7 @@ def render(run: Path, limitations_path: Path, out: Path) -> str:
     if repro.get("reproducible") is not True:
         raise DeliverError(
             "deliver/repro.json says the rebuild is not reproducible. Fix determinism in build/ "
-            "(loop back to stl-re-rebuild-build123d); do not deliver a model that cannot be rebuilt."
+            "(loop back to the build stage); do not deliver a model that cannot be rebuilt."
         )
     check_repro_fresh(run, repro)
 
@@ -269,8 +271,9 @@ def render(run: Path, limitations_path: Path, out: Path) -> str:
                      e.get("faces"), e.get("volume_mm3"), e.get("bbox") if "bbox" in e else
                      [e.get("bbox_min"), e.get("bbox_max")]])
     R.table(["file", "frame", "solids", "valid", "closed", "faces", "volume mm³", "bbox mm"], rows)
-    R.w("Source of the table: `build/export_check.json`. The editable design intent is `build/model.py` "
-        "driven by `measure/params.json`.", "")
+    src = design_sources(run)
+    R.w(f"Source of the table: `build/export_check.json`. The editable design intent is "
+        f"`{src[0].relative_to(run)}` driven by " + ", ".join(f"`{p.relative_to(run)}`" for p in src[1:]) + ".", "")
 
     # 4. method ---------------------------------------------------------------------------
     R.h2("Method")
@@ -324,9 +327,15 @@ def render(run: Path, limitations_path: Path, out: Path) -> str:
     # have none written yet), but when present it is rendered here rather than left to prose.
     ftree = lim.get("feature_tree") or []
     R.h2("Model tree (design intent)")
+    src = design_sources(run)
+    if src[0].name == "feature_tree.json" and not ftree:
+        tj = json.loads(src[0].read_text(encoding="utf-8"))
+        ftree = [{"id": n.get("id"), "feature": f"{n.get('op')} {n.get('combine', 'add')}: {n.get('name', '')}",
+                  "params": None} for n in tj.get("nodes", [])]
     R.w("The STEP is a neutral B-Rep; it carries no feature history. The editable design intent "
-        "is `build/model.py` driven by `measure/params.json`, and the ordered feature plan is "
-        "`build/MODELING_PLAN.md`.", "")
+        f"is `{src[0].relative_to(run)}` driven by " + ", ".join(f"`{p.relative_to(run)}`" for p in src[1:]) +
+        ("; it is built by `stl-re-build/scripts/build_tree.py`." if src[0].name == "feature_tree.json"
+         else ", and the ordered feature plan is `build/MODELING_PLAN.md`."), "")
     if ftree:
         R.table(["id", "feature", "params"],
                 [[f.get("id", i), f.get("feature"), fmt(f.get("params"))] for i, f in enumerate(ftree, 1)])
@@ -520,8 +529,14 @@ def render(run: Path, limitations_path: Path, out: Path) -> str:
     # 13. reproduction --------------------------------------------------------------------
     R.h2("Reproduction")
     R.w("```")
+    if design_sources(run)[0].name == "feature_tree.json":
+        default_build = ("python <skills>/stl-re-build/scripts/build_tree.py --tree build/feature_tree.json "
+                         + " ".join(f"--params {p.relative_to(run)}" for p in design_sources(run)[1:])
+                         + f" --alignment intake/alignment.json --out build --part {part_name(run)}")
+    else:
+        default_build = "cd build && python model.py"
     cmds = lim.get("repro_commands") or [
-        "cd build && python model.py",
+        default_build,
         "python <skills>/stl-re-deliver/scripts/repro_check.py --run <run>",
     ]
     for c in cmds:

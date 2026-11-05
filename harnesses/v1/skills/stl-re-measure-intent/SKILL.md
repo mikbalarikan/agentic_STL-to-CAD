@@ -12,7 +12,7 @@ occlusion, M02 wrong 27T count (`analysis/SKILL_ARCHITECTURE.md` §1). Measure c
 write down why each number is what it is.
 
 **Boundary.** This skill does not move the datum (stl-re-intake-datum owns `alignment.json`),
-does not build CAD (stl-re-rebuild-build123d), and does not grade anything
+does not build CAD (stl-re-build / stl-re-refine), and does not grade anything
 (stl-re-verify). If the frame looks wrong, stop and send it back to intake. Never re-fit the
 datum here, and never fit it to your own CAD (CHK-CIRCULAR, P03: `analysis/golden/OOM-P03.md` §3).
 

@@ -11,7 +11,7 @@ Independent QA for one part's STEP. Inputs are the frozen `build/` STEP, the raw
 `../stl-re-orchestrate/references/run-contract.md` (§6 gate.json, §7 verdicts, §8 check ids).
 
 **Stance.** Never trust a builder-reported number. Re-derive everything with the scripts in
-`scripts/`. Never import `build/model.py`, builder helpers, or `params.json` values as
+`scripts/`. Never import or run `build/feature_tree.json` (v1; `build/model.py` in v0), builder helpers, the refine log, or `params.json` values as
 "expected" results. A result checked against itself proves nothing:
 - the OD validator passed 13/13 against expected values taken from the same scan;
 - P03 refined its datum by ICP to its own CAD
@@ -102,8 +102,8 @@ python $S/step_check.py check --step build/<part>_datum.step build/<part>.step -
   - Are there B-spline/ruled faces the plan did not call for?
   - Are there thousands of planar facets?
   - Evidence: W01 had 5,485 faces; M02 had 2354 planar facets from a polygonal involute.
-  - Also check that `build/MODELING_PLAN.md` / `model.py` has no `loft(ruled=True)` or
-    polyline stack of scan slices.
+  - Also read `build/feature_tree.json` (read-only): no `loft` with `ruled: true`, no stack of
+    per-station extrusions, no node that only traces a cluster outline.
 - **CHK-FILLET.** Compare every fillet in `build/export_check.json` (target vs used, OK/FAILED).
   A silently skipped or shrunk fillet is a finding (B02 fallback, P03 skip).
 

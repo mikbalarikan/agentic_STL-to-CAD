@@ -247,11 +247,12 @@ def check_superseded(run: Path) -> dict[str, Any]:
         is_repro = route == "repro"
         if not is_repro:
             loop_its.append(n)
-        required = ("qa/VERDICT.md", "qa/gate.json") if is_repro else \
-            ("qa/VERDICT.md", "qa/gate.json", "build/model.py")
+        required = ("qa/VERDICT.md", "qa/gate.json")
         for rel in required:
             if not (d / rel).is_file():
                 problems.append(f"_it{n}_SUPERSEDED/{rel} missing")
+        if not is_repro and not ((d / "build" / "model.py").is_file() or (d / "build" / "feature_tree.json").is_file()):
+            problems.append(f"_it{n}_SUPERSEDED/build/feature_tree.json (or v0 model.py) missing")
         if (d / "qa" / "gate.json").is_file():
             try:
                 v = json.loads((d / "qa" / "gate.json").read_text(encoding="utf-8")).get("verdict")
@@ -341,6 +342,36 @@ def check_regime(run: Path, gate: dict[str, Any]) -> dict[str, Any]:
         return {"ran": True, "result": "fail", "note": f"intake declared {i!r} but gate applied {g!r}"}
     return {"ran": True, "result": "pass" if i else "finding",
             "note": f"regime {g!r}" + ("" if i else " (intake/regime.json has no name to compare)")}
+
+
+# ------------------------------------------------------------------------- design source (v1)
+def design_sources(run: Path) -> list[Path]:
+    """The files the rebuild reads. v1: build/feature_tree.json (built by stl-re-build/scripts/
+    build_tree.py) + measure/params.json (+ measure/params_refine.json when the refine loop's
+    values are kept in their own file). v0 compatibility: build/model.py + measure/params.json."""
+    tree = run / "build" / "feature_tree.json"
+    if tree.is_file():
+        out = [tree, run / "measure" / "params.json"]
+        if (run / "measure" / "params_refine.json").is_file():
+            out.append(run / "measure" / "params_refine.json")
+        return out
+    return [run / "build" / "model.py", run / "measure" / "params.json"]
+
+
+def part_name(run: Path) -> str | None:
+    """<part> from build/<part>_datum.step."""
+    d = sorted((run / "build").glob("*_datum.step"))
+    return d[0].name[: -len("_datum.step")] if d else None
+
+
+def tree_rebuild_command(run: Path, python: str) -> list[str]:
+    """v1 rebuild command, relative to the run root (repro_check --cwd run)."""
+    script = Path(__file__).resolve().parents[2] / "stl-re-build" / "scripts" / "build_tree.py"
+    cmd = [python, str(script), "--tree", "build/feature_tree.json", "--params", "measure/params.json"]
+    if (run / "measure" / "params_refine.json").is_file():
+        cmd += ["--params", "measure/params_refine.json"]
+    cmd += ["--alignment", "intake/alignment.json", "--out", "build", "--part", part_name(run) or "part"]
+    return cmd
 
 
 # ------------------------------------------------------------------------- repro freshness

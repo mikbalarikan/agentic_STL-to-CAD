@@ -6,9 +6,26 @@
   "summary": "Datum + base body, then feature-by-feature: signed deviation -> red-cluster segmentation -> scripted region classifier (extrude/draft/revolve/hole/pattern/...) -> feature added to a JSON feature tree -> generic builder rebuilds -> accept or roll back. Agent (or user, guided mode) only arbitrates ambiguous decision cards. Independent verify stays the final gate.",
   "skills_dir": "skills",
   "entry_skill": "stl-re-orchestrate",
-  "skills": [],
-  "doctor": null,
+  "skills": [
+    "stl-re-orchestrate",
+    "stl-re-intake-datum",
+    "stl-re-measure-intent",
+    "stl-re-refine",
+    "stl-re-build",
+    "stl-re-verify",
+    "stl-re-deliver"
+  ],
+  "doctor": [
+    "python3",
+    "skills/stl-re-orchestrate/scripts/init_run.py",
+    "doctor"
+  ],
   "selftests": [
+    [
+      "python3",
+      "skills/stl-re-orchestrate/scripts/init_run.py",
+      "--selftest"
+    ],
     [
       "python3",
       "skills/stl-re-build/tests/test_features.py"
@@ -20,6 +37,14 @@
     [
       "python3",
       "skills/stl-re-refine/tests/test_refine.py"
+    ],
+    [
+      "python3",
+      "skills/stl-re-measure-intent/tests/run_selftests.py"
+    ],
+    [
+      "python3",
+      "skills/stl-re-deliver/tests/run_fixture_test.py"
     ]
   ],
   "python": ">=3.10",
@@ -36,5 +61,5 @@
   ],
   "start_prompt": "Turn <scan.stl> into a STEP (calipers in <MEASUREMENTS.md> or scan-only).",
   "design": "README.md",
-  "milestone": "M2 delivered with open points (refine loop); M3 next"
+  "milestone": "M3-lite: installable, wired end to end"
 }

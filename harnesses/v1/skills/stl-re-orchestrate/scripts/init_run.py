@@ -47,23 +47,24 @@ from typing import Any
 IMAGE_SUFFIXES = {".jpg", ".jpeg", ".png", ".heic", ".tif", ".tiff", ".bmp", ".webp"}
 
 TOOL = "init_run.py"
-TOOL_VERSION = "stl-re-orchestrate@1"
+TOOL_VERSION = "stl-re-orchestrate@v1"
 MAX_LOOPS = 3  # baseline/oomwoo-re-pipeline/RE_SPEC.md:250 (per-part breaker)
 
 SKILLS = (
     "stl-re-orchestrate",
     "stl-re-intake-datum",
     "stl-re-measure-intent",
-    "stl-re-rebuild-build123d",
+    "stl-re-build",
+    "stl-re-refine",
     "stl-re-verify",
     "stl-re-deliver",
 )
 VERDICTS = ("APPROVED_WITH_LIMITATIONS", "APPROVED", "BAND_NOT_MET", "REVISE", "HALT")
 DELIVERABLE = {"APPROVED", "APPROVED_WITH_LIMITATIONS", "BAND_NOT_MET"}
-ITERATED = ("measure", "build", "qa")
+ITERATED = ("measure", "refine", "build", "qa")
 # Directories created by init (run-contract.md §1). deliver/ is NOT created: it may
 # only appear after qa/VERDICT.md exists (CHK-PUBLISH).
-LAYOUT = ("input/photos", "intake", "measure/figures", "build", "qa/overlays")
+LAYOUT = ("input/photos", "intake", "measure/figures", "refine", "build", "qa/overlays")
 
 # Stage exit artefacts (run-contract.md §1). "<part>" is substituted.
 STAGE_EXIT: dict[str, tuple[str, ...]] = {
@@ -74,9 +75,11 @@ STAGE_EXIT: dict[str, tuple[str, ...]] = {
                "intake/MEASUREMENTS.md", "intake/alignment.json", "intake/work.stl",
                "intake/aligned_work.stl"),
     "measure": ("measure/params.json", "measure/PARAM_TABLE.md"),
-    "rebuild": ("build/MODELING_PLAN.md", "build/model.py", "build/build_log.txt",
-                "build/<part>_datum.step", "build/<part>.step", "build/<part>_cad.stl",
-                "build/export_check.json"),
+    # v1: the base tree (datum + base body) goes into the refine loop; the reviewed tree is built
+    "refine": ("build/base_tree.json", "refine/feature_tree.json", "refine/refine_log.json"),
+    "build": ("build/feature_tree.json", "build/tree_log.json", "build/fillets.json",
+              "build/<part>_datum.step", "build/<part>.step", "build/<part>_cad.stl",
+              "build/export_check.json"),
     "verify": ("qa/gate.json", "qa/VERDICT.md", "qa/masks.json"),
     "deliver": ("deliver/README.md", "deliver/MANIFEST.json", "deliver/repro.json"),
 }
@@ -386,9 +389,9 @@ ROUTES = ("measure", "geometry", "datum", "repro")
 # it was never taken away.
 CARRY_FORWARD: dict[str, tuple[str, ...]] = {
     "measure": (),
-    "geometry": ("measure", "build/MODELING_PLAN.md", "build/model.py"),
+    "geometry": ("measure", "build/base_tree.json", "build/feature_tree.json"),
     "datum": (),
-    "repro": ("build/MODELING_PLAN.md", "build/model.py"),
+    "repro": ("build/base_tree.json", "build/feature_tree.json"),
 }
 
 # R2-O1: `repro` supersedes only qa/ and build/ (a repro_check failure is a rebuild-fidelity
@@ -524,7 +527,7 @@ def selftest() -> int:
         def fake_iteration(verdict: str) -> None:
             for d in LAYOUT:
                 (run / d).mkdir(parents=True, exist_ok=True)
-            for st_name in ("intake", "measure", "rebuild"):
+            for st_name in ("intake", "measure", "refine", "build"):
                 for rel in STAGE_EXIT[st_name]:
                     p = run / rel.replace("<part>", "cap")
                     p.parent.mkdir(parents=True, exist_ok=True)
@@ -556,7 +559,7 @@ def selftest() -> int:
         assert r1["route"] == "geometry"
         assert (run / "_it1_SUPERSEDED" / "qa" / "gate.json").is_file()
         assert (run / "measure" / "params.json").is_file(), "geometry route must carry measure/ forward"
-        assert (run / "build" / "model.py").is_file(), "geometry route must carry model.py forward"
+        assert (run / "build" / "feature_tree.json").is_file(), "geometry route must carry the feature tree forward"
         assert not (run / "qa" / "gate.json").exists()
         assert cmd_status(run)["last_complete_stage"] == "measure", \
             "geometry route: measure/ carried, so resume must land past it, at rebuild"
@@ -614,15 +617,15 @@ def selftest() -> int:
         assert res_repro["moved"] == ["qa", "build"], \
             f"--route repro must move only qa/ and build/, got {res_repro['moved']}"
         assert res_repro["iteration_now"] == 1, "a repro re-run must not consume a loop"
-        assert {"build/MODELING_PLAN.md", "build/model.py"} <= set(res_repro["carried_forward"])
+        assert {"build/base_tree.json", "build/feature_tree.json"} <= set(res_repro["carried_forward"])
         route_marker = run_repro / "_it1_SUPERSEDED" / "ROUTE"
         assert route_marker.is_file() and route_marker.read_text(encoding="utf-8").strip() == "repro"
         assert not (run_repro / "_it1_SUPERSEDED" / "measure").exists(), \
             "--route repro must not supersede measure/"
         assert (run_repro / "measure" / "params.json").read_bytes() == before_measure, \
             "--route repro must leave measure/ untouched"
-        assert (run_repro / "build" / "model.py").is_file(), \
-            "--route repro must carry model.py forward"
+        assert (run_repro / "build" / "feature_tree.json").is_file(), \
+            "--route repro must carry the feature tree forward"
         assert (run_repro / "deliver" / "repro.json").is_file(), \
             "--route repro must not disturb deliver/"
         st_repro = cmd_status(run_repro)

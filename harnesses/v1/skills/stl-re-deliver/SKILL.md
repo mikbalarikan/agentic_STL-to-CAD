@@ -26,7 +26,7 @@ layout, the JSON keys, the verdicts, `DECISIONS.md` and the check ids used below
 |---|---|
 | `qa/gate.json`, `qa/VERDICT.md` (required, CHK-PUBLISH) | `deliver/limitations.json` (you write it, step 2) |
 | `measure/params.json`, `build/export_check.json`, `intake/alignment.json`, `intake/regime.json` | `deliver/repro.json` (`scripts/repro_check.py`) |
-| `build/model.py`, `build/*.step`, `input/INPUT_HASHES.json`, `DECISIONS.md` | `deliver/README.md` (`scripts/make_readme.py`) |
+| `build/feature_tree.json` (v1; `build/model.py` in v0), `build/*.step`, `input/INPUT_HASHES.json`, `DECISIONS.md` | `deliver/README.md` (`scripts/make_readme.py`) |
 | `_itN_SUPERSEDED/` | `deliver/MANIFEST.json` (`scripts/make_manifest.py`, last file inside the run) |
 | `deliver/MANIFEST.json` (must exist) | `<job folder>/<part>_RE_<VERDICT>_<date>.zip` + `.sha256` (`scripts/package_zip.py`, after the manifest) |
 
@@ -51,7 +51,7 @@ It writes nothing. It runs:
 | **CHK-PUBLISH** | `qa/VERDICT.md` and `qa/gate.json` exist, and the verdict is APPROVED, APPROVED_WITH_LIMITATIONS or BAND_NOT_MET | B02 it1 was "published to 4_STEP before the gate finished" (`golden-examples/OOM-B02_side-brush-3-arm/6_RE_work/70_report.py:376`) |
 | **CHK-NUMBERS** (headline) | The first verdict word in `VERDICT.md` equals `gate.json#verdict` | B02 verdict prose drifted from its JSON (`.../6_RE_work/VERDICT.md:95-99`) |
 | **ACCEPT-BAND** | Only for BAND_NOT_MET: `DECISIONS.md` has an `ACCEPT-BAND` entry whose evidence (1) is a file inside the run but outside every pipeline stage folder (`decisions/` or the run root, never `qa/build/measure/intake/deliver/_itN_SUPERSEDED`), (2) cites the current `qa/gate.json` by sha256 prefix or `created`, and (3) names one of `gate.json#band_fails` — see step 1 below for the full rule | run-contract §7, §10; OD "operator approval required" (`golden-examples/OD-H12_delonghi-dedica-pump/README.md:62`); the DRM snap max miss has no recorded acceptance (`analysis/golden/dreame_brush-caps.md` Questions 1) |
-| **CHK-SUPERSEDED** | `_it1…_itk_SUPERSEDED/` are numbered from 1 with no gaps, and each holds `qa/VERDICT.md`, `qa/gate.json` (verdict REVISE) and `build/model.py`. A missing STEP is a finding, not a failure. **A folder whose `ROUTE` marker says `repro` (R2-O1) is exempt from the REVISE-verdict requirement and does not count in `k` for the loop bound** (`init_run.py supersede --route repro`, after a `repro_check` failure). Iteration = (REVISE-loop count) + 1 ≤ 3 | P03 it1 verdict "overwritten in place" (`golden-examples/OOM-P03_mop-pad-bracket/6_RE_work/VERDICT.md:6`); B02 kept `_it1_SUPERSEDED/`; 3 loops (`baseline/oomwoo-re-pipeline/RE_SPEC.md:248-250`) |
+| **CHK-SUPERSEDED** | `_it1…_itk_SUPERSEDED/` are numbered from 1 with no gaps, and each holds `qa/VERDICT.md`, `qa/gate.json` (verdict REVISE) and `build/feature_tree.json` (or v0 `build/model.py`). A missing STEP is a finding, not a failure. **A folder whose `ROUTE` marker says `repro` (R2-O1) is exempt from the REVISE-verdict requirement and does not count in `k` for the loop bound** (`init_run.py supersede --route repro`, after a `repro_check` failure). Iteration = (REVISE-loop count) + 1 ≤ 3 | P03 it1 verdict "overwritten in place" (`golden-examples/OOM-P03_mop-pad-bracket/6_RE_work/VERDICT.md:6`); B02 kept `_it1_SUPERSEDED/`; 3 loops (`baseline/oomwoo-re-pipeline/RE_SPEC.md:248-250`) |
 | inputs unchanged | Every file in `input/INPUT_HASHES.json` still has its sha256 | SYNTHESIS A1; evidence is never modified |
 | hash freeze | Every `build/*.step` matches a sha256 in `gate.json#hash_frozen`, so the STEP you deliver is the one QA gated. If no STEP matches, that is a failure. If only some match, that is a finding. | (heuristic, n=1: M02) `golden-examples/M02-02-03_watertight-design-intent/VERDICT.md:6` |
 | regime declared | `gate.json#regime.name` equals `intake/regime.json#name` (the canonical declaration, run-contract §12) | Owner decision Q1: the band regime is declared at intake and named in the verdict, never defaulted silently (`QUESTIONS.md` §A) |
@@ -107,8 +107,13 @@ meshes) to a scratch folder. It runs the build in 2 (or more; `--runs` must be �
 subprocesses and re-imports every produced STEP whose name matches a delivered one. Then it
 compares solids, face count, surface census, volume and bbox.
 
+- **v1 (feature tree):** with `build/feature_tree.json` present, the default command is
+  `stl-re-build/scripts/build_tree.py --tree build/feature_tree.json --params measure/params.json
+  [--params measure/params_refine.json] --alignment intake/alignment.json --out build --part <part>`
+  from the run root (`_common.tree_rebuild_command`). Nothing else to pass. The v0 `model.py`
+  options below stay for compatibility.
 - **`--cwd` (default `run`):** the rebuild runs from the run root by default, as
-  `build/model.py`, with `stl-re-rebuild-build123d/scripts` on `PYTHONPATH` -- this is what the
+  `build/model.py`, with `stl-re-build/scripts` (v0: `stl-re-rebuild-build123d/scripts`) on `PYTHONPATH` -- this is what the
   rebuild skill's own "library use" pattern needs (`export_frames(body,
   Path("intake/alignment.json"), Path("build"), ...)`, paths relative to the run root, plus a
   bare `from export_frames import export_frames`). Pass `--cwd build` for a `model.py` written
@@ -127,14 +132,15 @@ compares solids, face count, surface census, volume and bbox.
   `--params ... --out ...`) goes after a bare `--` instead:
   `repro_check.py --run <run> --cwd build -- python model.py --params ... --out ...`
   (found on the OD-H22 real run).
-- `deliver/repro.json` goes stale the moment `build/model.py`, `measure/params.json` or a
+- `deliver/repro.json` goes stale the moment the design source (`build/feature_tree.json` +
+  `measure/params*.json`, or v0 `build/model.py` + `measure/params.json`) or a
   delivered STEP changes afterward (for example after an `init_run.py supersede`).
   `make_readme.py` and `make_manifest.py` both re-check `repro.json#inputs`' recorded sha256
   against the current files and refuse a stale repro rather than trust it.
 
 **On failure (exit 1):** do not deliver. Read `repro.json#runs[].stderr_tail`. The usual
 causes are an unseeded random, a wall-clock value, a dict/set order, or an absolute path.
-Loop back to `stl-re-rebuild-build123d`. That loop counts as a REVISE only if the geometry
+Loop back to `stl-re-build`. That loop counts as a REVISE only if the geometry
 changes. A tolerance other than 0 is a recorded parameter. Use one only with a
 `DECISIONS.md` `OTHER` entry that says why.
 
@@ -217,7 +223,7 @@ circular or partial pass a clean pass (`analysis/SYNTHESIS.md` §0.1).
 | CHK-PUBLISH fail | No verdict yet | Run stl-re-verify. Do not create `deliver/`. |
 | CHK-NUMBERS headline mismatch | VERDICT.md and gate.json disagree | Send it back to verify. Do not edit either file. |
 | ACCEPT-BAND stop | BAND_NOT_MET with no recorded acceptance, or the entry does not cite this gate / a `qa/` (etc.) file was used as evidence | Ask the owner. Save their written answer under `decisions/` or the run root (never a pipeline stage folder), citing the current `qa/gate.json` sha256 and the missed band, then append the `DECISIONS.md` line. |
-| repro is stale | `build/model.py`, `measure/params.json` or a delivered STEP changed after `repro_check.py` ran | Re-run `scripts/repro_check.py` before rendering the README or the manifest. |
+| repro is stale | the design source (`feature_tree.json`, `params*.json`; v0 `model.py`) or a delivered STEP changed after `repro_check.py` ran | Re-run `scripts/repro_check.py` before rendering the README or the manifest. |
 | gate limitation / auto_limitations missing | `qa/gate.json#limitations` or `#auto_limitations` has an entry `deliver/limitations.json` does not cover | Add the missing limitation (same `id`) or mention the auto-limitation's keyword; never drop one. |
 | CHK-SUPERSEDED fail | An earlier iteration is lost or incomplete | Tell the user what is missing. Record `OTHER` in `DECISIONS.md` and name the gap as a limitation. Never fabricate the old files. |
 | hash freeze fail | The STEP changed after QA | Re-run verify on the current STEP. |

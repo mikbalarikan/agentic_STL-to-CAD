@@ -24,7 +24,7 @@ python scripts/package_zip.py --run <run> [--out-dir <dir>] [--include-scan] [--
                        DECISIONS.md, decisions/
     source/            everything else in the run folder with its run-relative path: input/ (photos,
                        hashes, filled MEASUREMENTS), intake/, measure/ (scripts, params.json, figures),
-                       build/ (model.py, MODELING_PLAN.md, logs, export_check.json), qa/ (scripts, JSON),
+                       build/ (feature_tree.json, base_tree.json, tree_log.json, logs, export_check.json; v0: model.py, MODELING_PLAN.md), qa/ (scripts, JSON),
                        _itN_SUPERSEDED/
 ```
 

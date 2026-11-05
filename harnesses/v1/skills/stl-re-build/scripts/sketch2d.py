@@ -110,8 +110,8 @@ def _pts(item: dict[str, Any], S: Scope) -> list[list[float]]:
     """pts may be a list of [u, v] (each value an expression) or one expression giving the list
     (a list-valued param, e.g. a measured footprint)."""
     raw = item["pts"]
-    if isinstance(raw, str):
-        raw = S.eval(raw)
+    if isinstance(raw, str):        # a list-valued param: its numbers are params, not tree literals
+        return [[float(q[0]), float(q[1])] for q in S.eval(raw)]
     return [S.vec(p, 2) for p in raw]
 
 

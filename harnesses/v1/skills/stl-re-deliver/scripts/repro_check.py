@@ -30,7 +30,8 @@ from pathlib import Path
 from typing import Any
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from _common import DeliverError, fail, header, preflight, run_main, sha256_file, write_json  # noqa: E402
+from _common import (DeliverError, design_sources, fail, header, preflight, run_main, sha256_file,  # noqa: E402
+                     tree_rebuild_command, write_json)
 
 OUTPUT_SUFFIXES = {".step", ".stp", ".stl"}
 
@@ -85,7 +86,10 @@ def rebuild_once(run: Path, cmd: list[str], timeout_s: int, cwd_mode: str) -> tu
     # `from export_frames import export_frames` resolves the same way rebuild's own docs assume.
     # --cwd build restores the model_template.py CLI pattern (`python model.py --params ../...`).
     cwd = tmp if cwd_mode == "run" else tmp / "build"
-    rebuild_scripts = Path(__file__).resolve().parents[2] / "stl-re-rebuild-build123d" / "scripts"
+    skills = Path(__file__).resolve().parents[2]
+    rebuild_scripts = skills / "stl-re-build" / "scripts"
+    if not rebuild_scripts.is_dir():
+        rebuild_scripts = skills / "stl-re-rebuild-build123d" / "scripts"
     pythonpath = str(rebuild_scripts) + (os.pathsep + os.environ["PYTHONPATH"] if os.environ.get("PYTHONPATH") else "")
     env = dict(os.environ, PYTHONHASHSEED="0", STL_RE_RUN=str(tmp), PYTHONPATH=pythonpath,
                SOURCE_DATE_EPOCH=os.environ.get("SOURCE_DATE_EPOCH", "0"))
@@ -163,9 +167,17 @@ def main() -> None:
     except DeliverError as exc:
         fail(str(exc))
     delivered = sorted(p for p in (run / "build").glob("*.step"))
-    if not (run / "build" / "model.py").is_file() or not delivered:
-        fail("build/model.py and at least one build/*.step are required")
-    cmd = a.cmd or ([sys.executable, "build/model.py"] if a.cwd == "run" else [sys.executable, "model.py"])
+    sources = design_sources(run)
+    if not sources[0].is_file() or not delivered:
+        fail("build/feature_tree.json (v1) or build/model.py (v0) and at least one build/*.step are required")
+    if a.cmd:
+        cmd = a.cmd
+    elif sources[0].name == "feature_tree.json":
+        if a.cwd != "run":
+            fail("a feature tree rebuild runs from the run root (--cwd run)")
+        cmd = tree_rebuild_command(run, sys.executable)
+    else:
+        cmd = [sys.executable, "build/model.py"] if a.cwd == "run" else [sys.executable, "model.py"]
     originals = {p.name: measure_step(p) for p in delivered}
 
     runs: list[dict[str, Any]] = []
@@ -201,9 +213,9 @@ def main() -> None:
                       and all(c["geometry_measurements_identical"] for c in good),
                       "raw_sha256_equal": bool(good) and all(c["raw_sha256_equal"] for c in good),
                       "runs": cs, "original": originals[name]})
-    doc = header("repro", "repro_check.py", run, [run / "build" / "model.py", run / "measure" / "params.json", *delivered])
+    doc = header("repro", "repro_check.py", run, [*sources, *delivered])
     doc.update({
-        "method": f"{a.runs} fresh subprocess rebuild(s) of build/model.py in a scratch copy; STEP re-imported; "
+        "method": f"{a.runs} fresh subprocess rebuild(s) of {sources[0].relative_to(run)} in a scratch copy; STEP re-imported; "
                   "solids, faces, surface census, volume, bbox compared (raw hash reported, not required)",
         "command": cmd, "cwd": a.cwd, "tolerance_mm": a.tol_mm, "environment": environment(),
         "reproducible": bool(ok), "runs": runs, "files": files,

@@ -95,7 +95,8 @@ def build(tree: dict[str, Any], params: dict[str, dict[str, Any]], keep_going: b
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description="Build a JSON feature tree into a validated STEP.")
     ap.add_argument("--tree", type=Path, required=True)
-    ap.add_argument("--params", type=Path)
+    ap.add_argument("--params", type=Path, action="append", default=[],
+                    help="params file(s); later files override earlier ones (e.g. measure/params_refine.json)")
     ap.add_argument("--alignment", type=Path)
     ap.add_argument("--out", type=Path, required=True)
     ap.add_argument("--part", required=True)
@@ -106,10 +107,13 @@ def main(argv: list[str] | None = None) -> int:
     a = ap.parse_args(argv)
 
     tree = json.loads(a.tree.read_text(encoding="utf-8"))
-    params = load_params(a.params, tree)
+    params: dict[str, dict[str, Any]] = {}
+    for pf in a.params:
+        params.update(load_params(pf, {}))
+    params.update(load_params(None, tree))
     body, log, flog = build(tree, params, a.keep_going, a.until)
     a.out.mkdir(parents=True, exist_ok=True)
-    inputs = [a.tree] + ([a.params] if a.params else [])
+    inputs = [a.tree] + list(a.params)
     res = header("tree_log", "build_tree.py", inputs)
     res.update(log)
     res["part"] = a.part
@@ -130,7 +134,7 @@ def main(argv: list[str] | None = None) -> int:
     from export_frames import ExportAbort, ScaleFrameSkipped, export_frames
     try:
         export_frames(body, a.alignment, a.out, a.part, fillets_json=a.out / "fillets.json",
-                      model_py=a.tree.resolve(), params_json=a.params)
+                      model_py=a.tree.resolve(), params_json=a.params[0] if a.params else None)
     except ScaleFrameSkipped as ex:
         print(f"DATUM-ONLY: {ex}", file=sys.stderr)
         return 3

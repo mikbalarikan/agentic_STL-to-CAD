@@ -20,7 +20,7 @@ frames, the claim boundary, limitations with triggers and reproduction commands
 | 3 | Method summary | `limitations.json#method_summary` | DRM `README.md:19-25` (5 steps); OD `README.md:5-7` |
 | 4 | Coordinate frames: origin, primary, secondary, clock (with fit residuals and why), named axes, tilt, scale, noise floor, the 4×4 matrix | `intake/alignment.json` | OD `README.md:13-14` (scan-frame and datum-frame STEP, named axes); DRM `README.md:10,13,21` (plane, bore axis, clock feature); SYNTHESIS B1, B7, D14 |
 | 5 | Parameter table with source column and source counts | `measure/params.json` | B02 `PARAM_TABLE.md` (SOURCE tag per row); DRM `README.md:27-54` (measured → chosen); SYNTHESIS C7 |
-| 6 | Model tree (design intent): feature list with params, links `model.py`/`MODELING_PLAN.md` | `limitations.json#feature_tree` (optional); `build/MODELING_PLAN.md` | OD `README.md:46-60` (6 features); DRM `README.md:27-54` (F01-F09); M02 `README.md:12` (STEP carries no feature history) |
+| 6 | Model tree (design intent): feature list with params, links the design source | `limitations.json#feature_tree` (optional); else the nodes of `build/feature_tree.json` (v1) or `build/MODELING_PLAN.md` (v0) | OD `README.md:46-60` (6 features); DRM `README.md:27-54` (F01-F09); M02 `README.md:12` (STEP carries no feature history) |
 | 7 | Tier-1 table: real shape is `tier1.dims{id:{name,caliper,cad,delta,pass,gated,unmeasurable?,grey_zone?}}`, band `tier1.band_abs_mm`, coverage `tier1.coverage`; a gated-but-unmeasurable dim is flagged, never a silent pass | `qa/gate.json#tier1` (as `stl-re-verify/scripts/sim_caliper.py` writes it) | B02 `VERDICT.md:37-56`; P03 `VERDICT.md:16-29`; review V4 |
 | 8 | Deviation: regime and bands, registration, two-way stats (`scan_to_cad`/`cad_to_scan` are UNMASKED; `scan_to_cad_masked`/`cad_to_scan_masked` are masked — never swap the labels), observable split, a **gate-results table** from `gate.json#gated_results` (the numbers the verdict was actually graded on), per-zone (unmasked/masked side by side), masks with fraction, sensitivity, over-band clusters (`over_band_clusters` is a dict keyed `scan_to_cad`/`cad_to_scan`, each with a `clusters` list), datum audit (report-only) | `qa/gate.json#deviation,gated_results,datum_audit` (as `stl-re-verify/scripts/deviation_gate.py` and `verdict.py` write them) | OD `README.md:21-44` (two-way, observable, regions); B02 `VERDICT.md:76-151` (zones, masks, sensitivity); DRM `README.md:56-78` (masked vs unmasked) |
 | 8b | Band miss: where and what next (region, cause, options); required for BAND_NOT_MET | `qa/gate.json#miss_explanations,band_fails` | OD `README.md:43-44`; honesty rule `baseline/oomwoo-re-pipeline/RE_SPEC.md:181-183` |
@@ -72,7 +72,7 @@ Rules the renderer enforces:
   `{{export:<frame>.<key>}}`, `{{align:<dotted.path>}}`, `{{repro:<dotted.path>}}`. List items
   use numeric indices (`{{gate:deviation.masks.0.fraction}}`). An unresolvable placeholder fails.
 - `reference_photo`, when given, must exist in the run folder.
-- `deliver/repro.json#inputs` (its recorded sha256 of `build/model.py`, `measure/params.json`
+- `deliver/repro.json#inputs` (its recorded sha256 of the design source, e.g. `build/feature_tree.json`, `measure/params.json`
   and the delivered STEPs) must match those files' current hashes; a stale repro.json (an
   earlier attempt's check, surviving an `init_run.py supersede`) is refused, not trusted.
 

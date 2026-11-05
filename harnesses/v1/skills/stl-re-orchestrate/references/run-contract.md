@@ -1,4 +1,9 @@
-# Run contract (shared by all `stl-re-*` skills)
+# Run contract (shared by all `stl-re-*` skills, harness v1)
+
+v1 changes vs v0: the model is `build/feature_tree.json` (no `model.py`, no `MODELING_PLAN.md`);
+a `refine/` stage sits between measure and build; params the refine loop measured live in
+`measure/params_refine.json` (same schema as params.json, §4); every run ends with
+`run_metrics.json` at the run root.
 
 This file is the single source of the hand-off contract. Every `stl-re-*` skill reads
 and writes these paths and keys. A skill may add keys; it may not rename or drop them.
@@ -12,13 +17,16 @@ Evidence: `analysis/SKILL_ARCHITECTURE.md` §3–§4, `analysis/SYNTHESIS.md`.
   input/            scan.stl (never modified), photos/, MEASUREMENTS.md (filled by a human), INPUT_HASHES.json
   intake/           INTAKE_CARD.md, intake.json, regime.json (§12), coverage.json, MEASUREMENTS.md (request),
                      alignment.json, work.stl, aligned_work.stl
-  measure/          params.json, PARAM_TABLE.md, figures/
-  build/            MODELING_PLAN.md, model.py, build_log.txt, <part>_datum.step, <part>.step, <part>_cad.stl,
-                     export_check.json, fillets.json, face_stats.json
+  measure/          params.json, PARAM_TABLE.md, figures/, params_refine.json (refine-loop values, §4)
+  refine/           feature_tree.json, params_refine.json, refine_log.json, cards/, rounds/ (stl-re-refine)
+  build/            base_tree.json (refine start), feature_tree.json (reviewed, the design source),
+                     tree_log.json, fillets.json, build_log.txt, <part>_datum.step, <part>.step,
+                     <part>_cad.stl, export_check.json
+  run_metrics.json  benchmark summary (stl-re-orchestrate/scripts/run_metrics.py)
   qa/               gate.json, regime.json (copy of intake/regime.json, §12), review.json, VERDICT.md,
                      masks.json, overlays/
   deliver/          README.md, MANIFEST.json, repro.json          (only after qa/VERDICT.md exists)
-  _itN_SUPERSEDED/  the previous iteration's measure/ build/ qa/ (and intake/ for a --route datum REVISE,
+  _itN_SUPERSEDED/  the previous iteration's measure/ refine/ build/ qa/ (and intake/ for a --route datum REVISE,
                      §10), moved intact
 ```
 
@@ -151,11 +159,11 @@ CHK-PUBLISH, CHK-LIKE4LIKE, CHK-NUMBERS, CHK-INDEP. Definitions and evidence:
   1 (a `--route repro` folder, below, is excluded from this count). `init_run.py supersede`
   requires `--route {measure,geometry,datum,repro}` (O-7): the route names the stage the
   REVISE is re-entering and decides what carries forward, so a wrong stage is never masked as
-  already complete. For `measure`/`geometry`/`datum` it moves `measure/ build/ qa/` into
+  already complete. For `measure`/`geometry`/`datum` it moves `measure/ refine/ build/ qa/` into
   `_itN_SUPERSEDED/` (also `intake/` for `--route datum`), then, unless `--no-carry`, copies
   forward only what that route says: `measure` and `datum` carry nothing (the stage being
-  redone must not look done); `geometry` copies `measure/`, `build/MODELING_PLAN.md` and
-  `build/model.py` forward (copies, so the superseded folder stays intact). It refuses when
+  redone must not look done); `geometry` copies `measure/`, `build/base_tree.json` and
+  `build/feature_tree.json` forward (copies, so the superseded folder stays intact). It refuses when
   iteration = 3 (exit 3, HALT; `RE_SPEC.md:250`).
 - **`--route repro` (R2-O1, `deliver`'s `repro_check.py` failure).** A `repro_check` failure
   is a rebuild-fidelity problem, not a verdict change, so this route is accepted **without**
@@ -163,10 +171,10 @@ CHK-PUBLISH, CHK-LIKE4LIKE, CHK-NUMBERS, CHK-INDEP. Definitions and evidence:
   `false` (the failure it is meant to fix), or the human passes `--confirm-repro-failure` (a
   documented override, never a silent default). It moves only `qa/` and `build/` into
   `_itN_SUPERSEDED/` (never `measure/` or `intake/`: the reproducibility problem is in
-  `build/model.py`, not in what was measured), writes `_itN_SUPERSEDED/ROUTE` recording
+  `build/feature_tree.json`, not in what was measured), writes `_itN_SUPERSEDED/ROUTE` recording
   `repro` (so `init_run.py status` and `stl-re-deliver`'s CHK-SUPERSEDED can tell it apart
-  from an ordinary loop), and, unless `--no-carry`, copies `build/MODELING_PLAN.md` and
-  `build/model.py` forward as a diffable base (`measure/` was never moved, so it needs no
+  from an ordinary loop), and, unless `--no-carry`, copies `build/base_tree.json` and
+  `build/feature_tree.json` forward as a diffable base (`measure/` was never moved, so it needs no
   carry-forward). **It does not count toward the 3-loop limit**: the iteration number above
   excludes it. Folder numbering itself (`_itN_SUPERSEDED`) is still monotonic and is never
   reused or renumbered, so a repro folder and a later ordinary REVISE folder never collide.
@@ -226,7 +234,7 @@ CHK-PUBLISH, CHK-LIKE4LIKE, CHK-NUMBERS, CHK-INDEP. Definitions and evidence:
 - **`gate.json#hash_frozen`** = `{"before": {path: sha256}, "after": {path: sha256},
   "unchanged": bool}` (as written by `stl-re-verify/scripts/step_check.py verify`).
 - **`build/export_check.json`** = `{"datum": {...}, "scan": {...}, ...}` at the top level (as
-  written by `stl-re-rebuild-build123d/scripts/export_frames.py`). Readers may also accept
+  written by `stl-re-build/scripts/export_frames.py`). Readers may also accept
   the OD golden shape `{"exports": {...}}`.
 - **ICP iteration cap.** Golden B02 used 60 (`q20_tier2.py`, converged at 48). This is a
   parameter, not a threshold. Non-convergence is reported and makes the Tier-2 gate invalid.
