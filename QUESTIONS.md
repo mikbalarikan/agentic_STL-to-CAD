@@ -94,8 +94,8 @@ Alternatively, can the M02 scan be added?
   not recorded.
   *Update (Phase 4 review):* the measure-intent reviewer reproduced the recorded window from
   the golden's lobe+flat argument with the SAF-1 recess left out: R(30°) 13.444 + R(−121°)
-  12.530 ≈ 25.99 (`reviews/stl-re-measure-intent.md`,
-  `skills/stl-re-measure-intent/references/validation.md`). The skill now reports F06 as
+  12.530 ≈ 25.99 (`harnesses/v0/reviews/stl-re-measure-intent.md`,
+  `harnesses/v0/skills/stl-re-measure-intent/references/validation.md`). The skill now reports F06 as
   UNPROVEN (margin smaller than the measured scan offset), not struck.
 - **B02 open-edge count:** the intake records 3561; the skill counts 11,466 on the full-res
   scan. The counting convention is not recorded.

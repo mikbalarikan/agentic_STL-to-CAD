@@ -1,0 +1,16 @@
+{
+  "id": "v1",
+  "name": "stl-re v1: feature-tree builder with staged deviation loop",
+  "status": "in-development",
+  "frozen_ref": null,
+  "summary": "Datum + base body, then feature-by-feature: signed deviation -> red-cluster segmentation -> scripted region classifier (extrude/draft/revolve/hole/pattern/...) -> feature added to a JSON feature tree -> generic builder rebuilds -> accept or roll back. Agent (or user, guided mode) only arbitrates ambiguous decision cards. Independent verify stays the final gate.",
+  "skills_dir": "skills",
+  "entry_skill": "stl-re-orchestrate",
+  "skills": [],
+  "doctor": null,
+  "selftests": [],
+  "python": ">=3.10",
+  "python_deps": ["numpy", "scipy", "trimesh", "build123d", "rtree", "shapely", "fast_simplification", "networkx", "matplotlib"],
+  "start_prompt": "Turn <scan.stl> into a STEP (calipers in <MEASUREMENTS.md> or scan-only).",
+  "design": "README.md"
+}

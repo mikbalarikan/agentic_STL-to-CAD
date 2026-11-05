@@ -1,0 +1,32 @@
+{
+  "id": "v0",
+  "name": "stl-re v0: plan-first linear pipeline",
+  "status": "frozen",
+  "frozen_ref": "harness-v0",
+  "frozen_commit": "29cb4cb",
+  "summary": "Six SKILL.md skills: intake -> measure (one-shot params.json) -> rebuild (agent writes model.py from scratch) -> independent verify -> deliver. REVISE loops back to the owning stage, max 3 loops.",
+  "skills_dir": "skills",
+  "entry_skill": "stl-re-orchestrate",
+  "skills": [
+    "stl-re-orchestrate",
+    "stl-re-intake-datum",
+    "stl-re-measure-intent",
+    "stl-re-rebuild-build123d",
+    "stl-re-verify",
+    "stl-re-deliver"
+  ],
+  "doctor": ["python3", "skills/stl-re-orchestrate/scripts/init_run.py", "doctor"],
+  "selftests": [
+    ["python3", "skills/stl-re-measure-intent/tests/run_selftests.py"],
+    ["python3", "skills/stl-re-deliver/tests/run_fixture_test.py"]
+  ],
+  "python": ">=3.10",
+  "python_deps": ["numpy", "scipy", "trimesh", "build123d", "rtree", "shapely", "fast_simplification", "networkx", "matplotlib"],
+  "start_prompt": "Turn <scan.stl> into a STEP (calipers in <MEASUREMENTS.md> or scan-only).",
+  "records": {
+    "plan": "PLAN.md",
+    "evals": "evals/",
+    "reviews": "reviews/",
+    "worked_example": "examples/OD-H22_3-way-valve/"
+  }
+}
