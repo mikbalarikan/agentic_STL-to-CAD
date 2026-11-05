@@ -106,8 +106,17 @@ def _arc_mid(p0: list[float], p1: list[float], spec: dict[str, Any], S: Scope) -
     return [cx + ux * R, cy + uy * R]
 
 
+def _pts(item: dict[str, Any], S: Scope) -> list[list[float]]:
+    """pts may be a list of [u, v] (each value an expression) or one expression giving the list
+    (a list-valued param, e.g. a measured footprint)."""
+    raw = item["pts"]
+    if isinstance(raw, str):
+        raw = S.eval(raw)
+    return [S.vec(p, 2) for p in raw]
+
+
 def _chain(item: dict[str, Any], S: Scope) -> Face:
-    pts = [S.vec(p, 2) for p in item["pts"]]
+    pts = _pts(item, S)
     if len(pts) < 2:
         raise SketchError("chain needs >= 2 points")
     arcs = {int(k): v for k, v in (item.get("arcs") or {}).items()}
@@ -150,7 +159,7 @@ def _item_face(item: dict[str, Any], S: Scope) -> Face:
         f = _NGon(S.num(item["r"]), int(S.num(item["n"]))).faces()[0]
         return Pos(c[0], c[1]) * Rot(0, 0, S.opt(item, "angle", 0)) * f
     if t == "polygon":
-        pts = [S.vec(p, 2) for p in item["pts"]]
+        pts = _pts(item, S)
         return _up(Face(Wire.make_polygon([_v(p) for p in pts], close=True)))
     if t == "chain":
         return _chain(item, S)

@@ -1,0 +1,28 @@
+{
+  "card": 5,
+  "round": 6,
+  "cluster": "-1@2,-15,-25",
+  "question": "Two feature types explain this region almost equally well. Which is the design intent?",
+  "candidates": [
+    {
+      "kind": "cyl-hole+nb",
+      "variant": "down",
+      "name": "hole r=4.306 along skew axis (down)",
+      "J": 0.2966221394782266
+    },
+    {
+      "kind": "cyl-hole",
+      "variant": "down",
+      "name": "hole r=4.347 along skew axis (down)",
+      "J": 0.29690927559412356
+    },
+    {
+      "kind": "cyl-hole+nb",
+      "variant": "exact",
+      "name": "hole r=4.306 along skew axis (exact)",
+      "J": 0.3066362223804791
+    }
+  ],
+  "answer": 0,
+  "answered_by": "auto: lower J"
+}

@@ -1,0 +1,28 @@
+{
+  "card": 10,
+  "round": 18,
+  "cluster": "-1@-5,10,-21",
+  "question": "Two feature types explain this region almost equally well. Which is the design intent?",
+  "candidates": [
+    {
+      "kind": "plane-cut",
+      "variant": "box",
+      "name": "plane cut, normal [-1.0, 0.06, 0.04]",
+      "J": 0.23944628491132378
+    },
+    {
+      "kind": "prism-chain",
+      "variant": "up",
+      "name": "prism chain(8) along Y (up)",
+      "J": 0.2396176009005468
+    },
+    {
+      "kind": "prism-chain",
+      "variant": "down",
+      "name": "prism chain(8) along Y (down)",
+      "J": 0.23985977976533385
+    }
+  ],
+  "answer": 0,
+  "answered_by": "auto: lower J"
+}

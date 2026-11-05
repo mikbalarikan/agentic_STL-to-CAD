@@ -1,0 +1,156 @@
+{
+ "schema": "feature_tree@v1",
+ "part": "OD-H22_3-way-valve",
+ "note": "OD-H22 refine-loop start: datum frame + base body only (flange outline prism + core revolve). Everything else must be found by the loop.",
+ "constants": {
+  "CUT_OVERSHOOT": {
+   "value": 1.0,
+   "why": "cut tools overshoot the faces they open"
+  },
+  "BURY": {
+   "value": 0.5,
+   "why": "sub-body extended into the body it is fused with (no visible surface)"
+  },
+  "FACING": {
+   "value": 0.7,
+   "why": "|cos(theta)| above this = slot faces the X axis (picks slot_bottom_z_x vs _y)"
+  }
+ },
+ "let": {
+  "top": "rim_top_z",
+  "a_ear": "radians(ear_side_angle_deg)"
+ },
+ "profiles": {
+  "outline": {
+   "why": "flange outline: disc plate_R plus two tapered ears ending in circles ear_end_R about each ear hole; concave disc/ear corners blended",
+   "items": [
+    {
+     "type": "circle",
+     "c": [
+      0,
+      0
+     ],
+     "r": "plate_R"
+    },
+    {
+     "type": "chain",
+     "repeat": {
+      "xh": "ear_hole_x"
+     },
+     "let_each": {
+      "s": "sign(xh)",
+      "X": "abs(xh)",
+      "re": "ear_end_R",
+      "tx": "X + re*sin(a_ear)",
+      "ty": "re*cos(a_ear)",
+      "y0": "ty + tx*tan(a_ear)"
+     },
+     "pts": [
+      [
+       0,
+       "y0"
+      ],
+      [
+       "s*tx",
+       "ty"
+      ],
+      [
+       "s*tx",
+       "-ty"
+      ],
+      [
+       0,
+       "-y0"
+      ]
+     ],
+     "arcs": {
+      "1": {
+       "center": [
+        "s*X",
+        0
+       ]
+      }
+     }
+    }
+   ],
+   "fillet_vertices": {
+    "r": "outline_blend_R",
+    "select": "concave"
+   }
+  }
+ },
+ "nodes": [
+  {
+   "id": "F01",
+   "name": "flange outline prism",
+   "op": "extrude",
+   "combine": "new",
+   "sketch": {
+    "plane": "XY",
+    "profile": {
+     "ref": "outline"
+    }
+   },
+   "z0": 0,
+   "z1": "top"
+  },
+  {
+   "id": "F05",
+   "name": "core revolve: stem, 40 deg cone, neck, collar, drive tube",
+   "op": "revolve",
+   "let": {
+    "k": "tan(radians(stem_cone_half_angle_deg))",
+    "z_cb": "stem_cone_top_z - (stem_R - stem_neck_R)/k"
+   },
+   "profile": {
+    "items": [
+     {
+      "type": "polygon",
+      "pts": [
+       [
+        0,
+        "stem_neck_bottom_z"
+       ],
+       [
+        "stem_neck_R",
+        "stem_neck_bottom_z"
+       ],
+       [
+        "stem_neck_R",
+        "z_cb"
+       ],
+       [
+        "stem_R",
+        "stem_cone_top_z"
+       ],
+       [
+        "stem_R",
+        "BURY"
+       ],
+       [
+        "collar_R",
+        "BURY"
+       ],
+       [
+        "collar_R",
+        "collar_top_z"
+       ],
+       [
+        "tube_R",
+        "collar_top_z"
+       ],
+       [
+        "tube_R",
+        "tube_top_z"
+       ],
+       [
+        0,
+        "tube_top_z"
+       ]
+      ]
+     }
+    ]
+   }
+  }
+ ]
+}

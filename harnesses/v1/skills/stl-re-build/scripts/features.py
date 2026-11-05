@@ -406,7 +406,7 @@ def run_node(body: Any, node: dict[str, Any], ctx: Ctx, flog: Any) -> tuple[Any,
                 rec["status"], rec["error"] = "FAILED", f"solids {rec['solids']} != expected {want_solids}"
             elif not sign_ok(dv, want, v0):
                 rec["status"], rec["error"] = "FAILED", f"volume delta {dv:+.6g} has the wrong sign (want {want})"
-    except (TreeError, ExprError, ValueError, RuntimeError, KeyError, IndexError, TypeError) as ex:
+    except Exception as ex:  # OCP kernel errors (StdFail_NotDone, ...) are node failures, not crashes
         rec["status"] = "FAILED"
         rec["error"] = f"{type(ex).__name__}: {ex}"
         rec["trace"] = traceback.format_exc(limit=3)[-600:]

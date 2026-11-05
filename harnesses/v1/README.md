@@ -102,7 +102,7 @@ stay comparable across models and agent CLIs.
 | | Scope | Done when |
 |---|---|---|
 | M1 ✅ | `features/` library, profile sketcher, `feature_tree.json` schema, `build_tree.py` with per-node checks and rollback; port v0 intake/measure/verify/deliver scripts that do not change | the OD-H22 valve rebuilds from a hand-written tree with the same deviation as v0, with no `model.py`. **Met:** see "M1 result" below |
-| M2 | observability fix, `deviate.py`, `clusters.py`, `classify.py`, `loop.py`, decision cards answered by the agent | OD-H22 and one golden part rebuild from datum + base body through the loop |
+| M2 ⚠️ | observability fix, `deviate.py`, `clusters.py`, `classify.py`, `loop.py`, decision cards answered by the agent | OD-H22 and one golden part rebuild from datum + base body through the loop. **Partly met:** see "M2 result" below |
 | M3 | skills (`SKILL.md`) for v1, slimmed: evidence citations moved to `references/`; `run_metrics.json`; doctor and selftests | `tools/harness.py install v1` works; v0 vs v1 comparison on the same parts |
 | M4 | guided mode UI: datum candidates (axes, planes, circles) highlighted for the user to pick Z, X and origin; decision cards with side-by-side previews | the same pipeline runs with the user as arbiter |
 
@@ -148,3 +148,103 @@ refusal, unused params) and `tests/test_od_h22.py` PASS.
 
 Note: authored size is a proxy for token use. Actual tokens per run will be measured by the
 benchmark runner.
+
+## M2 result
+
+Code: `skills/stl-re-refine/`:
+- `scripts/devmap.py`: signed deviation maps and clusters.
+- `scripts/classify.py`: RANSAC hypotheses.
+- `scripts/loop.py`: the loop.
+- `scripts/cards.py`: decision cards.
+- `scripts/compare.py`: like-for-like scoring against a reference STEP.
+
+Observability: `skills/stl-re-verify/scripts/observability.py` gets the `sky` method (now the
+default; `--obs-method cone` = v0).
+
+### What the loop does
+
+Each round:
+1. Measure the signed scan→CAD deviation.
+2. Split the red regions into clusters by sign.
+3. Fit hypotheses by RANSAC to the subset of the cluster each one explains:
+   - cylinder hole or boss (2-point RANSAC);
+   - stepped revolve on the cylinder's axis;
+   - prism along datum axes, normal eigen-directions and dominant normal directions, with a
+     line/arc footprint from `sketchfit.auto_topology`, a rectangle, or a convex-hull
+     rectangle, and draft ±;
+   - offset pocket of an existing profile, inserted right after its parent node;
+   - lathe cut about Z;
+   - RANSAC plane cut.
+
+   The cluster is also classified together with its same-sign neighbours.
+4. Build every candidate for real. Keep one only if all of these hold:
+   - J falls by at least 30 % of what its cluster could give;
+   - it brings ≥ 60 % of the points it claims inside the threshold;
+   - the build passes the builder's per-node checks.
+5. Merge sibling clusters into one repeated node when the sizes match within 5 % and the axes
+   are equal, mirrored or polar.
+
+A short arc of small radius is recorded as a **blend candidate** and never built. A cluster
+that fails 3 times becomes an **open point**.
+
+### Results
+
+Builder self-check, scored by `compare.py` with the same 150k scan samples and no ICP for both
+models. Run records: `skills/stl-re-refine/examples/*/run_m2/`.
+
+| Part | Start (base body) | Loop result | Reference | Rounds, builds, time |
+|---|---|---|---|---|
+| OD-H22 (base: flange prism + core revolve) | p95 13.996 | p95 0.345, 93.8 % of the scan within 0.30, CAD→scan p95 0.91, 149 faces, 1 open point (gussets) | v0 `model.py`: p95 0.235, 97.5 % within 0.30, CAD→scan p95 1.62, 162 faces | 18 rounds, 225 builds, 18 min |
+| DRM screw cap, decimated scan (base: pentagon prism) | p95 2.018 | p95 0.741, 80.4 % within 0.30, 16 faces | golden STEP: p95 0.089, 100 % | 2 rounds, then no hypothesis helped |
+
+**OD-H22: what it found.** Values in parentheses are v0's.
+- Both ports as stepped revolves on their measured skew axes.
+- The tray pocket as the outline offset by 1.483 (`rim_wall_t` 1.447), floor z 2.278 (2.26).
+- The tube bore, r 4.530 (4.561).
+- Both port bores, r 4.326 / 4.306 (4.339).
+- Both ear holes, r 1.931 / 1.941 (1.936).
+- The ends of the port clip blocks: full rounds of r ≈ 1.88, equal to half the block
+  thickness. v0 assumed a box with 0.5 mm rounds (`port_block_corner_R`, source `assumed`).
+  v0's own gate has max 0.675 mm in that zone (B4), which fits that difference.
+- Late rounds (12–18) add small prisms and plane cuts that each lower J by < 1 %.
+
+**DRM: what it found.** The through hole r 1.944 and a lathe cut. It did not find the drafted
+pentagon frustum, the five dimples, the double-D flats or the counterbore.
+
+**Acceptance.**
+- OD-H22: rebuilt through the loop, but it does not meet the 0.30 band. It is 0.11 mm short of
+  v0, which was measured by hand.
+- DRM: not met.
+
+**Observability fix (v0 defect #3).** The `sky` test needs two lines of sight at least 20°
+apart, each within 65° of the normal. On v0's OD-H22 STEP it moved the observable CAD→scan p95
+from 1.484 only to 1.405. The cause was measured: 66 % of the far CAD points lie on bores whose
+depths are `assumed` params (`tube_bore_bottom_z`, `port_bore2_end_t`). Most of the rest lie
+on the rib (`rib_half_len`, assumed). These surfaces are physically visible, so physics cannot
+excuse them. The right fix is provenance: surfaces built from `assumed` params become a named
+mask declared before grading. That is planned for M3.
+
+### Open points carried to M3
+
+1. **Design-intent merge.** The block ends were found as cylinder bosses (a 5-instance pattern
+   plus one more). They should be one stadium (slot) prism per block along X. Needed: a
+   stadium/slot footprint fit, and a merge step that rewrites a pattern of bosses on one body
+   into that body.
+2. **Gussets.** Thin plates whose footprint ends exactly at the CAD surface still give 2 solids,
+   even with the silhouette bridge.
+3. **Parameter re-fit.** The loop only adds features. A wrong size of an existing node (for
+   example the revolve step ends) shows up as thin clusters and gets patched by late small
+   prisms. Next: a "re-fit node" hypothesis that adjusts the params of the node that owns the
+   face.
+4. **Diminishing returns.** Rounds 12–18 on OD-H22 each lower J by < 1 %. A stricter gain rule,
+   or a card to the agent/user for these, would stop the loop earlier with a cleaner tree.
+5. **DRM-type parts.** Drafted polygonal frustums, tilted dimple cylinders and double-D flats
+   need hypotheses for intersections with an envelope, tilted cylinder cuts, and pairs of
+   parallel flats.
+6. **Speed.** About 4.7 s per candidate build+measure on OD-H22. A cached CAD distance per
+   unchanged region would cut that a lot.
+7. **Masks from provenance** (see the observability paragraph).
+
+Tests: `skills/stl-re-refine/tests/test_refine.py` 9/9. It builds a synthetic box with a hole,
+a boss and a pocket, checks classify on each, then runs the loop from the bare box: exactly 3
+features are accepted, and the final p95 is 0.0087 mm.

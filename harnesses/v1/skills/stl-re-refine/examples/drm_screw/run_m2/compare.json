@@ -1,0 +1,30 @@
+{
+ "refine": {
+  "J": 0.30030822205973196,
+  "s2c_mean_clip": 0.17498675224307225,
+  "c2s_mean_clip": 0.25064293963331946,
+  "s2c_p50": 0.06849427784597915,
+  "s2c_p95": 0.7413196965815502,
+  "s2c_max": 1.084789048586831,
+  "s2c_within_band": 0.8041933333333333,
+  "c2s_p95": 0.9413737007644604,
+  "faces": 16,
+  "solids": 1,
+  "volume": 313.5544587933429
+ },
+ "reference": {
+  "J": 0.05299245914313508,
+  "s2c_mean_clip": 0.03251618737462878,
+  "c2s_mean_clip": 0.040952543537012595,
+  "s2c_p50": 0.024288319104474057,
+  "s2c_p95": 0.08918170817912657,
+  "s2c_max": 0.26033558012485514,
+  "s2c_within_band": 1.0,
+  "c2s_p95": 0.08361387572026413,
+  "faces": 56,
+  "solids": 1,
+  "volume": 269.0775774942292
+ },
+ "nodes": 3,
+ "reference_step": "/home/user/agentic_STL-to-CAD/golden-examples/dreame_brush-caps/dreame_brush_screw_cap_datum_frame.step"
+}

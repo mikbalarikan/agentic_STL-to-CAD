@@ -1,0 +1,122 @@
+{
+ "schema": "feature_tree@v1",
+ "part": "dreame_brush_screw_cap",
+ "note": "Refine-loop start for the golden DRM screw cap (golden-examples/dreame_brush-caps). Datum: the v0 replay alignment (harnesses/v0/evals/replay/artifacts/DRM/new/alignment.json): top face z=0 with material at -z, bore axis Z, pentagon flat centre on +X. Base body = the dominant silhouette only: the pentagon prism from the bottom face to the top face. The scan is the repo's decimated copy, so every number is inspection only.",
+ "params": {
+  "TOP_Z": {
+   "value": 0.0,
+   "unit": "mm",
+   "source": "scan",
+   "rule": "keep-measured",
+   "evidence": "harnesses/v0/evals/replay/artifacts/DRM/new/PARAM_TABLE.md"
+  },
+  "BOTTOM_Z": {
+   "value": -5.107,
+   "unit": "mm",
+   "source": "scan",
+   "rule": "round-within-noise",
+   "evidence": "harnesses/v0/evals/replay/artifacts/DRM/new/PARAM_TABLE.md"
+  },
+  "PENT_APOTHEM": {
+   "value": 4.506,
+   "unit": "mm",
+   "source": "scan",
+   "rule": "keep-measured",
+   "evidence": "harnesses/v0/evals/replay/artifacts/DRM/new/PARAM_TABLE.md"
+  },
+  "PENT_PHASE_DEG": {
+   "value": 0.47,
+   "unit": "deg",
+   "source": "scan",
+   "rule": "round-within-noise",
+   "evidence": "harnesses/v0/evals/replay/artifacts/DRM/new/PARAM_TABLE.md"
+  }
+ },
+ "constants": {
+  "NGON_FLAT": {
+   "value": 36.0,
+   "why": "RegularPolygon puts a vertex on +X; a pentagon flat normal lands on +X after 36 deg"
+  }
+ },
+ "nodes": [
+  {
+   "id": "F01",
+   "name": "pentagon prism (dominant silhouette)",
+   "op": "extrude",
+   "combine": "new",
+   "sketch": {
+    "plane": "XY",
+    "profile": {
+     "items": [
+      {
+       "type": "ngon",
+       "c": [
+        0,
+        0
+       ],
+       "r": "PENT_APOTHEM/cosd(NGON_FLAT)",
+       "n": 5,
+       "angle": "NGON_FLAT + PENT_PHASE_DEG"
+      }
+     ]
+    }
+   },
+   "z0": "BOTTOM_Z",
+   "z1": "TOP_Z"
+  },
+  {
+   "op": "cylinder",
+   "combine": "cut",
+   "frame": {
+    "origin": "R01_c",
+    "z_dir": "R01_d",
+    "x_dir": "R01_u"
+   },
+   "r": "R01_r",
+   "h": "R01_h",
+   "at": [
+    0,
+    0,
+    "R01_t0"
+   ],
+   "name": "hole r=1.944 along Z (through)",
+   "id": "R01d"
+  },
+  {
+   "op": "revolve",
+   "combine": "cut",
+   "frame": {
+    "origin": "R02_c",
+    "z_dir": "R02_d",
+    "x_dir": "R02_u"
+   },
+   "profile": {
+    "items": [
+     {
+      "type": "polygon",
+      "pts": [
+       [
+        "R02_r[0]",
+        "R02_t[0]"
+       ],
+       [
+        "R02_r[0]",
+        "R02_t[1]"
+       ],
+       [
+        "R02_rout",
+        "R02_t[1]"
+       ],
+       [
+        "R02_rout",
+        "R02_t[0]"
+       ]
+      ]
+     }
+    ]
+   },
+   "name": "lathe cut about Z (1 steps)",
+   "id": "R02a"
+  }
+ ]
+}

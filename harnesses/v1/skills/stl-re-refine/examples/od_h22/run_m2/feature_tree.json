@@ -1,0 +1,601 @@
+{
+ "schema": "feature_tree@v1",
+ "part": "OD-H22_3-way-valve",
+ "note": "OD-H22 refine-loop start: datum frame + base body only (flange outline prism + core revolve). Everything else must be found by the loop.",
+ "constants": {
+  "CUT_OVERSHOOT": {
+   "value": 1.0,
+   "why": "cut tools overshoot the faces they open"
+  },
+  "BURY": {
+   "value": 0.5,
+   "why": "sub-body extended into the body it is fused with (no visible surface)"
+  },
+  "FACING": {
+   "value": 0.7,
+   "why": "|cos(theta)| above this = slot faces the X axis (picks slot_bottom_z_x vs _y)"
+  }
+ },
+ "let": {
+  "top": "rim_top_z",
+  "a_ear": "radians(ear_side_angle_deg)"
+ },
+ "profiles": {
+  "outline": {
+   "why": "flange outline: disc plate_R plus two tapered ears ending in circles ear_end_R about each ear hole; concave disc/ear corners blended",
+   "items": [
+    {
+     "type": "circle",
+     "c": [
+      0,
+      0
+     ],
+     "r": "plate_R"
+    },
+    {
+     "type": "chain",
+     "repeat": {
+      "xh": "ear_hole_x"
+     },
+     "let_each": {
+      "s": "sign(xh)",
+      "X": "abs(xh)",
+      "re": "ear_end_R",
+      "tx": "X + re*sin(a_ear)",
+      "ty": "re*cos(a_ear)",
+      "y0": "ty + tx*tan(a_ear)"
+     },
+     "pts": [
+      [
+       0,
+       "y0"
+      ],
+      [
+       "s*tx",
+       "ty"
+      ],
+      [
+       "s*tx",
+       "-ty"
+      ],
+      [
+       0,
+       "-y0"
+      ]
+     ],
+     "arcs": {
+      "1": {
+       "center": [
+        "s*X",
+        0
+       ]
+      }
+     }
+    }
+   ],
+   "fillet_vertices": {
+    "r": "outline_blend_R",
+    "select": "concave"
+   }
+  }
+ },
+ "nodes": [
+  {
+   "id": "F01",
+   "name": "flange outline prism",
+   "op": "extrude",
+   "combine": "new",
+   "sketch": {
+    "plane": "XY",
+    "profile": {
+     "ref": "outline"
+    }
+   },
+   "z0": 0,
+   "z1": "top"
+  },
+  {
+   "op": "extrude",
+   "combine": "cut",
+   "name": "pocket = outline offset -1.483, floor z 2.278",
+   "sketch": {
+    "plane": "XY",
+    "profile": {
+     "ref": "outline",
+     "offset": "-R03_wall"
+    }
+   },
+   "z0": "R03_floor",
+   "z1": "(top) + CUT_OVERSHOOT",
+   "id": "R03a"
+  },
+  {
+   "id": "F05",
+   "name": "core revolve: stem, 40 deg cone, neck, collar, drive tube",
+   "op": "revolve",
+   "let": {
+    "k": "tan(radians(stem_cone_half_angle_deg))",
+    "z_cb": "stem_cone_top_z - (stem_R - stem_neck_R)/k"
+   },
+   "profile": {
+    "items": [
+     {
+      "type": "polygon",
+      "pts": [
+       [
+        0,
+        "stem_neck_bottom_z"
+       ],
+       [
+        "stem_neck_R",
+        "stem_neck_bottom_z"
+       ],
+       [
+        "stem_neck_R",
+        "z_cb"
+       ],
+       [
+        "stem_R",
+        "stem_cone_top_z"
+       ],
+       [
+        "stem_R",
+        "BURY"
+       ],
+       [
+        "collar_R",
+        "BURY"
+       ],
+       [
+        "collar_R",
+        "collar_top_z"
+       ],
+       [
+        "tube_R",
+        "collar_top_z"
+       ],
+       [
+        "tube_R",
+        "tube_top_z"
+       ],
+       [
+        0,
+        "tube_top_z"
+       ]
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "op": "revolve",
+   "combine": "add",
+   "frame": {
+    "origin": "R01_c",
+    "z_dir": "R01_d",
+    "x_dir": "R01_u"
+   },
+   "profile": {
+    "items": [
+     {
+      "type": "polygon",
+      "pts": [
+       [
+        0,
+        "R01_t[0]"
+       ],
+       [
+        "R01_r[0]",
+        "R01_t[0]"
+       ],
+       [
+        "R01_r[0]",
+        "R01_t[1]"
+       ],
+       [
+        "R01_r[1]",
+        "R01_t[1]"
+       ],
+       [
+        "R01_r[1]",
+        "R01_t[2]"
+       ],
+       [
+        "R01_r[2]",
+        "R01_t[2]"
+       ],
+       [
+        "R01_r[2]",
+        "R01_t[3]"
+       ],
+       [
+        0,
+        "R01_t[3]"
+       ]
+      ]
+     }
+    ]
+   },
+   "name": "revolve boss (3 steps) about skew axis",
+   "id": "R01a"
+  },
+  {
+   "op": "revolve",
+   "combine": "add",
+   "frame": {
+    "origin": "R02u_c",
+    "z_dir": "R02u_d",
+    "x_dir": "R02u_u"
+   },
+   "profile": {
+    "items": [
+     {
+      "type": "polygon",
+      "pts": [
+       [
+        0,
+        "R02u_t[0]"
+       ],
+       [
+        "R02u_r[0]",
+        "R02u_t[0]"
+       ],
+       [
+        "R02u_r[0]",
+        "R02u_t[1]"
+       ],
+       [
+        "R02u_r[1]",
+        "R02u_t[1]"
+       ],
+       [
+        "R02u_r[1]",
+        "R02u_t[2]"
+       ],
+       [
+        "R02u_r[2]",
+        "R02u_t[2]"
+       ],
+       [
+        "R02u_r[2]",
+        "R02u_t[3]"
+       ],
+       [
+        "R02u_r[3]",
+        "R02u_t[3]"
+       ],
+       [
+        "R02u_r[3]",
+        "R02u_t[4]"
+       ],
+       [
+        0,
+        "R02u_t[4]"
+       ]
+      ]
+     }
+    ]
+   },
+   "name": "revolve boss (4 steps) about skew axis",
+   "id": "R02b"
+  },
+  {
+   "op": "cylinder",
+   "combine": "cut",
+   "frame": {
+    "origin": "R04_c",
+    "z_dir": "R04_d",
+    "x_dir": "R04_u"
+   },
+   "r": "R04_r",
+   "h": "R04_h",
+   "at": [
+    0,
+    0,
+    "R04_t0"
+   ],
+   "name": "hole r=4.530 along Z (down)",
+   "id": "R04h"
+  },
+  {
+   "op": "cylinder",
+   "combine": "cut",
+   "frame": {
+    "origin": "R05_c",
+    "z_dir": "R05_d",
+    "x_dir": "R05_u"
+   },
+   "r": "R05_r",
+   "h": "R05_h",
+   "at": [
+    0,
+    0,
+    "R05_t0"
+   ],
+   "name": "hole r=4.326 along skew axis (down)",
+   "id": "R05c"
+  },
+  {
+   "op": "cylinder",
+   "combine": "cut",
+   "frame": {
+    "origin": "R06u_c",
+    "z_dir": "R06u_d",
+    "x_dir": "R06u_u"
+   },
+   "r": "R06u_r",
+   "h": "R06u_h",
+   "at": [
+    0,
+    0,
+    "R06u_t0"
+   ],
+   "name": "hole r=4.306 along skew axis (down)",
+   "id": "R06g"
+  },
+  {
+   "op": "cylinder",
+   "combine": "add",
+   "frame": {
+    "origin": "R07_c",
+    "z_dir": "R07_d",
+    "x_dir": "R07_u"
+   },
+   "r": "R07_r",
+   "h": "R07_h",
+   "at": [
+    0,
+    0,
+    "R07_t0"
+   ],
+   "name": "boss r=0.806 along Y (exact)",
+   "id": "R07c"
+  },
+  {
+   "op": "cylinder",
+   "combine": "add",
+   "frame": {
+    "origin": "R08u_c",
+    "z_dir": "R08u_d",
+    "x_dir": "R08u_u"
+   },
+   "r": "R08u_r",
+   "h": "R08u_h",
+   "at": [
+    0,
+    0,
+    "R08u_t0"
+   ],
+   "name": "boss r=1.867 along X (exact)",
+   "id": "R08d"
+  },
+  {
+   "op": "cylinder",
+   "combine": "add",
+   "r": "R09p_r",
+   "h": "R09p_h[i]",
+   "at": [
+    0,
+    0,
+    "R09p_t0[i]"
+   ],
+   "name": "boss r=1.877 along X (exact) x5 (pattern)",
+   "frame_each": {
+    "origin": "R09p_c[i]",
+    "z_dir": "R09p_d[i]",
+    "x_dir": "R09p_u[i]"
+   },
+   "repeat": {
+    "i": [
+     0,
+     1,
+     2,
+     3,
+     4
+    ]
+   },
+   "id": "R09p"
+  },
+  {
+   "op": "cylinder",
+   "combine": "cut",
+   "frame": {
+    "origin": "R10_c",
+    "z_dir": "R10_d",
+    "x_dir": "R10_u"
+   },
+   "r": "R10_r",
+   "h": "R10_h",
+   "at": [
+    0,
+    0,
+    "R10_t0"
+   ],
+   "name": "hole r=1.931 along Z (down)",
+   "id": "R10c"
+  },
+  {
+   "op": "cylinder",
+   "combine": "cut",
+   "frame": {
+    "origin": "R11_c",
+    "z_dir": "R11_d",
+    "x_dir": "R11_u"
+   },
+   "r": "R11_r",
+   "h": "R11_h",
+   "at": [
+    0,
+    0,
+    "R11_t0"
+   ],
+   "name": "hole r=1.941 along skew axis (up)",
+   "id": "R11n"
+  },
+  {
+   "op": "extrude",
+   "combine": "cut",
+   "sketch": {
+    "plane": {
+     "origin": "R12_c",
+     "x_dir": "R12_u",
+     "z_dir": "R12_d"
+    },
+    "profile": {
+     "items": [
+      {
+       "type": "chain",
+       "pts": "R12_v",
+       "arcs": {}
+      }
+     ]
+    }
+   },
+   "amount": "R12_len",
+   "name": "prism chain(10) along eig0 (exact)",
+   "id": "R12a"
+  },
+  {
+   "op": "extrude",
+   "combine": "cut",
+   "sketch": {
+    "plane": {
+     "origin": "R13_c",
+     "x_dir": "R13_u",
+     "z_dir": "R13_d"
+    },
+    "profile": {
+     "items": [
+      {
+       "type": "chain",
+       "pts": "R13_v",
+       "arcs": {}
+      }
+     ]
+    }
+   },
+   "amount": "R13_len",
+   "name": "prism chain(8) along eig0 (exact)",
+   "id": "R13a"
+  },
+  {
+   "op": "extrude",
+   "combine": "cut",
+   "sketch": {
+    "plane": {
+     "origin": "R14_c",
+     "x_dir": "R14_u",
+     "z_dir": "R14_d"
+    },
+    "profile": {
+     "items": [
+      {
+       "type": "rect",
+       "c": "R14_rc",
+       "w": "R14_w",
+       "h": "R14_hh",
+       "angle": "R14_ang"
+      }
+     ]
+    }
+   },
+   "amount": "R14_len",
+   "name": "prism rect(4) along Z (exact, draft 4.0)",
+   "draft_deg": "R14_draft",
+   "id": "R14f"
+  },
+  {
+   "op": "extrude",
+   "combine": "cut",
+   "sketch": {
+    "plane": {
+     "origin": "R15_c",
+     "x_dir": "R15_u",
+     "z_dir": "R15_d"
+    },
+    "profile": {
+     "items": [
+      {
+       "type": "rect",
+       "c": "R15_rc",
+       "w": "R15_w",
+       "h": "R15_hh",
+       "angle": "R15_ang"
+      }
+     ]
+    }
+   },
+   "amount": "R15_len",
+   "name": "prism rect(4) along Z (up, draft -2.2)",
+   "draft_deg": "R15_draft",
+   "id": "R15h"
+  },
+  {
+   "op": "extrude",
+   "combine": "cut",
+   "sketch": {
+    "plane": {
+     "origin": "R16_c",
+     "x_dir": "R16_u",
+     "z_dir": "R16_d"
+    },
+    "profile": {
+     "items": [
+      {
+       "type": "rect",
+       "c": "R16_rc",
+       "w": "R16_w",
+       "h": "R16_hh",
+       "angle": "R16_ang"
+      }
+     ]
+    }
+   },
+   "amount": "R16_len",
+   "name": "prism rect(4) along Z (up)",
+   "id": "R16b"
+  },
+  {
+   "op": "box",
+   "combine": "cut",
+   "frame": {
+    "origin": "R17_c",
+    "z_dir": "R17_d",
+    "x_dir": "R17_u"
+   },
+   "size": [
+    "R17_w",
+    "R17_hh",
+    "R17_dep"
+   ],
+   "align": [
+    "center",
+    "center",
+    "min"
+   ],
+   "name": "plane cut, normal [-0.97, 0.13, -0.2]",
+   "id": "R17a"
+  },
+  {
+   "op": "box",
+   "combine": "cut",
+   "frame": {
+    "origin": "R18_c",
+    "z_dir": "R18_d",
+    "x_dir": "R18_u"
+   },
+   "size": [
+    "R18_w",
+    "R18_hh",
+    "R18_dep"
+   ],
+   "align": [
+    "center",
+    "center",
+    "min"
+   ],
+   "name": "plane cut, normal [-1.0, 0.06, 0.04]",
+   "id": "R18a"
+  }
+ ]
+}

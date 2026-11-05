@@ -1,0 +1,195 @@
+{
+ "schema": "params_refine@v1",
+ "params": {
+  "R01_c": {
+   "value": [
+    0.0,
+    -0.0722,
+    -1.7896
+   ],
+   "unit": "mm",
+   "source": "scan",
+   "rule": "keep-measured",
+   "estimator": "classify.py RANSAC cylinder along Z: r 1.944, rms 0.037, 7795 inliers, coverage 310 deg",
+   "evidence": "refine round 1 cluster -1@-0,-0,-3 n=28489",
+   "measured": [
+    0.0,
+    -0.0722,
+    -1.7896
+   ],
+   "uncertainty_mm": null,
+   "critical": false
+  },
+  "R01_d": {
+   "value": [
+    -0.0,
+    -0.0,
+    -1.0
+   ],
+   "unit": "-",
+   "source": "scan",
+   "rule": "keep-measured",
+   "estimator": "classify.py RANSAC cylinder along Z: r 1.944, rms 0.037, 7795 inliers, coverage 310 deg",
+   "evidence": "refine round 1 cluster -1@-0,-0,-3 n=28489",
+   "measured": [
+    -0.0,
+    -0.0,
+    -1.0
+   ],
+   "uncertainty_mm": null,
+   "critical": false
+  },
+  "R01_u": {
+   "value": [
+    0.0,
+    1.0,
+    0.0
+   ],
+   "unit": "-",
+   "source": "scan",
+   "rule": "keep-measured",
+   "estimator": "classify.py RANSAC cylinder along Z: r 1.944, rms 0.037, 7795 inliers, coverage 310 deg",
+   "evidence": "refine round 1 cluster -1@-0,-0,-3 n=28489",
+   "measured": [
+    0.0,
+    1.0,
+    0.0
+   ],
+   "uncertainty_mm": null,
+   "critical": false
+  },
+  "R01_r": {
+   "value": 1.9435,
+   "unit": "mm",
+   "source": "scan",
+   "rule": "keep-measured",
+   "estimator": "classify.py RANSAC cylinder along Z: r 1.944, rms 0.037, 7795 inliers, coverage 310 deg",
+   "evidence": "refine round 1 cluster -1@-0,-0,-3 n=28489",
+   "measured": 1.9435,
+   "uncertainty_mm": null,
+   "critical": false
+  },
+  "R01_h": {
+   "value": 35.5129,
+   "unit": "mm",
+   "source": "scan",
+   "rule": "keep-measured",
+   "estimator": "classify.py RANSAC cylinder along Z: r 1.944, rms 0.037, 7795 inliers, coverage 310 deg",
+   "evidence": "refine round 1 cluster -1@-0,-0,-3 n=28489",
+   "measured": 35.5129,
+   "uncertainty_mm": null,
+   "critical": false
+  },
+  "R01_t0": {
+   "value": -16.9932,
+   "unit": "mm",
+   "source": "scan",
+   "rule": "keep-measured",
+   "estimator": "classify.py RANSAC cylinder along Z: r 1.944, rms 0.037, 7795 inliers, coverage 310 deg",
+   "evidence": "refine round 1 cluster -1@-0,-0,-3 n=28489",
+   "measured": -16.9932,
+   "uncertainty_mm": null,
+   "critical": false
+  },
+  "R02_t": {
+   "value": [
+    -0.4651,
+    -0.3002
+   ],
+   "unit": "mm",
+   "source": "scan",
+   "rule": "keep-measured",
+   "estimator": "classify.py lathe cut about Z: 546 points, 1 radius steps",
+   "evidence": "refine round 2 cluster -1@4,-3,-0 n=708",
+   "measured": [
+    -0.4651,
+    -0.3002
+   ],
+   "uncertainty_mm": null,
+   "critical": false
+  },
+  "R02_r": {
+   "value": [
+    4.3122
+   ],
+   "unit": "mm",
+   "source": "scan",
+   "rule": "keep-measured",
+   "estimator": "classify.py lathe cut about Z: 546 points, 1 radius steps",
+   "evidence": "refine round 2 cluster -1@4,-3,-0 n=708",
+   "measured": [
+    4.3122
+   ],
+   "uncertainty_mm": null,
+   "critical": false
+  },
+  "R02_rout": {
+   "value": 15.5038,
+   "unit": "mm",
+   "source": "scan",
+   "rule": "keep-measured",
+   "estimator": "classify.py lathe cut about Z: 546 points, 1 radius steps",
+   "evidence": "refine round 2 cluster -1@4,-3,-0 n=708",
+   "measured": 15.5038,
+   "uncertainty_mm": null,
+   "critical": false
+  },
+  "R02_c": {
+   "value": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "unit": "mm",
+   "source": "scan",
+   "rule": "keep-measured",
+   "estimator": "classify.py lathe cut about Z: 546 points, 1 radius steps",
+   "evidence": "refine round 2 cluster -1@4,-3,-0 n=708",
+   "measured": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "uncertainty_mm": null,
+   "critical": false
+  },
+  "R02_d": {
+   "value": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "unit": "-",
+   "source": "scan",
+   "rule": "keep-measured",
+   "estimator": "classify.py lathe cut about Z: 546 points, 1 radius steps",
+   "evidence": "refine round 2 cluster -1@4,-3,-0 n=708",
+   "measured": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "uncertainty_mm": null,
+   "critical": false
+  },
+  "R02_u": {
+   "value": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "unit": "-",
+   "source": "scan",
+   "rule": "keep-measured",
+   "estimator": "classify.py lathe cut about Z: 546 points, 1 radius steps",
+   "evidence": "refine round 2 cluster -1@4,-3,-0 n=708",
+   "measured": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "uncertainty_mm": null,
+   "critical": false
+  }
+ }
+}

@@ -1,0 +1,22 @@
+{
+  "card": 1,
+  "round": 1,
+  "cluster": "+1@0,1,-22",
+  "question": "Two feature types explain this region almost equally well. Which is the design intent?",
+  "candidates": [
+    {
+      "kind": "revolve",
+      "variant": "3steps",
+      "name": "revolve boss (3 steps) about skew axis",
+      "J": 0.9757152035163619
+    },
+    {
+      "kind": "revolve+nb",
+      "variant": "3steps",
+      "name": "revolve boss (3 steps) about skew axis",
+      "J": 0.9762980826033476
+    }
+  ],
+  "answer": 0,
+  "answered_by": "auto: lower J"
+}

@@ -106,6 +106,74 @@ def observable_split(cad: Any, pts: np.ndarray, face_idx: np.ndarray, d: np.ndar
     }
 
 
+def fib_hemisphere(k: int) -> np.ndarray:
+    """k roughly uniform unit directions on the +z hemisphere (Fibonacci lattice)."""
+    i = np.arange(k) + 0.5
+    z = 1 - i / k                      # cos(polar) in (0, 1]
+    phi = np.pi * (1 + 5 ** 0.5) * i
+    s = np.sqrt(1 - z * z)
+    return np.c_[s * np.cos(phi), s * np.sin(phi), z]
+
+
+def observable_split_sky(cad: Any, pts: np.ndarray, face_idx: np.ndarray, d: np.ndarray,
+                         subsample: int = 20000, seed: int = 5, far_mm: float = 0.5,
+                         n_dirs: int = 48, max_incidence_deg: float = 65.0, tri_deg: float = 20.0,
+                         offset_mm: float = 0.05, max_range_mm: float | None = None,
+                         chunk: int = 4000) -> dict[str, Any]:
+    """v1 observability: a structured-light/laser scanner needs TWO lines of sight to a point
+    (projector and camera), each within max_incidence_deg of the surface normal and at least
+    tri_deg apart (the triangulation angle). A CAD point far from the scan is observable only
+    when such a pair of escaping directions exists. Otherwise the scanner could not have
+    measured it and the point is unobservable.
+
+    Fixes v0 defect #3 (evals/real-runs/OD-H22.md): with the cone test, one escaping ray through
+    the open mouth of a bore made the whole bore wall observable, which inflated the
+    observable CAD->scan p95 (1.48 mm on OD-H22, almost all on bores the scanner never reached)."""
+    from trimesh.ray.ray_triangle import RayMeshIntersector
+
+    rng = np.random.default_rng(seed)
+    sub = rng.choice(len(pts), min(subsample, len(pts)), replace=False)
+    far = sub[d[sub] > far_mm]
+    nrm = cad.face_normals[face_idx[far]]
+    H = fib_hemisphere(n_dirs)
+    H = H[H[:, 2] >= np.cos(np.radians(max_incidence_deg))]
+    a, b, switched = cone_basis(nrm)
+    rmi = RayMeshIntersector(cad)
+    esc = np.zeros((len(far), len(H)), bool)
+    for j, h in enumerate(H):
+        D = h[0] * a + h[1] * b + h[2] * nrm
+        for c0 in range(0, len(far), chunk):
+            sl = slice(c0, c0 + chunk)
+            O = pts[far][sl] + offset_mm * nrm[sl]
+            if max_range_mm is None:
+                hit = rmi.intersects_any(O, D[sl])
+            else:
+                loc, ray_i, _ = rmi.intersects_location(O, D[sl], multiple_hits=False)
+                hit = np.zeros(len(O), bool)
+                if len(ray_i):
+                    dist = np.linalg.norm(loc - O[ray_i], axis=1)
+                    hit[ray_i[dist <= max_range_mm]] = True
+            esc[sl, j] = ~hit
+    cos_tri = np.cos(np.radians(tri_deg))
+    G = (H @ H.T) <= cos_tri                         # direction pairs at least tri_deg apart
+    pair_ok = np.einsum("ij,jk,ik->i", esc.astype(float), G.astype(float), esc.astype(float)) > 0
+    unobs = far[~pair_ok]
+    obs_mask = ~np.isin(sub, unobs)
+    return {
+        "observable": stats(d[sub][obs_mask]),
+        "unobservable_fraction": float(1.0 - obs_mask.mean()),
+        "n_subsample": int(len(sub)),
+        "n_far_tested": int(len(far)),
+        "escape_fraction_mean": float(esc.mean()) if esc.size else None,
+        "params": {"method": "sky: two escaping lines of sight >= tri_deg apart (v1)", "subsample": subsample,
+                   "seed": seed, "far_mm": far_mm, "n_dirs": int(len(H)), "max_incidence_deg": max_incidence_deg,
+                   "tri_deg": tri_deg, "offset_mm": offset_mm, "max_range_mm": max_range_mm,
+                   "helper_switched_for_n_points": switched,
+                   "ray_engine": "trimesh.ray.ray_triangle.RayMeshIntersector"},
+        "_sub": sub, "_obs_mask": obs_mask,
+    }
+
+
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     ap.add_argument("--cad", required=True, help="CAD mesh (STL) in the same frame as the points")

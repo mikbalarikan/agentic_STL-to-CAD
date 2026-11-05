@@ -1,0 +1,3323 @@
+{
+ "band": 0.3,
+ "threshold_mm": 0.3,
+ "noise": 0.035735190601014405,
+ "spacing": 0.17490316263587605,
+ "samples": 150000,
+ "rounds": [
+  {
+   "round": 1,
+   "before": {
+    "J": 1.2830103350458602,
+    "s2c_mean_clip": 1.069035401767217,
+    "c2s_mean_clip": 0.4279498665572863,
+    "s2c_p50": 1.3041613923728828,
+    "s2c_p95": 13.995970236706794,
+    "s2c_max": 16.04047383244836,
+    "s2c_within_band": 0.38741333333333333,
+    "c2s_p95": 2.075982630711232
+   },
+   "n_clusters": 9,
+   "tried": [
+    {
+     "cluster": "+1@0,1,-22",
+     "kind": "revolve",
+     "variant": "3steps",
+     "name": "revolve boss (3 steps) about skew axis",
+     "ok": true,
+     "J": 0.9757152035163619,
+     "p95": 12.476904256196748,
+     "faces": 29,
+     "fixed": 0.833
+    },
+    {
+     "cluster": "+1@0,1,-22",
+     "kind": "revolve+nb",
+     "variant": "3steps",
+     "name": "revolve boss (3 steps) about skew axis",
+     "ok": true,
+     "J": 0.9762980826033476,
+     "p95": 12.476494311321938,
+     "faces": 29,
+     "fixed": 0.834
+    },
+    {
+     "cluster": "+1@0,1,-22",
+     "kind": "cyl-boss+nb",
+     "variant": "exact",
+     "name": "boss r=5.612 along skew axis (exact)",
+     "ok": false,
+     "why": "solids 2 != expected 1"
+    },
+    {
+     "cluster": "+1@0,1,-22",
+     "kind": "cyl-boss",
+     "variant": "exact",
+     "name": "boss r=5.600 along skew axis (exact)",
+     "ok": false,
+     "why": "solids 2 != expected 1"
+    }
+   ],
+   "accepted": {
+    "id": "R01a",
+    "name": "revolve boss (3 steps) about skew axis",
+    "kind": "revolve",
+    "J": 0.9757152035163619,
+    "after": {
+     "J": 0.9757152035163619,
+     "s2c_mean_clip": 0.7880795382251747,
+     "c2s_mean_clip": 0.37527133058237433,
+     "s2c_p50": 0.25363420700384953,
+     "s2c_p95": 12.476904256196748,
+     "s2c_max": 15.767603478950342,
+     "s2c_within_band": 0.5172666666666667,
+     "c2s_p95": 1.7657353171319286
+    },
+    "faces": 29
+   }
+  },
+  {
+   "round": 2,
+   "before": {
+    "J": 0.9757152035163619,
+    "s2c_mean_clip": 0.7880795382251747,
+    "c2s_mean_clip": 0.37527133058237433,
+    "s2c_p50": 0.25363420700384953,
+    "s2c_p95": 12.476904256196748,
+    "s2c_max": 15.767603478950342,
+    "s2c_within_band": 0.5172666666666667,
+    "c2s_p95": 1.7657353171319286
+   },
+   "n_clusters": 16,
+   "tried": [
+    {
+     "cluster": "+1@0,-10,-22",
+     "kind": "revolve",
+     "variant": "3steps",
+     "name": "revolve boss (3 steps) about skew axis",
+     "ok": true,
+     "J": 0.6831558378947622,
+     "p95": 2.180995136805455,
+     "faces": 38,
+     "fixed": 0.861
+    },
+    {
+     "cluster": "+1@0,-10,-22",
+     "kind": "revolve+nb",
+     "variant": "4steps",
+     "name": "revolve boss (4 steps) about skew axis",
+     "ok": true,
+     "J": 0.6819764925065704,
+     "p95": 2.179435279329979,
+     "faces": 39,
+     "fixed": 0.885
+    },
+    {
+     "cluster": "+1@0,-10,-22",
+     "kind": "cyl-boss",
+     "variant": "exact",
+     "name": "boss r=5.602 along skew axis (exact)",
+     "ok": false,
+     "why": "solids 2 != expected 1"
+    },
+    {
+     "cluster": "+1@0,-10,-22",
+     "kind": "cyl-boss+nb",
+     "variant": "exact",
+     "name": "boss r=5.592 along skew axis (exact)",
+     "ok": false,
+     "why": "solids 2 != expected 1"
+    }
+   ],
+   "accepted": {
+    "id": "R02b",
+    "name": "revolve boss (4 steps) about skew axis",
+    "kind": "revolve+nb",
+    "J": 0.6819764925065704,
+    "after": {
+     "J": 0.6819764925065704,
+     "s2c_mean_clip": 0.5109172037684622,
+     "c2s_mean_clip": 0.3421185774762165,
+     "s2c_p50": 0.1288527858610946,
+     "s2c_p95": 2.179435279329979,
+     "s2c_max": 3.475031430895341,
+     "s2c_within_band": 0.6460133333333333,
+     "c2s_p95": 1.5169714088619648
+    },
+    "faces": 39
+   }
+  },
+  {
+   "round": 3,
+   "before": {
+    "J": 0.6819764925065704,
+    "s2c_mean_clip": 0.5109172037684622,
+    "c2s_mean_clip": 0.3421185774762165,
+    "s2c_p50": 0.1288527858610946,
+    "s2c_p95": 2.179435279329979,
+    "s2c_max": 3.475031430895341,
+    "s2c_within_band": 0.6460133333333333,
+    "c2s_p95": 1.5169714088619648
+   },
+   "n_clusters": 25,
+   "tried": [
+    {
+     "cluster": "-1@0,0,3",
+     "kind": "offset-pocket",
+     "variant": "outline",
+     "name": "pocket = outline offset -1.483, floor z 2.278",
+     "ok": true,
+     "J": 0.39437534109622735,
+     "p95": 1.5959612066879585,
+     "faces": 54,
+     "fixed": 0.956
+    },
+    {
+     "cluster": "-1@0,0,3",
+     "kind": "offset-pocket+nb",
+     "variant": "outline",
+     "name": "pocket = outline offset -1.487, floor z 2.279",
+     "ok": true,
+     "J": 0.3945151673932097,
+     "p95": 1.5959612066879585,
+     "faces": 54,
+     "fixed": 0.644
+    },
+    {
+     "cluster": "-1@0,0,3",
+     "kind": "prism-rect+nb",
+     "variant": "exact",
+     "name": "prism rect(4) along Z (exact)",
+     "ok": false,
+     "why": "solids 11 != expected 1"
+    },
+    {
+     "cluster": "-1@0,0,3",
+     "kind": "prism-rect+nb",
+     "variant": "up",
+     "name": "prism rect(4) along Z (up)",
+     "ok": false,
+     "why": "solids 10 != expected 1"
+    },
+    {
+     "cluster": "-1@0,0,3",
+     "kind": "prism-rect+nb",
+     "variant": "down",
+     "name": "prism rect(4) along Z (down)",
+     "ok": false,
+     "why": "solids 9 != expected 1"
+    },
+    {
+     "cluster": "-1@0,0,3",
+     "kind": "prism-rect+nb",
+     "variant": "through",
+     "name": "prism rect(4) along Z (through)",
+     "ok": false,
+     "why": "solids 8 != expected 1"
+    },
+    {
+     "cluster": "-1@0,0,3",
+     "kind": "prism-rect+nb",
+     "variant": "exact/dr+2.9",
+     "name": "prism rect(4) along Z (exact, draft 2.9)",
+     "ok": false,
+     "why": "solids 9 != expected 1"
+    },
+    {
+     "cluster": "-1@0,0,3",
+     "kind": "prism-rect+nb",
+     "variant": "exact/dr-2.9",
+     "name": "prism rect(4) along Z (exact, draft -2.9)",
+     "ok": false,
+     "why": "solids 7 != expected 1"
+    },
+    {
+     "cluster": "-1@0,0,3",
+     "kind": "prism-rect+nb",
+     "variant": "up/dr+2.9",
+     "name": "prism rect(4) along Z (up, draft 2.9)",
+     "ok": false,
+     "why": "solids 8 != expected 1"
+    },
+    {
+     "cluster": "-1@0,0,3",
+     "kind": "prism-rect+nb",
+     "variant": "up/dr-2.9",
+     "name": "prism rect(4) along Z (up, draft -2.9)",
+     "ok": false,
+     "why": "solids 6 != expected 1"
+    },
+    {
+     "cluster": "-1@0,0,3",
+     "kind": "prism-rect+nb",
+     "variant": "down/dr+2.9",
+     "name": "prism rect(4) along Z (down, draft 2.9)",
+     "ok": false,
+     "why": "solids 5 != expected 1"
+    },
+    {
+     "cluster": "-1@0,0,3",
+     "kind": "prism-rect+nb",
+     "variant": "down/dr-2.9",
+     "name": "prism rect(4) along Z (down, draft -2.9)",
+     "ok": true,
+     "J": 2.428101899699791,
+     "p95": 41.34750027262109,
+     "faces": 3,
+     "fixed": 0.009,
+     "why": "fixes only 1% of the points it claims (< 60%)"
+    },
+    {
+     "cluster": "-1@0,0,3",
+     "kind": "prism-rect+nb",
+     "variant": "through/dr+2.9",
+     "name": "prism rect(4) along Z (through, draft 2.9)",
+     "ok": false,
+     "why": "solids 4 != expected 1"
+    },
+    {
+     "cluster": "-1@0,0,3",
+     "kind": "prism-rect+nb",
+     "variant": "through/dr-2.9",
+     "name": "prism rect(4) along Z (through, draft -2.9)",
+     "ok": false,
+     "why": "solids 0 != expected 1"
+    }
+   ],
+   "accepted": {
+    "id": "R03a",
+    "name": "pocket = outline offset -1.483, floor z 2.278",
+    "kind": "offset-pocket",
+    "J": 0.39437534109622735,
+    "after": {
+     "J": 0.39437534109622735,
+     "s2c_mean_clip": 0.2749089778980948,
+     "c2s_mean_clip": 0.23893272639626503,
+     "s2c_p50": 0.087842818815141,
+     "s2c_p95": 1.5959612066879585,
+     "s2c_max": 3.1401818201904774,
+     "s2c_within_band": 0.8051666666666667,
+     "c2s_p95": 0.7865153474614267
+    },
+    "faces": 54
+   }
+  },
+  {
+   "round": 4,
+   "before": {
+    "J": 0.39437534109622735,
+    "s2c_mean_clip": 0.2749089778980948,
+    "c2s_mean_clip": 0.23893272639626503,
+    "s2c_p50": 0.087842818815141,
+    "s2c_p95": 1.5959612066879585,
+    "s2c_max": 3.1401818201904774,
+    "s2c_within_band": 0.8051666666666667,
+    "c2s_p95": 0.7865153474614267
+   },
+   "n_clusters": 27,
+   "tried": [
+    {
+     "cluster": "-1@0,0,9",
+     "kind": "offset-pocket",
+     "variant": "outline",
+     "name": "pocket = outline offset -7.205, floor z 8.690",
+     "ok": false,
+     "why": "volume delta +0 has the wrong sign (want -)"
+    },
+    {
+     "cluster": "-1@0,0,9",
+     "kind": "cyl-hole+nb",
+     "variant": "exact",
+     "name": "hole r=4.733 along Z (exact)",
+     "ok": true,
+     "J": 0.3518106382354903,
+     "p95": 1.0434038342961305,
+     "faces": 57,
+     "fixed": 1.0
+    },
+    {
+     "cluster": "-1@0,0,9",
+     "kind": "cyl-hole+nb",
+     "variant": "up",
+     "name": "hole r=4.733 along Z (up)",
+     "ok": false,
+     "why": "solids 3 != expected 1"
+    },
+    {
+     "cluster": "-1@0,0,9",
+     "kind": "cyl-hole+nb",
+     "variant": "down",
+     "name": "hole r=4.733 along Z (down)",
+     "ok": true,
+     "J": 0.3369986045995656,
+     "p95": 1.0434038342961305,
+     "faces": 56,
+     "fixed": 1.0
+    },
+    {
+     "cluster": "-1@0,0,9",
+     "kind": "cyl-hole+nb",
+     "variant": "through",
+     "name": "hole r=4.733 along Z (through)",
+     "ok": false,
+     "why": "solids 3 != expected 1"
+    },
+    {
+     "cluster": "-1@0,0,9",
+     "kind": "cyl-hole",
+     "variant": "exact",
+     "name": "hole r=4.530 along Z (exact)",
+     "ok": true,
+     "J": 0.3482954024172049,
+     "p95": 1.0434038342961305,
+     "faces": 57,
+     "fixed": 1.0
+    },
+    {
+     "cluster": "-1@0,0,9",
+     "kind": "cyl-hole",
+     "variant": "up",
+     "name": "hole r=4.530 along Z (up)",
+     "ok": false,
+     "why": "solids 3 != expected 1"
+    },
+    {
+     "cluster": "-1@0,0,9",
+     "kind": "cyl-hole",
+     "variant": "down",
+     "name": "hole r=4.530 along Z (down)",
+     "ok": true,
+     "J": 0.3335330732435031,
+     "p95": 1.0434038342961305,
+     "faces": 56,
+     "fixed": 1.0
+    },
+    {
+     "cluster": "-1@0,0,9",
+     "kind": "cyl-hole",
+     "variant": "through",
+     "name": "hole r=4.530 along Z (through)",
+     "ok": false,
+     "why": "solids 3 != expected 1"
+    }
+   ],
+   "accepted": {
+    "id": "R04h",
+    "name": "hole r=4.530 along Z (down)",
+    "kind": "cyl-hole",
+    "J": 0.3335330732435031,
+    "after": {
+     "J": 0.3335330732435031,
+     "s2c_mean_clip": 0.20661765820114775,
+     "c2s_mean_clip": 0.2538308300847107,
+     "s2c_p50": 0.08201071029315651,
+     "s2c_p95": 1.0434038342961305,
+     "s2c_max": 2.4306718565975203,
+     "s2c_within_band": 0.84948,
+     "c2s_p95": 0.9207013464331145
+    },
+    "faces": 56
+   }
+  },
+  {
+   "round": 5,
+   "before": {
+    "J": 0.3335330732435031,
+    "s2c_mean_clip": 0.20661765820114775,
+    "c2s_mean_clip": 0.2538308300847107,
+    "s2c_p50": 0.08201071029315651,
+    "s2c_p95": 1.0434038342961305,
+    "s2c_max": 2.4306718565975203,
+    "s2c_within_band": 0.84948,
+    "c2s_p95": 0.9207013464331145
+   },
+   "n_clusters": 30,
+   "tried": [
+    {
+     "cluster": "-1@-1,15,-23",
+     "kind": "cyl-hole",
+     "variant": "exact",
+     "name": "hole r=4.326 along skew axis (exact)",
+     "ok": true,
+     "J": 0.31776149064336356,
+     "p95": 0.8239542448367398,
+     "faces": 59,
+     "fixed": 1.0
+    },
+    {
+     "cluster": "-1@-1,15,-23",
+     "kind": "cyl-hole",
+     "variant": "up",
+     "name": "hole r=4.326 along skew axis (up)",
+     "ok": true,
+     "J": 0.38380819466939814,
+     "p95": 1.1235471673070898,
+     "faces": 59,
+     "fixed": 1.0
+    },
+    {
+     "cluster": "-1@-1,15,-23",
+     "kind": "cyl-hole",
+     "variant": "down",
+     "name": "hole r=4.326 along skew axis (down)",
+     "ok": true,
+     "J": 0.30769187770924145,
+     "p95": 0.8239542448367398,
+     "faces": 58,
+     "fixed": 1.0
+    },
+    {
+     "cluster": "-1@-1,15,-23",
+     "kind": "cyl-hole",
+     "variant": "through",
+     "name": "hole r=4.326 along skew axis (through)",
+     "ok": true,
+     "J": 0.3772107310376276,
+     "p95": 1.1235471673070898,
+     "faces": 58,
+     "fixed": 1.0
+    },
+    {
+     "cluster": "-1@-1,15,-23",
+     "kind": "cyl-hole+nb",
+     "variant": "exact",
+     "name": "hole r=4.247 along skew axis (exact)",
+     "ok": true,
+     "J": 0.31649630918044547,
+     "p95": 0.8359219548191921,
+     "faces": 59,
+     "fixed": 1.0
+    },
+    {
+     "cluster": "-1@-1,15,-23",
+     "kind": "cyl-hole+nb",
+     "variant": "up",
+     "name": "hole r=4.247 along skew axis (up)",
+     "ok": true,
+     "J": 0.3101551656878633,
+     "p95": 0.8359219548191921,
+     "faces": 58,
+     "fixed": 1.0
+    },
+    {
+     "cluster": "-1@-1,15,-23",
+     "kind": "cyl-hole+nb",
+     "variant": "down",
+     "name": "hole r=4.247 along skew axis (down)",
+     "ok": true,
+     "J": 0.38417365822744853,
+     "p95": 1.1146089729939757,
+     "faces": 59,
+     "fixed": 1.0
+    },
+    {
+     "cluster": "-1@-1,15,-23",
+     "kind": "cyl-hole+nb",
+     "variant": "through",
+     "name": "hole r=4.247 along skew axis (through)",
+     "ok": true,
+     "J": 0.3791269914684635,
+     "p95": 1.1146089729939757,
+     "faces": 58,
+     "fixed": 1.0
+    }
+   ],
+   "accepted": {
+    "id": "R05c",
+    "name": "hole r=4.326 along skew axis (down)",
+    "kind": "cyl-hole",
+    "J": 0.30769187770924145,
+    "after": {
+     "J": 0.30769187770924145,
+     "s2c_mean_clip": 0.18189326527619823,
+     "c2s_mean_clip": 0.25159722486608643,
+     "s2c_p50": 0.079753796569382,
+     "s2c_p95": 0.8239542448367398,
+     "s2c_max": 2.4306718565975203,
+     "s2c_within_band": 0.8635466666666667,
+     "c2s_p95": 0.8984405083363675
+    },
+    "faces": 58
+   }
+  },
+  {
+   "round": 6,
+   "before": {
+    "J": 0.30769187770924145,
+    "s2c_mean_clip": 0.18189326527619823,
+    "c2s_mean_clip": 0.25159722486608643,
+    "s2c_p50": 0.079753796569382,
+    "s2c_p95": 0.8239542448367398,
+    "s2c_max": 2.4306718565975203,
+    "s2c_within_band": 0.8635466666666667,
+    "c2s_p95": 0.8984405083363675
+   },
+   "n_clusters": 32,
+   "tried": [
+    {
+     "cluster": "-1@2,-15,-25",
+     "kind": "cyl-hole",
+     "variant": "exact",
+     "name": "hole r=4.347 along skew axis (exact)",
+     "ok": true,
+     "J": 0.30947236162467195,
+     "p95": 0.7190237353708939,
+     "faces": 61,
+     "fixed": 1.0
+    },
+    {
+     "cluster": "-1@2,-15,-25",
+     "kind": "cyl-hole",
+     "variant": "up",
+     "name": "hole r=4.347 along skew axis (up)",
+     "ok": true,
+     "J": 0.38689861558999245,
+     "p95": 1.0702907127808081,
+     "faces": 61,
+     "fixed": 1.0
+    },
+    {
+     "cluster": "-1@2,-15,-25",
+     "kind": "cyl-hole",
+     "variant": "down",
+     "name": "hole r=4.347 along skew axis (down)",
+     "ok": true,
+     "J": 0.29690927559412356,
+     "p95": 0.7190237353708939,
+     "faces": 60,
+     "fixed": 1.0
+    },
+    {
+     "cluster": "-1@2,-15,-25",
+     "kind": "cyl-hole",
+     "variant": "through",
+     "name": "hole r=4.347 along skew axis (through)",
+     "ok": true,
+     "J": 0.3749485829588597,
+     "p95": 1.0701886039558457,
+     "faces": 60,
+     "fixed": 1.0
+    },
+    {
+     "cluster": "-1@2,-15,-25",
+     "kind": "cyl-hole+nb",
+     "variant": "exact",
+     "name": "hole r=4.306 along skew axis (exact)",
+     "ok": true,
+     "J": 0.3066362223804791,
+     "p95": 0.7211688807199969,
+     "faces": 61,
+     "fixed": 1.0
+    },
+    {
+     "cluster": "-1@2,-15,-25",
+     "kind": "cyl-hole+nb",
+     "variant": "up",
+     "name": "hole r=4.306 along skew axis (up)",
+     "ok": true,
+     "J": 0.3925990394364862,
+     "p95": 1.1223957674872447,
+     "faces": 61,
+     "fixed": 1.0
+    },
+    {
+     "cluster": "-1@2,-15,-25",
+     "kind": "cyl-hole+nb",
+     "variant": "down",
+     "name": "hole r=4.306 along skew axis (down)",
+     "ok": true,
+     "J": 0.2966221394782266,
+     "p95": 0.721181085628169,
+     "faces": 60,
+     "fixed": 1.0
+    },
+    {
+     "cluster": "-1@2,-15,-25",
+     "kind": "cyl-hole+nb",
+     "variant": "through",
+     "name": "hole r=4.306 along skew axis (through)",
+     "ok": true,
+     "J": 0.38212120062385946,
+     "p95": 1.1225297330223525,
+     "faces": 60,
+     "fixed": 1.0
+    }
+   ],
+   "accepted": {
+    "id": "R06g",
+    "name": "hole r=4.306 along skew axis (down)",
+    "kind": "cyl-hole+nb",
+    "J": 0.2966221394782266,
+    "after": {
+     "J": 0.2966221394782266,
+     "s2c_mean_clip": 0.167666429012029,
+     "c2s_mean_clip": 0.2579114209323952,
+     "s2c_p50": 0.07823843994973477,
+     "s2c_p95": 0.721181085628169,
+     "s2c_max": 2.427205389465153,
+     "s2c_within_band": 0.8744066666666667,
+     "c2s_p95": 0.9704540645587343
+    },
+    "faces": 60
+   }
+  },
+  {
+   "round": 7,
+   "before": {
+    "J": 0.2966221394782266,
+    "s2c_mean_clip": 0.167666429012029,
+    "c2s_mean_clip": 0.2579114209323952,
+    "s2c_p50": 0.07823843994973477,
+    "s2c_p95": 0.721181085628169,
+    "s2c_max": 2.427205389465153,
+    "s2c_within_band": 0.8744066666666667,
+    "c2s_p95": 0.9704540645587343
+   },
+   "n_clusters": 32,
+   "tried": [
+    {
+     "cluster": "+1@0,0,-22",
+     "kind": "revolve",
+     "variant": "1steps",
+     "name": "revolve boss (1 steps) about Y",
+     "ok": true,
+     "J": 0.29039947840079194,
+     "p95": 0.6730641538758588,
+     "faces": 63,
+     "fixed": 1.0
+    },
+    {
+     "cluster": "+1@0,0,-22",
+     "kind": "revolve+nb",
+     "variant": "1steps",
+     "name": "revolve boss (1 steps) about X",
+     "ok": true,
+     "J": 0.2931375914557099,
+     "p95": 0.6947402709296601,
+     "faces": 65,
+     "fixed": 0.96
+    },
+    {
+     "cluster": "+1@0,0,-22",
+     "kind": "cyl-boss",
+     "variant": "exact",
+     "name": "boss r=0.806 along Y (exact)",
+     "ok": true,
+     "J": 0.29039846212888326,
+     "p95": 0.6746085611662543,
+     "faces": 64,
+     "fixed": 1.0
+    },
+    {
+     "cluster": "+1@0,0,-22",
+     "kind": "cyl-boss+nb",
+     "variant": "exact",
+     "name": "boss r=1.885 along X (exact)",
+     "ok": true,
+     "J": 0.29299862698055434,
+     "p95": 0.6918492201674858,
+     "faces": 65,
+     "fixed": 1.0
+    }
+   ],
+   "accepted": {
+    "id": "R07c",
+    "name": "boss r=0.806 along Y (exact)",
+    "kind": "cyl-boss",
+    "J": 0.29039846212888326,
+    "after": {
+     "J": 0.29039846212888326,
+     "s2c_mean_clip": 0.1616648620251954,
+     "c2s_mean_clip": 0.25746720020737573,
+     "s2c_p50": 0.07751079291181348,
+     "s2c_p95": 0.6746085611662543,
+     "s2c_max": 2.2296534437082687,
+     "s2c_within_band": 0.8787066666666666,
+     "c2s_p95": 0.9645106111132221
+    },
+    "faces": 64
+   }
+  },
+  {
+   "round": 8,
+   "before": {
+    "J": 0.29039846212888326,
+    "s2c_mean_clip": 0.1616648620251954,
+    "c2s_mean_clip": 0.25746720020737573,
+    "s2c_p50": 0.07751079291181348,
+    "s2c_p95": 0.6746085611662543,
+    "s2c_max": 2.2296534437082687,
+    "s2c_within_band": 0.8787066666666666,
+    "c2s_p95": 0.9645106111132221
+   },
+   "n_clusters": 33,
+   "tried": [
+    {
+     "cluster": "+1@5,-11,-28",
+     "kind": "revolve",
+     "variant": "1steps",
+     "name": "revolve boss (1 steps) about X",
+     "ok": true,
+     "J": 0.2863919685088092,
+     "p95": 0.6401976539164798,
+     "faces": 69,
+     "fixed": 0.772
+    },
+    {
+     "cluster": "+1@5,-11,-28",
+     "kind": "revolve+nb",
+     "variant": "1steps",
+     "name": "revolve boss (1 steps) about X",
+     "ok": true,
+     "J": 0.28195858578316957,
+     "p95": 0.614305910860529,
+     "faces": 69,
+     "fixed": 0.935
+    },
+    {
+     "cluster": "+1@5,-11,-28",
+     "kind": "cyl-boss",
+     "variant": "exact",
+     "name": "boss r=1.877 along X (exact)",
+     "ok": true,
+     "J": 0.2847927588744686,
+     "p95": 0.6369247345448233,
+     "faces": 69,
+     "fixed": 1.0
+    },
+    {
+     "cluster": "+1@5,-11,-28",
+     "kind": "cyl-boss+nb",
+     "variant": "exact",
+     "name": "boss r=1.867 along X (exact)",
+     "ok": true,
+     "J": 0.28133874429245914,
+     "p95": 0.6114392841276879,
+     "faces": 69,
+     "fixed": 1.0
+    }
+   ],
+   "accepted": {
+    "id": "R08d",
+    "name": "boss r=1.867 along X (exact)",
+    "kind": "cyl-boss+nb",
+    "J": 0.28133874429245914,
+    "after": {
+     "J": 0.28133874429245914,
+     "s2c_mean_clip": 0.1535826955143935,
+     "c2s_mean_clip": 0.2555120975561313,
+     "s2c_p50": 0.0763467438833632,
+     "s2c_p95": 0.6114392841276879,
+     "s2c_max": 2.2296534437082687,
+     "s2c_within_band": 0.88664,
+     "c2s_p95": 0.9584351723768764
+    },
+    "faces": 69
+   }
+  },
+  {
+   "round": 9,
+   "before": {
+    "J": 0.28133874429245914,
+    "s2c_mean_clip": 0.1535826955143935,
+    "c2s_mean_clip": 0.2555120975561313,
+    "s2c_p50": 0.0763467438833632,
+    "s2c_p95": 0.6114392841276879,
+    "s2c_max": 2.2296534437082687,
+    "s2c_within_band": 0.88664,
+    "c2s_p95": 0.9584351723768764
+   },
+   "n_clusters": 32,
+   "tried": [
+    {
+     "cluster": "+1@5,-11,-28",
+     "kind": "revolve",
+     "variant": "1steps",
+     "name": "revolve boss (1 steps) about X",
+     "ok": true,
+     "J": 0.276388480736331,
+     "p95": 0.5807198811409898,
+     "faces": 74,
+     "fixed": 0.772
+    },
+    {
+     "cluster": "+1@5,-11,-28",
+     "kind": "cyl-boss",
+     "variant": "exact",
+     "name": "boss r=1.877 along X (exact)",
+     "ok": true,
+     "J": 0.2758626573044439,
+     "p95": 0.5780619999074694,
+     "faces": 74,
+     "fixed": 1.0
+    },
+    {
+     "cluster": "+1@5,-11,-28",
+     "kind": "cyl-boss pattern",
+     "n_instances": 5,
+     "ok": true,
+     "J": 0.2564909453516404,
+     "faces": 94
+    }
+   ],
+   "accepted": {
+    "id": "R09p",
+    "name": "boss r=1.877 along X (exact) x5 (pattern)",
+    "kind": "cyl-boss",
+    "J": 0.2564909453516404,
+    "after": {
+     "J": 0.2564909453516404,
+     "s2c_mean_clip": 0.13118262527211866,
+     "c2s_mean_clip": 0.25061664015904345,
+     "s2c_p50": 0.07243315615317816,
+     "s2c_p95": 0.47071560471847457,
+     "s2c_max": 2.2296534437082687,
+     "s2c_within_band": 0.90856,
+     "c2s_p95": 0.9382184120414758
+    },
+    "faces": 94
+   }
+  },
+  {
+   "round": 10,
+   "before": {
+    "J": 0.2564909453516404,
+    "s2c_mean_clip": 0.13118262527211866,
+    "c2s_mean_clip": 0.25061664015904345,
+    "s2c_p50": 0.07243315615317816,
+    "s2c_p95": 0.47071560471847457,
+    "s2c_max": 2.2296534437082687,
+    "s2c_within_band": 0.90856,
+    "c2s_p95": 0.9382184120414758
+   },
+   "n_clusters": 26,
+   "tried": [
+    {
+     "cluster": "-1@16,-0,1",
+     "kind": "cyl-hole",
+     "variant": "exact",
+     "name": "hole r=1.931 along Z (exact)",
+     "ok": true,
+     "J": 0.25341458005371514,
+     "p95": 0.4464610418024253,
+     "faces": 97,
+     "fixed": 1.0
+    },
+    {
+     "cluster": "-1@16,-0,1",
+     "kind": "cyl-hole",
+     "variant": "up",
+     "name": "hole r=1.931 along Z (up)",
+     "ok": true,
+     "J": 0.25393959820269973,
+     "p95": 0.4508870505263328,
+     "faces": 96,
+     "fixed": 1.0
+    },
+    {
+     "cluster": "-1@16,-0,1",
+     "kind": "cyl-hole",
+     "variant": "down",
+     "name": "hole r=1.931 along Z (down)",
+     "ok": true,
+     "J": 0.2521787667381408,
+     "p95": 0.4464610418024253,
+     "faces": 96,
+     "fixed": 1.0
+    },
+    {
+     "cluster": "-1@16,-0,1",
+     "kind": "cyl-hole",
+     "variant": "through",
+     "name": "hole r=1.931 along Z (through)",
+     "ok": true,
+     "J": 0.25280473556880934,
+     "p95": 0.4508870505263327,
+     "faces": 95,
+     "fixed": 1.0
+    }
+   ],
+   "accepted": {
+    "id": "R10c",
+    "name": "hole r=1.931 along Z (down)",
+    "kind": "cyl-hole",
+    "J": 0.2521787667381408,
+    "after": {
+     "J": 0.2521787667381408,
+     "s2c_mean_clip": 0.1280421353515824,
+     "c2s_mean_clip": 0.24827326277311687,
+     "s2c_p50": 0.07187945191781725,
+     "s2c_p95": 0.4464610418024253,
+     "s2c_max": 2.2296534437082687,
+     "s2c_within_band": 0.91354,
+     "c2s_p95": 0.9011315883344766
+    },
+    "faces": 96
+   }
+  },
+  {
+   "round": 11,
+   "before": {
+    "J": 0.2521787667381408,
+    "s2c_mean_clip": 0.1280421353515824,
+    "c2s_mean_clip": 0.24827326277311687,
+    "s2c_p50": 0.07187945191781725,
+    "s2c_p95": 0.4464610418024253,
+    "s2c_max": 2.2296534437082687,
+    "s2c_within_band": 0.91354,
+    "c2s_p95": 0.9011315883344766
+   },
+   "n_clusters": 25,
+   "tried": [
+    {
+     "cluster": "-1@-15,-0,1",
+     "kind": "prism-chain",
+     "variant": "exact",
+     "name": "prism chain(7) along Z (exact)",
+     "ok": true,
+     "J": 0.2520851575316916,
+     "p95": 0.4313881918940742,
+     "faces": 105,
+     "fixed": 0.439,
+     "why": "fixes only 44% of the points it claims (< 60%)"
+    },
+    {
+     "cluster": "-1@-15,-0,1",
+     "kind": "prism-chain",
+     "variant": "up",
+     "name": "prism chain(7) along Z (up)",
+     "ok": true,
+     "J": 0.2503405388342606,
+     "p95": 0.43152890366193647,
+     "faces": 104,
+     "fixed": 0.422,
+     "why": "fixes only 42% of the points it claims (< 60%)"
+    },
+    {
+     "cluster": "-1@-15,-0,1",
+     "kind": "prism-chain",
+     "variant": "down",
+     "name": "prism chain(7) along Z (down)",
+     "ok": true,
+     "J": 0.2506980708987254,
+     "p95": 0.4317318562395203,
+     "faces": 104,
+     "fixed": 0.439,
+     "why": "fixes only 44% of the points it claims (< 60%)"
+    },
+    {
+     "cluster": "-1@-15,-0,1",
+     "kind": "prism-chain",
+     "variant": "through",
+     "name": "prism chain(7) along Z (through)",
+     "ok": true,
+     "J": 0.25066131900720234,
+     "p95": 0.43168388424047494,
+     "faces": 103,
+     "fixed": 0.422,
+     "why": "fixes only 42% of the points it claims (< 60%)"
+    },
+    {
+     "cluster": "-1@-15,-0,1",
+     "kind": "prism-chain",
+     "variant": "exact/dr+4.8",
+     "name": "prism chain(7) along Z (exact, draft 4.8)",
+     "ok": true,
+     "J": 0.2519284900723108,
+     "p95": 0.4424360113104583,
+     "faces": 104,
+     "fixed": 0.0,
+     "why": "fixes only 0% of the points it claims (< 60%)"
+    },
+    {
+     "cluster": "-1@-15,-0,1",
+     "kind": "prism-chain",
+     "variant": "exact/dr-4.8",
+     "name": "prism chain(7) along Z (exact, draft -4.8)",
+     "ok": true,
+     "J": 0.25283031921882415,
+     "p95": 0.4308044542403052,
+     "faces": 105,
+     "fixed": 0.462,
+     "why": "fixes only 46% of the points it claims (< 60%)"
+    },
+    {
+     "cluster": "-1@-15,-0,1",
+     "kind": "prism-chain",
+     "variant": "up/dr+4.8",
+     "name": "prism chain(7) along Z (up, draft 4.8)",
+     "ok": true,
+     "J": 0.25187788900938035,
+     "p95": 0.4424360113104583,
+     "faces": 104,
+     "fixed": 0.0,
+     "why": "fixes only 0% of the points it claims (< 60%)"
+    },
+    {
+     "cluster": "-1@-15,-0,1",
+     "kind": "prism-chain",
+     "variant": "up/dr-4.8",
+     "name": "prism chain(7) along Z (up, draft -4.8)",
+     "ok": true,
+     "J": 0.2502562550303629,
+     "p95": 0.43137021619385024,
+     "faces": 104,
+     "fixed": 0.422,
+     "why": "fixes only 42% of the points it claims (< 60%)"
+    },
+    {
+     "cluster": "-1@-15,-0,1",
+     "kind": "prism-chain",
+     "variant": "down/dr+4.8",
+     "name": "prism chain(7) along Z (down, draft 4.8)",
+     "ok": false,
+     "why": "volume delta +0 has the wrong sign (want -)"
+    },
+    {
+     "cluster": "-1@-15,-0,1",
+     "kind": "prism-chain",
+     "variant": "down/dr-4.8",
+     "name": "prism chain(7) along Z (down, draft -4.8)",
+     "ok": true,
+     "J": 0.30441480244456554,
+     "p95": 0.7571522216013507,
+     "faces": 103,
+     "fixed": 0.226,
+     "why": "fixes only 23% of the points it claims (< 60%)"
+    },
+    {
+     "cluster": "-1@-15,-0,1",
+     "kind": "prism-chain",
+     "variant": "through/dr+4.8",
+     "name": "prism chain(7) along Z (through, draft 4.8)",
+     "ok": false,
+     "why": "volume delta +0 has the wrong sign (want -)"
+    },
+    {
+     "cluster": "-1@-15,-0,1",
+     "kind": "prism-chain",
+     "variant": "through/dr-4.8",
+     "name": "prism chain(7) along Z (through, draft -4.8)",
+     "ok": true,
+     "J": 0.4456209805369382,
+     "p95": 5.937223822974495,
+     "faces": 98,
+     "fixed": 0.0,
+     "why": "fixes only 0% of the points it claims (< 60%)"
+    },
+    {
+     "cluster": "-1@-15,-0,1",
+     "kind": "cyl-hole",
+     "variant": "exact",
+     "name": "hole r=1.941 along skew axis (exact)",
+     "ok": true,
+     "J": 0.24954158442283358,
+     "p95": 0.42172364288534847,
+     "faces": 99,
+     "fixed": 1.0
+    },
+    {
+     "cluster": "-1@-15,-0,1",
+     "kind": "cyl-hole",
+     "variant": "up",
+     "name": "hole r=1.941 along skew axis (up)",
+     "ok": true,
+     "J": 0.24830850284921832,
+     "p95": 0.42177481362342845,
+     "faces": 98,
+     "fixed": 1.0
+    }
+   ],
+   "accepted": {
+    "id": "R11n",
+    "name": "hole r=1.941 along skew axis (up)",
+    "kind": "cyl-hole",
+    "J": 0.24830850284921832,
+    "after": {
+     "J": 0.24830850284921832,
+     "s2c_mean_clip": 0.12498994891499926,
+     "c2s_mean_clip": 0.24663710786843812,
+     "s2c_p50": 0.07127002613647822,
+     "s2c_p95": 0.42177481362342845,
+     "s2c_max": 2.2296534437082687,
+     "s2c_within_band": 0.91798,
+     "c2s_p95": 0.8931473697579578
+    },
+    "faces": 98
+   }
+  },
+  {
+   "round": 12,
+   "before": {
+    "J": 0.24830850284921832,
+    "s2c_mean_clip": 0.12498994891499926,
+    "c2s_mean_clip": 0.24663710786843812,
+    "s2c_p50": 0.07127002613647822,
+    "s2c_p95": 0.42177481362342845,
+    "s2c_max": 2.2296534437082687,
+    "s2c_within_band": 0.91798,
+    "c2s_p95": 0.8931473697579578
+   },
+   "n_clusters": 24,
+   "tried": [
+    {
+     "cluster": "-1@-5,-14,-25",
+     "kind": "prism-chain",
+     "variant": "exact",
+     "name": "prism chain(10) along eig0 (exact)",
+     "ok": true,
+     "J": 0.24535105859872003,
+     "p95": 0.40358328336756727,
+     "faces": 111,
+     "fixed": 0.969
+    },
+    {
+     "cluster": "-1@-5,-14,-25",
+     "kind": "prism-chain",
+     "variant": "up",
+     "name": "prism chain(10) along eig0 (up)",
+     "ok": true,
+     "J": 0.24608949277106756,
+     "p95": 0.4066087673133787,
+     "faces": 111,
+     "fixed": 0.958
+    },
+    {
+     "cluster": "-1@-5,-14,-25",
+     "kind": "prism-chain",
+     "variant": "down",
+     "name": "prism chain(10) along eig0 (down)",
+     "ok": true,
+     "J": 0.2458891592159524,
+     "p95": 0.40680812447376297,
+     "faces": 111,
+     "fixed": 0.962
+    },
+    {
+     "cluster": "-1@-5,-14,-25",
+     "kind": "prism-chain",
+     "variant": "through",
+     "name": "prism chain(10) along eig0 (through)",
+     "ok": true,
+     "J": 0.24714998421812923,
+     "p95": 0.4100725999518162,
+     "faces": 111,
+     "fixed": 0.95
+    },
+    {
+     "cluster": "-1@-5,-14,-25",
+     "kind": "prism-chain",
+     "variant": "exact/dr+3.0",
+     "name": "prism chain(10) along eig0 (exact, draft 3.0)",
+     "ok": true,
+     "J": 0.24629179143843719,
+     "p95": 0.4037519531467784,
+     "faces": 117,
+     "fixed": 0.803
+    },
+    {
+     "cluster": "-1@-5,-14,-25",
+     "kind": "prism-chain",
+     "variant": "exact/dr-3.0",
+     "name": "prism chain(10) along eig0 (exact, draft -3.0)",
+     "ok": true,
+     "J": 0.24885334538820558,
+     "p95": 0.42177481362342845,
+     "faces": 115,
+     "fixed": 0.398,
+     "why": "fixes only 40% of the points it claims (< 60%)"
+    },
+    {
+     "cluster": "-1@-5,-14,-25",
+     "kind": "prism-chain",
+     "variant": "up/dr+3.0",
+     "name": "prism chain(10) along eig0 (up, draft 3.0)",
+     "ok": false,
+     "why": "RuntimeError: Unexpected result type"
+    },
+    {
+     "cluster": "-1@-5,-14,-25",
+     "kind": "prism-chain",
+     "variant": "up/dr-3.0",
+     "name": "prism chain(10) along eig0 (up, draft -3.0)",
+     "ok": true,
+     "J": 0.2527856770219197,
+     "p95": 0.4354419003908073,
+     "faces": 123,
+     "fixed": 0.377,
+     "why": "fixes only 38% of the points it claims (< 60%)"
+    },
+    {
+     "cluster": "-1@-5,-14,-25",
+     "kind": "prism-chain",
+     "variant": "down/dr+3.0",
+     "name": "prism chain(10) along eig0 (down, draft 3.0)",
+     "ok": false,
+     "why": "RuntimeError: Unexpected result type"
+    },
+    {
+     "cluster": "-1@-5,-14,-25",
+     "kind": "prism-chain",
+     "variant": "down/dr-3.0",
+     "name": "prism chain(10) along eig0 (down, draft -3.0)",
+     "ok": true,
+     "J": 0.3259761030540895,
+     "p95": 0.9210657758127319,
+     "faces": 109,
+     "fixed": 0.015,
+     "why": "fixes only 2% of the points it claims (< 60%)"
+    },
+    {
+     "cluster": "-1@-5,-14,-25",
+     "kind": "prism-chain",
+     "variant": "through/dr+3.0",
+     "name": "prism chain(10) along eig0 (through, draft 3.0)",
+     "ok": false,
+     "why": "RuntimeError: Unexpected result type"
+    },
+    {
+     "cluster": "-1@-5,-14,-25",
+     "kind": "prism-chain",
+     "variant": "through/dr-3.0",
+     "name": "prism chain(10) along eig0 (through, draft -3.0)",
+     "ok": true,
+     "J": 0.35499905229061585,
+     "p95": 1.5464269755232325,
+     "faces": 100,
+     "fixed": 0.0,
+     "why": "fixes only 0% of the points it claims (< 60%)"
+    }
+   ],
+   "accepted": {
+    "id": "R12a",
+    "name": "prism chain(10) along eig0 (exact)",
+    "kind": "prism-chain",
+    "J": 0.24535105859872003,
+    "after": {
+     "J": 0.24535105859872003,
+     "s2c_mean_clip": 0.12217002727402132,
+     "c2s_mean_clip": 0.2463620626493974,
+     "s2c_p50": 0.07102016756105115,
+     "s2c_p95": 0.40358328336756727,
+     "s2c_max": 2.2296534437082687,
+     "s2c_within_band": 0.9230333333333334,
+     "c2s_p95": 0.8736744393768278
+    },
+    "faces": 111
+   }
+  },
+  {
+   "round": 13,
+   "before": {
+    "J": 0.24535105859872003,
+    "s2c_mean_clip": 0.12217002727402132,
+    "c2s_mean_clip": 0.2463620626493974,
+    "s2c_p50": 0.07102016756105115,
+    "s2c_p95": 0.40358328336756727,
+    "s2c_max": 2.2296534437082687,
+    "s2c_within_band": 0.9230333333333334,
+    "c2s_p95": 0.8736744393768278
+   },
+   "n_clusters": 24,
+   "tried": [
+    {
+     "cluster": "+1@8,0,-2",
+     "kind": "prism-chain",
+     "variant": "bury",
+     "name": "prism chain(11) along Y (bury)",
+     "ok": false,
+     "why": "solids 2 != expected 1"
+    },
+    {
+     "cluster": "+1@8,0,-2",
+     "kind": "prism-chain",
+     "variant": "exact",
+     "name": "prism chain(11) along Y (exact)",
+     "ok": false,
+     "why": "solids 2 != expected 1"
+    },
+    {
+     "cluster": "+1@8,0,-2",
+     "kind": "prism-chain",
+     "variant": "bury/dr+6.0",
+     "name": "prism chain(11) along Y (bury, draft 6.0)",
+     "ok": false,
+     "why": "solids 2 != expected 1"
+    },
+    {
+     "cluster": "+1@8,0,-2",
+     "kind": "prism-chain",
+     "variant": "bury/dr-6.0",
+     "name": "prism chain(11) along Y (bury, draft -6.0)",
+     "ok": false,
+     "why": "solids 2 != expected 1"
+    },
+    {
+     "cluster": "+1@8,0,-2",
+     "kind": "prism-chain",
+     "variant": "exact/dr+6.0",
+     "name": "prism chain(11) along Y (exact, draft 6.0)",
+     "ok": false,
+     "why": "solids 2 != expected 1"
+    },
+    {
+     "cluster": "+1@8,0,-2",
+     "kind": "prism-chain",
+     "variant": "exact/dr-6.0",
+     "name": "prism chain(11) along Y (exact, draft -6.0)",
+     "ok": false,
+     "why": "solids 2 != expected 1"
+    },
+    {
+     "cluster": "-1@5,0,11",
+     "kind": "offset-pocket+nb",
+     "variant": "outline",
+     "name": "pocket = outline offset -6.822, floor z 8.714",
+     "ok": false,
+     "why": "volume delta +0 has the wrong sign (want -)"
+    },
+    {
+     "cluster": "-1@5,0,11",
+     "kind": "prism-rect",
+     "variant": "exact",
+     "name": "prism rect(4) along Z (exact)",
+     "ok": true,
+     "J": 0.24526292159652607,
+     "p95": 0.3920437418532059,
+     "faces": 117,
+     "fixed": 0.908
+    },
+    {
+     "cluster": "-1@5,0,11",
+     "kind": "prism-rect",
+     "variant": "up",
+     "name": "prism rect(4) along Z (up)",
+     "ok": true,
+     "J": 0.24620836539946284,
+     "p95": 0.3920437418532059,
+     "faces": 116,
+     "fixed": 0.908
+    },
+    {
+     "cluster": "-1@5,0,11",
+     "kind": "prism-rect",
+     "variant": "down",
+     "name": "prism rect(4) along Z (down)",
+     "ok": true,
+     "J": 0.25688558634641534,
+     "p95": 0.3967755898428766,
+     "faces": 116,
+     "fixed": 0.865
+    },
+    {
+     "cluster": "-1@5,0,11",
+     "kind": "prism-rect",
+     "variant": "through",
+     "name": "prism rect(4) along Z (through)",
+     "ok": true,
+     "J": 0.2552237814434898,
+     "p95": 0.3967755898428766,
+     "faces": 115,
+     "fixed": 0.865
+    },
+    {
+     "cluster": "-1@5,0,11",
+     "kind": "prism-rect",
+     "variant": "exact/dr+4.0",
+     "name": "prism rect(4) along Z (exact, draft 4.0)",
+     "ok": true,
+     "J": 0.24524563567532168,
+     "p95": 0.3917824784735485,
+     "faces": 117,
+     "fixed": 0.963
+    },
+    {
+     "cluster": "-1@5,0,11",
+     "kind": "prism-rect",
+     "variant": "exact/dr-4.0",
+     "name": "prism rect(4) along Z (exact, draft -4.0)",
+     "ok": true,
+     "J": 0.24559385655141164,
+     "p95": 0.39524954852343186,
+     "faces": 117,
+     "fixed": 0.38,
+     "why": "fixes only 38% of the points it claims (< 60%)"
+    },
+    {
+     "cluster": "-1@5,0,11",
+     "kind": "prism-rect",
+     "variant": "up/dr+4.0",
+     "name": "prism rect(4) along Z (up, draft 4.0)",
+     "ok": true,
+     "J": 0.24650237436994743,
+     "p95": 0.39175967953976276,
+     "faces": 116,
+     "fixed": 0.963
+    },
+    {
+     "cluster": "-1@5,0,11",
+     "kind": "prism-rect",
+     "variant": "up/dr-4.0",
+     "name": "prism rect(4) along Z (up, draft -4.0)",
+     "ok": true,
+     "J": 0.2454481830981497,
+     "p95": 0.3962257369361611,
+     "faces": 116,
+     "fixed": 0.314,
+     "why": "fixes only 31% of the points it claims (< 60%)"
+    },
+    {
+     "cluster": "-1@5,0,11",
+     "kind": "prism-rect",
+     "variant": "down/dr+4.0",
+     "name": "prism rect(4) along Z (down, draft 4.0)",
+     "ok": false,
+     "why": "volume delta +0 has the wrong sign (want -)"
+    },
+    {
+     "cluster": "-1@5,0,11",
+     "kind": "prism-rect",
+     "variant": "down/dr-4.0",
+     "name": "prism rect(4) along Z (down, draft -4.0)",
+     "ok": true,
+     "J": 0.5292192390475228,
+     "p95": 3.1280409003405585,
+     "faces": 119,
+     "fixed": 0.066,
+     "why": "fixes only 7% of the points it claims (< 60%)"
+    },
+    {
+     "cluster": "-1@5,0,11",
+     "kind": "prism-rect",
+     "variant": "through/dr+4.0",
+     "name": "prism rect(4) along Z (through, draft 4.0)",
+     "ok": false,
+     "why": "volume delta +0 has the wrong sign (want -)"
+    },
+    {
+     "cluster": "-1@5,0,11",
+     "kind": "prism-rect",
+     "variant": "through/dr-4.0",
+     "name": "prism rect(4) along Z (through, draft -4.0)",
+     "ok": true,
+     "J": 0.5488989088749717,
+     "p95": 3.6838123130231994,
+     "faces": 118,
+     "fixed": 0.0,
+     "why": "fixes only 0% of the points it claims (< 60%)"
+    },
+    {
+     "cluster": "-1@0,-5,11",
+     "kind": "offset-pocket+nb",
+     "variant": "outline",
+     "name": "pocket = outline offset -6.822, floor z 8.714",
+     "ok": false,
+     "why": "volume delta +0 has the wrong sign (want -)"
+    },
+    {
+     "cluster": "-1@0,-5,11",
+     "kind": "prism-rect",
+     "variant": "exact",
+     "name": "prism rect(4) along Z (exact)",
+     "ok": true,
+     "J": 0.24522184363863325,
+     "p95": 0.39320701040283873,
+     "faces": 117,
+     "fixed": 0.815
+    },
+    {
+     "cluster": "-1@0,-5,11",
+     "kind": "prism-rect",
+     "variant": "up",
+     "name": "prism rect(4) along Z (up)",
+     "ok": true,
+     "J": 0.24621074510162438,
+     "p95": 0.3936117427897093,
+     "faces": 116,
+     "fixed": 0.793
+    },
+    {
+     "cluster": "-1@0,-5,11",
+     "kind": "prism-rect",
+     "variant": "down",
+     "name": "prism rect(4) along Z (down)",
+     "ok": true,
+     "J": 0.2665535573349233,
+     "p95": 0.3978499917567976,
+     "faces": 120,
+     "fixed": 0.805
+    },
+    {
+     "cluster": "-1@0,-5,11",
+     "kind": "prism-rect",
+     "variant": "through",
+     "name": "prism rect(4) along Z (through)",
+     "ok": true,
+     "J": 0.2665963407453794,
+     "p95": 0.3984281016537126,
+     "faces": 119,
+     "fixed": 0.784
+    },
+    {
+     "cluster": "-1@0,-5,11",
+     "kind": "prism-rect",
+     "variant": "exact/dr+3.3",
+     "name": "prism rect(4) along Z (exact, draft 3.3)",
+     "ok": true,
+     "J": 0.2450246338797637,
+     "p95": 0.3923669643927248,
+     "faces": 117,
+     "fixed": 0.918
+    },
+    {
+     "cluster": "-1@0,-5,11",
+     "kind": "prism-rect",
+     "variant": "exact/dr-3.3",
+     "name": "prism rect(4) along Z (exact, draft -3.3)",
+     "ok": true,
+     "J": 0.2458861495287411,
+     "p95": 0.39482851736823876,
+     "faces": 117,
+     "fixed": 0.544,
+     "why": "fixes only 54% of the points it claims (< 60%)"
+    },
+    {
+     "cluster": "-1@0,-5,11",
+     "kind": "prism-rect",
+     "variant": "up/dr+3.3",
+     "name": "prism rect(4) along Z (up, draft 3.3)",
+     "ok": true,
+     "J": 0.2458578207124948,
+     "p95": 0.39239112634273915,
+     "faces": 116,
+     "fixed": 0.918
+    },
+    {
+     "cluster": "-1@0,-5,11",
+     "kind": "prism-rect",
+     "variant": "up/dr-3.3",
+     "name": "prism rect(4) along Z (up, draft -3.3)",
+     "ok": true,
+     "J": 0.2455816456139362,
+     "p95": 0.3960350697495827,
+     "faces": 117,
+     "fixed": 0.489,
+     "why": "fixes only 49% of the points it claims (< 60%)"
+    },
+    {
+     "cluster": "-1@0,-5,11",
+     "kind": "prism-rect",
+     "variant": "down/dr+3.3",
+     "name": "prism rect(4) along Z (down, draft 3.3)",
+     "ok": false,
+     "why": "volume delta +0 has the wrong sign (want -)"
+    },
+    {
+     "cluster": "-1@0,-5,11",
+     "kind": "prism-rect",
+     "variant": "down/dr-3.3",
+     "name": "prism rect(4) along Z (down, draft -3.3)",
+     "ok": false,
+     "why": "solids 2 != expected 1"
+    },
+    {
+     "cluster": "-1@0,-5,11",
+     "kind": "prism-rect",
+     "variant": "through/dr+3.3",
+     "name": "prism rect(4) along Z (through, draft 3.3)",
+     "ok": false,
+     "why": "volume delta +0 has the wrong sign (want -)"
+    },
+    {
+     "cluster": "-1@0,-5,11",
+     "kind": "prism-rect",
+     "variant": "through/dr-3.3",
+     "name": "prism rect(4) along Z (through, draft -3.3)",
+     "ok": false,
+     "why": "solids 2 != expected 1"
+    },
+    {
+     "cluster": "-1@0,5,11",
+     "kind": "offset-pocket+nb",
+     "variant": "outline",
+     "name": "pocket = outline offset -6.822, floor z 8.714",
+     "ok": false,
+     "why": "volume delta +0 has the wrong sign (want -)"
+    },
+    {
+     "cluster": "-1@6,-14,-25",
+     "kind": "prism-chain",
+     "variant": "exact",
+     "name": "prism chain(8) along eig0 (exact)",
+     "ok": true,
+     "J": 0.24436382665826395,
+     "p95": 0.39183880232653706,
+     "faces": 122,
+     "fixed": 0.958
+    },
+    {
+     "cluster": "-1@6,-14,-25",
+     "kind": "prism-chain",
+     "variant": "up",
+     "name": "prism chain(8) along eig0 (up)",
+     "ok": true,
+     "J": 0.24533602708395308,
+     "p95": 0.39428762048296756,
+     "faces": 122,
+     "fixed": 0.958
+    },
+    {
+     "cluster": "-1@6,-14,-25",
+     "kind": "prism-chain",
+     "variant": "down",
+     "name": "prism chain(8) along eig0 (down)",
+     "ok": true,
+     "J": 0.2448515791332589,
+     "p95": 0.3959412702046961,
+     "faces": 122,
+     "fixed": 0.961
+    },
+    {
+     "cluster": "-1@6,-14,-25",
+     "kind": "prism-chain",
+     "variant": "through",
+     "name": "prism chain(8) along eig0 (through)",
+     "ok": true,
+     "J": 0.24548312363867292,
+     "p95": 0.3983912939078056,
+     "faces": 122,
+     "fixed": 0.961
+    },
+    {
+     "cluster": "-1@6,-14,-25",
+     "kind": "prism-chain",
+     "variant": "exact/dr+2.7",
+     "name": "prism chain(8) along eig0 (exact, draft 2.7)",
+     "ok": true,
+     "J": 0.24603761009544023,
+     "p95": 0.40508574176341333,
+     "faces": 121,
+     "fixed": 0.017,
+     "why": "fixes only 2% of the points it claims (< 60%)"
+    },
+    {
+     "cluster": "-1@6,-14,-25",
+     "kind": "prism-chain",
+     "variant": "exact/dr-2.7",
+     "name": "prism chain(8) along eig0 (exact, draft -2.7)",
+     "ok": true,
+     "J": 0.24601849163749717,
+     "p95": 0.40060129986704124,
+     "faces": 122,
+     "fixed": 0.324,
+     "why": "fixes only 32% of the points it claims (< 60%)"
+    },
+    {
+     "cluster": "-1@6,-14,-25",
+     "kind": "prism-chain",
+     "variant": "up/dr+2.7",
+     "name": "prism chain(8) along eig0 (up, draft 2.7)",
+     "ok": true,
+     "J": 0.24603761009544023,
+     "p95": 0.40508574176341333,
+     "faces": 121,
+     "fixed": 0.017,
+     "why": "fixes only 2% of the points it claims (< 60%)"
+    },
+    {
+     "cluster": "-1@6,-14,-25",
+     "kind": "prism-chain",
+     "variant": "up/dr-2.7",
+     "name": "prism chain(8) along eig0 (up, draft -2.7)",
+     "ok": true,
+     "J": 0.24742469765483582,
+     "p95": 0.4138246225986582,
+     "faces": 132,
+     "fixed": 0.274,
+     "why": "fixes only 27% of the points it claims (< 60%)"
+    },
+    {
+     "cluster": "-1@6,-14,-25",
+     "kind": "prism-chain",
+     "variant": "down/dr+2.7",
+     "name": "prism chain(8) along eig0 (down, draft 2.7)",
+     "ok": false,
+     "why": "volume delta +0 has the wrong sign (want -)"
+    },
+    {
+     "cluster": "-1@6,-14,-25",
+     "kind": "prism-chain",
+     "variant": "down/dr-2.7",
+     "name": "prism chain(8) along eig0 (down, draft -2.7)",
+     "ok": true,
+     "J": 0.3081132368979066,
+     "p95": 0.7040100607512946,
+     "faces": 115,
+     "fixed": 0.028,
+     "why": "fixes only 3% of the points it claims (< 60%)"
+    },
+    {
+     "cluster": "-1@6,-14,-25",
+     "kind": "prism-chain",
+     "variant": "through/dr+2.7",
+     "name": "prism chain(8) along eig0 (through, draft 2.7)",
+     "ok": false,
+     "why": "volume delta +0 has the wrong sign (want -)"
+    },
+    {
+     "cluster": "-1@6,-14,-25",
+     "kind": "prism-chain",
+     "variant": "through/dr-2.7",
+     "name": "prism chain(8) along eig0 (through, draft -2.7)",
+     "ok": true,
+     "J": 0.3274776702176159,
+     "p95": 0.9392696605505627,
+     "faces": 114,
+     "fixed": 0.0,
+     "why": "fixes only 0% of the points it claims (< 60%)"
+    }
+   ],
+   "accepted": {
+    "id": "R13a",
+    "name": "prism chain(8) along eig0 (exact)",
+    "kind": "prism-chain",
+    "J": 0.24436382665826395,
+    "after": {
+     "J": 0.24436382665826395,
+     "s2c_mean_clip": 0.12055263195173394,
+     "c2s_mean_clip": 0.24762238941306,
+     "s2c_p50": 0.07087878947950607,
+     "s2c_p95": 0.39183880232653706,
+     "s2c_max": 2.2296534437082687,
+     "s2c_within_band": 0.9261866666666667,
+     "c2s_p95": 0.8947538907436494
+    },
+    "faces": 122
+   }
+  },
+  {
+   "round": 14,
+   "before": {
+    "J": 0.24436382665826395,
+    "s2c_mean_clip": 0.12055263195173394,
+    "c2s_mean_clip": 0.24762238941306,
+    "s2c_p50": 0.07087878947950607,
+    "s2c_p95": 0.39183880232653706,
+    "s2c_max": 2.2296534437082687,
+    "s2c_within_band": 0.9261866666666667,
+    "c2s_p95": 0.8947538907436494
+   },
+   "n_clusters": 23,
+   "tried": [
+    {
+     "cluster": "+1@8,0,-2",
+     "kind": "prism-chain",
+     "variant": "bury",
+     "name": "prism chain(11) along Y (bury)",
+     "ok": false,
+     "why": "solids 2 != expected 1"
+    },
+    {
+     "cluster": "+1@8,0,-2",
+     "kind": "prism-chain",
+     "variant": "exact",
+     "name": "prism chain(11) along Y (exact)",
+     "ok": false,
+     "why": "solids 2 != expected 1"
+    },
+    {
+     "cluster": "+1@8,0,-2",
+     "kind": "prism-chain",
+     "variant": "bury/dr+6.0",
+     "name": "prism chain(11) along Y (bury, draft 6.0)",
+     "ok": false,
+     "why": "solids 2 != expected 1"
+    },
+    {
+     "cluster": "+1@8,0,-2",
+     "kind": "prism-chain",
+     "variant": "bury/dr-6.0",
+     "name": "prism chain(11) along Y (bury, draft -6.0)",
+     "ok": false,
+     "why": "solids 2 != expected 1"
+    },
+    {
+     "cluster": "+1@8,0,-2",
+     "kind": "prism-chain",
+     "variant": "exact/dr+6.0",
+     "name": "prism chain(11) along Y (exact, draft 6.0)",
+     "ok": false,
+     "why": "solids 2 != expected 1"
+    },
+    {
+     "cluster": "+1@8,0,-2",
+     "kind": "prism-chain",
+     "variant": "exact/dr-6.0",
+     "name": "prism chain(11) along Y (exact, draft -6.0)",
+     "ok": false,
+     "why": "solids 2 != expected 1"
+    },
+    {
+     "cluster": "-1@5,0,11",
+     "kind": "offset-pocket+nb",
+     "variant": "outline",
+     "name": "pocket = outline offset -6.822, floor z 8.714",
+     "ok": false,
+     "why": "volume delta +0 has the wrong sign (want -)"
+    },
+    {
+     "cluster": "-1@5,0,11",
+     "kind": "prism-rect",
+     "variant": "exact",
+     "name": "prism rect(4) along Z (exact)",
+     "ok": true,
+     "J": 0.24423651743710556,
+     "p95": 0.3805053892583606,
+     "faces": 128,
+     "fixed": 0.908
+    },
+    {
+     "cluster": "-1@5,0,11",
+     "kind": "prism-rect",
+     "variant": "up",
+     "name": "prism rect(4) along Z (up)",
+     "ok": true,
+     "J": 0.24364441689253924,
+     "p95": 0.380399508085432,
+     "faces": 127,
+     "fixed": 0.908
+    },
+    {
+     "cluster": "-1@5,0,11",
+     "kind": "prism-rect",
+     "variant": "down",
+     "name": "prism rect(4) along Z (down)",
+     "ok": true,
+     "J": 0.25539882377967893,
+     "p95": 0.3855797535207246,
+     "faces": 127,
+     "fixed": 0.865
+    },
+    {
+     "cluster": "-1@5,0,11",
+     "kind": "prism-rect",
+     "variant": "through",
+     "name": "prism rect(4) along Z (through)",
+     "ok": true,
+     "J": 0.25459884988879383,
+     "p95": 0.38556737509700156,
+     "faces": 126,
+     "fixed": 0.865
+    },
+    {
+     "cluster": "-1@5,0,11",
+     "kind": "prism-rect",
+     "variant": "exact/dr+4.0",
+     "name": "prism rect(4) along Z (exact, draft 4.0)",
+     "ok": true,
+     "J": 0.24342667640337765,
+     "p95": 0.38029393599301853,
+     "faces": 128,
+     "fixed": 0.963
+    },
+    {
+     "cluster": "-1@5,0,11",
+     "kind": "prism-rect",
+     "variant": "exact/dr-4.0",
+     "name": "prism rect(4) along Z (exact, draft -4.0)",
+     "ok": true,
+     "J": 0.2434238026051157,
+     "p95": 0.38414868851824463,
+     "faces": 128,
+     "fixed": 0.38,
+     "why": "fixes only 38% of the points it claims (< 60%)"
+    },
+    {
+     "cluster": "-1@5,0,11",
+     "kind": "prism-rect",
+     "variant": "up/dr+4.0",
+     "name": "prism rect(4) along Z (up, draft 4.0)",
+     "ok": true,
+     "J": 0.24381132732024724,
+     "p95": 0.38029393599301853,
+     "faces": 127,
+     "fixed": 0.96
+    },
+    {
+     "cluster": "-1@5,0,11",
+     "kind": "prism-rect",
+     "variant": "up/dr-4.0",
+     "name": "prism rect(4) along Z (up, draft -4.0)",
+     "ok": true,
+     "J": 0.2424932900821156,
+     "p95": 0.3852141757428241,
+     "faces": 127,
+     "fixed": 0.314,
+     "why": "fixes only 31% of the points it claims (< 60%)"
+    },
+    {
+     "cluster": "-1@5,0,11",
+     "kind": "prism-rect",
+     "variant": "down/dr+4.0",
+     "name": "prism rect(4) along Z (down, draft 4.0)",
+     "ok": false,
+     "why": "volume delta +0 has the wrong sign (want -)"
+    },
+    {
+     "cluster": "-1@5,0,11",
+     "kind": "prism-rect",
+     "variant": "down/dr-4.0",
+     "name": "prism rect(4) along Z (down, draft -4.0)",
+     "ok": true,
+     "J": 0.5269204935585903,
+     "p95": 3.1280409003405585,
+     "faces": 130,
+     "fixed": 0.066,
+     "why": "fixes only 7% of the points it claims (< 60%)"
+    },
+    {
+     "cluster": "-1@5,0,11",
+     "kind": "prism-rect",
+     "variant": "through/dr+4.0",
+     "name": "prism rect(4) along Z (through, draft 4.0)",
+     "ok": false,
+     "why": "volume delta +0 has the wrong sign (want -)"
+    },
+    {
+     "cluster": "-1@5,0,11",
+     "kind": "prism-rect",
+     "variant": "through/dr-4.0",
+     "name": "prism rect(4) along Z (through, draft -4.0)",
+     "ok": true,
+     "J": 0.5467656269588601,
+     "p95": 3.6838123130231994,
+     "faces": 129,
+     "fixed": 0.0,
+     "why": "fixes only 0% of the points it claims (< 60%)"
+    }
+   ],
+   "accepted": {
+    "id": "R14f",
+    "name": "prism rect(4) along Z (exact, draft 4.0)",
+    "kind": "prism-rect",
+    "J": 0.24342667640337765,
+    "after": {
+     "J": 0.24342667640337765,
+     "s2c_mean_clip": 0.11906140527252515,
+     "c2s_mean_clip": 0.248730542261705,
+     "s2c_p50": 0.070703596247555,
+     "s2c_p95": 0.38029393599301853,
+     "s2c_max": 2.2296534437082687,
+     "s2c_within_band": 0.9289866666666666,
+     "c2s_p95": 0.9059508946637929
+    },
+    "faces": 128
+   }
+  },
+  {
+   "round": 15,
+   "before": {
+    "J": 0.24342667640337765,
+    "s2c_mean_clip": 0.11906140527252515,
+    "c2s_mean_clip": 0.248730542261705,
+    "s2c_p50": 0.070703596247555,
+    "s2c_p95": 0.38029393599301853,
+    "s2c_max": 2.2296534437082687,
+    "s2c_within_band": 0.9289866666666666,
+    "c2s_p95": 0.9059508946637929
+   },
+   "n_clusters": 22,
+   "tried": [
+    {
+     "cluster": "+1@8,0,-2",
+     "kind": "prism-chain",
+     "variant": "bury",
+     "name": "prism chain(11) along Y (bury)",
+     "ok": false,
+     "why": "solids 2 != expected 1"
+    },
+    {
+     "cluster": "+1@8,0,-2",
+     "kind": "prism-chain",
+     "variant": "exact",
+     "name": "prism chain(11) along Y (exact)",
+     "ok": false,
+     "why": "solids 2 != expected 1"
+    },
+    {
+     "cluster": "+1@8,0,-2",
+     "kind": "prism-chain",
+     "variant": "bury/dr+6.0",
+     "name": "prism chain(11) along Y (bury, draft 6.0)",
+     "ok": false,
+     "why": "solids 2 != expected 1"
+    },
+    {
+     "cluster": "+1@8,0,-2",
+     "kind": "prism-chain",
+     "variant": "bury/dr-6.0",
+     "name": "prism chain(11) along Y (bury, draft -6.0)",
+     "ok": false,
+     "why": "solids 2 != expected 1"
+    },
+    {
+     "cluster": "+1@8,0,-2",
+     "kind": "prism-chain",
+     "variant": "exact/dr+6.0",
+     "name": "prism chain(11) along Y (exact, draft 6.0)",
+     "ok": false,
+     "why": "solids 2 != expected 1"
+    },
+    {
+     "cluster": "+1@8,0,-2",
+     "kind": "prism-chain",
+     "variant": "exact/dr-6.0",
+     "name": "prism chain(11) along Y (exact, draft -6.0)",
+     "ok": false,
+     "why": "solids 2 != expected 1"
+    },
+    {
+     "cluster": "-1@0,-5,11",
+     "kind": "prism-rect",
+     "variant": "exact",
+     "name": "prism rect(4) along Z (exact)",
+     "ok": true,
+     "J": 0.2432182178079077,
+     "p95": 0.36992327950085946,
+     "faces": 134,
+     "fixed": 0.815
+    },
+    {
+     "cluster": "-1@0,-5,11",
+     "kind": "prism-rect",
+     "variant": "up",
+     "name": "prism rect(4) along Z (up)",
+     "ok": true,
+     "J": 0.24297273916186823,
+     "p95": 0.37036987725734866,
+     "faces": 133,
+     "fixed": 0.793
+    },
+    {
+     "cluster": "-1@0,-5,11",
+     "kind": "prism-rect",
+     "variant": "down",
+     "name": "prism rect(4) along Z (down)",
+     "ok": true,
+     "J": 0.26419698778679224,
+     "p95": 0.3748859920374806,
+     "faces": 137,
+     "fixed": 0.805
+    },
+    {
+     "cluster": "-1@0,-5,11",
+     "kind": "prism-rect",
+     "variant": "through",
+     "name": "prism rect(4) along Z (through)",
+     "ok": true,
+     "J": 0.2638244784167122,
+     "p95": 0.3754403474500613,
+     "faces": 136,
+     "fixed": 0.784
+    },
+    {
+     "cluster": "-1@0,-5,11",
+     "kind": "prism-rect",
+     "variant": "exact/dr+3.3",
+     "name": "prism rect(4) along Z (exact, draft 3.3)",
+     "ok": true,
+     "J": 0.24323234276743055,
+     "p95": 0.3687656577312881,
+     "faces": 134,
+     "fixed": 0.918
+    },
+    {
+     "cluster": "-1@0,-5,11",
+     "kind": "prism-rect",
+     "variant": "exact/dr-3.3",
+     "name": "prism rect(4) along Z (exact, draft -3.3)",
+     "ok": true,
+     "J": 0.24281381939193805,
+     "p95": 0.3718376788866752,
+     "faces": 134,
+     "fixed": 0.544,
+     "why": "fixes only 54% of the points it claims (< 60%)"
+    },
+    {
+     "cluster": "-1@0,-5,11",
+     "kind": "prism-rect",
+     "variant": "up/dr+3.3",
+     "name": "prism rect(4) along Z (up, draft 3.3)",
+     "ok": true,
+     "J": 0.24311518558115436,
+     "p95": 0.3687621145986083,
+     "faces": 133,
+     "fixed": 0.918
+    },
+    {
+     "cluster": "-1@0,-5,11",
+     "kind": "prism-rect",
+     "variant": "up/dr-3.3",
+     "name": "prism rect(4) along Z (up, draft -3.3)",
+     "ok": true,
+     "J": 0.24328316282098952,
+     "p95": 0.37297383865099,
+     "faces": 134,
+     "fixed": 0.489,
+     "why": "fixes only 49% of the points it claims (< 60%)"
+    },
+    {
+     "cluster": "-1@0,-5,11",
+     "kind": "prism-rect",
+     "variant": "down/dr+3.3",
+     "name": "prism rect(4) along Z (down, draft 3.3)",
+     "ok": false,
+     "why": "volume delta +0 has the wrong sign (want -)"
+    },
+    {
+     "cluster": "-1@0,-5,11",
+     "kind": "prism-rect",
+     "variant": "down/dr-3.3",
+     "name": "prism rect(4) along Z (down, draft -3.3)",
+     "ok": false,
+     "why": "solids 2 != expected 1"
+    },
+    {
+     "cluster": "-1@0,-5,11",
+     "kind": "prism-rect",
+     "variant": "through/dr+3.3",
+     "name": "prism rect(4) along Z (through, draft 3.3)",
+     "ok": false,
+     "why": "volume delta +0 has the wrong sign (want -)"
+    },
+    {
+     "cluster": "-1@0,-5,11",
+     "kind": "prism-rect",
+     "variant": "through/dr-3.3",
+     "name": "prism rect(4) along Z (through, draft -3.3)",
+     "ok": false,
+     "why": "solids 2 != expected 1"
+    },
+    {
+     "cluster": "-1@-5,0,11",
+     "kind": "prism-rect",
+     "variant": "exact",
+     "name": "prism rect(4) along Z (exact)",
+     "ok": true,
+     "J": 0.24434933348513224,
+     "p95": 0.3700067992032588,
+     "faces": 134,
+     "fixed": 0.996
+    },
+    {
+     "cluster": "-1@-5,0,11",
+     "kind": "prism-rect",
+     "variant": "up",
+     "name": "prism rect(4) along Z (up)",
+     "ok": true,
+     "J": 0.243473430107144,
+     "p95": 0.36996793944190115,
+     "faces": 133,
+     "fixed": 0.996
+    },
+    {
+     "cluster": "-1@-5,0,11",
+     "kind": "prism-rect",
+     "variant": "down",
+     "name": "prism rect(4) along Z (down)",
+     "ok": true,
+     "J": 0.253562382726521,
+     "p95": 0.37299709999842257,
+     "faces": 133,
+     "fixed": 0.982
+    },
+    {
+     "cluster": "-1@-5,0,11",
+     "kind": "prism-rect",
+     "variant": "through",
+     "name": "prism rect(4) along Z (through)",
+     "ok": true,
+     "J": 0.25382227366459226,
+     "p95": 0.37302359275241814,
+     "faces": 132,
+     "fixed": 0.982
+    },
+    {
+     "cluster": "-1@-5,0,11",
+     "kind": "prism-rect",
+     "variant": "exact/dr+2.2",
+     "name": "prism rect(4) along Z (exact, draft 2.2)",
+     "ok": true,
+     "J": 0.24406159952117912,
+     "p95": 0.36994633382871367,
+     "faces": 134,
+     "fixed": 0.996
+    },
+    {
+     "cluster": "-1@-5,0,11",
+     "kind": "prism-rect",
+     "variant": "exact/dr-2.2",
+     "name": "prism rect(4) along Z (exact, draft -2.2)",
+     "ok": true,
+     "J": 0.24358321674118863,
+     "p95": 0.3700067992032588,
+     "faces": 134,
+     "fixed": 0.727
+    },
+    {
+     "cluster": "-1@-5,0,11",
+     "kind": "prism-rect",
+     "variant": "up/dr+2.2",
+     "name": "prism rect(4) along Z (up, draft 2.2)",
+     "ok": true,
+     "J": 0.24334878217797032,
+     "p95": 0.3699693717868628,
+     "faces": 133,
+     "fixed": 0.996
+    },
+    {
+     "cluster": "-1@-5,0,11",
+     "kind": "prism-rect",
+     "variant": "up/dr-2.2",
+     "name": "prism rect(4) along Z (up, draft -2.2)",
+     "ok": true,
+     "J": 0.2427258112147554,
+     "p95": 0.370136348908348,
+     "faces": 134,
+     "fixed": 0.68
+    },
+    {
+     "cluster": "-1@-5,0,11",
+     "kind": "prism-rect",
+     "variant": "down/dr+2.2",
+     "name": "prism rect(4) along Z (down, draft 2.2)",
+     "ok": false,
+     "why": "volume delta +0 has the wrong sign (want -)"
+    },
+    {
+     "cluster": "-1@-5,0,11",
+     "kind": "prism-rect",
+     "variant": "down/dr-2.2",
+     "name": "prism rect(4) along Z (down, draft -2.2)",
+     "ok": true,
+     "J": 0.36573069557151017,
+     "p95": 1.2252268454904849,
+     "faces": 137,
+     "fixed": 0.08,
+     "why": "fixes only 8% of the points it claims (< 60%)"
+    },
+    {
+     "cluster": "-1@-5,0,11",
+     "kind": "prism-rect",
+     "variant": "through/dr+2.2",
+     "name": "prism rect(4) along Z (through, draft 2.2)",
+     "ok": false,
+     "why": "volume delta +0 has the wrong sign (want -)"
+    },
+    {
+     "cluster": "-1@-5,0,11",
+     "kind": "prism-rect",
+     "variant": "through/dr-2.2",
+     "name": "prism rect(4) along Z (through, draft -2.2)",
+     "ok": true,
+     "J": 0.3748594367003747,
+     "p95": 1.323241660647065,
+     "faces": 136,
+     "fixed": 0.0,
+     "why": "fixes only 0% of the points it claims (< 60%)"
+    },
+    {
+     "cluster": "-1@-5,0,11",
+     "kind": "prism-chain",
+     "variant": "exact",
+     "name": "prism chain(12) along Z (exact)",
+     "ok": true,
+     "J": 0.2443206064380617,
+     "p95": 0.37401218222956945,
+     "faces": 142,
+     "fixed": 0.524,
+     "why": "fixes only 52% of the points it claims (< 60%)"
+    },
+    {
+     "cluster": "-1@-5,0,11",
+     "kind": "prism-chain",
+     "variant": "up",
+     "name": "prism chain(12) along Z (up)",
+     "ok": true,
+     "J": 0.2441989599006132,
+     "p95": 0.3740538460198856,
+     "faces": 141,
+     "fixed": 0.524,
+     "why": "fixes only 52% of the points it claims (< 60%)"
+    }
+   ],
+   "accepted": {
+    "id": "R15h",
+    "name": "prism rect(4) along Z (up, draft -2.2)",
+    "kind": "prism-rect",
+    "J": 0.2427258112147554,
+    "after": {
+     "J": 0.2427258112147554,
+     "s2c_mean_clip": 0.11815178935611755,
+     "c2s_mean_clip": 0.24914804371727572,
+     "s2c_p50": 0.07055551185523928,
+     "s2c_p95": 0.370136348908348,
+     "s2c_max": 2.2296534437082687,
+     "s2c_within_band": 0.9307266666666667,
+     "c2s_p95": 0.8969520089733304
+    },
+    "faces": 134
+   }
+  },
+  {
+   "round": 16,
+   "before": {
+    "J": 0.2427258112147554,
+    "s2c_mean_clip": 0.11815178935611755,
+    "c2s_mean_clip": 0.24914804371727572,
+    "s2c_p50": 0.07055551185523928,
+    "s2c_p95": 0.370136348908348,
+    "s2c_max": 2.2296534437082687,
+    "s2c_within_band": 0.9307266666666667,
+    "c2s_p95": 0.8969520089733304
+   },
+   "n_clusters": 23,
+   "tried": [
+    {
+     "cluster": "-1@0,-5,11",
+     "kind": "prism-rect",
+     "variant": "exact",
+     "name": "prism rect(4) along Z (exact)",
+     "ok": true,
+     "J": 0.24227516678986982,
+     "p95": 0.3600634549239587,
+     "faces": 140,
+     "fixed": 0.815
+    },
+    {
+     "cluster": "-1@0,-5,11",
+     "kind": "prism-rect",
+     "variant": "up",
+     "name": "prism rect(4) along Z (up)",
+     "ok": true,
+     "J": 0.24174982266902173,
+     "p95": 0.36055401089092587,
+     "faces": 139,
+     "fixed": 0.793
+    },
+    {
+     "cluster": "-1@0,-5,11",
+     "kind": "prism-rect",
+     "variant": "down",
+     "name": "prism rect(4) along Z (down)",
+     "ok": true,
+     "J": 0.2628882696220322,
+     "p95": 0.3647861670748953,
+     "faces": 143,
+     "fixed": 0.805
+    },
+    {
+     "cluster": "-1@0,-5,11",
+     "kind": "prism-rect",
+     "variant": "through",
+     "name": "prism rect(4) along Z (through)",
+     "ok": true,
+     "J": 0.26308574975045845,
+     "p95": 0.36520716587071717,
+     "faces": 142,
+     "fixed": 0.784
+    },
+    {
+     "cluster": "-1@0,-5,11",
+     "kind": "prism-rect",
+     "variant": "exact/dr+3.3",
+     "name": "prism rect(4) along Z (exact, draft 3.3)",
+     "ok": true,
+     "J": 0.24214932688922003,
+     "p95": 0.358575958551639,
+     "faces": 140,
+     "fixed": 0.918
+    },
+    {
+     "cluster": "-1@0,-5,11",
+     "kind": "prism-rect",
+     "variant": "exact/dr-3.3",
+     "name": "prism rect(4) along Z (exact, draft -3.3)",
+     "ok": true,
+     "J": 0.2420761111161282,
+     "p95": 0.3620669154763013,
+     "faces": 140,
+     "fixed": 0.544,
+     "why": "fixes only 54% of the points it claims (< 60%)"
+    },
+    {
+     "cluster": "-1@0,-5,11",
+     "kind": "prism-rect",
+     "variant": "up/dr+3.3",
+     "name": "prism rect(4) along Z (up, draft 3.3)",
+     "ok": true,
+     "J": 0.24182642029840243,
+     "p95": 0.35840298230458,
+     "faces": 139,
+     "fixed": 0.918
+    },
+    {
+     "cluster": "-1@0,-5,11",
+     "kind": "prism-rect",
+     "variant": "up/dr-3.3",
+     "name": "prism rect(4) along Z (up, draft -3.3)",
+     "ok": true,
+     "J": 0.24196826416330663,
+     "p95": 0.36308589621807785,
+     "faces": 141,
+     "fixed": 0.489,
+     "why": "fixes only 49% of the points it claims (< 60%)"
+    },
+    {
+     "cluster": "-1@0,-5,11",
+     "kind": "prism-rect",
+     "variant": "down/dr+3.3",
+     "name": "prism rect(4) along Z (down, draft 3.3)",
+     "ok": false,
+     "why": "volume delta +0 has the wrong sign (want -)"
+    },
+    {
+     "cluster": "-1@0,-5,11",
+     "kind": "prism-rect",
+     "variant": "down/dr-3.3",
+     "name": "prism rect(4) along Z (down, draft -3.3)",
+     "ok": false,
+     "why": "solids 2 != expected 1"
+    },
+    {
+     "cluster": "-1@0,-5,11",
+     "kind": "prism-rect",
+     "variant": "through/dr+3.3",
+     "name": "prism rect(4) along Z (through, draft 3.3)",
+     "ok": false,
+     "why": "volume delta +0 has the wrong sign (want -)"
+    },
+    {
+     "cluster": "-1@0,-5,11",
+     "kind": "prism-rect",
+     "variant": "through/dr-3.3",
+     "name": "prism rect(4) along Z (through, draft -3.3)",
+     "ok": false,
+     "why": "solids 2 != expected 1"
+    }
+   ],
+   "accepted": {
+    "id": "R16b",
+    "name": "prism rect(4) along Z (up)",
+    "kind": "prism-rect",
+    "J": 0.24174982266902173,
+    "after": {
+     "J": 0.24174982266902173,
+     "s2c_mean_clip": 0.1168212950537598,
+     "c2s_mean_clip": 0.24985705523052384,
+     "s2c_p50": 0.07034891867177329,
+     "s2c_p95": 0.36055401089092587,
+     "s2c_max": 2.2296534437082687,
+     "s2c_within_band": 0.93314,
+     "c2s_p95": 0.8969927039195315
+    },
+    "faces": 139
+   }
+  },
+  {
+   "round": 17,
+   "before": {
+    "J": 0.24174982266902173,
+    "s2c_mean_clip": 0.1168212950537598,
+    "c2s_mean_clip": 0.24985705523052384,
+    "s2c_p50": 0.07034891867177329,
+    "s2c_p95": 0.36055401089092587,
+    "s2c_max": 2.2296534437082687,
+    "s2c_within_band": 0.93314,
+    "c2s_p95": 0.8969927039195315
+   },
+   "n_clusters": 23,
+   "tried": [
+    {
+     "cluster": "-1@-5,-9,-21",
+     "kind": "plane-cut",
+     "variant": "box",
+     "name": "plane cut, normal [-0.97, 0.13, -0.2]",
+     "ok": true,
+     "J": 0.24038453575054192,
+     "p95": 0.35351406305069916,
+     "faces": 144,
+     "fixed": 1.0
+    },
+    {
+     "cluster": "-1@-5,-9,-21",
+     "kind": "prism-chain",
+     "variant": "exact",
+     "name": "prism chain(9) along eig1 (exact)",
+     "ok": true,
+     "J": 0.24119224392526867,
+     "p95": 0.3534402087665548,
+     "faces": 150,
+     "fixed": 1.0
+    },
+    {
+     "cluster": "-1@-5,-9,-21",
+     "kind": "prism-chain",
+     "variant": "up",
+     "name": "prism chain(9) along eig1 (up)",
+     "ok": true,
+     "J": 0.24187300359736874,
+     "p95": 0.35341391506847586,
+     "faces": 149,
+     "fixed": 1.0
+    },
+    {
+     "cluster": "-1@-5,-9,-21",
+     "kind": "prism-chain",
+     "variant": "down",
+     "name": "prism chain(9) along eig1 (down)",
+     "ok": true,
+     "J": 0.2412271549328582,
+     "p95": 0.3534402087665548,
+     "faces": 149,
+     "fixed": 1.0
+    },
+    {
+     "cluster": "-1@-5,-9,-21",
+     "kind": "prism-chain",
+     "variant": "through",
+     "name": "prism chain(9) along eig1 (through)",
+     "ok": true,
+     "J": 0.24164413440151875,
+     "p95": 0.3534402087665548,
+     "faces": 148,
+     "fixed": 1.0
+    },
+    {
+     "cluster": "-1@-5,-9,-21",
+     "kind": "prism-chain",
+     "variant": "exact",
+     "name": "prism chain(8) along Y (exact)",
+     "ok": true,
+     "J": 0.24144312457581243,
+     "p95": 0.35350268072593755,
+     "faces": 149,
+     "fixed": 1.0
+    },
+    {
+     "cluster": "-1@-5,-9,-21",
+     "kind": "prism-chain",
+     "variant": "up",
+     "name": "prism chain(8) along Y (up)",
+     "ok": true,
+     "J": 0.2407190862769643,
+     "p95": 0.34114239891525133,
+     "faces": 158,
+     "fixed": 1.0
+    },
+    {
+     "cluster": "-1@-5,-9,-21",
+     "kind": "prism-chain",
+     "variant": "down",
+     "name": "prism chain(8) along Y (down)",
+     "ok": true,
+     "J": 0.24212581764935187,
+     "p95": 0.35341391506847586,
+     "faces": 158,
+     "fixed": 1.0
+    },
+    {
+     "cluster": "-1@-5,-9,-21",
+     "kind": "prism-chain",
+     "variant": "through",
+     "name": "prism chain(8) along Y (through)",
+     "ok": true,
+     "J": 0.2405120239610038,
+     "p95": 0.3411356246838994,
+     "faces": 167,
+     "fixed": 1.0
+    },
+    {
+     "cluster": "-1@-5,-9,-21",
+     "kind": "prism-chain",
+     "variant": "exact/dr+3.8",
+     "name": "prism chain(9) along eig1 (exact, draft 3.8)",
+     "ok": false,
+     "why": "RuntimeError: 2D offset failed with distance -0.15555788782345395"
+    },
+    {
+     "cluster": "-1@-5,-9,-21",
+     "kind": "prism-chain",
+     "variant": "exact/dr-3.8",
+     "name": "prism chain(9) along eig1 (exact, draft -3.8)",
+     "ok": true,
+     "J": 0.24144444525222772,
+     "p95": 0.35351406305069916,
+     "faces": 150,
+     "fixed": 1.0
+    },
+    {
+     "cluster": "-1@-5,-9,-21",
+     "kind": "prism-chain",
+     "variant": "up/dr+3.8",
+     "name": "prism chain(9) along eig1 (up, draft 3.8)",
+     "ok": false,
+     "why": "RuntimeError: Unexpected result type"
+    },
+    {
+     "cluster": "-1@-5,-9,-21",
+     "kind": "prism-chain",
+     "variant": "up/dr-3.8",
+     "name": "prism chain(9) along eig1 (up, draft -3.8)",
+     "ok": true,
+     "J": 0.24208027386453818,
+     "p95": 0.3548061162616148,
+     "faces": 156,
+     "fixed": 1.0
+    },
+    {
+     "cluster": "-1@-5,-9,-21",
+     "kind": "prism-chain",
+     "variant": "down/dr+3.8",
+     "name": "prism chain(9) along eig1 (down, draft 3.8)",
+     "ok": false,
+     "why": "RuntimeError: Unexpected result type"
+    }
+   ],
+   "accepted": {
+    "id": "R17a",
+    "name": "plane cut, normal [-0.97, 0.13, -0.2]",
+    "kind": "plane-cut",
+    "J": 0.24038453575054192,
+    "after": {
+     "J": 0.24038453575054192,
+     "s2c_mean_clip": 0.11583167279880734,
+     "c2s_mean_clip": 0.2491057259034692,
+     "s2c_p50": 0.07006469848575932,
+     "s2c_p95": 0.35351406305069916,
+     "s2c_max": 2.2296534437082687,
+     "s2c_within_band": 0.9351133333333334,
+     "c2s_p95": 0.8964156655841817
+    },
+    "faces": 144
+   }
+  },
+  {
+   "round": 18,
+   "before": {
+    "J": 0.24038453575054192,
+    "s2c_mean_clip": 0.11583167279880734,
+    "c2s_mean_clip": 0.2491057259034692,
+    "s2c_p50": 0.07006469848575932,
+    "s2c_p95": 0.35351406305069916,
+    "s2c_max": 2.2296534437082687,
+    "s2c_within_band": 0.9351133333333334,
+    "c2s_p95": 0.8964156655841817
+   },
+   "n_clusters": 22,
+   "tried": [
+    {
+     "cluster": "-1@-5,10,-21",
+     "kind": "plane-cut",
+     "variant": "box",
+     "name": "plane cut, normal [-1.0, 0.06, 0.04]",
+     "ok": true,
+     "J": 0.23944628491132378,
+     "p95": 0.3452705564799083,
+     "faces": 149,
+     "fixed": 1.0
+    },
+    {
+     "cluster": "-1@-5,10,-21",
+     "kind": "prism-chain",
+     "variant": "exact",
+     "name": "prism chain(8) along Y (exact)",
+     "ok": true,
+     "J": 0.24025737706241018,
+     "p95": 0.3451496718873486,
+     "faces": 154,
+     "fixed": 1.0
+    },
+    {
+     "cluster": "-1@-5,10,-21",
+     "kind": "prism-chain",
+     "variant": "up",
+     "name": "prism chain(8) along Y (up)",
+     "ok": true,
+     "J": 0.2396176009005468,
+     "p95": 0.3427803579118759,
+     "faces": 156,
+     "fixed": 1.0
+    },
+    {
+     "cluster": "-1@-5,10,-21",
+     "kind": "prism-chain",
+     "variant": "down",
+     "name": "prism chain(8) along Y (down)",
+     "ok": true,
+     "J": 0.23985977976533385,
+     "p95": 0.3457637483794966,
+     "faces": 178,
+     "fixed": 1.0
+    },
+    {
+     "cluster": "-1@-5,10,-21",
+     "kind": "prism-chain",
+     "variant": "through",
+     "name": "prism chain(8) along Y (through)",
+     "ok": true,
+     "J": 0.24068794209007321,
+     "p95": 0.34293551852695975,
+     "faces": 180,
+     "fixed": 1.0
+    },
+    {
+     "cluster": "-1@-5,10,-21",
+     "kind": "prism-chain",
+     "variant": "exact",
+     "name": "prism chain(8) along Z (exact)",
+     "ok": true,
+     "J": 0.24044778369010983,
+     "p95": 0.3451496718873486,
+     "faces": 154,
+     "fixed": 1.0
+    },
+    {
+     "cluster": "-1@-5,10,-21",
+     "kind": "prism-chain",
+     "variant": "up",
+     "name": "prism chain(8) along Z (up)",
+     "ok": true,
+     "J": 0.24055111572090826,
+     "p95": 0.3443906504526847,
+     "faces": 160,
+     "fixed": 1.0
+    },
+    {
+     "cluster": "-1@-5,10,-21",
+     "kind": "prism-chain",
+     "variant": "down",
+     "name": "prism chain(8) along Z (down)",
+     "ok": true,
+     "J": 0.23997166086060537,
+     "p95": 0.3452712553117679,
+     "faces": 154,
+     "fixed": 1.0
+    },
+    {
+     "cluster": "-1@-5,10,-21",
+     "kind": "prism-chain",
+     "variant": "through",
+     "name": "prism chain(8) along Z (through)",
+     "ok": true,
+     "J": 0.24065783737282267,
+     "p95": 0.34464337984368365,
+     "faces": 160,
+     "fixed": 1.0
+    },
+    {
+     "cluster": "-1@-5,10,-21",
+     "kind": "prism-chain",
+     "variant": "exact/dr+3.8",
+     "name": "prism chain(8) along Y (exact, draft 3.8)",
+     "ok": false,
+     "why": "RuntimeError: Unexpected result type"
+    },
+    {
+     "cluster": "-1@-5,10,-21",
+     "kind": "prism-chain",
+     "variant": "exact/dr-3.8",
+     "name": "prism chain(8) along Y (exact, draft -3.8)",
+     "ok": true,
+     "J": 0.24089228532842638,
+     "p95": 0.3465382293442638,
+     "faces": 154,
+     "fixed": 0.816
+    },
+    {
+     "cluster": "-1@-5,10,-21",
+     "kind": "prism-chain",
+     "variant": "up/dr+3.8",
+     "name": "prism chain(8) along Y (up, draft 3.8)",
+     "ok": false,
+     "why": "RuntimeError: Unexpected result type"
+    },
+    {
+     "cluster": "-1@-5,10,-21",
+     "kind": "prism-chain",
+     "variant": "up/dr-3.8",
+     "name": "prism chain(8) along Y (up, draft -3.8)",
+     "ok": false,
+     "why": "solids 2 != expected 1"
+    },
+    {
+     "cluster": "-1@-5,10,-21",
+     "kind": "prism-chain",
+     "variant": "down/dr+3.8",
+     "name": "prism chain(8) along Y (down, draft 3.8)",
+     "ok": false,
+     "why": "RuntimeError: Unexpected result type"
+    }
+   ],
+   "accepted": {
+    "id": "R18a",
+    "name": "plane cut, normal [-1.0, 0.06, 0.04]",
+    "kind": "plane-cut",
+    "J": 0.23944628491132378,
+    "after": {
+     "J": 0.23944628491132378,
+     "s2c_mean_clip": 0.11487260773563852,
+     "c2s_mean_clip": 0.2491473543513705,
+     "s2c_p50": 0.06950605905273893,
+     "s2c_p95": 0.3452705564799083,
+     "s2c_max": 2.2296534437082687,
+     "s2c_within_band": 0.9377333333333333,
+     "c2s_p95": 0.8999445959446095
+    },
+    "faces": 149
+   }
+  },
+  {
+   "round": 19,
+   "before": {
+    "J": 0.23944628491132378,
+    "s2c_mean_clip": 0.11487260773563852,
+    "c2s_mean_clip": 0.2491473543513705,
+    "s2c_p50": 0.06950605905273893,
+    "s2c_p95": 0.3452705564799083,
+    "s2c_max": 2.2296534437082687,
+    "s2c_within_band": 0.9377333333333333,
+    "c2s_p95": 0.8999445959446095
+   },
+   "n_clusters": 21,
+   "tried": [
+    {
+     "cluster": "+1@-1,0,-21",
+     "kind": "prism-chain",
+     "variant": "bury",
+     "name": "prism chain(11) along X (bury)",
+     "ok": true,
+     "J": 0.2397957583106089,
+     "p95": 0.3409947542006668,
+     "faces": 162,
+     "fixed": 0.508,
+     "why": "fixes only 51% of the points it claims (< 60%)"
+    },
+    {
+     "cluster": "+1@-1,0,-21",
+     "kind": "prism-chain",
+     "variant": "exact",
+     "name": "prism chain(11) along X (exact)",
+     "ok": false,
+     "why": "solids 2 != expected 1"
+    },
+    {
+     "cluster": "+1@-5,-1,12",
+     "kind": "prism-chain+nb",
+     "variant": "bury",
+     "name": "prism chain(12) along Y (bury)",
+     "ok": true,
+     "J": 0.24082193506948063,
+     "p95": 0.34464337984368365,
+     "faces": 161,
+     "fixed": 0.963
+    },
+    {
+     "cluster": "+1@-5,-1,12",
+     "kind": "prism-chain+nb",
+     "variant": "exact",
+     "name": "prism chain(12) along Y (exact)",
+     "ok": false,
+     "why": "solids 2 != expected 1"
+    }
+   ],
+   "accepted": null
+  }
+ ],
+ "open_points": [
+  {
+   "cluster": "+1@8,0,-2",
+   "sign": 1,
+   "n": 423,
+   "centroid": [
+    8.389,
+    0.362,
+    -1.832
+   ],
+   "bbox": [
+    [
+     6.818,
+     -0.698,
+     -4.085
+    ],
+    [
+     10.665,
+     0.721,
+     -0.305
+    ]
+   ],
+   "why": "no hypothesis lowered J in 3 rounds"
+  }
+ ],
+ "cards": [
+  {
+   "card": 1,
+   "round": 1,
+   "cluster": "+1@0,1,-22",
+   "question": "Two feature types explain this region almost equally well. Which is the design intent?",
+   "candidates": [
+    {
+     "kind": "revolve",
+     "variant": "3steps",
+     "name": "revolve boss (3 steps) about skew axis",
+     "J": 0.9757152035163619
+    },
+    {
+     "kind": "revolve+nb",
+     "variant": "3steps",
+     "name": "revolve boss (3 steps) about skew axis",
+     "J": 0.9762980826033476
+    }
+   ],
+   "answer": 0,
+   "answered_by": "auto: lower J"
+  },
+  {
+   "card": 2,
+   "round": 2,
+   "cluster": "+1@0,-10,-22",
+   "question": "Two feature types explain this region almost equally well. Which is the design intent?",
+   "candidates": [
+    {
+     "kind": "revolve+nb",
+     "variant": "4steps",
+     "name": "revolve boss (4 steps) about skew axis",
+     "J": 0.6819764925065704
+    },
+    {
+     "kind": "revolve",
+     "variant": "3steps",
+     "name": "revolve boss (3 steps) about skew axis",
+     "J": 0.6831558378947622
+    }
+   ],
+   "answer": 0,
+   "answered_by": "auto: lower J"
+  },
+  {
+   "card": 3,
+   "round": 3,
+   "cluster": "-1@0,0,3",
+   "question": "Two feature types explain this region almost equally well. Which is the design intent?",
+   "candidates": [
+    {
+     "kind": "offset-pocket",
+     "variant": "outline",
+     "name": "pocket = outline offset -1.483, floor z 2.278",
+     "J": 0.39437534109622735
+    },
+    {
+     "kind": "offset-pocket+nb",
+     "variant": "outline",
+     "name": "pocket = outline offset -1.487, floor z 2.279",
+     "J": 0.3945151673932097
+    }
+   ],
+   "answer": 0,
+   "answered_by": "auto: lower J"
+  },
+  {
+   "card": 4,
+   "round": 5,
+   "cluster": "-1@-1,15,-23",
+   "question": "Two feature types explain this region almost equally well. Which is the design intent?",
+   "candidates": [
+    {
+     "kind": "cyl-hole",
+     "variant": "down",
+     "name": "hole r=4.326 along skew axis (down)",
+     "J": 0.30769187770924145
+    },
+    {
+     "kind": "cyl-hole+nb",
+     "variant": "up",
+     "name": "hole r=4.247 along skew axis (up)",
+     "J": 0.3101551656878633
+    },
+    {
+     "kind": "cyl-hole+nb",
+     "variant": "exact",
+     "name": "hole r=4.247 along skew axis (exact)",
+     "J": 0.31649630918044547
+    }
+   ],
+   "answer": 0,
+   "answered_by": "auto: lower J"
+  },
+  {
+   "card": 5,
+   "round": 6,
+   "cluster": "-1@2,-15,-25",
+   "question": "Two feature types explain this region almost equally well. Which is the design intent?",
+   "candidates": [
+    {
+     "kind": "cyl-hole+nb",
+     "variant": "down",
+     "name": "hole r=4.306 along skew axis (down)",
+     "J": 0.2966221394782266
+    },
+    {
+     "kind": "cyl-hole",
+     "variant": "down",
+     "name": "hole r=4.347 along skew axis (down)",
+     "J": 0.29690927559412356
+    },
+    {
+     "kind": "cyl-hole+nb",
+     "variant": "exact",
+     "name": "hole r=4.306 along skew axis (exact)",
+     "J": 0.3066362223804791
+    }
+   ],
+   "answer": 0,
+   "answered_by": "auto: lower J"
+  },
+  {
+   "card": 6,
+   "round": 7,
+   "cluster": "+1@0,0,-22",
+   "question": "Two feature types explain this region almost equally well. Which is the design intent?",
+   "candidates": [
+    {
+     "kind": "cyl-boss",
+     "variant": "exact",
+     "name": "boss r=0.806 along Y (exact)",
+     "J": 0.29039846212888326
+    },
+    {
+     "kind": "revolve",
+     "variant": "1steps",
+     "name": "revolve boss (1 steps) about Y",
+     "J": 0.29039947840079194
+    },
+    {
+     "kind": "cyl-boss+nb",
+     "variant": "exact",
+     "name": "boss r=1.885 along X (exact)",
+     "J": 0.29299862698055434
+    }
+   ],
+   "answer": 0,
+   "answered_by": "auto: lower J"
+  },
+  {
+   "card": 7,
+   "round": 8,
+   "cluster": "+1@5,-11,-28",
+   "question": "Two feature types explain this region almost equally well. Which is the design intent?",
+   "candidates": [
+    {
+     "kind": "cyl-boss+nb",
+     "variant": "exact",
+     "name": "boss r=1.867 along X (exact)",
+     "J": 0.28133874429245914
+    },
+    {
+     "kind": "revolve+nb",
+     "variant": "1steps",
+     "name": "revolve boss (1 steps) about X",
+     "J": 0.28195858578316957
+    },
+    {
+     "kind": "cyl-boss",
+     "variant": "exact",
+     "name": "boss r=1.877 along X (exact)",
+     "J": 0.2847927588744686
+    }
+   ],
+   "answer": 0,
+   "answered_by": "auto: lower J"
+  },
+  {
+   "card": 8,
+   "round": 9,
+   "cluster": "+1@5,-11,-28",
+   "question": "Two feature types explain this region almost equally well. Which is the design intent?",
+   "candidates": [
+    {
+     "kind": "cyl-boss",
+     "variant": "exact",
+     "name": "boss r=1.877 along X (exact)",
+     "J": 0.2758626573044439
+    },
+    {
+     "kind": "revolve",
+     "variant": "1steps",
+     "name": "revolve boss (1 steps) about X",
+     "J": 0.276388480736331
+    }
+   ],
+   "answer": 0,
+   "answered_by": "auto: lower J"
+  },
+  {
+   "card": 9,
+   "round": 17,
+   "cluster": "-1@-5,-9,-21",
+   "question": "Two feature types explain this region almost equally well. Which is the design intent?",
+   "candidates": [
+    {
+     "kind": "plane-cut",
+     "variant": "box",
+     "name": "plane cut, normal [-0.97, 0.13, -0.2]",
+     "J": 0.24038453575054192
+    },
+    {
+     "kind": "prism-chain",
+     "variant": "through",
+     "name": "prism chain(8) along Y (through)",
+     "J": 0.2405120239610038
+    },
+    {
+     "kind": "prism-chain",
+     "variant": "up",
+     "name": "prism chain(8) along Y (up)",
+     "J": 0.2407190862769643
+    }
+   ],
+   "answer": 0,
+   "answered_by": "auto: lower J"
+  },
+  {
+   "card": 10,
+   "round": 18,
+   "cluster": "-1@-5,10,-21",
+   "question": "Two feature types explain this region almost equally well. Which is the design intent?",
+   "candidates": [
+    {
+     "kind": "plane-cut",
+     "variant": "box",
+     "name": "plane cut, normal [-1.0, 0.06, 0.04]",
+     "J": 0.23944628491132378
+    },
+    {
+     "kind": "prism-chain",
+     "variant": "up",
+     "name": "prism chain(8) along Y (up)",
+     "J": 0.2396176009005468
+    },
+    {
+     "kind": "prism-chain",
+     "variant": "down",
+     "name": "prism chain(8) along Y (down)",
+     "J": 0.23985977976533385
+    }
+   ],
+   "answer": 0,
+   "answered_by": "auto: lower J"
+  }
+ ],
+ "start": {
+  "metrics": {
+   "J": 1.2830103350458602,
+   "s2c_mean_clip": 1.069035401767217,
+   "c2s_mean_clip": 0.4279498665572863,
+   "s2c_p50": 1.3041613923728828,
+   "s2c_p95": 13.995970236706794,
+   "s2c_max": 16.04047383244836,
+   "s2c_within_band": 0.38741333333333333,
+   "c2s_p95": 2.075982630711232
+  },
+  "faces": 20
+ },
+ "blend_candidates": [
+  {
+   "cluster": "-1@5,0,11",
+   "centroid": [
+    5.127,
+    0.041,
+    10.604
+   ],
+   "note": "edge blend r~0.690 over 76 deg: finishing-stage fillet"
+  },
+  {
+   "cluster": "-1@0,-5,11",
+   "centroid": [
+    0.073,
+    -5.229,
+    10.749
+   ],
+   "note": "edge blend r~0.612 over 73 deg: finishing-stage fillet"
+  },
+  {
+   "cluster": "-1@0,5,11",
+   "centroid": [
+    0.115,
+    5.232,
+    10.674
+   ],
+   "note": "edge blend r~1.277 over 51 deg: finishing-stage fillet"
+  },
+  {
+   "cluster": "-1@5,0,11",
+   "centroid": [
+    5.127,
+    0.041,
+    10.604
+   ],
+   "note": "edge blend r~0.690 over 76 deg: finishing-stage fillet"
+  },
+  {
+   "cluster": "-1@0,-5,11",
+   "centroid": [
+    0.073,
+    -5.229,
+    10.749
+   ],
+   "note": "edge blend r~0.612 over 73 deg: finishing-stage fillet"
+  },
+  {
+   "cluster": "-1@0,5,11",
+   "centroid": [
+    0.115,
+    5.232,
+    10.674
+   ],
+   "note": "edge blend r~1.277 over 51 deg: finishing-stage fillet"
+  },
+  {
+   "cluster": "-1@-5,0,11",
+   "centroid": [
+    -5.2,
+    0.047,
+    10.656
+   ],
+   "note": "edge blend r~1.044 over 65 deg: finishing-stage fillet"
+  },
+  {
+   "cluster": "-1@0,-5,11",
+   "centroid": [
+    0.073,
+    -5.229,
+    10.749
+   ],
+   "note": "edge blend r~0.612 over 73 deg: finishing-stage fillet"
+  }
+ ],
+ "final": {
+  "metrics": {
+   "J": 0.23944628491132378,
+   "s2c_mean_clip": 0.11487260773563852,
+   "c2s_mean_clip": 0.2491473543513705,
+   "s2c_p50": 0.06950605905273893,
+   "s2c_p95": 0.3452705564799083,
+   "s2c_max": 2.2296534437082687,
+   "s2c_within_band": 0.9377333333333333,
+   "c2s_p95": 0.8999445959446095
+  },
+  "faces": 149,
+  "nodes": 20,
+  "builds": 229,
+  "seconds": 1062.8
+ }
+}

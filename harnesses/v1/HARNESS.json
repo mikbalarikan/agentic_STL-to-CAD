@@ -16,6 +16,10 @@
     [
       "python3",
       "skills/stl-re-build/tests/test_od_h22.py"
+    ],
+    [
+      "python3",
+      "skills/stl-re-refine/tests/test_refine.py"
     ]
   ],
   "python": ">=3.10",
@@ -32,5 +36,5 @@
   ],
   "start_prompt": "Turn <scan.stl> into a STEP (calipers in <MEASUREMENTS.md> or scan-only).",
   "design": "README.md",
-  "milestone": "M1 done (feature-tree builder); M2 next"
+  "milestone": "M2 delivered with open points (refine loop); M3 next"
 }

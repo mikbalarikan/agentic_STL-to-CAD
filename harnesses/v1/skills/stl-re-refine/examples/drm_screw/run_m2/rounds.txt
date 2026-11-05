@@ -1,0 +1,4 @@
+start J=0.5525 p95=2.018 faces=7
+round 1: + R01d hole r=1.944 along Z (through)  J=0.3226 p95=0.741 faces=8  (120s, 5 builds)
+round 2: + R02a lathe cut about Z (1 steps)  J=0.2997 p95=0.741 faces=16  (226s, 9 builds)
+round 3: no hypothesis lowered J; stop

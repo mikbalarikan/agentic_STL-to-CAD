@@ -214,6 +214,10 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--obs-far-mm", type=float, default=0.5)
     ap.add_argument("--obs-cone-deg", type=float, default=60.0)
     ap.add_argument("--obs-max-range-mm", type=float, default=None)
+    ap.add_argument("--obs-method", choices=["sky", "cone"], default="sky",
+                    help="v1 default sky (two lines of sight, fixes bores counted observable); cone = v0/OD")
+    ap.add_argument("--obs-tri-deg", type=float, default=20.0)
+    ap.add_argument("--obs-max-incidence-deg", type=float, default=65.0)
     ap.add_argument("--sweep-radii", default="0,0.2,0.4,0.8,1.5,2.5",
                     help="open-boundary radius sweep (B02 q20_tier2.py:181-190 used these)")
     ap.add_argument("--cluster-threshold", type=float, default=None,
@@ -333,10 +337,15 @@ def main(argv: list[str] | None = None) -> int:
 
     # ---- observability (CAD->scan split)
     if not a.no_observability:
-        from observability import observable_split
+        from observability import observable_split, observable_split_sky
 
-        ob = observable_split(cad, cp, cfi, d2, a.obs_subsample, a.obs_seed, a.obs_far_mm, a.obs_cone_deg,
-                              max_range_mm=a.obs_max_range_mm)
+        if a.obs_method == "sky":
+            ob = observable_split_sky(cad, cp, cfi, d2, a.obs_subsample, a.obs_seed, a.obs_far_mm,
+                                      max_incidence_deg=a.obs_max_incidence_deg, tri_deg=a.obs_tri_deg,
+                                      max_range_mm=a.obs_max_range_mm)
+        else:
+            ob = observable_split(cad, cp, cfi, d2, a.obs_subsample, a.obs_seed, a.obs_far_mm, a.obs_cone_deg,
+                                  max_range_mm=a.obs_max_range_mm)
         res["cad_to_scan_observable"] = ob["observable"]
         res["unobservable_fraction"] = ob["unobservable_fraction"]
         res["observability"] = {k: v for k, v in ob.items() if not k.startswith("_")}
