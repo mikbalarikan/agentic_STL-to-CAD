@@ -1,0 +1,37 @@
+{
+  "schema": "stl-re/limitations@1",
+  "part": {
+    "name": "fixture_part",
+    "what_it_is": "Synthetic test plate with a through bore ({{params:plate_x.value}} × {{params:plate_y.value}} mm). Not a real part.",
+    "reference_photo": null
+  },
+  "method_summary": [
+    "Datum: plate top face (primary), bore axis (secondary), long edge clocks +X.",
+    "Parameters from calipers where given, scan otherwise; see the source column.",
+    "build123d box minus cylinder; both frames exported and re-imported.",
+    "Two-way deviation on the full-resolution scan, regime {{gate:regime.name}}."
+  ],
+  "limitations": [
+    {
+      "id": "L1",
+      "text": "Bore diameter {{params:bore_d.value}} mm is assumed; the scan does not resolve it. Tier1 partial: only 2 of 3 dims are gated (the bore is not calipered).",
+      "rerun_trigger": "One caliper reading of the bore diameter; a value different from the model triggers a re-run.",
+      "evidence": "measure/params.json#bore_d"
+    }
+  ],
+  "assumptions": [
+    {
+      "text": "Plate corners are sharp (no fillet was measured).",
+      "source": "assumed",
+      "evidence": "measure/params.json"
+    }
+  ],
+  "claim_boundary": {
+    "fit_for": [
+      "pipeline testing of stl-re-deliver"
+    ],
+    "not_fit_for": [
+      "any physical use; the bore is not calipered"
+    ]
+  }
+}

@@ -101,7 +101,7 @@ stay comparable across models and agent CLIs.
 
 | | Scope | Done when |
 |---|---|---|
-| M1 | `features/` library, profile sketcher, `feature_tree.json` schema, `build_tree.py` with per-node checks and rollback; port v0 intake/measure/verify/deliver scripts that do not change | the OD-H22 valve rebuilds from a hand-written tree with the same deviation as v0, with no `model.py` |
+| M1 ✅ | `features/` library, profile sketcher, `feature_tree.json` schema, `build_tree.py` with per-node checks and rollback; port v0 intake/measure/verify/deliver scripts that do not change | the OD-H22 valve rebuilds from a hand-written tree with the same deviation as v0, with no `model.py`. **Met:** see "M1 result" below |
 | M2 | observability fix, `deviate.py`, `clusters.py`, `classify.py`, `loop.py`, decision cards answered by the agent | OD-H22 and one golden part rebuild from datum + base body through the loop |
 | M3 | skills (`SKILL.md`) for v1, slimmed: evidence citations moved to `references/`; `run_metrics.json`; doctor and selftests | `tools/harness.py install v1` works; v0 vs v1 comparison on the same parts |
 | M4 | guided mode UI: datum candidates (axes, planes, circles) highlighted for the user to pick Z, X and origin; decision cards with side-by-side previews | the same pipeline runs with the user as arbiter |
@@ -125,3 +125,26 @@ stay comparable across models and agent CLIs.
 - Out of v1 scope for now (v0 HALTs on these too): multi-part assemblies (R385, Ulka) and
   freeform skins (Chest, Left Thigh). The NX package holds working recipes for both, so
   they are candidates for v2+.
+
+## M1 result
+
+Code: `skills/stl-re-build/` (`scripts/treexpr.py`, `sketch2d.py`, `features.py`,
+`build_tree.py`; schema in `references/feature-tree.md`). The OD-H22 acceptance tree is
+`skills/stl-re-build/examples/od_h22/feature_tree.json`.
+
+| | v0 `model.py` | v1 `feature_tree.json` |
+|---|---|---|
+| What the agent writes | 297 lines, 14.6 KB of Python | 109 lines, 6.9 KB of JSON (5.8 KB minified) |
+| Geometry | 1 solid, 162 faces, 6395.5936 mm³ | identical: 162 faces, 6395.5936 mm³, symmetric difference 0.000000 mm³ (datum and scan frame) |
+| Fillets | 5/5 OK | 5/5 OK (2 in the sketch as concave-vertex fillets, 3 logged in `fillets.json`) |
+| scan→CAD (v0 deviation gate, same registration and masks) | p50 0.0677 / p95 0.2483 / max 1.4269 | p50 0.0677 / p95 0.2483 / max 1.4269 |
+| observable CAD→scan | p95 1.4843 / max 4.858 | p95 1.4771 / max 4.858 (same geometry; the CAD surface sampling follows the STEP face order) |
+| Unused params, tree literals | none | none |
+
+Tests: `tests/test_features.py` 27/27 (expressions incl. injection refusals, arcs through both
+end points, concave-vertex fillet, offset, draft, revolve, repeated cuts, rollback of a cut
+that misses, a second solid caught, fillet fallback REDUCED, lint of fillet order, ruled-loft
+refusal, unused params) and `tests/test_od_h22.py` PASS.
+
+Note: authored size is a proxy for token use. Actual tokens per run will be measured by the
+benchmark runner.

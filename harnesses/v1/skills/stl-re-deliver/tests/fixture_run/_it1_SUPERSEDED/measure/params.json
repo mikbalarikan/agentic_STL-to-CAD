@@ -1,0 +1,54 @@
+{
+  "schema": "stl-re/params@1",
+  "tool": "measure",
+  "tool_version": "fixture",
+  "inputs": {},
+  "seed": 0,
+  "created": "1970-01-01T00:00:00+00:00",
+  "params": {
+    "plate_x": {
+      "value": 40.0,
+      "unit": "mm",
+      "measured": "40.02",
+      "rule": "caliper-direct",
+      "source": "caliper",
+      "estimator": "two-jaw, 3 readings",
+      "uncertainty_mm": 0.02,
+      "evidence": "input/MEASUREMENTS.md#F01",
+      "critical": true
+    },
+    "plate_y": {
+      "value": 30.0,
+      "unit": "mm",
+      "measured": "29.98–30.03",
+      "rule": "round-within-noise",
+      "source": "scan",
+      "estimator": "section at z=0, opposite-flat distance",
+      "uncertainty_mm": 0.05,
+      "evidence": "measure/figures/sec_z0.png",
+      "critical": false
+    },
+    "plate_t": {
+      "value": 5.0,
+      "unit": "mm",
+      "measured": "5.01",
+      "rule": "caliper-direct",
+      "source": "caliper",
+      "estimator": "two-jaw",
+      "uncertainty_mm": 0.02,
+      "evidence": "input/MEASUREMENTS.md#F02",
+      "critical": false
+    },
+    "bore_d": {
+      "value": 7.0,
+      "unit": "mm",
+      "measured": null,
+      "rule": "assumed",
+      "source": "assumed",
+      "estimator": "not observable (fixture)",
+      "uncertainty_mm": null,
+      "evidence": "DECISIONS.md",
+      "critical": true
+    }
+  }
+}

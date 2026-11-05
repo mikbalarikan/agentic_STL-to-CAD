@@ -1,0 +1,109 @@
+{
+  "schema": "feature_tree@v1",
+  "part": "OD-H22_3-way-valve",
+  "note": "Hand-written port of harnesses/v0/examples/OD-H22_3-way-valve/run/build/model.py (M1 acceptance case). Datum: z=0 flange back face, +Z valve axis toward the drive tube, +X ear axis, ports in the YZ plane; port lists ordered [+Y port, -Y port]. Params: harnesses/v0/examples/OD-H22_3-way-valve/run/measure/params.json.",
+  "constants": {
+    "CUT_OVERSHOOT": {"value": 1.0, "why": "cut tools overshoot the faces they open"},
+    "BURY": {"value": 0.5, "why": "sub-body extended into the body it is fused with (no visible surface)"},
+    "FACING": {"value": 0.7, "why": "|cos(theta)| above this = slot faces the X axis (picks slot_bottom_z_x vs _y)"}
+  },
+  "let": {
+    "top": "rim_top_z",
+    "a_ear": "radians(ear_side_angle_deg)"
+  },
+  "profiles": {
+    "outline": {
+      "why": "flange outline: disc plate_R plus two tapered ears ending in circles ear_end_R about each ear hole; concave disc/ear corners blended",
+      "items": [
+        {"type": "circle", "c": [0, 0], "r": "plate_R"},
+        {"type": "chain", "repeat": {"xh": "ear_hole_x"},
+         "let_each": {"s": "sign(xh)", "X": "abs(xh)", "re": "ear_end_R",
+                      "tx": "X + re*sin(a_ear)", "ty": "re*cos(a_ear)", "y0": "ty + tx*tan(a_ear)"},
+         "pts": [[0, "y0"], ["s*tx", "ty"], ["s*tx", "-ty"], [0, "-y0"]],
+         "arcs": {"1": {"center": ["s*X", 0]}}}
+      ],
+      "fillet_vertices": {"r": "outline_blend_R", "select": "concave"}
+    }
+  },
+  "nodes": [
+    {"id": "F01", "name": "flange outline prism", "op": "extrude", "combine": "new",
+     "sketch": {"plane": "XY", "profile": {"ref": "outline"}}, "z0": 0, "z1": "top"},
+
+    {"id": "F03", "name": "back-edge round", "op": "fillet", "local": true,
+     "why": "the back outline loop must be rounded before the core is fused to the back face",
+     "edges": {"z": 0}, "r": "back_edge_R", "param": "back_edge_R"},
+
+    {"id": "F04", "name": "tray pocket", "op": "extrude", "combine": "cut",
+     "why": "same outline offset inward by rim_wall_t (the concave blends grow by the offset)",
+     "sketch": {"plane": "XY", "profile": {"ref": "outline", "offset": "-rim_wall_t"}},
+     "z0": "flange_floor_z", "z1": "top + CUT_OVERSHOOT"},
+
+    {"id": "F05", "name": "core revolve: stem, 40 deg cone, neck, collar, drive tube", "op": "revolve",
+     "let": {"k": "tan(radians(stem_cone_half_angle_deg))",
+             "z_cb": "stem_cone_top_z - (stem_R - stem_neck_R)/k"},
+     "profile": {"items": [{"type": "polygon", "pts": [
+       [0, "stem_neck_bottom_z"], ["stem_neck_R", "stem_neck_bottom_z"], ["stem_neck_R", "z_cb"],
+       ["stem_R", "stem_cone_top_z"], ["stem_R", "BURY"], ["collar_R", "BURY"], ["collar_R", "collar_top_z"],
+       ["tube_R", "collar_top_z"], ["tube_R", "tube_top_z"], [0, "tube_top_z"]]}]}},
+
+    {"id": "F06", "name": "gussets (+X instance mirrored to -X)", "op": "extrude",
+     "let": {"ga": "tan(radians(gusset_angle_deg))", "gx": "gusset_x_at_z0"},
+     "sketch": {"plane": "XZ", "profile": {"items": [{"type": "polygon",
+       "pts": [[0, "BURY"], ["gx + BURY/ga", "BURY"], [0, "-gx*ga"]]}]}},
+     "amount": "gusset_t/2", "both": true, "mirror": ["YZ"]},
+
+    {"id": "F07", "name": "port bodies (neck, sleeve, lip) revolved about each port axis", "op": "revolve",
+     "repeat": {"i": [0, 1]},
+     "let_each": {"e": "radians(port_elev_deg[i])", "s": "1 if i == 0 else -1"},
+     "frame_each": {"origin": [0, 0, "port_axis_z0[i]"], "x_dir": [1, 0, 0], "z_dir": [0, "s*cos(e)", "-sin(e)"]},
+     "profile": {"items": [{"type": "polygon", "pts": [
+       [0, 0], ["port_neck_R", 0], ["port_neck_R", "port_sleeve_t[i]"], ["port_sleeve_R", "port_sleeve_t[i]"],
+       ["port_sleeve_R", "port_block_t1[i]"], ["port_lip_R", "port_block_t1[i]"], ["port_lip_R", "port_end_t[i]"],
+       [0, "port_end_t[i]"]]}]}},
+
+    {"id": "F08", "name": "port clip blocks with axial corner rounds", "op": "box",
+     "repeat": {"i": [0, 1]},
+     "let_each": {"e": "radians(port_elev_deg[i])", "s": "1 if i == 0 else -1"},
+     "frame_each": {"origin": [0, 0, "port_axis_z0[i]"], "x_dir": [1, 0, 0], "z_dir": [0, "s*cos(e)", "-sin(e)"]},
+     "size": ["2*port_block_half_u", "2*port_block_half_v", "port_block_t1[i] - port_block_t0[i]"],
+     "at": [0, 0, "(port_block_t0[i] + port_block_t1[i])/2"],
+     "post": [{"op": "fillet", "name": "F08 port block axial corner rounds", "edges": {"geom": "line", "parallel": "Z"},
+               "r": "port_block_corner_R", "param": "port_block_corner_R"}]},
+
+    {"id": "F09", "name": "bottom rib (top buried in the stem)", "op": "box",
+     "let": {"rb": "rib_bottom_z", "rtop": "stem_neck_bottom_z + 2*BURY"},
+     "size": ["rib_t", "2*rib_half_len", "rtop - rb"], "at": [0, 0, "(rb + rtop)/2"]},
+
+    {"id": "F10a", "name": "tube bore", "op": "cylinder", "combine": "cut",
+     "r": "tube_bore_r", "h": "tube_top_z - tube_bore_bottom_z + CUT_OVERSHOOT", "at": [0, 0, "tube_bore_bottom_z"]},
+
+    {"id": "F10b", "name": "tube slots at measured angles and widths", "op": "box", "combine": "cut",
+     "assert": ["len(slot_theta_deg) == slot_count", "len(slot_w) == slot_count"],
+     "let": {"r_in": "tube_bore_r - BURY", "r_out": "tube_R + CUT_OVERSHOOT"},
+     "repeat": {"th": "slot_theta_deg", "w": "slot_w"},
+     "let_each": {"zfl": "slot_bottom_z_x if abs(cosd(th)) > FACING else slot_bottom_z_y"},
+     "size": ["r_out - r_in", "w", "tube_top_z - zfl + CUT_OVERSHOOT"],
+     "at": ["(r_in + r_out)/2", 0, "zfl"], "align": ["center", "center", "min"],
+     "place": [{"rot": [0, 0, "th"]}]},
+
+    {"id": "F10c", "name": "ear holes", "op": "cylinder", "combine": "cut",
+     "repeat": {"xh": "ear_hole_x"},
+     "r": "ear_hole_r", "h": "top + 2*CUT_OVERSHOOT", "at": ["xh", 0, "-CUT_OVERSHOOT"]},
+
+    {"id": "F11", "name": "port bores and clip slots", "op": "group", "combine": "cut",
+     "repeat": {"i": [0, 1]},
+     "let_each": {"e": "radians(port_elev_deg[i])", "s": "1 if i == 0 else -1",
+                  "te": "port_end_t[i]", "step": "port_bore_step_t", "e2": "port_bore2_end_t",
+                  "tc": "port_block_t0[i] + port_slot_dt0 + port_slot_w/2"},
+     "frame_each": {"origin": [0, 0, "port_axis_z0[i]"], "x_dir": [1, 0, 0], "z_dir": [0, "s*cos(e)", "-sin(e)"]},
+     "parts": [
+       {"op": "cylinder", "r": "port_bore_R", "h": "te - step + CUT_OVERSHOOT", "at": [0, 0, "step"]},
+       {"op": "cylinder", "r": "port_bore2_R", "h": "step - e2 + BURY", "at": [0, 0, "e2"]},
+       {"op": "extrude", "repeat": {"sv": [1, -1]},
+        "sketch": {"plane": {"origin": [0, 0, 0], "x_dir": [0, 1, 0], "z_dir": [1, 0, 0]},
+                   "profile": {"items": [{"type": "slot", "c": ["sv*(port_slot_v_in + port_slot_v_out)/2", "tc"],
+                                          "length": "port_slot_v_out - port_slot_v_in", "width": "port_slot_w"}]}},
+        "amount": "port_block_half_u + CUT_OVERSHOOT", "both": true}
+     ]}
+  ]
+}

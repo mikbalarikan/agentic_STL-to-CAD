@@ -1,0 +1,52 @@
+{
+ "schema": "stl-re/review@1",
+ "tool": "review",
+ "tool_version": "fixture",
+ "inputs": {},
+ "seed": 0,
+ "created": "1970-01-01T00:00:00+00:00",
+ "verdict": "REVISE",
+ "photos": [],
+ "checks": {
+  "CHK-CIRCULAR": {
+   "ran": true,
+   "result": "pass",
+   "note": "fixture"
+  },
+  "CHK-LIKE4LIKE": {
+   "ran": true,
+   "result": "pass",
+   "note": "fixture"
+  },
+  "CHK-INDEP": {
+   "ran": true,
+   "result": "pass",
+   "note": "fixture"
+  },
+  "CHK-FILLET": {
+   "ran": true,
+   "result": "pass",
+   "note": "fixture"
+  },
+  "CHK-PATCHWORK": {
+   "ran": true,
+   "result": "pass",
+   "note": "fixture"
+  },
+  "CHK-ENUM": {
+   "ran": true,
+   "result": "finding",
+   "note": "fixture: bore too small vs photo"
+  },
+  "CHK-ACHIEVABLE": {
+   "ran": true,
+   "result": "finding",
+   "note": "fixture: F01 plate_x miss is a caliper reading, not an unachievable geometry"
+  }
+ },
+ "independence": "verify ran in a fresh agent (CHK-INDEP)",
+ "cluster_explanations": {},
+ "claim_boundary": "Not fit for any physical use; the bore is not calipered. Fit for pipeline testing of stl-re-deliver only.",
+ "miss_explanations": [],
+ "limitations": []
+}

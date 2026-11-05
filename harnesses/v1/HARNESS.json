@@ -8,9 +8,29 @@
   "entry_skill": "stl-re-orchestrate",
   "skills": [],
   "doctor": null,
-  "selftests": [],
+  "selftests": [
+    [
+      "python3",
+      "skills/stl-re-build/tests/test_features.py"
+    ],
+    [
+      "python3",
+      "skills/stl-re-build/tests/test_od_h22.py"
+    ]
+  ],
   "python": ">=3.10",
-  "python_deps": ["numpy", "scipy", "trimesh", "build123d", "rtree", "shapely", "fast_simplification", "networkx", "matplotlib"],
+  "python_deps": [
+    "numpy",
+    "scipy",
+    "trimesh",
+    "build123d",
+    "rtree",
+    "shapely",
+    "fast_simplification",
+    "networkx",
+    "matplotlib"
+  ],
   "start_prompt": "Turn <scan.stl> into a STEP (calipers in <MEASUREMENTS.md> or scan-only).",
-  "design": "README.md"
+  "design": "README.md",
+  "milestone": "M1 done (feature-tree builder); M2 next"
 }

@@ -1,0 +1,17 @@
+{
+ "schema": "stl-re/hash_freeze@1",
+ "tool": "step_check.py",
+ "tool_version": "fixture",
+ "inputs": {},
+ "seed": 0,
+ "created": "1970-01-01T00:00:00+00:00",
+ "before": {
+  "build/fixture_part_datum.step": "0000000000000000000000000000000000000000000000000000000000000000",
+  "build/fixture_part.step": "0000000000000000000000000000000000000000000000000000000000000000"
+ },
+ "after": {
+  "build/fixture_part_datum.step": "0000000000000000000000000000000000000000000000000000000000000000",
+  "build/fixture_part.step": "0000000000000000000000000000000000000000000000000000000000000000"
+ },
+ "unchanged": true
+}

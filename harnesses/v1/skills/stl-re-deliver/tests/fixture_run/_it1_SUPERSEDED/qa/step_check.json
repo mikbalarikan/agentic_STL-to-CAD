@@ -1,0 +1,129 @@
+{
+ "schema": "stl-re/step_check@1",
+ "tool": "step_check.py",
+ "tool_version": "fixture",
+ "inputs": {},
+ "seed": 0,
+ "created": "1970-01-01T00:00:00+00:00",
+ "steps": {
+  "build/fixture_part_datum.step": {
+   "validity": {
+    "counts": {
+     "solid": 1,
+     "shell": 1,
+     "face": 7,
+     "edge": 15,
+     "vertex": 10
+    },
+    "brepcheck_valid": true,
+    "shells_closed": [
+     true
+    ],
+    "naked_edges": 0,
+    "volume_mm3": 5975.0,
+    "area_mm2": 1200.0,
+    "bbox": [
+     [
+      -20.0,
+      -15.0,
+      -2.5
+     ],
+     [
+      20.0,
+      15.0,
+      2.5
+     ]
+    ],
+    "single_valid_closed_solid": true
+   },
+   "tessellation": {
+    "tolerance": 0.005,
+    "angular_tolerance": 0.05,
+    "tris": 400,
+    "watertight": true,
+    "winding": true,
+    "euler": 2,
+    "components": 1,
+    "degenerate_faces": 0,
+    "volume_mm3": 5975.0,
+    "volume_vs_brep_mm3": 0.0
+   },
+   "surface_census": {
+    "faces": 7,
+    "by_type": {
+     "plane": {
+      "count": 6,
+      "area_mm2": 1150.0
+     },
+     "cylinder": {
+      "count": 1,
+      "area_mm2": 50.0
+     }
+    },
+    "analytic_area_share": 1.0,
+    "gated": false,
+    "note": "reported, not gated (QUESTIONS.md Q3)"
+   }
+  },
+  "build/fixture_part.step": {
+   "validity": {
+    "counts": {
+     "solid": 1,
+     "shell": 1,
+     "face": 7,
+     "edge": 15,
+     "vertex": 10
+    },
+    "brepcheck_valid": true,
+    "shells_closed": [
+     true
+    ],
+    "naked_edges": 0,
+    "volume_mm3": 5975.0,
+    "area_mm2": 1200.0,
+    "bbox": [
+     [
+      -20.0,
+      -15.0,
+      -2.5
+     ],
+     [
+      20.0,
+      15.0,
+      2.5
+     ]
+    ],
+    "single_valid_closed_solid": true
+   },
+   "tessellation": {
+    "tolerance": 0.005,
+    "angular_tolerance": 0.05,
+    "tris": 400,
+    "watertight": true,
+    "winding": true,
+    "euler": 2,
+    "components": 1,
+    "degenerate_faces": 0,
+    "volume_mm3": 5975.0,
+    "volume_vs_brep_mm3": 0.0
+   },
+   "surface_census": {
+    "faces": 7,
+    "by_type": {
+     "plane": {
+      "count": 6,
+      "area_mm2": 1150.0
+     },
+     "cylinder": {
+      "count": 1,
+      "area_mm2": 50.0
+     }
+    },
+    "analytic_area_share": 1.0,
+    "gated": false,
+    "note": "reported, not gated (QUESTIONS.md Q3)"
+   }
+  }
+ },
+ "all_single_valid_closed_solid": true
+}
