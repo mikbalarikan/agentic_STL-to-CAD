@@ -1,0 +1,1482 @@
+{
+ "schema": "stl-re/params@1",
+ "note": "values measured by the v1 refine loop (refine/refine_log.json); source scan",
+ "params": {
+  "R01_c": {
+   "value": [
+    0.0909,
+    9.2297,
+    -20.5403
+   ],
+   "unit": "mm",
+   "source": "scan",
+   "rule": "keep-measured",
+   "estimator": "classify.py revolve on RANSAC axis [0.0, 0.83, -0.557]: 11668 points, 3 radius steps",
+   "evidence": "refine round 1 cluster +1@0,1,-22 n=53701",
+   "measured": [
+    0.0909,
+    9.2297,
+    -20.5403
+   ],
+   "uncertainty_mm": null,
+   "critical": false
+  },
+  "R01_d": {
+   "value": [
+    0.0,
+    0.8305,
+    -0.5571
+   ],
+   "unit": "-",
+   "source": "scan",
+   "rule": "keep-measured",
+   "estimator": "classify.py revolve on RANSAC axis [0.0, 0.83, -0.557]: 11668 points, 3 radius steps",
+   "evidence": "refine round 1 cluster +1@0,1,-22 n=53701",
+   "measured": [
+    0.0,
+    0.8305,
+    -0.5571
+   ],
+   "uncertainty_mm": null,
+   "critical": false
+  },
+  "R01_u": {
+   "value": [
+    -0.0,
+    0.5571,
+    0.8305
+   ],
+   "unit": "-",
+   "source": "scan",
+   "rule": "keep-measured",
+   "estimator": "classify.py revolve on RANSAC axis [0.0, 0.83, -0.557]: 11668 points, 3 radius steps",
+   "evidence": "refine round 1 cluster +1@0,1,-22 n=53701",
+   "measured": [
+    -0.0,
+    0.5571,
+    0.8305
+   ],
+   "uncertainty_mm": null,
+   "critical": false
+  },
+  "R01_t": {
+   "value": [
+    -10.5245,
+    -4.2527,
+    3.9677,
+    9.0651
+   ],
+   "unit": "mm",
+   "source": "scan",
+   "rule": "keep-measured",
+   "estimator": "classify.py revolve on RANSAC axis [0.0, 0.83, -0.557]: 11668 points, 3 radius steps",
+   "evidence": "refine round 1 cluster +1@0,1,-22 n=53701",
+   "measured": [
+    -10.5245,
+    -4.2527,
+    3.9677,
+    9.0651
+   ],
+   "uncertainty_mm": null,
+   "critical": false
+  },
+  "R01_r": {
+   "value": [
+    4.27,
+    5.643,
+    6.2358
+   ],
+   "unit": "mm",
+   "source": "scan",
+   "rule": "keep-measured",
+   "estimator": "classify.py revolve on RANSAC axis [0.0, 0.83, -0.557]: 11668 points, 3 radius steps",
+   "evidence": "refine round 1 cluster +1@0,1,-22 n=53701",
+   "measured": [
+    4.27,
+    5.643,
+    6.2358
+   ],
+   "uncertainty_mm": null,
+   "critical": false
+  },
+  "R02u_c": {
+   "value": [
+    0.158,
+    -8.7149,
+    -20.5595
+   ],
+   "unit": "mm",
+   "source": "scan",
+   "rule": "keep-measured",
+   "estimator": "classify.py revolve on RANSAC axis [-0.0, -0.819, -0.574]: 10776 points, 4 radius steps",
+   "evidence": "refine round 2 cluster +1@0,-10,-22 + 9 neighbours",
+   "measured": [
+    0.158,
+    -8.7149,
+    -20.5595
+   ],
+   "uncertainty_mm": null,
+   "critical": false
+  },
+  "R02u_d": {
+   "value": [
+    -0.0,
+    -0.8187,
+    -0.5743
+   ],
+   "unit": "-",
+   "source": "scan",
+   "rule": "keep-measured",
+   "estimator": "classify.py revolve on RANSAC axis [-0.0, -0.819, -0.574]: 10776 points, 4 radius steps",
+   "evidence": "refine round 2 cluster +1@0,-10,-22 + 9 neighbours",
+   "measured": [
+    -0.0,
+    -0.8187,
+    -0.5743
+   ],
+   "uncertainty_mm": null,
+   "critical": false
+  },
+  "R02u_u": {
+   "value": [
+    0.0,
+    0.5743,
+    -0.8187
+   ],
+   "unit": "-",
+   "source": "scan",
+   "rule": "keep-measured",
+   "estimator": "classify.py revolve on RANSAC axis [-0.0, -0.819, -0.574]: 10776 points, 4 radius steps",
+   "evidence": "refine round 2 cluster +1@0,-10,-22 + 9 neighbours",
+   "measured": [
+    0.0,
+    0.5743,
+    -0.8187
+   ],
+   "uncertainty_mm": null,
+   "critical": false
+  },
+  "R02u_t": {
+   "value": [
+    -9.9503,
+    -4.0936,
+    4.3017,
+    8.3245,
+    9.3739
+   ],
+   "unit": "mm",
+   "source": "scan",
+   "rule": "keep-measured",
+   "estimator": "classify.py revolve on RANSAC axis [-0.0, -0.819, -0.574]: 10776 points, 4 radius steps",
+   "evidence": "refine round 2 cluster +1@0,-10,-22 + 9 neighbours",
+   "measured": [
+    -9.9503,
+    -4.0936,
+    4.3017,
+    8.3245,
+    9.3739
+   ],
+   "uncertainty_mm": null,
+   "critical": false
+  },
+  "R02u_r": {
+   "value": [
+    4.2885,
+    5.675,
+    6.2574,
+    6.2289
+   ],
+   "unit": "mm",
+   "source": "scan",
+   "rule": "keep-measured",
+   "estimator": "classify.py revolve on RANSAC axis [-0.0, -0.819, -0.574]: 10776 points, 4 radius steps",
+   "evidence": "refine round 2 cluster +1@0,-10,-22 + 9 neighbours",
+   "measured": [
+    4.2885,
+    5.675,
+    6.2574,
+    6.2289
+   ],
+   "uncertainty_mm": null,
+   "critical": false
+  },
+  "R03_wall": {
+   "value": 1.4834,
+   "unit": "mm",
+   "source": "scan",
+   "rule": "keep-measured",
+   "estimator": "classify.py offset pocket of profile outline: wall 1.483 (p10-p90 spread 0.249), floor z 2.278",
+   "evidence": "refine round 3 cluster -1@0,0,3 n=25417",
+   "measured": 1.4834,
+   "uncertainty_mm": null,
+   "critical": false
+  },
+  "R03_floor": {
+   "value": 2.2777,
+   "unit": "mm",
+   "source": "scan",
+   "rule": "keep-measured",
+   "estimator": "classify.py offset pocket of profile outline: wall 1.483 (p10-p90 spread 0.249), floor z 2.278",
+   "evidence": "refine round 3 cluster -1@0,0,3 n=25417",
+   "measured": 2.2777,
+   "uncertainty_mm": null,
+   "critical": false
+  },
+  "R04_c": {
+   "value": [
+    -0.0751,
+    0.0,
+    8.2851
+   ],
+   "unit": "mm",
+   "source": "scan",
+   "rule": "keep-measured",
+   "estimator": "classify.py RANSAC cylinder along Z: r 4.530, rms 0.053, 3688 inliers, coverage 350 deg",
+   "evidence": "refine round 4 cluster -1@0,0,9 n=8531",
+   "measured": [
+    -0.0751,
+    0.0,
+    8.2851
+   ],
+   "uncertainty_mm": null,
+   "critical": false
+  },
+  "R04_d": {
+   "value": [
+    -0.0,
+    -0.0,
+    -1.0
+   ],
+   "unit": "-",
+   "source": "scan",
+   "rule": "keep-measured",
+   "estimator": "classify.py RANSAC cylinder along Z: r 4.530, rms 0.053, 3688 inliers, coverage 350 deg",
+   "evidence": "refine round 4 cluster -1@0,0,9 n=8531",
+   "measured": [
+    -0.0,
+    -0.0,
+    -1.0
+   ],
+   "uncertainty_mm": null,
+   "critical": false
+  },
+  "R04_u": {
+   "value": [
+    0.0,
+    1.0,
+    0.0
+   ],
+   "unit": "-",
+   "source": "scan",
+   "rule": "keep-measured",
+   "estimator": "classify.py RANSAC cylinder along Z: r 4.530, rms 0.053, 3688 inliers, coverage 350 deg",
+   "evidence": "refine round 4 cluster -1@0,0,9 n=8531",
+   "measured": [
+    0.0,
+    1.0,
+    0.0
+   ],
+   "uncertainty_mm": null,
+   "critical": false
+  },
+  "R04_r": {
+   "value": 4.5299,
+   "unit": "mm",
+   "source": "scan",
+   "rule": "keep-measured",
+   "estimator": "classify.py RANSAC cylinder along Z: r 4.530, rms 0.053, 3688 inliers, coverage 350 deg",
+   "evidence": "refine round 4 cluster -1@0,0,9 n=8531",
+   "measured": 4.5299,
+   "uncertainty_mm": null,
+   "critical": false
+  },
+  "R04_h": {
+   "value": 83.7745,
+   "unit": "mm",
+   "source": "scan",
+   "rule": "keep-measured",
+   "estimator": "classify.py RANSAC cylinder along Z: r 4.530, rms 0.053, 3688 inliers, coverage 350 deg",
+   "evidence": "refine round 4 cluster -1@0,0,9 n=8531",
+   "measured": 83.7745,
+   "uncertainty_mm": null,
+   "critical": false
+  },
+  "R04_t0": {
+   "value": -78.2961,
+   "unit": "mm",
+   "source": "scan",
+   "rule": "keep-measured",
+   "estimator": "classify.py RANSAC cylinder along Z: r 4.530, rms 0.053, 3688 inliers, coverage 350 deg",
+   "evidence": "refine round 4 cluster -1@0,0,9 n=8531",
+   "measured": -78.2961,
+   "uncertainty_mm": null,
+   "critical": false
+  },
+  "R05_c": {
+   "value": [
+    0.1431,
+    15.4576,
+    -24.783
+   ],
+   "unit": "mm",
+   "source": "scan",
+   "rule": "keep-measured",
+   "estimator": "classify.py RANSAC cylinder along [0.044, -0.872, 0.488]: r 4.326, rms 0.033, 1175 inliers, coverage 288 deg",
+   "evidence": "refine round 5 cluster -1@-1,15,-23 n=3949",
+   "measured": [
+    0.1431,
+    15.4576,
+    -24.783
+   ],
+   "uncertainty_mm": null,
+   "critical": false
+  },
+  "R05_d": {
+   "value": [
+    0.0439,
+    -0.8719,
+    0.4877
+   ],
+   "unit": "-",
+   "source": "scan",
+   "rule": "keep-measured",
+   "estimator": "classify.py RANSAC cylinder along [0.044, -0.872, 0.488]: r 4.326, rms 0.033, 1175 inliers, coverage 288 deg",
+   "evidence": "refine round 5 cluster -1@-1,15,-23 n=3949",
+   "measured": [
+    0.0439,
+    -0.8719,
+    0.4877
+   ],
+   "uncertainty_mm": null,
+   "critical": false
+  },
+  "R05_u": {
+   "value": [
+    0.0,
+    -0.4882,
+    -0.8727
+   ],
+   "unit": "-",
+   "source": "scan",
+   "rule": "keep-measured",
+   "estimator": "classify.py RANSAC cylinder along [0.044, -0.872, 0.488]: r 4.326, rms 0.033, 1175 inliers, coverage 288 deg",
+   "evidence": "refine round 5 cluster -1@-1,15,-23 n=3949",
+   "measured": [
+    0.0,
+    -0.4882,
+    -0.8727
+   ],
+   "uncertainty_mm": null,
+   "critical": false
+  },
+  "R05_r": {
+   "value": 4.3262,
+   "unit": "mm",
+   "source": "scan",
+   "rule": "keep-measured",
+   "estimator": "classify.py RANSAC cylinder along [0.044, -0.872, 0.488]: r 4.326, rms 0.033, 1175 inliers, coverage 288 deg",
+   "evidence": "refine round 5 cluster -1@-1,15,-23 n=3949",
+   "measured": 4.3262,
+   "uncertainty_mm": null,
+   "critical": false
+  },
+  "R05_h": {
+   "value": 76.7212,
+   "unit": "mm",
+   "source": "scan",
+   "rule": "keep-measured",
+   "estimator": "classify.py RANSAC cylinder along [0.044, -0.872, 0.488]: r 4.326, rms 0.033, 1175 inliers, coverage 288 deg",
+   "evidence": "refine round 5 cluster -1@-1,15,-23 n=3949",
+   "measured": 76.7212,
+   "uncertainty_mm": null,
+   "critical": false
+  },
+  "R05_t0": {
+   "value": -74.6332,
+   "unit": "mm",
+   "source": "scan",
+   "rule": "keep-measured",
+   "estimator": "classify.py RANSAC cylinder along [0.044, -0.872, 0.488]: r 4.326, rms 0.033, 1175 inliers, coverage 288 deg",
+   "evidence": "refine round 5 cluster -1@-1,15,-23 n=3949",
+   "measured": -74.6332,
+   "uncertainty_mm": null,
+   "critical": false
+  },
+  "R06u_c": {
+   "value": [
+    0.1244,
+    -15.1334,
+    -25.0411
+   ],
+   "unit": "mm",
+   "source": "scan",
+   "rule": "keep-measured",
+   "estimator": "classify.py RANSAC cylinder along [-0.042, 0.78, 0.624]: r 4.306, rms 0.031, 918 inliers, coverage 293 deg",
+   "evidence": "refine round 6 cluster -1@2,-15,-25 + 17 neighbours",
+   "measured": [
+    0.1244,
+    -15.1334,
+    -25.0411
+   ],
+   "uncertainty_mm": null,
+   "critical": false
+  },
+  "R06u_d": {
+   "value": [
+    -0.0423,
+    0.7799,
+    0.6244
+   ],
+   "unit": "-",
+   "source": "scan",
+   "rule": "keep-measured",
+   "estimator": "classify.py RANSAC cylinder along [-0.042, 0.78, 0.624]: r 4.306, rms 0.031, 918 inliers, coverage 293 deg",
+   "evidence": "refine round 6 cluster -1@2,-15,-25 + 17 neighbours",
+   "measured": [
+    -0.0423,
+    0.7799,
+    0.6244
+   ],
+   "uncertainty_mm": null,
+   "critical": false
+  },
+  "R06u_u": {
+   "value": [
+    0.0,
+    -0.625,
+    0.7806
+   ],
+   "unit": "-",
+   "source": "scan",
+   "rule": "keep-measured",
+   "estimator": "classify.py RANSAC cylinder along [-0.042, 0.78, 0.624]: r 4.306, rms 0.031, 918 inliers, coverage 293 deg",
+   "evidence": "refine round 6 cluster -1@2,-15,-25 + 17 neighbours",
+   "measured": [
+    0.0,
+    -0.625,
+    0.7806
+   ],
+   "uncertainty_mm": null,
+   "critical": false
+  },
+  "R06u_r": {
+   "value": 4.3056,
+   "unit": "mm",
+   "source": "scan",
+   "rule": "keep-measured",
+   "estimator": "classify.py RANSAC cylinder along [-0.042, 0.78, 0.624]: r 4.306, rms 0.031, 918 inliers, coverage 293 deg",
+   "evidence": "refine round 6 cluster -1@2,-15,-25 + 17 neighbours",
+   "measured": 4.3056,
+   "uncertainty_mm": null,
+   "critical": false
+  },
+  "R06u_h": {
+   "value": 76.6718,
+   "unit": "mm",
+   "source": "scan",
+   "rule": "keep-measured",
+   "estimator": "classify.py RANSAC cylinder along [-0.042, 0.78, 0.624]: r 4.306, rms 0.031, 918 inliers, coverage 293 deg",
+   "evidence": "refine round 6 cluster -1@2,-15,-25 + 17 neighbours",
+   "measured": 76.6718,
+   "uncertainty_mm": null,
+   "critical": false
+  },
+  "R06u_t0": {
+   "value": -74.6054,
+   "unit": "mm",
+   "source": "scan",
+   "rule": "keep-measured",
+   "estimator": "classify.py RANSAC cylinder along [-0.042, 0.78, 0.624]: r 4.306, rms 0.031, 918 inliers, coverage 293 deg",
+   "evidence": "refine round 6 cluster -1@2,-15,-25 + 17 neighbours",
+   "measured": -74.6054,
+   "uncertainty_mm": null,
+   "critical": false
+  },
+  "R07u_c": {
+   "value": [
+    0.2741,
+    16.5263,
+    -20.5303
+   ],
+   "unit": "mm",
+   "source": "scan",
+   "rule": "keep-measured",
+   "estimator": "classify.py RANSAC cylinder along X: r 1.885, rms 0.061, 607 inliers, coverage 213 deg",
+   "evidence": "refine round 7 cluster +1@0,0,-22 + 8 neighbours",
+   "measured": [
+    0.2741,
+    16.5263,
+    -20.5303
+   ],
+   "uncertainty_mm": null,
+   "critical": false
+  },
+  "R07u_d": {
+   "value": [
+    1.0,
+    0.0,
+    0.0
+   ],
+   "unit": "-",
+   "source": "scan",
+   "rule": "keep-measured",
+   "estimator": "classify.py RANSAC cylinder along X: r 1.885, rms 0.061, 607 inliers, coverage 213 deg",
+   "evidence": "refine round 7 cluster +1@0,0,-22 + 8 neighbours",
+   "measured": [
+    1.0,
+    0.0,
+    0.0
+   ],
+   "uncertainty_mm": null,
+   "critical": false
+  },
+  "R07u_u": {
+   "value": [
+    0.0,
+    0.0,
+    -1.0
+   ],
+   "unit": "-",
+   "source": "scan",
+   "rule": "keep-measured",
+   "estimator": "classify.py RANSAC cylinder along X: r 1.885, rms 0.061, 607 inliers, coverage 213 deg",
+   "evidence": "refine round 7 cluster +1@0,0,-22 + 8 neighbours",
+   "measured": [
+    0.0,
+    0.0,
+    -1.0
+   ],
+   "uncertainty_mm": null,
+   "critical": false
+  },
+  "R07u_r": {
+   "value": 1.8852,
+   "unit": "mm",
+   "source": "scan",
+   "rule": "keep-measured",
+   "estimator": "classify.py RANSAC cylinder along X: r 1.885, rms 0.061, 607 inliers, coverage 213 deg",
+   "evidence": "refine round 7 cluster +1@0,0,-22 + 8 neighbours",
+   "measured": 1.8852,
+   "uncertainty_mm": null,
+   "critical": false
+  },
+  "R07u_h": {
+   "value": 11.5721,
+   "unit": "mm",
+   "source": "scan",
+   "rule": "keep-measured",
+   "estimator": "classify.py RANSAC cylinder along X: r 1.885, rms 0.061, 607 inliers, coverage 213 deg",
+   "evidence": "refine round 7 cluster +1@0,0,-22 + 8 neighbours",
+   "measured": 11.5721,
+   "uncertainty_mm": null,
+   "critical": false
+  },
+  "R07u_t0": {
+   "value": -5.9436,
+   "unit": "mm",
+   "source": "scan",
+   "rule": "keep-measured",
+   "estimator": "classify.py RANSAC cylinder along X: r 1.885, rms 0.061, 607 inliers, coverage 213 deg",
+   "evidence": "refine round 7 cluster +1@0,0,-22 + 8 neighbours",
+   "measured": -5.9436,
+   "uncertainty_mm": null,
+   "critical": false
+  },
+  "R08u_c": {
+   "value": [
+    -0.1284,
+    -16.2497,
+    -20.7605
+   ],
+   "unit": "mm",
+   "source": "scan",
+   "rule": "keep-measured",
+   "estimator": "classify.py RANSAC cylinder along X: r 1.862, rms 0.070, 779 inliers, coverage 206 deg",
+   "evidence": "refine round 8 cluster +1@0,0,-22 + 6 neighbours",
+   "measured": [
+    -0.1284,
+    -16.2497,
+    -20.7605
+   ],
+   "uncertainty_mm": null,
+   "critical": false
+  },
+  "R08u_d": {
+   "value": [
+    1.0,
+    0.0,
+    0.0
+   ],
+   "unit": "-",
+   "source": "scan",
+   "rule": "keep-measured",
+   "estimator": "classify.py RANSAC cylinder along X: r 1.862, rms 0.070, 779 inliers, coverage 206 deg",
+   "evidence": "refine round 8 cluster +1@0,0,-22 + 6 neighbours",
+   "measured": [
+    1.0,
+    0.0,
+    0.0
+   ],
+   "uncertainty_mm": null,
+   "critical": false
+  },
+  "R08u_u": {
+   "value": [
+    0.0,
+    0.0,
+    -1.0
+   ],
+   "unit": "-",
+   "source": "scan",
+   "rule": "keep-measured",
+   "estimator": "classify.py RANSAC cylinder along X: r 1.862, rms 0.070, 779 inliers, coverage 206 deg",
+   "evidence": "refine round 8 cluster +1@0,0,-22 + 6 neighbours",
+   "measured": [
+    0.0,
+    0.0,
+    -1.0
+   ],
+   "uncertainty_mm": null,
+   "critical": false
+  },
+  "R08u_r": {
+   "value": 1.8616,
+   "unit": "mm",
+   "source": "scan",
+   "rule": "keep-measured",
+   "estimator": "classify.py RANSAC cylinder along X: r 1.862, rms 0.070, 779 inliers, coverage 206 deg",
+   "evidence": "refine round 8 cluster +1@0,0,-22 + 6 neighbours",
+   "measured": 1.8616,
+   "uncertainty_mm": null,
+   "critical": false
+  },
+  "R08u_h": {
+   "value": 11.6725,
+   "unit": "mm",
+   "source": "scan",
+   "rule": "keep-measured",
+   "estimator": "classify.py RANSAC cylinder along X: r 1.862, rms 0.070, 779 inliers, coverage 206 deg",
+   "evidence": "refine round 8 cluster +1@0,0,-22 + 6 neighbours",
+   "measured": 11.6725,
+   "uncertainty_mm": null,
+   "critical": false
+  },
+  "R08u_t0": {
+   "value": -5.5368,
+   "unit": "mm",
+   "source": "scan",
+   "rule": "keep-measured",
+   "estimator": "classify.py RANSAC cylinder along X: r 1.862, rms 0.070, 779 inliers, coverage 206 deg",
+   "evidence": "refine round 8 cluster +1@0,0,-22 + 6 neighbours",
+   "measured": -5.5368,
+   "uncertainty_mm": null,
+   "critical": false
+  },
+  "R09u_c": {
+   "value": [
+    0.3142,
+    -11.4796,
+    -27.5147
+   ],
+   "unit": "mm",
+   "source": "scan",
+   "rule": "keep-measured",
+   "estimator": "classify.py RANSAC cylinder along X: r 1.880, rms 0.027, 812 inliers, coverage 214 deg",
+   "evidence": "refine round 9 cluster +1@0,0,-22 + 4 neighbours",
+   "measured": [
+    0.3142,
+    -11.4796,
+    -27.5147
+   ],
+   "uncertainty_mm": null,
+   "critical": false
+  },
+  "R09u_d": {
+   "value": [
+    -1.0,
+    -0.0,
+    -0.0
+   ],
+   "unit": "-",
+   "source": "scan",
+   "rule": "keep-measured",
+   "estimator": "classify.py RANSAC cylinder along X: r 1.880, rms 0.027, 812 inliers, coverage 214 deg",
+   "evidence": "refine round 9 cluster +1@0,0,-22 + 4 neighbours",
+   "measured": [
+    -1.0,
+    -0.0,
+    -0.0
+   ],
+   "uncertainty_mm": null,
+   "critical": false
+  },
+  "R09u_u": {
+   "value": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "unit": "-",
+   "source": "scan",
+   "rule": "keep-measured",
+   "estimator": "classify.py RANSAC cylinder along X: r 1.880, rms 0.027, 812 inliers, coverage 214 deg",
+   "evidence": "refine round 9 cluster +1@0,0,-22 + 4 neighbours",
+   "measured": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "uncertainty_mm": null,
+   "critical": false
+  },
+  "R09u_r": {
+   "value": 1.8804,
+   "unit": "mm",
+   "source": "scan",
+   "rule": "keep-measured",
+   "estimator": "classify.py RANSAC cylinder along X: r 1.880, rms 0.027, 812 inliers, coverage 214 deg",
+   "evidence": "refine round 9 cluster +1@0,0,-22 + 4 neighbours",
+   "measured": 1.8804,
+   "uncertainty_mm": null,
+   "critical": false
+  },
+  "R09u_h": {
+   "value": 11.8019,
+   "unit": "mm",
+   "source": "scan",
+   "rule": "keep-measured",
+   "estimator": "classify.py RANSAC cylinder along X: r 1.880, rms 0.027, 812 inliers, coverage 214 deg",
+   "evidence": "refine round 9 cluster +1@0,0,-22 + 4 neighbours",
+   "measured": 11.8019,
+   "uncertainty_mm": null,
+   "critical": false
+  },
+  "R09u_t0": {
+   "value": -5.716,
+   "unit": "mm",
+   "source": "scan",
+   "rule": "keep-measured",
+   "estimator": "classify.py RANSAC cylinder along X: r 1.880, rms 0.027, 812 inliers, coverage 214 deg",
+   "evidence": "refine round 9 cluster +1@0,0,-22 + 4 neighbours",
+   "measured": -5.716,
+   "uncertainty_mm": null,
+   "critical": false
+  },
+  "R09m_c": {
+   "value": [
+    [
+     -5.7717,
+     -13.8646,
+     -24.1376
+    ]
+   ],
+   "unit": "mm",
+   "source": "scan",
+   "rule": "keep-measured",
+   "estimator": "refine_ops.slot_merge: two parallel round ends of equal radius = one stadium prism",
+   "evidence": "merged cylinder nodes ['R08d', 'R09c']",
+   "measured": [
+    [
+     -5.7717,
+     -13.8646,
+     -24.1376
+    ]
+   ],
+   "uncertainty_mm": null,
+   "critical": false
+  },
+  "R09m_d": {
+   "value": [
+    [
+     1.0,
+     0.0,
+     0.0
+    ]
+   ],
+   "unit": "-",
+   "source": "scan",
+   "rule": "keep-measured",
+   "estimator": "refine_ops.slot_merge: two parallel round ends of equal radius = one stadium prism",
+   "evidence": "merged cylinder nodes ['R08d', 'R09c']",
+   "measured": [
+    [
+     1.0,
+     0.0,
+     0.0
+    ]
+   ],
+   "uncertainty_mm": null,
+   "critical": false
+  },
+  "R09m_u": {
+   "value": [
+    [
+     0.0,
+     0.5769,
+     -0.8168
+    ]
+   ],
+   "unit": "-",
+   "source": "scan",
+   "rule": "keep-measured",
+   "estimator": "refine_ops.slot_merge: two parallel round ends of equal radius = one stadium prism",
+   "evidence": "merged cylinder nodes ['R08d', 'R09c']",
+   "measured": [
+    [
+     0.0,
+     0.5769,
+     -0.8168
+    ]
+   ],
+   "uncertainty_mm": null,
+   "critical": false
+  },
+  "R09m_L": {
+   "value": 12.0108,
+   "unit": "mm",
+   "source": "scan",
+   "rule": "keep-measured",
+   "estimator": "refine_ops.slot_merge: two parallel round ends of equal radius = one stadium prism",
+   "evidence": "merged cylinder nodes ['R08d', 'R09c']",
+   "measured": 12.0108,
+   "uncertainty_mm": null,
+   "critical": false
+  },
+  "R09m_W": {
+   "value": 3.742,
+   "unit": "mm",
+   "source": "scan",
+   "rule": "keep-measured",
+   "estimator": "refine_ops.slot_merge: two parallel round ends of equal radius = one stadium prism",
+   "evidence": "merged cylinder nodes ['R08d', 'R09c']",
+   "measured": 3.742,
+   "uncertainty_mm": null,
+   "critical": false
+  },
+  "R09m_len": {
+   "value": [
+    11.8019
+   ],
+   "unit": "mm",
+   "source": "scan",
+   "rule": "keep-measured",
+   "estimator": "refine_ops.slot_merge: two parallel round ends of equal radius = one stadium prism",
+   "evidence": "merged cylinder nodes ['R08d', 'R09c']",
+   "measured": [
+    11.8019
+   ],
+   "uncertainty_mm": null,
+   "critical": false
+  },
+  "R10_c": {
+   "value": [
+    0.1811,
+    0.3246,
+    -22.8553
+   ],
+   "unit": "mm",
+   "source": "scan",
+   "rule": "keep-measured",
+   "estimator": "classify.py revolve on RANSAC axis Y: 378 points, 1 radius steps",
+   "evidence": "refine round 10 cluster +1@0,0,-22 n=1112",
+   "measured": [
+    0.1811,
+    0.3246,
+    -22.8553
+   ],
+   "uncertainty_mm": null,
+   "critical": false
+  },
+  "R10_d": {
+   "value": [
+    -0.0,
+    -1.0,
+    -0.0
+   ],
+   "unit": "-",
+   "source": "scan",
+   "rule": "keep-measured",
+   "estimator": "classify.py revolve on RANSAC axis Y: 378 points, 1 radius steps",
+   "evidence": "refine round 10 cluster +1@0,0,-22 n=1112",
+   "measured": [
+    -0.0,
+    -1.0,
+    -0.0
+   ],
+   "uncertainty_mm": null,
+   "critical": false
+  },
+  "R10_u": {
+   "value": [
+    0.0,
+    0.0,
+    -1.0
+   ],
+   "unit": "-",
+   "source": "scan",
+   "rule": "keep-measured",
+   "estimator": "classify.py revolve on RANSAC axis Y: 378 points, 1 radius steps",
+   "evidence": "refine round 10 cluster +1@0,0,-22 n=1112",
+   "measured": [
+    0.0,
+    0.0,
+    -1.0
+   ],
+   "uncertainty_mm": null,
+   "critical": false
+  },
+  "R10_t": {
+   "value": [
+    -3.428,
+    3.1294
+   ],
+   "unit": "mm",
+   "source": "scan",
+   "rule": "keep-measured",
+   "estimator": "classify.py revolve on RANSAC axis Y: 378 points, 1 radius steps",
+   "evidence": "refine round 10 cluster +1@0,0,-22 n=1112",
+   "measured": [
+    -3.428,
+    3.1294
+   ],
+   "uncertainty_mm": null,
+   "critical": false
+  },
+  "R10_r": {
+   "value": [
+    0.8314
+   ],
+   "unit": "mm",
+   "source": "scan",
+   "rule": "keep-measured",
+   "estimator": "classify.py revolve on RANSAC axis Y: 378 points, 1 radius steps",
+   "evidence": "refine round 10 cluster +1@0,0,-22 n=1112",
+   "measured": [
+    0.8314
+   ],
+   "uncertainty_mm": null,
+   "critical": false
+  },
+  "R11u_c": {
+   "value": [
+    0.6105,
+    11.9119,
+    -27.3254
+   ],
+   "unit": "mm",
+   "source": "scan",
+   "rule": "keep-measured",
+   "estimator": "classify.py RANSAC cylinder along X: r 1.880, rms 0.028, 789 inliers, coverage 210 deg",
+   "evidence": "refine round 11 cluster +1@5,11,-28 + 3 neighbours",
+   "measured": [
+    0.6105,
+    11.9119,
+    -27.3254
+   ],
+   "uncertainty_mm": null,
+   "critical": false
+  },
+  "R11u_d": {
+   "value": [
+    1.0,
+    0.0,
+    0.0
+   ],
+   "unit": "-",
+   "source": "scan",
+   "rule": "keep-measured",
+   "estimator": "classify.py RANSAC cylinder along X: r 1.880, rms 0.028, 789 inliers, coverage 210 deg",
+   "evidence": "refine round 11 cluster +1@5,11,-28 + 3 neighbours",
+   "measured": [
+    1.0,
+    0.0,
+    0.0
+   ],
+   "uncertainty_mm": null,
+   "critical": false
+  },
+  "R11u_u": {
+   "value": [
+    0.0,
+    0.0,
+    -1.0
+   ],
+   "unit": "-",
+   "source": "scan",
+   "rule": "keep-measured",
+   "estimator": "classify.py RANSAC cylinder along X: r 1.880, rms 0.028, 789 inliers, coverage 210 deg",
+   "evidence": "refine round 11 cluster +1@5,11,-28 + 3 neighbours",
+   "measured": [
+    0.0,
+    0.0,
+    -1.0
+   ],
+   "uncertainty_mm": null,
+   "critical": false
+  },
+  "R11u_r": {
+   "value": 1.8802,
+   "unit": "mm",
+   "source": "scan",
+   "rule": "keep-measured",
+   "estimator": "classify.py RANSAC cylinder along X: r 1.880, rms 0.028, 789 inliers, coverage 210 deg",
+   "evidence": "refine round 11 cluster +1@5,11,-28 + 3 neighbours",
+   "measured": 1.8802,
+   "uncertainty_mm": null,
+   "critical": false
+  },
+  "R11u_h": {
+   "value": 11.5797,
+   "unit": "mm",
+   "source": "scan",
+   "rule": "keep-measured",
+   "estimator": "classify.py RANSAC cylinder along X: r 1.880, rms 0.028, 789 inliers, coverage 210 deg",
+   "evidence": "refine round 11 cluster +1@5,11,-28 + 3 neighbours",
+   "measured": 11.5797,
+   "uncertainty_mm": null,
+   "critical": false
+  },
+  "R11u_t0": {
+   "value": -6.2309,
+   "unit": "mm",
+   "source": "scan",
+   "rule": "keep-measured",
+   "estimator": "classify.py RANSAC cylinder along X: r 1.880, rms 0.028, 789 inliers, coverage 210 deg",
+   "evidence": "refine round 11 cluster +1@5,11,-28 + 3 neighbours",
+   "measured": -6.2309,
+   "uncertainty_mm": null,
+   "critical": false
+  },
+  "R11m_c": {
+   "value": [
+    [
+     -5.6695,
+     14.2191,
+     -23.9278
+    ]
+   ],
+   "unit": "mm",
+   "source": "scan",
+   "rule": "keep-measured",
+   "estimator": "refine_ops.slot_merge: two parallel round ends of equal radius = one stadium prism",
+   "evidence": "merged cylinder nodes ['R07d', 'R11d']",
+   "measured": [
+    [
+     -5.6695,
+     14.2191,
+     -23.9278
+    ]
+   ],
+   "uncertainty_mm": null,
+   "critical": false
+  },
+  "R11m_d": {
+   "value": [
+    [
+     1.0,
+     0.0,
+     0.0
+    ]
+   ],
+   "unit": "-",
+   "source": "scan",
+   "rule": "keep-measured",
+   "estimator": "refine_ops.slot_merge: two parallel round ends of equal radius = one stadium prism",
+   "evidence": "merged cylinder nodes ['R07d', 'R11d']",
+   "measured": [
+    [
+     1.0,
+     0.0,
+     0.0
+    ]
+   ],
+   "uncertainty_mm": null,
+   "critical": false
+  },
+  "R11m_u": {
+   "value": [
+    [
+     0.0,
+     -0.5618,
+     -0.8273
+    ]
+   ],
+   "unit": "-",
+   "source": "scan",
+   "rule": "keep-measured",
+   "estimator": "refine_ops.slot_merge: two parallel round ends of equal radius = one stadium prism",
+   "evidence": "merged cylinder nodes ['R07d', 'R11d']",
+   "measured": [
+    [
+     0.0,
+     -0.5618,
+     -0.8273
+    ]
+   ],
+   "uncertainty_mm": null,
+   "critical": false
+  },
+  "R11m_L": {
+   "value": 11.9792,
+   "unit": "mm",
+   "source": "scan",
+   "rule": "keep-measured",
+   "estimator": "refine_ops.slot_merge: two parallel round ends of equal radius = one stadium prism",
+   "evidence": "merged cylinder nodes ['R07d', 'R11d']",
+   "measured": 11.9792,
+   "uncertainty_mm": null,
+   "critical": false
+  },
+  "R11m_W": {
+   "value": 3.7654,
+   "unit": "mm",
+   "source": "scan",
+   "rule": "keep-measured",
+   "estimator": "refine_ops.slot_merge: two parallel round ends of equal radius = one stadium prism",
+   "evidence": "merged cylinder nodes ['R07d', 'R11d']",
+   "measured": 3.7654,
+   "uncertainty_mm": null,
+   "critical": false
+  },
+  "R11m_len": {
+   "value": [
+    11.6288
+   ],
+   "unit": "mm",
+   "source": "scan",
+   "rule": "keep-measured",
+   "estimator": "refine_ops.slot_merge: two parallel round ends of equal radius = one stadium prism",
+   "evidence": "merged cylinder nodes ['R07d', 'R11d']",
+   "measured": [
+    11.6288
+   ],
+   "uncertainty_mm": null,
+   "critical": false
+  },
+  "R12_c": {
+   "value": [
+    -5.1752,
+    -11.3305,
+    -28.1028
+   ],
+   "unit": "mm",
+   "source": "scan",
+   "rule": "keep-measured",
+   "estimator": "classify.py prism along eig0: inlier frac 0.62, footprint 2.81 mm2 (chain)",
+   "evidence": "refine round 12 cluster -1@-5,-14,-24 n=873",
+   "measured": [
+    -5.1752,
+    -11.3305,
+    -28.1028
+   ],
+   "uncertainty_mm": null,
+   "critical": false
+  },
+  "R12_u": {
+   "value": [
+    0.0,
+    -0.8235,
+    -0.5673
+   ],
+   "unit": "-",
+   "source": "scan",
+   "rule": "keep-measured",
+   "estimator": "classify.py prism along eig0: inlier frac 0.62, footprint 2.81 mm2 (chain)",
+   "evidence": "refine round 12 cluster -1@-5,-14,-24 n=873",
+   "measured": [
+    0.0,
+    -0.8235,
+    -0.5673
+   ],
+   "uncertainty_mm": null,
+   "critical": false
+  },
+  "R12_d": {
+   "value": [
+    0.0,
+    -0.5673,
+    0.8235
+   ],
+   "unit": "-",
+   "source": "scan",
+   "rule": "keep-measured",
+   "estimator": "classify.py prism along eig0: inlier frac 0.62, footprint 2.81 mm2 (chain)",
+   "evidence": "refine round 12 cluster -1@-5,-14,-24 n=873",
+   "measured": [
+    0.0,
+    -0.5673,
+    0.8235
+   ],
+   "uncertainty_mm": null,
+   "critical": false
+  },
+  "R12_v": {
+   "value": [
+    [
+     -1.652,
+     -0.54
+    ],
+    [
+     -1.052,
+     -0.301
+    ],
+    [
+     -0.685,
+     0.866
+    ],
+    [
+     0.106,
+     0.922
+    ],
+    [
+     0.454,
+     1.281
+    ],
+    [
+     0.798,
+     -0.348
+    ],
+    [
+     1.394,
+     -0.56
+    ],
+    [
+     -1.654,
+     -0.584
+    ]
+   ],
+   "unit": "mm",
+   "source": "scan",
+   "rule": "keep-measured",
+   "estimator": "classify.py prism along eig0: inlier frac 0.62, footprint 2.81 mm2 (chain)",
+   "evidence": "refine round 12 cluster -1@-5,-14,-24 n=873",
+   "measured": [
+    [
+     -1.652,
+     -0.54
+    ],
+    [
+     -1.052,
+     -0.301
+    ],
+    [
+     -0.685,
+     0.866
+    ],
+    [
+     0.106,
+     0.922
+    ],
+    [
+     0.454,
+     1.281
+    ],
+    [
+     0.798,
+     -0.348
+    ],
+    [
+     1.394,
+     -0.56
+    ],
+    [
+     -1.654,
+     -0.584
+    ]
+   ],
+   "uncertainty_mm": null,
+   "critical": false
+  },
+  "R12_len": {
+   "value": 9.4665,
+   "unit": "mm",
+   "source": "scan",
+   "rule": "keep-measured",
+   "estimator": "classify.py prism along eig0: inlier frac 0.62, footprint 2.81 mm2 (chain)",
+   "evidence": "refine round 12 cluster -1@-5,-14,-24 n=873",
+   "measured": 9.4665,
+   "uncertainty_mm": null,
+   "critical": false
+  },
+  "R13_c": {
+   "value": [
+    15.4625,
+    0.0734,
+    1.1956
+   ],
+   "unit": "mm",
+   "source": "scan",
+   "rule": "keep-measured",
+   "estimator": "classify.py RANSAC cylinder along Z: r 1.931, rms 0.048, 266 inliers, coverage 335 deg",
+   "evidence": "refine round 13 cluster -1@16,-0,1 n=764",
+   "measured": [
+    15.4625,
+    0.0734,
+    1.1956
+   ],
+   "uncertainty_mm": null,
+   "critical": false
+  },
+  "R13_d": {
+   "value": [
+    -0.0,
+    -0.0,
+    -1.0
+   ],
+   "unit": "-",
+   "source": "scan",
+   "rule": "keep-measured",
+   "estimator": "classify.py RANSAC cylinder along Z: r 1.931, rms 0.048, 266 inliers, coverage 335 deg",
+   "evidence": "refine round 13 cluster -1@16,-0,1 n=764",
+   "measured": [
+    -0.0,
+    -0.0,
+    -1.0
+   ],
+   "uncertainty_mm": null,
+   "critical": false
+  },
+  "R13_u": {
+   "value": [
+    0.0,
+    1.0,
+    0.0
+   ],
+   "unit": "-",
+   "source": "scan",
+   "rule": "keep-measured",
+   "estimator": "classify.py RANSAC cylinder along Z: r 1.931, rms 0.048, 266 inliers, coverage 335 deg",
+   "evidence": "refine round 13 cluster -1@16,-0,1 n=764",
+   "measured": [
+    0.0,
+    1.0,
+    0.0
+   ],
+   "uncertainty_mm": null,
+   "critical": false
+  },
+  "R13_r": {
+   "value": 1.9314,
+   "unit": "mm",
+   "source": "scan",
+   "rule": "keep-measured",
+   "estimator": "classify.py RANSAC cylinder along Z: r 1.931, rms 0.048, 266 inliers, coverage 335 deg",
+   "evidence": "refine round 13 cluster -1@16,-0,1 n=764",
+   "measured": 1.9314,
+   "uncertainty_mm": null,
+   "critical": false
+  },
+  "R13_h": {
+   "value": 74.8634,
+   "unit": "mm",
+   "source": "scan",
+   "rule": "keep-measured",
+   "estimator": "classify.py RANSAC cylinder along Z: r 1.931, rms 0.048, 266 inliers, coverage 335 deg",
+   "evidence": "refine round 13 cluster -1@16,-0,1 n=764",
+   "measured": 74.8634,
+   "uncertainty_mm": null,
+   "critical": false
+  },
+  "R13_t0": {
+   "value": -73.9786,
+   "unit": "mm",
+   "source": "scan",
+   "rule": "keep-measured",
+   "estimator": "classify.py RANSAC cylinder along Z: r 1.931, rms 0.048, 266 inliers, coverage 335 deg",
+   "evidence": "refine round 13 cluster -1@16,-0,1 n=764",
+   "measured": -73.9786,
+   "uncertainty_mm": null,
+   "critical": false
+  },
+  "R14_c": {
+   "value": [
+    -15.3174,
+    -0.082,
+    1.3249
+   ],
+   "unit": "mm",
+   "source": "scan",
+   "rule": "keep-measured",
+   "estimator": "classify.py RANSAC cylinder along [-0.133, 0.0, 0.991]: r 1.941, rms 0.044, 362 inliers, coverage 341 deg",
+   "evidence": "refine round 14 cluster -1@-15,-0,1 n=670",
+   "measured": [
+    -15.3174,
+    -0.082,
+    1.3249
+   ],
+   "uncertainty_mm": null,
+   "critical": false
+  },
+  "R14_d": {
+   "value": [
+    -0.1329,
+    0.0,
+    0.9911
+   ],
+   "unit": "-",
+   "source": "scan",
+   "rule": "keep-measured",
+   "estimator": "classify.py RANSAC cylinder along [-0.133, 0.0, 0.991]: r 1.941, rms 0.044, 362 inliers, coverage 341 deg",
+   "evidence": "refine round 14 cluster -1@-15,-0,1 n=670",
+   "measured": [
+    -0.1329,
+    0.0,
+    0.9911
+   ],
+   "uncertainty_mm": null,
+   "critical": false
+  },
+  "R14_u": {
+   "value": [
+    0.9911,
+    -0.0,
+    0.1329
+   ],
+   "unit": "-",
+   "source": "scan",
+   "rule": "keep-measured",
+   "estimator": "classify.py RANSAC cylinder along [-0.133, 0.0, 0.991]: r 1.941, rms 0.044, 362 inliers, coverage 341 deg",
+   "evidence": "refine round 14 cluster -1@-15,-0,1 n=670",
+   "measured": [
+    0.9911,
+    -0.0,
+    0.1329
+   ],
+   "uncertainty_mm": null,
+   "critical": false
+  },
+  "R14_r": {
+   "value": 1.941,
+   "unit": "mm",
+   "source": "scan",
+   "rule": "keep-measured",
+   "estimator": "classify.py RANSAC cylinder along [-0.133, 0.0, 0.991]: r 1.941, rms 0.044, 362 inliers, coverage 341 deg",
+   "evidence": "refine round 14 cluster -1@-15,-0,1 n=670",
+   "measured": 1.941,
+   "uncertainty_mm": null,
+   "critical": false
+  },
+  "R14_h": {
+   "value": 74.9461,
+   "unit": "mm",
+   "source": "scan",
+   "rule": "keep-measured",
+   "estimator": "classify.py RANSAC cylinder along [-0.133, 0.0, 0.991]: r 1.941, rms 0.044, 362 inliers, coverage 341 deg",
+   "evidence": "refine round 14 cluster -1@-15,-0,1 n=670",
+   "measured": 74.9461,
+   "uncertainty_mm": null,
+   "critical": false
+  },
+  "R14_t0": {
+   "value": -0.8549,
+   "unit": "mm",
+   "source": "scan",
+   "rule": "keep-measured",
+   "estimator": "classify.py RANSAC cylinder along [-0.133, 0.0, 0.991]: r 1.941, rms 0.044, 362 inliers, coverage 341 deg",
+   "evidence": "refine round 14 cluster -1@-15,-0,1 n=670",
+   "measured": -0.8549,
+   "uncertainty_mm": null,
+   "critical": false
+  }
+ }
+}

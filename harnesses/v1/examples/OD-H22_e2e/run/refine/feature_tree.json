@@ -1,0 +1,496 @@
+{
+ "schema": "feature_tree@v1",
+ "part": "OD-H22_3-way-valve",
+ "note": "OD-H22 refine-loop start: datum frame + base body only (flange outline prism + core revolve). Everything else must be found by the loop.",
+ "constants": {
+  "CUT_OVERSHOOT": {
+   "value": 1.0,
+   "why": "cut tools overshoot the faces they open"
+  },
+  "BURY": {
+   "value": 0.5,
+   "why": "sub-body extended into the body it is fused with (no visible surface)"
+  },
+  "FACING": {
+   "value": 0.7,
+   "why": "|cos(theta)| above this = slot faces the X axis (picks slot_bottom_z_x vs _y)"
+  }
+ },
+ "let": {
+  "top": "rim_top_z",
+  "a_ear": "radians(ear_side_angle_deg)"
+ },
+ "profiles": {
+  "outline": {
+   "why": "flange outline: disc plate_R plus two tapered ears ending in circles ear_end_R about each ear hole; concave disc/ear corners blended",
+   "items": [
+    {
+     "type": "circle",
+     "c": [
+      0,
+      0
+     ],
+     "r": "plate_R"
+    },
+    {
+     "type": "chain",
+     "repeat": {
+      "xh": "ear_hole_x"
+     },
+     "let_each": {
+      "s": "sign(xh)",
+      "X": "abs(xh)",
+      "re": "ear_end_R",
+      "tx": "X + re*sin(a_ear)",
+      "ty": "re*cos(a_ear)",
+      "y0": "ty + tx*tan(a_ear)"
+     },
+     "pts": [
+      [
+       0,
+       "y0"
+      ],
+      [
+       "s*tx",
+       "ty"
+      ],
+      [
+       "s*tx",
+       "-ty"
+      ],
+      [
+       0,
+       "-y0"
+      ]
+     ],
+     "arcs": {
+      "1": {
+       "center": [
+        "s*X",
+        0
+       ]
+      }
+     }
+    }
+   ],
+   "fillet_vertices": {
+    "r": "outline_blend_R",
+    "select": "concave"
+   }
+  }
+ },
+ "nodes": [
+  {
+   "id": "F01",
+   "name": "flange outline prism",
+   "op": "extrude",
+   "combine": "new",
+   "sketch": {
+    "plane": "XY",
+    "profile": {
+     "ref": "outline"
+    }
+   },
+   "z0": 0,
+   "z1": "top"
+  },
+  {
+   "op": "extrude",
+   "combine": "cut",
+   "name": "pocket = outline offset -1.483, floor z 2.278",
+   "sketch": {
+    "plane": "XY",
+    "profile": {
+     "ref": "outline",
+     "offset": "-R03_wall"
+    }
+   },
+   "z0": "R03_floor",
+   "z1": "(top) + CUT_OVERSHOOT",
+   "id": "R03a"
+  },
+  {
+   "id": "F05",
+   "name": "core revolve: stem, 40 deg cone, neck, collar, drive tube",
+   "op": "revolve",
+   "let": {
+    "k": "tan(radians(stem_cone_half_angle_deg))",
+    "z_cb": "stem_cone_top_z - (stem_R - stem_neck_R)/k"
+   },
+   "profile": {
+    "items": [
+     {
+      "type": "polygon",
+      "pts": [
+       [
+        0,
+        "stem_neck_bottom_z"
+       ],
+       [
+        "stem_neck_R",
+        "stem_neck_bottom_z"
+       ],
+       [
+        "stem_neck_R",
+        "z_cb"
+       ],
+       [
+        "stem_R",
+        "stem_cone_top_z"
+       ],
+       [
+        "stem_R",
+        "BURY"
+       ],
+       [
+        "collar_R",
+        "BURY"
+       ],
+       [
+        "collar_R",
+        "collar_top_z"
+       ],
+       [
+        "tube_R",
+        "collar_top_z"
+       ],
+       [
+        "tube_R",
+        "tube_top_z"
+       ],
+       [
+        0,
+        "tube_top_z"
+       ]
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "op": "revolve",
+   "combine": "add",
+   "frame": {
+    "origin": "R01_c",
+    "z_dir": "R01_d",
+    "x_dir": "R01_u"
+   },
+   "profile": {
+    "items": [
+     {
+      "type": "polygon",
+      "pts": [
+       [
+        0,
+        "R01_t[0]"
+       ],
+       [
+        "R01_r[0]",
+        "R01_t[0]"
+       ],
+       [
+        "R01_r[0]",
+        "R01_t[1]"
+       ],
+       [
+        "R01_r[1]",
+        "R01_t[1]"
+       ],
+       [
+        "R01_r[1]",
+        "R01_t[2]"
+       ],
+       [
+        "R01_r[2]",
+        "R01_t[2]"
+       ],
+       [
+        "R01_r[2]",
+        "R01_t[3]"
+       ],
+       [
+        0,
+        "R01_t[3]"
+       ]
+      ]
+     }
+    ]
+   },
+   "name": "revolve boss (3 steps) about skew axis",
+   "id": "R01a"
+  },
+  {
+   "op": "revolve",
+   "combine": "add",
+   "frame": {
+    "origin": "R02u_c",
+    "z_dir": "R02u_d",
+    "x_dir": "R02u_u"
+   },
+   "profile": {
+    "items": [
+     {
+      "type": "polygon",
+      "pts": [
+       [
+        0,
+        "R02u_t[0]"
+       ],
+       [
+        "R02u_r[0]",
+        "R02u_t[0]"
+       ],
+       [
+        "R02u_r[0]",
+        "R02u_t[1]"
+       ],
+       [
+        "R02u_r[1]",
+        "R02u_t[1]"
+       ],
+       [
+        "R02u_r[1]",
+        "R02u_t[2]"
+       ],
+       [
+        "R02u_r[2]",
+        "R02u_t[2]"
+       ],
+       [
+        "R02u_r[2]",
+        "R02u_t[3]"
+       ],
+       [
+        "R02u_r[3]",
+        "R02u_t[3]"
+       ],
+       [
+        "R02u_r[3]",
+        "R02u_t[4]"
+       ],
+       [
+        0,
+        "R02u_t[4]"
+       ]
+      ]
+     }
+    ]
+   },
+   "name": "revolve boss (4 steps) about skew axis",
+   "id": "R02b"
+  },
+  {
+   "op": "cylinder",
+   "combine": "cut",
+   "frame": {
+    "origin": "R04_c",
+    "z_dir": "R04_d",
+    "x_dir": "R04_u"
+   },
+   "r": "R04_r",
+   "h": "R04_h",
+   "at": [
+    0,
+    0,
+    "R04_t0"
+   ],
+   "name": "hole r=4.530 along Z (down)",
+   "id": "R04h"
+  },
+  {
+   "op": "extrude",
+   "combine": "add",
+   "name": "slot prism x1 (merged round ends)",
+   "repeat": {
+    "i": [
+     0
+    ]
+   },
+   "sketch": {
+    "plane": {
+     "origin": "R11m_c[i]",
+     "z_dir": "R11m_d[i]",
+     "x_dir": "R11m_u[i]"
+    },
+    "profile": {
+     "items": [
+      {
+       "type": "slot",
+       "c": [
+        0,
+        0
+       ],
+       "length": "R11m_L",
+       "width": "R11m_W"
+      }
+     ]
+    }
+   },
+   "amount": "R11m_len[i]",
+   "id": "R11m"
+  },
+  {
+   "op": "cylinder",
+   "combine": "cut",
+   "frame": {
+    "origin": "R05_c",
+    "z_dir": "R05_d",
+    "x_dir": "R05_u"
+   },
+   "r": "R05_r",
+   "h": "R05_h",
+   "at": [
+    0,
+    0,
+    "R05_t0"
+   ],
+   "name": "hole r=4.326 along skew axis (down)",
+   "id": "R05c"
+  },
+  {
+   "op": "extrude",
+   "combine": "add",
+   "name": "slot prism x1 (merged round ends)",
+   "repeat": {
+    "i": [
+     0
+    ]
+   },
+   "sketch": {
+    "plane": {
+     "origin": "R09m_c[i]",
+     "z_dir": "R09m_d[i]",
+     "x_dir": "R09m_u[i]"
+    },
+    "profile": {
+     "items": [
+      {
+       "type": "slot",
+       "c": [
+        0,
+        0
+       ],
+       "length": "R09m_L",
+       "width": "R09m_W"
+      }
+     ]
+    }
+   },
+   "amount": "R09m_len[i]",
+   "id": "R09m"
+  },
+  {
+   "op": "cylinder",
+   "combine": "cut",
+   "frame": {
+    "origin": "R06u_c",
+    "z_dir": "R06u_d",
+    "x_dir": "R06u_u"
+   },
+   "r": "R06u_r",
+   "h": "R06u_h",
+   "at": [
+    0,
+    0,
+    "R06u_t0"
+   ],
+   "name": "hole r=4.306 along skew axis (down)",
+   "id": "R06g"
+  },
+  {
+   "op": "revolve",
+   "combine": "add",
+   "frame": {
+    "origin": "R10_c",
+    "z_dir": "R10_d",
+    "x_dir": "R10_u"
+   },
+   "profile": {
+    "items": [
+     {
+      "type": "polygon",
+      "pts": [
+       [
+        0,
+        "R10_t[0]"
+       ],
+       [
+        "R10_r[0]",
+        "R10_t[0]"
+       ],
+       [
+        "R10_r[0]",
+        "R10_t[1]"
+       ],
+       [
+        0,
+        "R10_t[1]"
+       ]
+      ]
+     }
+    ]
+   },
+   "name": "revolve boss (1 steps) about Y",
+   "id": "R10a"
+  },
+  {
+   "op": "extrude",
+   "combine": "cut",
+   "sketch": {
+    "plane": {
+     "origin": "R12_c",
+     "x_dir": "R12_u",
+     "z_dir": "R12_d"
+    },
+    "profile": {
+     "items": [
+      {
+       "type": "chain",
+       "pts": "R12_v",
+       "arcs": {}
+      }
+     ]
+    }
+   },
+   "amount": "R12_len",
+   "name": "prism chain(8) along eig0 (exact)",
+   "id": "R12e"
+  },
+  {
+   "op": "cylinder",
+   "combine": "cut",
+   "frame": {
+    "origin": "R13_c",
+    "z_dir": "R13_d",
+    "x_dir": "R13_u"
+   },
+   "r": "R13_r",
+   "h": "R13_h",
+   "at": [
+    0,
+    0,
+    "R13_t0"
+   ],
+   "name": "hole r=1.931 along Z (down)",
+   "id": "R13c"
+  },
+  {
+   "op": "cylinder",
+   "combine": "cut",
+   "frame": {
+    "origin": "R14_c",
+    "z_dir": "R14_d",
+    "x_dir": "R14_u"
+   },
+   "r": "R14_r",
+   "h": "R14_h",
+   "at": [
+    0,
+    0,
+    "R14_t0"
+   ],
+   "name": "hole r=1.941 along skew axis (up)",
+   "id": "R14n"
+  }
+ ]
+}

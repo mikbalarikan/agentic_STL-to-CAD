@@ -1,0 +1,20 @@
+{
+ "schema": "stl-re/hash_freeze@1",
+ "tool": "step_check.py",
+ "tool_version": "stl-re-verify@1",
+ "inputs": {
+  "build/OD-H22_3-way-valve_datum.step": "7476d332c29792a402a1122bba88962eb80cf47a4f13cdad1c8c299800a4da70",
+  "build/OD-H22_3-way-valve.step": "079644de9764e2f4586d027acfd55b33133781627329fe4e13d3856530e8ea7b"
+ },
+ "seed": null,
+ "created": "2026-11-05T18:39:00+00:00",
+ "before": {
+  "build/OD-H22_3-way-valve_datum.step": "7476d332c29792a402a1122bba88962eb80cf47a4f13cdad1c8c299800a4da70",
+  "build/OD-H22_3-way-valve.step": "079644de9764e2f4586d027acfd55b33133781627329fe4e13d3856530e8ea7b"
+ },
+ "after": {
+  "build/OD-H22_3-way-valve_datum.step": "7476d332c29792a402a1122bba88962eb80cf47a4f13cdad1c8c299800a4da70",
+  "build/OD-H22_3-way-valve.step": "079644de9764e2f4586d027acfd55b33133781627329fe4e13d3856530e8ea7b"
+ },
+ "unchanged": true
+}

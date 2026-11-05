@@ -1,0 +1,14 @@
+F01    extrude   OK     dv=+3539.995 vol=3539.995 solids=1 faces=14
+R03a   extrude   OK     dv=-1620.586 vol=1919.410 solids=1 faces=27
+F05    revolve   OK     dv=+3064.852 vol=4984.262 solids=1 faces=35
+R01a   revolve   OK     dv=+1623.646 vol=6607.907 solids=1 faces=44
+R02b   revolve   OK     dv=+1636.051 vol=8243.958 solids=1 faces=54
+R04h   cylinder  OK     dv=-700.952 vol=7543.006 solids=1 faces=56
+R11m   extrude   OK     dv=+59.590 vol=7602.596 solids=1 faces=72
+R05c   cylinder  OK     dv=-213.088 vol=7389.508 solids=1 faces=74
+R09m   extrude   OK     dv=+62.892 vol=7452.400 solids=1 faces=90
+R06g   cylinder  OK     dv=-210.625 vol=7241.775 solids=1 faces=92
+R10a   revolve   OK     dv=+11.753 vol=7253.528 solids=1 faces=95
+R12e   extrude   OK     dv=-24.247 vol=7229.281 solids=1 faces=105
+R13c   cylinder  OK     dv=-23.050 vol=7206.230 solids=1 faces=107
+R14n   cylinder  OK     dv=-21.497 vol=7184.734 solids=1 faces=109

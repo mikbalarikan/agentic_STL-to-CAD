@@ -1,4 +1,4 @@
-# Harness v1: feature tree + staged deviation loop (design, in development)
+# Harness v1: feature tree + staged deviation loop (frozen)
 
 v0 (`../v0/`, tag `harness-v0`) measures everything once, writes `params.json` in a single
 pass, then the agent writes `model.py` from scratch. One bad plan gives one bad output, and
@@ -308,3 +308,66 @@ point 5.
 
 Tests: `test_refine.py` 14/14. New checks: refit instead of a feature; the refit value; no
 node added; slot-merge geometry; stadium volume.
+
+## M3-lite: installable, wired end to end, frozen
+
+- `tools/harness.py install v1` installs the 7 skills:
+  - `stl-re-orchestrate`
+  - `stl-re-intake-datum`
+  - `stl-re-measure-intent`
+  - `stl-re-refine`
+  - `stl-re-build`
+  - `stl-re-verify`
+  - `stl-re-deliver`
+
+  `doctor` checks the v1 siblings. All selftests are listed in `HARNESS.json#selftests`.
+- **Orchestrator:** rewritten for v1. Stages: intake → measure → refine → build → verify →
+  deliver, with a review step between refine and build.
+- **`init_run.py`:** knows the v1 stage exits, the `refine/` folder, and carry-forward of
+  `base_tree.json` / `feature_tree.json`.
+- **`run_metrics.py`:** writes `run_metrics.json` for the benchmark.
+- **Deliver:** design-source aware. A feature tree is rebuilt with `build_tree.py` in the
+  fresh-process repro check (`tests/test_tree_repro.py`: 2 rebuilds, identical STEPs). v0
+  `model.py` runs still pass the fixture tests.
+- **End-to-end example:** `examples/OD-H22_e2e/`. The independent verify gave **REVISE**:
+  - scan→CAD masked p95 0.417, max 2.285;
+  - observable CAD→scan p95 0.777;
+  - QA's ICP did not converge.
+
+  The main causes are tube slots dropped by the low-gain rule and missing gussets. The verdict
+  is honest; the pipeline ran from init to verify without hand edits to any stage output.
+
+## Known limitations of v1 (frozen as is)
+
+1. **Small real features vs the low-gain rule.** With `--arbiter auto`, a real feature that
+   lowers J by < 1 % (the OD-H22 tube slots: 0.35–0.56 %) becomes an open point. Use
+   `--arbiter agent` or a lower `--min-feature-gain` on parts with small features.
+2. **Thin plates (gussets)** do not fuse with their host: the footprint ends exactly at the
+   CAD surface.
+3. **DRM-type parts.** Drafted polygonal frustums, tilted dimple cylinders and double-D flats
+   have no hypothesis yet. DRM screw cap: p95 0.741 against the golden 0.089.
+4. **Speed.** About 5 s per candidate build + measure; OD-H22 refine takes 25 min.
+5. **Assumed geometry.** Bores and other surfaces with `assumed` depths are graded as if they
+   were observable. A provenance mask is the fix.
+6. **Verify ICP** can cycle without converging. On OD-H22 v1 the step size stayed between 5e-6
+   and 5e-5 against a 1e-6 tolerance, with a correction of only 0.136° / 0.023 mm.
+7. **No fillets from blend candidates yet.** The review step has to add them by hand.
+8. **Long SKILL.md texts.** Intake, measure, verify and deliver keep v0's long texts with
+   evidence citations; only the orchestrate, build and refine texts are slim.
+
+## v2 backlog (candidates)
+
+- **M4 guided mode.** A UI where the user picks datum axes, planes and the origin from
+  highlighted candidates, and answers the refine cards (tie and low-gain) with side-by-side
+  previews.
+- **Low-gain rule.** Scale it by feature size or count, not only by global J, or send these
+  cards to the user by default.
+- **Gusset / thin-plate hypothesis:** a plate fused by a silhouette bridge, or a rib op.
+- **New hypotheses:** envelope intersections (pentagon ∩ cylinder), tilted cylinder cuts,
+  parallel flat pairs, drafted polygon frustums.
+- **Speed:** cached distances for unchanged regions, parallel candidate builds.
+- **Masks from `assumed` provenance**, declared before grading.
+- **ICP:** robust convergence (oscillation detection, or a relative-change criterion).
+- **Slimmer SKILL.md texts** for intake, measure, verify and deliver, with citations moved to
+  `references/`.
+- **Assemblies and freeform skins.** Recipes exist in the NX package (`nx-re-intake`).

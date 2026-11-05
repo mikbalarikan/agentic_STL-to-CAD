@@ -1,8 +1,8 @@
 {
   "id": "v1",
   "name": "stl-re v1: feature-tree builder with staged deviation loop",
-  "status": "in-development",
-  "frozen_ref": null,
+  "status": "frozen",
+  "frozen_ref": "harness-v1",
   "summary": "Datum + base body, then feature-by-feature: signed deviation -> red-cluster segmentation -> scripted region classifier (extrude/draft/revolve/hole/pattern/...) -> feature added to a JSON feature tree -> generic builder rebuilds -> accept or roll back. Agent (or user, guided mode) only arbitrates ambiguous decision cards. Independent verify stays the final gate.",
   "skills_dir": "skills",
   "entry_skill": "stl-re-orchestrate",
@@ -45,6 +45,10 @@
     [
       "python3",
       "skills/stl-re-deliver/tests/run_fixture_test.py"
+    ],
+    [
+      "python3",
+      "skills/stl-re-deliver/tests/test_tree_repro.py"
     ]
   ],
   "python": ">=3.10",
@@ -61,5 +65,8 @@
   ],
   "start_prompt": "Turn <scan.stl> into a STEP (calipers in <MEASUREMENTS.md> or scan-only).",
   "design": "README.md",
-  "milestone": "M3-lite: installable, wired end to end"
+  "milestone": "frozen after M3-lite (M1, M2, M2.1, M3-lite); M4 guided mode and the open points moved to the v2 backlog",
+  "frozen_commit": null,
+  "frozen_note": "frozen_commit is recorded in the commit that follows the freeze commit (a commit cannot contain its own hash)",
+  "worked_example": "examples/OD-H22_e2e/"
 }

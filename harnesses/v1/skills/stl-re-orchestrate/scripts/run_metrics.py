@@ -113,10 +113,14 @@ def collect(run: Path) -> dict[str, Any]:
         "loops": loops,
         "decisions": decisions,
         "deviation": {
-            "scan_to_cad": _stats(gate.get("scan_to_cad")),
-            "scan_to_cad_masked": _stats(gate.get("scan_to_cad_masked")),
-            "cad_to_scan_observable": _stats(gate.get("cad_to_scan_observable")),
+            "label": (gate.get("deviation") or {}).get("label"),
+            "scan_to_cad": _stats((gate.get("deviation") or {}).get("scan_to_cad")),
+            "scan_to_cad_masked": _stats((gate.get("deviation") or {}).get("scan_to_cad_masked")),
+            "cad_to_scan_observable": _stats((gate.get("deviation") or {}).get("cad_to_scan_observable")),
+            "unobservable_fraction": (gate.get("deviation") or {}).get("unobservable_fraction"),
+            "registration_converged": ((gate.get("registration") or {}).get("converged")),
             "band_fails": gate.get("band_fails"),
+            "blockers": gate.get("blockers"),
         },
         "model": {
             "solids": datum.get("solids"), "valid": datum.get("valid"), "faces": datum.get("faces"),

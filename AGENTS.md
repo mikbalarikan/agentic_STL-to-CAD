@@ -17,8 +17,8 @@ This repo holds several versions of an STL→CAD (STEP) reverse-engineering harn
 
 ## Working on the harnesses
 
-- `v0` is frozen (tag `harness-v0`). Do not change its behaviour. Put new ideas in the
-  version under development, or start a new version folder with its own `HARNESS.json`.
+- `v0` and `v1` are frozen (tags `harness-v0`, `harness-v1`). Do not change their behaviour. Put new
+  ideas in a new version folder (`harnesses/v2/`, ...) with its own `HARNESS.json`.
 - Shared evidence (`golden-examples/`, `baseline/`) is read-only.
 - Run a version's checks with `python3 tools/harness.py doctor <id>` and
   `python3 tools/harness.py selftest <id>`.

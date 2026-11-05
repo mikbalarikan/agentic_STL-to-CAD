@@ -1,0 +1,18 @@
+{"source": "QA-defined from intake/INTAKE_CARD.md §3-§5 BEFORE any deviation was computed; datum frame (X ear axis, Z valve axis, z=0 flange back face)",
+ "zones": [
+  {"name": "Z1 flange plate and ear holes", "kind": "functional_interface", "select": {"z": [-0.3, 2.4], "r": [6.7, 22.5]},
+   "note": "INTAKE_CARD §4 Z1 mounting seat + screw ears; regime has no interface band (interface_max_mm null) -> reported per zone"},
+  {"name": "Z1b ear holes", "kind": "functional_interface", "select": {"abs_x": [13.2, 17.6], "abs_y": [null, 2.2], "z": [-0.3, 6.0]},
+   "note": "screw holes (+-15.39, 0), Ø≈3.9"},
+  {"name": "Z2 drive tube and collar", "kind": "functional_interface", "select": {"z": [2.3, 14.2], "r": [null, 8.4]},
+   "note": "INTAKE_CARD §4 Z2 knob/rotor drive interface (collar, tube OD/bore, 4 slots)"},
+  {"name": "Z3 ports and clip blocks", "kind": "functional_interface", "select": {"z": [null, -14.0], "abs_y": [6.0, null]},
+   "note": "INTAKE_CARD §4 Z3 hose ports, clip blocks + slots, lips, bores"},
+  {"name": "Z4 stem junction gussets", "kind": "region", "select": {"z": [null, 0.0], "not": {"z": [null, -14.0], "abs_y": [6.0, null]}},
+   "note": "INTAKE_CARD §4 Z4 structural"},
+  {"name": "tray rim and floor", "kind": "region", "select": {"z": [2.0, 6.0], "r": [8.4, 22.5]}, "note": "E03 tray rim / floor"},
+  {"name": "I1 tube bore lower interior", "kind": "interior", "select": {"r": [null, 4.9], "z": [-1.0, 7.0]},
+   "note": "coverage.json: bore wall open below z≈1.5, bore floor/web not scanned (E07)"},
+  {"name": "band tray side z>=0", "kind": "region", "select": {"z": [0.0, null]}, "note": "z bucket"},
+  {"name": "band stem side z<0", "kind": "region", "select": {"z": [null, 0.0]}, "note": "z bucket"}
+ ]}

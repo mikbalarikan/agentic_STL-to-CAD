@@ -1,0 +1,28 @@
+{
+  "card": 7,
+  "round": 8,
+  "cluster": "+1@0,0,-22",
+  "question": "Two feature types explain this region almost equally well. Which is the design intent?",
+  "candidates": [
+    {
+      "kind": "cyl-boss+nb",
+      "variant": "exact",
+      "name": "boss r=1.862 along X (exact)",
+      "J": 0.27647706910647285
+    },
+    {
+      "kind": "revolve+nb",
+      "variant": "1steps",
+      "name": "revolve boss (1 steps) about X",
+      "J": 0.276883740069698
+    },
+    {
+      "kind": "revolve",
+      "variant": "1steps",
+      "name": "revolve boss (1 steps) about Y",
+      "J": 0.28026497418959617
+    }
+  ],
+  "answer": 0,
+  "answered_by": "auto: lower J"
+}

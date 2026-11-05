@@ -1,0 +1,23 @@
+{
+  "card": 14,
+  "round": 15,
+  "cluster": "-1@6,-14,-25",
+  "type": "low-gain",
+  "question": "Adding 'prism chain(8) along eig0 (down)' lowers J by only 0.38%. Add it (0) or leave the region as an open point (1)?",
+  "candidates": [
+    {
+      "kind": "prism-chain",
+      "variant": "down",
+      "name": "prism chain(8) along eig0 (down)",
+      "J": 0.23772147959622858
+    },
+    {
+      "kind": "skip",
+      "variant": "open point",
+      "name": "leave as open point",
+      "J": 0.2386388860261993
+    }
+  ],
+  "answer": 1,
+  "answered_by": "auto: gain 0.38% < 1%"
+}

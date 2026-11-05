@@ -1,0 +1,42 @@
+{"verdict": "REVISE",
+ "independence": "Fresh sub-agent context spawned in the SAME session as the builder/orchestrator (not a separate session or agent process). QA used only stl-re-verify scripts; datum spec, zones and masks written by QA from INTAKE_CARD/alignment descriptions before any deviation was computed; refine/, params_refine.json, tree_log.json, builder metrics and params.json values were not read or used.",
+ "checks": {
+  "CHK-CIRCULAR": {"ran": true, "result": "pass", "note": "QA ICP is QA-only (not written back); grading uses the raw full-res scan; no expected value taken from params.json or this scan. Datum audit fits are QA code on raw scan."},
+  "CHK-LIKE4LIKE": {"ran": true, "result": "n/a", "note": "no previous iteration qa/ (_itN_SUPERSEDED) exists in this run; no comparison made"},
+  "CHK-INDEP": {"ran": true, "result": "finding", "note": "independence is a fresh sub-agent context in the same session, not a separate session; builder artefacts outside the allowed list were not read"},
+  "CHK-FILLET": {"ran": true, "result": "finding", "note": "build/fillets.json and export_check fillets are empty (0 targets, 0 FAILED/REDUCED): nothing silently skipped, but no blends were modelled at all although the part has moulded blends (e.g. plate back-edge round E02, DECISIONS refine entry: blend candidates not modelled); C2S cluster 11 sits on the back-edge round"},
+  "CHK-PATCHWORK": {"ran": true, "result": "pass", "note": "census (QA step_check): 109 faces, 1 cone / 42 cylinder / 66 plane, 100% analytic area, 0 B-spline/ruled; feature_tree.json (read-only) has extrudes, revolves, cylinder cuts and one 8-segment prism cut, no ruled loft, no per-station extrusion stack, no cluster-outline node"},
+  "CHK-ENUM": {"ran": true, "result": "finding", "note": "against INTAKE_CARD §5: E06 drive-tube 4 slots MISSING in CAD (Z=11 overlay: CAD full ring, scan 4 slots; C2S clusters 3-6, S2C cluster 11); E09 two gussets MISSING in CAD (Z=-2 overlay, theta 0/180 overlays; S2C clusters 1,2); E12 clip-block/slot shape mismatched (S2C clusters 0,4-7,9,10; C2S 1,2); E02 back-edge round not modelled; E07 bore floor assumed (CAD disc at z≈2.8, C2S cluster 0, unscanned). Present: E01,E03,E04,E05,E08,E10,E11,E13,E14. E15 cosmetic, E16 occluded. No hallucinated feature found beyond the assumed E07 floor."},
+  "CHK-ACHIEVABLE": {"ran": true, "result": "n/a", "note": "no Tier-1 (no calipers); nothing to attribute"},
+  "PHOTO-PLAUSIBILITY": {"ran": true, "result": "finding", "note": "photo_1,2,3 clearly show the crenellated drive tube with 4 slots and photo_1/photo_4 show the gussets under the plate; both are absent from the CAD. Ports, clip blocks with two slots, ear holes, tray rim present in CAD."}
+ },
+ "photos": ["photo_1", "photo_2", "photo_3", "photo_4"],
+ "cluster_explanations": {
+  "0": "+Y port clip block (819 pts, z -26..-18.5): scan material inside where the CAD's clip-slot cut/block outline sits (Z=-22, Z=-25 overlays): real clip-block/slot geometry mismatch (E12), not an artefact -> REVISE",
+  "1": "-X gusset (660 pts, x -10.3..-7.3, y≈0, z -3.7..-0.8): gusset E09 missing in CAD (Z=-2 overlay, theta 180 overlay, photos 1/4) -> missing feature",
+  "2": "+X gusset (440 pts, mirror of cluster 1): gusset E09 missing in CAD -> missing feature",
+  "3": "+X ear tip (271 pts, x≈21.2): inside mask M1; damaged/torn ear tip of this specimen (INTAKE_CARD §2), artefact",
+  "4": "port clip-block corner/side (260 pts, -X side of +Y port, z≈-27): clip-block flats/corner mismatch (E12) -> geometry",
+  "5": "port clip-block corner/side (218 pts, +X side of -Y port): clip-block mismatch (E12) -> geometry",
+  "6": "port clip-block side near mouth (176 pts, -X side of +Y port, z≈-22): clip-block mismatch (E12) -> geometry",
+  "7": "port clip-block corner (175 pts, +X side of +Y port, z≈-27): clip-block mismatch (E12) -> geometry",
+  "8": "+X ear tip (154 pts, x≈20.8, y≈3.5): inside mask M1; specimen damage, artefact",
+  "9": "port clip-block side (136 pts, +X side of +Y port, z≈-22): clip-block mismatch (E12) -> geometry",
+  "10": "port clip-block side (135 pts, +X side of -Y port, z≈-22.7): clip-block mismatch (E12) -> geometry",
+  "11": "drive-tube +X slot side wall (128 pts, r 5.2-5.4, z 8.6-12.9): scan slot walls lie inside the CAD's unslotted tube wall -> E06 slots missing"
+ },
+ "limitations": [
+  {"id": "L1", "text": "Tier-1 not run: no caliper readings (scan-only run, DECISIONS.md MEASUREMENTS); all 20 MEASUREMENTS.md rows ABSENT, not passed", "rerun_trigger": "any caliper reading"},
+  {"id": "L2", "text": "absolute scale not caliper-verified (units assumed mm, CHK-SCALE flag at intake)", "rerun_trigger": "any caliper reading"},
+  {"id": "L3", "text": "independence is a fresh sub-agent context in the same session, not a separate session (CHK-INDEP finding)", "rerun_trigger": "re-run verify in a separate session if independence must be stronger"},
+  {"id": "L4", "text": "QA ICP did not converge at cap 60 nor at the single raised cap 300: a deterministic limit cycle (identical step trace ~5e-6..5e-5 at its 54-59 and 294-299, above tol 1e-6) with a stable correction 0.136 deg / 0.023 mm; per the skill the post-ICP gate is INVALID. Tolerance was not changed (it is not a tuning knob). Datum-frame and post-ICP stats agree within 0.005 mm p95.", "rerun_trigger": "re-run QA ICP on the revised CAD"},
+  {"id": "L5", "text": "unscanned interior (tube-bore floor/web E07, port bores beyond t≈13-16, flow passages E16) is assumed in the CAD and cannot be graded", "rerun_trigger": "a scan or section of the interior"},
+  {"id": "L6", "text": "≈0.5 deg tilt between flange normal and the axis features is modelled as perpendicular (declared simplification at intake); moulded blends not modelled", "rerun_trigger": "operator answer on warp vs design intent"}
+ ],
+ "miss_explanations": [
+  {"region": "Z2 drive tube and collar", "cause": "the 4 drive slots (E06) are missing from the CAD; C2S clusters 3-6 (~800-950 pts each, max ≈1.7 mm) and S2C cluster 11; zone C2S p95 1.74 / max 4.43 (incl. assumed bore floor, C2S cluster 0, max 4.43)", "options": "add the 4 slot cuts (bottom z≈8.8, widths per scan ~3.06 on ear axis / ~2.65 across); review the assumed bore floor height"},
+  {"region": "Z4 stem / gussets", "cause": "the two triangular gussets (E09) under the plate in the XZ plane are missing (S2C clusters 1,2, max 2.26 mm); C2S cluster 7 (641 pts) under the plate on -Y/+X is CAD material with no scan", "options": "add mirrored gusset triangles from the scan; check the stem-root geometry at x 0.7-9.4, y -6.5..0"},
+  {"region": "Z3 ports and clip blocks", "cause": "clip blocks/through-slots do not match the scan (S2C clusters 0,4-7,9,10, max 2.28 mm; C2S clusters 1,2, ~3500/2800 pts, max ≈4 mm, partly unscanned slot interiors)", "options": "re-measure block flats and slot positions on the scan; the slot interiors are partly unscanned (coverage.json), so a caliper reading on block across-flats / slot width would arbitrate"},
+  {"region": "Z1 flange / ear holes", "cause": "C2S clusters 8,10 at the ear-hole mouths on the back face and 11 on the back-edge round: un-modelled hole entry blends/chamfers and the E02 round; S2C max 0.76 in Z1", "options": "model the back-edge round and hole-mouth blends"}
+ ],
+ "claim_boundary": "Not fit for manufacture, tooling, or as a drop-in replacement: drive slots and gussets are missing, clip blocks mismatched, the post-ICP gate is INVALID (ICP not converged), and no dimension is caliper-verified. Usable only as an inspection-grade shape reference for the iteration loop."}

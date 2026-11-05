@@ -1,0 +1,9 @@
+{"source": "written by QA from intake/INTAKE_CARD.md §6 and alignment.json primary/secondary/clock descriptions; not from builder code",
+ "primary": {"type": "plane", "method": "region", "cone_deg": 10.0,
+   "region": {"z": [-0.3, 0.3], "nz": [null, -0.9], "r": [7.0, 20.0]},
+   "why": "flange plate back face (stem side), z=0, material +z"},
+ "position": {"type": "circle", "single_wall": "outer", "wall": "outer",
+   "region": {"z": [5.0, 6.6], "r": [5.8, 6.7]},
+   "why": "drive tube OD, lower unslotted band (one of the three coaxial features of the intake axis); single outer wall selection"},
+ "clock": {"type": "fourier", "order": 2, "region": {"r": [12.5, 22.0], "z": [0.2, 5.8]},
+   "why": "2-fold Fourier phase of flange-ear vertex mass; ears on +-X"}}

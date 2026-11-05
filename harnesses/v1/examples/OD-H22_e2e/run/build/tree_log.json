@@ -1,0 +1,508 @@
+{
+  "created": "2026-11-05T18:38:15+00:00",
+  "final": {
+    "faces": 109,
+    "solids": 1,
+    "valid": true,
+    "volume": 7184.733744
+  },
+  "inputs": {
+    "build/feature_tree.json": "69dfbcb20f81cbc1d6a556418177134cf37fb1afcd81e57f91cfe39fb6227548",
+    "measure/params.json": "2e8f4dafed0892b59b70ffa463751eb6bfe480df0ebec3b29801f6cd5c06eb82",
+    "measure/params_refine.json": "d48bef09b0ea9f24d0f915ab5d81deb83aaf759672f6ab7046a8344e68865374"
+  },
+  "lint": [],
+  "literals": [],
+  "nodes": [
+    {
+      "combine": "new",
+      "dv": 3539.995242,
+      "error": null,
+      "faces": 14,
+      "fillet_entries": [],
+      "id": "F01",
+      "n_instances": 1,
+      "name": "flange outline prism",
+      "op": "extrude",
+      "seconds": 0.106,
+      "solids": 1,
+      "status": "OK",
+      "tool_bbox": [
+        [
+          -20.822,
+          -11.7,
+          0.0
+        ],
+        [
+          20.931,
+          11.7,
+          5.63
+        ]
+      ],
+      "tool_volume": 3539.995242,
+      "valid": true,
+      "volume": 3539.995242
+    },
+    {
+      "combine": "cut",
+      "dv": -1620.5856,
+      "error": null,
+      "faces": 27,
+      "fillet_entries": [],
+      "id": "R03a",
+      "n_instances": 1,
+      "name": "pocket = outline offset -1.483, floor z 2.278",
+      "op": "extrude",
+      "seconds": 0.137,
+      "solids": 1,
+      "status": "OK",
+      "tool_bbox": [
+        [
+          -19.3386,
+          -10.2166,
+          2.2777
+        ],
+        [
+          19.4476,
+          10.2166,
+          6.63
+        ]
+      ],
+      "tool_volume": 2104.010592,
+      "valid": true,
+      "volume": 1919.409641
+    },
+    {
+      "combine": "add",
+      "dv": 3064.851949,
+      "error": null,
+      "faces": 35,
+      "fillet_entries": [],
+      "id": "F05",
+      "n_instances": 1,
+      "name": "core revolve: stem, 40 deg cone, neck, collar, drive tube",
+      "op": "revolve",
+      "seconds": 0.058,
+      "solids": 1,
+      "status": "OK",
+      "tool_bbox": [
+        [
+          -8.06,
+          -8.06,
+          -19.587
+        ],
+        [
+          8.06,
+          8.06,
+          13.68
+        ]
+      ],
+      "tool_volume": 3494.990635,
+      "valid": true,
+      "volume": 4984.26159
+    },
+    {
+      "combine": "add",
+      "dv": 1623.64576,
+      "error": null,
+      "faces": 44,
+      "fillet_entries": [],
+      "id": "R01a",
+      "n_instances": 1,
+      "name": "revolve boss (3 steps) about skew axis",
+      "op": "revolve",
+      "seconds": 0.078,
+      "solids": 1,
+      "status": "OK",
+      "tool_bbox": [
+        [
+          -6.1449,
+          -1.8892,
+          -30.7688
+        ],
+        [
+          6.3267,
+          20.2317,
+          -11.1313
+        ]
+      ],
+      "tool_volume": 1804.318503,
+      "valid": true,
+      "volume": 6607.90735
+    },
+    {
+      "combine": "add",
+      "dv": 1636.050703,
+      "error": null,
+      "faces": 54,
+      "fillet_entries": [],
+      "id": "R02b",
+      "n_instances": 1,
+      "name": "revolve boss (4 steps) about skew axis",
+      "op": "revolve",
+      "seconds": 0.111,
+      "solids": 1,
+      "status": "OK",
+      "tool_bbox": [
+        [
+          -6.0994,
+          -19.9661,
+          -31.0421
+        ],
+        [
+          6.4154,
+          1.8938,
+          -11.3345
+        ]
+      ],
+      "tool_volume": 1810.552132,
+      "valid": true,
+      "volume": 8243.958053
+    },
+    {
+      "combine": "cut",
+      "dv": -700.952345,
+      "error": null,
+      "faces": 56,
+      "fillet_entries": [],
+      "id": "R04h",
+      "n_instances": 1,
+      "name": "hole r=4.530 along Z (down)",
+      "op": "cylinder",
+      "seconds": 0.065,
+      "solids": 1,
+      "status": "OK",
+      "tool_bbox": [
+        [
+          -4.605,
+          -4.5299,
+          2.8067
+        ],
+        [
+          4.4548,
+          4.5299,
+          86.5812
+        ]
+      ],
+      "tool_volume": 5400.561883,
+      "valid": true,
+      "volume": 7543.005708
+    },
+    {
+      "combine": "add",
+      "dv": 59.590291,
+      "error": null,
+      "faces": 72,
+      "fillet_entries": [],
+      "id": "R11m",
+      "n_instances": 1,
+      "name": "slot prism x1 (merged round ends)",
+      "op": "extrude",
+      "seconds": 0.158,
+      "solids": 1,
+      "status": "OK",
+      "tool_bbox": [
+        [
+          -5.6695,
+          10.0292,
+          -29.2081
+        ],
+        [
+          5.9593,
+          18.409,
+          -18.6475
+        ]
+      ],
+      "tool_volume": 489.151563,
+      "valid": true,
+      "volume": 7602.595999
+    },
+    {
+      "combine": "cut",
+      "dv": -213.087504,
+      "error": null,
+      "faces": 74,
+      "fillet_entries": [],
+      "id": "R05c",
+      "n_instances": 1,
+      "name": "hole r=4.326 along skew axis (down)",
+      "op": "cylinder",
+      "seconds": 0.101,
+      "solids": 1,
+      "status": "OK",
+      "tool_bbox": [
+        [
+          -7.4553,
+          11.5186,
+          -64.9586
+        ],
+        [
+          4.5568,
+          82.6491,
+          -19.9879
+        ]
+      ],
+      "tool_volume": 4511.05836,
+      "valid": true,
+      "volume": 7389.508495
+    },
+    {
+      "combine": "add",
+      "dv": 62.891506,
+      "error": null,
+      "faces": 90,
+      "fillet_entries": [],
+      "id": "R09m",
+      "n_instances": 1,
+      "name": "slot prism x1 (merged round ends)",
+      "op": "extrude",
+      "seconds": 0.14,
+      "solids": 1,
+      "status": "OK",
+      "tool_bbox": [
+        [
+          -5.7717,
+          -18.1208,
+          -29.3856
+        ],
+        [
+          6.0302,
+          -9.6084,
+          -18.8896
+        ]
+      ],
+      "tool_volume": 494.965049,
+      "valid": true,
+      "volume": 7452.400001
+    },
+    {
+      "combine": "cut",
+      "dv": -210.625317,
+      "error": null,
+      "faces": 92,
+      "fillet_entries": [],
+      "id": "R06g",
+      "n_instances": 1,
+      "name": "hole r=4.306 along skew axis (down)",
+      "op": "cylinder",
+      "seconds": 0.106,
+      "solids": 1,
+      "status": "OK",
+      "tool_bbox": [
+        [
+          -4.2648,
+          -76.0155,
+          -74.9899
+        ],
+        [
+          7.5821,
+          -10.827,
+          -20.3878
+        ]
+      ],
+      "tool_volume": 4465.32314,
+      "valid": true,
+      "volume": 7241.774683
+    },
+    {
+      "combine": "add",
+      "dv": 11.752976,
+      "error": null,
+      "faces": 95,
+      "fillet_entries": [],
+      "id": "R10a",
+      "n_instances": 1,
+      "name": "revolve boss (1 steps) about Y",
+      "op": "revolve",
+      "seconds": 0.137,
+      "solids": 1,
+      "status": "OK",
+      "tool_bbox": [
+        [
+          -0.6503,
+          -2.8048,
+          -23.6867
+        ],
+        [
+          1.0125,
+          3.7526,
+          -22.0239
+        ]
+      ],
+      "tool_volume": 14.239725,
+      "valid": true,
+      "volume": 7253.527659
+    },
+    {
+      "combine": "cut",
+      "dv": -24.246896,
+      "error": null,
+      "faces": 105,
+      "fillet_entries": [],
+      "id": "R12e",
+      "n_instances": 1,
+      "name": "prism chain(8) along eig0 (exact)",
+      "op": "extrude",
+      "seconds": 0.151,
+      "solids": 1,
+      "status": "OK",
+      "tool_bbox": [
+        [
+          -5.7592,
+          -17.8489,
+          -28.8936
+        ],
+        [
+          -3.8942,
+          -9.9684,
+          -19.3687
+        ]
+      ],
+      "tool_volume": 24.367505,
+      "valid": true,
+      "volume": 7229.280763
+    },
+    {
+      "combine": "cut",
+      "dv": -23.050399,
+      "error": null,
+      "faces": 107,
+      "fillet_entries": [],
+      "id": "R13c",
+      "n_instances": 1,
+      "name": "hole r=1.931 along Z (down)",
+      "op": "cylinder",
+      "seconds": 0.119,
+      "solids": 1,
+      "status": "OK",
+      "tool_bbox": [
+        [
+          13.5311,
+          -1.858,
+          0.3108
+        ],
+        [
+          17.3939,
+          2.0048,
+          75.1742
+        ]
+      ],
+      "tool_volume": 877.331806,
+      "valid": true,
+      "volume": 7206.230364
+    },
+    {
+      "combine": "cut",
+      "dv": -21.49662,
+      "error": null,
+      "faces": 109,
+      "fillet_entries": [],
+      "id": "R14n",
+      "n_instances": 1,
+      "name": "hole r=1.941 along skew axis (up)",
+      "op": "cylinder",
+      "seconds": 0.119,
+      "solids": 1,
+      "status": "OK",
+      "tool_bbox": [
+        [
+          -27.0882,
+          -2.023,
+          0.2196
+        ],
+        [
+          -13.28,
+          1.859,
+          75.0168
+        ]
+      ],
+      "tool_volume": 887.053843,
+      "valid": true,
+      "volume": 7184.733744
+    }
+  ],
+  "part": "OD-H22_3-way-valve",
+  "schema": "stl-re/tree_log@1",
+  "seconds": 1.6,
+  "seed": 0,
+  "sketch_fillets": [
+    {
+      "n_vertices": 4,
+      "r": 4.617,
+      "select": "concave",
+      "status": "OK"
+    },
+    {
+      "n_vertices": 4,
+      "r": 4.617,
+      "select": "concave",
+      "status": "OK"
+    }
+  ],
+  "status": "OK",
+  "tool": "build_tree.py",
+  "tool_version": "stl-re-build@v1",
+  "unused_params": [
+    "R07u_c",
+    "R07u_d",
+    "R07u_h",
+    "R07u_r",
+    "R07u_t0",
+    "R07u_u",
+    "R08u_c",
+    "R08u_d",
+    "R08u_h",
+    "R08u_r",
+    "R08u_t0",
+    "R08u_u",
+    "R09u_c",
+    "R09u_d",
+    "R09u_h",
+    "R09u_r",
+    "R09u_t0",
+    "R09u_u",
+    "R11u_c",
+    "R11u_d",
+    "R11u_h",
+    "R11u_r",
+    "R11u_t0",
+    "R11u_u",
+    "back_edge_R",
+    "ear_hole_r",
+    "flange_floor_z",
+    "gusset_angle_deg",
+    "gusset_t",
+    "gusset_x_at_z0",
+    "port_axis_z0",
+    "port_block_corner_R",
+    "port_block_half_u",
+    "port_block_half_v",
+    "port_block_t0",
+    "port_block_t1",
+    "port_bore2_R",
+    "port_bore2_end_t",
+    "port_bore_R",
+    "port_bore_step_t",
+    "port_elev_deg",
+    "port_end_t",
+    "port_lip_R",
+    "port_neck_R",
+    "port_sleeve_R",
+    "port_sleeve_t",
+    "port_slot_dt0",
+    "port_slot_v_in",
+    "port_slot_v_out",
+    "port_slot_w",
+    "rib_bottom_z",
+    "rib_half_len",
+    "rib_t",
+    "rim_wall_t",
+    "slot_bottom_z_x",
+    "slot_bottom_z_y",
+    "slot_count",
+    "slot_theta_deg",
+    "slot_w",
+    "tube_bore_bottom_z",
+    "tube_bore_r"
+  ]
+}

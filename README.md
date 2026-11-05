@@ -8,7 +8,7 @@ side so they can be compared with each other and across LLMs.
 | Version | Status | Idea |
 |---|---|---|
 | [`v0`](harnesses/v0/) | frozen (tag `harness-v0`) | Plan-first linear pipeline: intake → measure (one-shot `params.json`) → rebuild (agent writes `model.py`) → independent verify → deliver. |
-| [`v1`](harnesses/v1/) | in development | JSON feature tree + generic builder, staged deviation loop with a scripted region classifier, decision cards (agent or user as arbiter). Design: [`harnesses/v1/README.md`](harnesses/v1/README.md). |
+| [`v1`](harnesses/v1/) | frozen (tag `harness-v1`) | JSON feature tree + generic builder, staged deviation loop with scripted RANSAC hypotheses, refit and design-intent merge, decision cards. Results, limits and the v2 backlog: [`harnesses/v1/README.md`](harnesses/v1/README.md). |
 
 ## Install a version
 
@@ -53,7 +53,7 @@ spec) is declared at intake and named in the verdict; there is no silent default
   - `v0/skills/`: the six v0 skills.
   - `v0/evals/`, `v0/reviews/`, `v0/examples/`, `v0/PLAN.md`, `v0/prompts/`: how v0 was
     produced, evaluated and reviewed. The worked example is the OD-H22 valve run.
-  - `v1/`: the version under development.
+  - `v1/`: the second version (frozen); `v1/examples/OD-H22_e2e/` is its end-to-end run.
 - `tools/harness.py`: list, install, check and self-test a version.
 - `bench/`: the planned model-agnostic benchmark across harness versions and LLMs.
 - `analysis/`: the evidence base. Per-golden and per-baseline extractions, `SYNTHESIS.md`

@@ -1,0 +1,132 @@
+{
+ "schema": "stl-re/step_check@1",
+ "tool": "step_check.py",
+ "tool_version": "stl-re-verify@1",
+ "inputs": {
+  "build/OD-H22_3-way-valve_datum.step": "7476d332c29792a402a1122bba88962eb80cf47a4f13cdad1c8c299800a4da70",
+  "build/OD-H22_3-way-valve.step": "079644de9764e2f4586d027acfd55b33133781627329fe4e13d3856530e8ea7b"
+ },
+ "seed": null,
+ "created": "2026-11-05T18:39:04+00:00",
+ "steps": {
+  "build/OD-H22_3-way-valve_datum.step": {
+   "validity": {
+    "counts": {
+     "solid": 1,
+     "shell": 1,
+     "face": 109,
+     "edge": 512,
+     "vertex": 1024
+    },
+    "brepcheck_valid": true,
+    "shells_closed": [
+     true
+    ],
+    "naked_edges": 0,
+    "volume_mm3": 7184.73374305729,
+    "area_mm2": 5349.884096223312,
+    "bbox": [
+     -20.822,
+     -19.966061896535837,
+     -31.042058552090097,
+     20.931,
+     20.23173111923684,
+     13.680000000000007
+    ],
+    "single_valid_closed_solid": true
+   },
+   "tessellation": {
+    "tolerance": 0.005,
+    "angular_tolerance": 0.05,
+    "tris": 28186,
+    "watertight": true,
+    "winding": true,
+    "euler": 0,
+    "components": 1,
+    "degenerate_faces": 0,
+    "volume_mm3": 7184.145404087528,
+    "volume_vs_brep_mm3": -0.588338969761935
+   },
+   "surface_census": {
+    "faces": 109,
+    "by_type": {
+     "cylinder": {
+      "count": 42,
+      "area_mm2": 3324.1538187498245
+     },
+     "plane": {
+      "count": 66,
+      "area_mm2": 1897.5975130316676
+     },
+     "cone": {
+      "count": 1,
+      "area_mm2": 128.13276444181844
+     }
+    },
+    "analytic_area_share": 1.0,
+    "gated": false,
+    "note": "reported, not gated (QUESTIONS.md Q3)"
+   }
+  },
+  "build/OD-H22_3-way-valve.step": {
+   "validity": {
+    "counts": {
+     "solid": 1,
+     "shell": 1,
+     "face": 109,
+     "edge": 512,
+     "vertex": 1024
+    },
+    "brepcheck_valid": true,
+    "shells_closed": [
+     true
+    ],
+    "naked_edges": 0,
+    "volume_mm3": 7184.73374305729,
+    "area_mm2": 5349.884096223312,
+    "bbox": [
+     -15.564103994102165,
+     -67.24427308916901,
+     -238.62327511766756,
+     24.708603405538774,
+     -25.599367720322117,
+     -190.20656501738313
+    ],
+    "single_valid_closed_solid": true
+   },
+   "tessellation": {
+    "tolerance": 0.005,
+    "angular_tolerance": 0.05,
+    "tris": 28176,
+    "watertight": true,
+    "winding": true,
+    "euler": 0,
+    "components": 1,
+    "degenerate_faces": 0,
+    "volume_mm3": 7184.143617739745,
+    "volume_vs_brep_mm3": -0.5901253175443344
+   },
+   "surface_census": {
+    "faces": 109,
+    "by_type": {
+     "cylinder": {
+      "count": 42,
+      "area_mm2": 3324.153818749825
+     },
+     "plane": {
+      "count": 66,
+      "area_mm2": 1897.5975130316676
+     },
+     "cone": {
+      "count": 1,
+      "area_mm2": 128.13276444181847
+     }
+    },
+    "analytic_area_share": 1.0,
+    "gated": false,
+    "note": "reported, not gated (QUESTIONS.md Q3)"
+   }
+  }
+ },
+ "all_single_valid_closed_solid": true
+}

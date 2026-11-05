@@ -1,0 +1,21 @@
+{
+  "check": "CHK-FILLET",
+  "created": "2026-11-05T18:38:15+00:00",
+  "fillets": [],
+  "inputs": {
+    "build/feature_tree.json": "69dfbcb20f81cbc1d6a556418177134cf37fb1afcd81e57f91cfe39fb6227548",
+    "measure/params.json": "2e8f4dafed0892b59b70ffa463751eb6bfe480df0ebec3b29801f6cd5c06eb82",
+    "measure/params_refine.json": "d48bef09b0ea9f24d0f915ab5d81deb83aaf759672f6ab7046a8344e68865374"
+  },
+  "schema": "stl-re/fillets@1",
+  "seed": 0,
+  "summary": {
+    "FAILED": 0,
+    "NO_EDGES": 0,
+    "OK": 0,
+    "REDUCED": 0,
+    "SELECTOR_ERROR": 0
+  },
+  "tool": "fillet_log.py",
+  "tool_version": "stl-re-build@v1"
+}

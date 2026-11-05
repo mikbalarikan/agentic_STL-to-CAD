@@ -1,0 +1,107 @@
+{
+  "schema": "run_metrics@v1",
+  "harness": {
+    "id": "v1",
+    "status": "in-development",
+    "commit": "bd153714ac96293da88fb59f6950bc303f3d07b2"
+  },
+  "run": "/tmp/claude-0/-home-user-agentic-STL-to-CAD/3c463766-6ade-5f83-8dd5-da389d3700d2/scratchpad/e2e_v1/run",
+  "part": "OD-H22_3-way-valve",
+  "regime": "baseline-skill",
+  "verdict": "REVISE",
+  "gate_errors": [],
+  "loops": 0,
+  "decisions": {
+    "human": 2,
+    "agent": 3
+  },
+  "deviation": {
+    "label": "INVALID",
+    "scan_to_cad": {
+      "p50": 0.07799316155960853,
+      "p95": 0.4353221235245477,
+      "max": 2.2846627560404893,
+      "n": 249510
+    },
+    "scan_to_cad_masked": {
+      "p50": 0.07664246288285037,
+      "p95": 0.41659411273984054,
+      "max": 2.2846627560404893,
+      "n": 244617
+    },
+    "cad_to_scan_observable": {
+      "p50": 0.0821503568744187,
+      "p95": 0.7770507415254166,
+      "max": 4.20912293308764,
+      "n": 19845
+    },
+    "unobservable_fraction": 0.007750000000000035,
+    "registration_converged": false,
+    "band_fails": [
+      "scan_to_cad:masked: p95 0.417 max 2.285 vs 0.3/0.8",
+      "cad_to_scan_observable: p95 0.777 max 4.209 vs 0.3/0.8"
+    ],
+    "blockers": [
+      "registration did not converge: gate invalid"
+    ]
+  },
+  "model": {
+    "solids": 1,
+    "valid": true,
+    "faces": 109,
+    "volume_mm3": 7184.733743,
+    "nodes": 14,
+    "build_status": "OK",
+    "unused_params": 61,
+    "tree_literals": 0
+  },
+  "refine": {
+    "rounds": 15,
+    "accepted": 14,
+    "accepted_kinds": [
+      "cyl-boss+nb",
+      "cyl-hole",
+      "cyl-hole+nb",
+      "offset-pocket",
+      "prism-chain",
+      "revolve",
+      "revolve+nb",
+      "slot-merge"
+    ],
+    "refits": 0,
+    "merges": 2,
+    "candidates_built": 239,
+    "open_points": 7,
+    "blend_candidates": 4,
+    "cards": 17,
+    "cards_by": {
+      "auto": 17,
+      "agent": 0,
+      "user": 0
+    },
+    "cards_unanswered": 0,
+    "start": {
+      "J": 1.2830103350458602,
+      "s2c_mean_clip": 1.069035401767217,
+      "c2s_mean_clip": 0.4279498665572863,
+      "s2c_p50": 1.3041613923728828,
+      "s2c_p95": 13.995970236706794,
+      "s2c_max": 16.04047383244836,
+      "s2c_within_band": 0.38741333333333333,
+      "c2s_p95": 2.075982630711232
+    },
+    "final": {
+      "J": 0.2386388860261993,
+      "s2c_mean_clip": 0.11660896840000477,
+      "c2s_mean_clip": 0.24405983525238903,
+      "s2c_p50": 0.06929678202070652,
+      "s2c_p95": 0.38316096463386795,
+      "s2c_max": 2.2296534437082687,
+      "s2c_within_band": 0.9282466666666667,
+      "c2s_p95": 0.876622308922799
+    },
+    "builds": 544,
+    "seconds": 1495.8
+  },
+  "reproducible": null
+}

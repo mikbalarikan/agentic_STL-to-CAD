@@ -1,0 +1,12 @@
+{"source": "QA-defined from intake/INTAKE_CARD.md §2 artefact zones and gate-protocol standard masks BEFORE any deviation was computed",
+ "masks": [
+  {"name": "M1 +X ear tip damage", "type": "region", "applies_to": "both", "select": {"x": [20.0, null], "abs_y": [null, 6.0], "z": [-0.5, 6.5]},
+   "why": "the +X ear tip of this specimen is damaged/torn (jagged outline x>20.4); CAD follows the undamaged -X ear by symmetry, so deviation there is specimen damage, not a modelling deviation",
+   "evidence": "intake/INTAKE_CARD.md §2 Artefact zones, §8 risk flags"},
+  {"name": "M2 open boundary", "type": "open_boundary", "applies_to": "cad", "radius_mm": 0.8,
+   "why": "distance from CAD to a scan hole EDGE (unscanned tube-bore floor, port bores beyond t≈13-16, small loops) is not a surface deviation",
+   "evidence": "intake/coverage.json; INTAKE_CARD §3; B02 q20_tier2.py:9-10"},
+  {"name": "M3 skin normal", "type": "normal_disagreement", "applies_to": "cad", "angle_deg": 70,
+   "why": "a CAD point whose closest scan triangle disagrees in normal by >70 deg is an occluded/interior correspondence, not an outer-skin deviation",
+   "evidence": "B02 q20_tier2.py:11-12; mask-policy.md"}
+ ]}
