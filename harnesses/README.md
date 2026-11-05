@@ -6,7 +6,7 @@ Versions live side by side so they can be benchmarked against each other and acr
 | Version | Status | Idea |
 |---|---|---|
 | [`v0`](v0/) | frozen (tag `harness-v0`, commit `29cb4cb`) | Plan-first linear pipeline: one-shot `params.json`, the agent writes `model.py`, independent verify. |
-| [`v1`](v1/) | frozen (tag `harness-v1`) | JSON feature tree + generic builder, staged deviation loop (RANSAC hypotheses, refit, slot merge), decision cards; worked example `v1/examples/OD-H22_e2e/`. |
+| [`v1`](v1/) | frozen (tag `harness-v1`, commit `62d5737`) | JSON feature tree + generic builder, staged deviation loop (RANSAC hypotheses, refit, slot merge), decision cards; worked example `v1/examples/OD-H22_e2e/`. |
 
 ## Rules for every version
 

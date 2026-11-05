@@ -66,7 +66,7 @@
   "start_prompt": "Turn <scan.stl> into a STEP (calipers in <MEASUREMENTS.md> or scan-only).",
   "design": "README.md",
   "milestone": "frozen after M3-lite (M1, M2, M2.1, M3-lite); M4 guided mode and the open points moved to the v2 backlog",
-  "frozen_commit": null,
-  "frozen_note": "frozen_commit is recorded in the commit that follows the freeze commit (a commit cannot contain its own hash)",
-  "worked_example": "examples/OD-H22_e2e/"
+  "frozen_commit": "62d5737",
+  "worked_example": "examples/OD-H22_e2e/",
+  "frozen_selftests": "all 7 passed at 62d5737 (init_run selftest, build 27/27, OD-H22 tree==v0, refine 14/14, measure 28/28, deliver fixtures 33/33, tree repro)"
 }
