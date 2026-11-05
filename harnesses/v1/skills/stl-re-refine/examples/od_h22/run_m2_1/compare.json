@@ -1,0 +1,30 @@
+{
+ "refine": {
+  "J": 0.23849026275292126,
+  "s2c_mean_clip": 0.11660896840000477,
+  "c2s_mean_clip": 0.24376258870583298,
+  "s2c_p50": 0.06929678202070652,
+  "s2c_p95": 0.38316096463386795,
+  "s2c_max": 2.2296534437082687,
+  "s2c_within_band": 0.9282466666666667,
+  "c2s_p95": 0.872469709421594,
+  "faces": 109,
+  "solids": 1,
+  "volume": 7184.733743628002
+ },
+ "reference": {
+  "J": 0.22791504284629435,
+  "s2c_mean_clip": 0.08910509511902798,
+  "c2s_mean_clip": 0.27761989545453275,
+  "s2c_p50": 0.06838240328196127,
+  "s2c_p95": 0.23509285587513112,
+  "s2c_max": 1.4199547600233147,
+  "s2c_within_band": 0.97522,
+  "c2s_p95": 1.6211826199527795,
+  "faces": 162,
+  "solids": 1,
+  "volume": 6395.59363602867
+ },
+ "nodes": 14,
+ "reference_step": "/home/user/agentic_STL-to-CAD/harnesses/v0/examples/OD-H22_3-way-valve/run/build/OD-H22_3-way-valve_datum.step"
+}

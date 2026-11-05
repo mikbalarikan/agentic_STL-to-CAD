@@ -226,18 +226,11 @@ mask declared before grading. That is planned for M3.
 
 ### Open points carried to M3
 
-1. **Design-intent merge.** The block ends were found as cylinder bosses (a 5-instance pattern
-   plus one more). They should be one stadium (slot) prism per block along X. Needed: a
-   stadium/slot footprint fit, and a merge step that rewrites a pattern of bosses on one body
-   into that body.
+1. ✅ **Design-intent merge** (M2.1). See below.
 2. **Gussets.** Thin plates whose footprint ends exactly at the CAD surface still give 2 solids,
    even with the silhouette bridge.
-3. **Parameter re-fit.** The loop only adds features. A wrong size of an existing node (for
-   example the revolve step ends) shows up as thin clusters and gets patched by late small
-   prisms. Next: a "re-fit node" hypothesis that adjusts the params of the node that owns the
-   face.
-4. **Diminishing returns.** Rounds 12–18 on OD-H22 each lower J by < 1 %. A stricter gain rule,
-   or a card to the agent/user for these, would stop the loop earlier with a cleaner tree.
+3. ✅ **Parameter re-fit** (M2.1). See below.
+4. ✅ **Diminishing returns** (M2.1). See below.
 5. **DRM-type parts.** Drafted polygonal frustums, tilted dimple cylinders and double-D flats
    need hypotheses for intersections with an envelope, tilted cylinder cuts, and pairs of
    parallel flats.
@@ -248,3 +241,70 @@ mask declared before grading. That is planned for M3.
 Tests: `skills/stl-re-refine/tests/test_refine.py` 9/9. It builds a synthetic box with a hole,
 a boss and a pocket, checks classify on each, then runs the loop from the bare box: exactly 3
 features are accepted, and the final p95 is 0.0087 mm.
+
+## M2.1: open points 1, 3 and 4 closed
+
+New: `skills/stl-re-refine/scripts/refine_ops.py`. Changed: `loop.py`; `features.py` now logs
+each node's tool bbox.
+
+- **Design-intent merge (point 1).**
+  - **Merge rule:** parallel cylinder bosses of equal radius whose centre lines pair up are the
+    two round ends of one body. `slot_merge()` rewrites them as one stadium (slot) prism per
+    pair:
+    - rods are re-projected on a common axis within 3°;
+    - rods on the same centre line are merged;
+    - rods are paired mutual-nearest;
+    - every value is a named scan param.
+  - **Placement:** the merged body takes the place of the cylinders. An add node is moved in
+    front of any earlier cut whose tool it overlaps (`move_before_cuts`, also used for every add
+    candidate in the loop), so it never refills a bore.
+  - **When it is tried:** after every accepted boss round, and once at the end.
+  - **Acceptance:** the merge is kept when J is within `OCCAM_TOL` = 1 % of the cylinders. If it
+    is not, up to two rounds of cut "repairs" inside the merged region may run first.
+- **Parameter re-fit (point 3).**
+  - **How:** `refit_candidate()` runs damped Gauss-Newton on the cluster's signed distances.
+    The variables are the mm and deg params of the nodes whose tool overlaps the cluster, at
+    most 12. Each variable costs one finite-difference build, measured on ≤ 3000 cluster points.
+  - **Priority:** the refit is tried before any new feature. On a near-tie with a new feature it
+    wins, because it adds no faces.
+  - **Records:** values keep `source: scan`, and the estimator says they were refitted.
+- **Diminishing returns (point 4).** A new feature must lower J by ≥ `--min-feature-gain`
+  (1 %). A smaller gain writes a **low-gain card**: "add it (0) or leave an open point (1)".
+  - `--arbiter auto` answers 1, so the region becomes an open point with its gain recorded.
+  - `--arbiter agent` stops and waits for the answer.
+
+### OD-H22 after M2.1
+
+Same base tree, same samples. `compare.py` record: `examples/od_h22/run_m2_1/`.
+
+| | M2 | M2.1 | v0 by hand |
+|---|---|---|---|
+| scan→CAD p95 | 0.345 | 0.383 | 0.235 |
+| share of scan within 0.30 | 93.8 % | 92.8 % | 97.5 % |
+| CAD→scan p95 | 0.91 | 0.87 | 1.62 |
+| faces / nodes | 149 / 20 | **109 / 14** | 162 / 12 |
+| rounds | 18 | 14 | – |
+| port clip blocks | 7 corner cylinders (pattern + 1) | **2 slot prisms**, placed before the port bores | box with 0.5 mm rounds (`assumed`) |
+| late small patches | 7 prisms / plane cuts, each < 1 % | none: 7 low-gain open points | – |
+
+Block dimensions found by the merge, compared with v0's params:
+
+| | v0 | Loop, block 1 / block 2 |
+|---|---|---|
+| Slot length | 2 × `port_block_half_v` = 11.83 | 12.01 / 11.98 |
+| Width | `port_block_t1 − t0` = 3.65 / 3.70 | 3.74 / 3.77 |
+| Extrude length | 2 × `port_block_half_u` = 11.78 | 11.80 / 11.63 |
+
+The trade: p95 is 0.04 mm worse than M2, in exchange for 40 fewer faces and no patch-like
+features. The 7 open points (gains of 0.35–0.99 %) are listed in `refine_log.json` for the
+agent, or the user in guided mode, to decide.
+
+The refit was tried 25 times on OD-H22 and accepted 0 times. No thin cluster there was a size
+error of an existing node. In the synthetic test it corrects a 0.4 mm wrong box height to
+7.993 (truth 8.0) without adding a node.
+
+DRM screw cap: unchanged (p95 0.741). Its missing features need the new hypotheses of open
+point 5.
+
+Tests: `test_refine.py` 14/14. New checks: refit instead of a feature; the refit value; no
+node added; slot-merge geometry; stadium volume.

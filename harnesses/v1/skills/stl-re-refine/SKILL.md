@@ -46,6 +46,15 @@ Each round:
 A cluster that fails 3 times becomes an **open point**. A cluster that is mostly a short,
 small-radius arc becomes a **blend candidate**: a fillet for the finishing stage, never a body.
 
+Three more rules (M2.1):
+- **Refit before new features.** For each cluster the loop first tries to re-fit the params of
+  the nodes whose tool lies at it (Gauss-Newton, `refine_ops.refit_candidate`). A refit adds no
+  faces, so it wins near-ties.
+- **Design-intent merge.** Parallel equal-radius bosses that pair up become one slot prism
+  (`refine_ops.slot_merge`). An add node always goes before the cuts it overlaps.
+- **Diminishing returns.** A new feature that buys < 1 % of J (`--min-feature-gain`) gets a
+  **low-gain card**. `auto` leaves the region as an open point; `agent` asks you.
+
 ## 3. Decision cards
 
 When the two best candidates are of different kinds and within 1 % in J, the loop writes
@@ -77,10 +86,8 @@ Check what the loop added:
   `stl-re-build` and measure the radii with `stl-re-measure-intent`.
 - Then build with `stl-re-build` and hand over to `stl-re-verify`.
 
-## Limits (M2)
+## Limits (M2.1)
 
-- The loop adds features. It does not yet re-fit the size of a feature that is already in the
-  tree. A wrong base dimension shows up as a thin cluster on that face.
 - Repeated features inside ONE cluster (two ports joined by a rib) are added in separate
   rounds, not as one pattern.
 - No sweeps, helices, freeform skins or sheet metal.

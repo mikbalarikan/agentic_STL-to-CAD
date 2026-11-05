@@ -45,6 +45,7 @@ sys.path.insert(0, str(HERE.parents[1] / "stl-re-build" / "scripts"))
 import devmap  # noqa: E402
 from build_tree import build, load_params  # noqa: E402
 from classify import Namer, classify  # noqa: E402
+from refine_ops import OCCAM_TOL, consolidate, move_before_cuts, refit_candidate  # noqa: E402
 
 CARD_MARGIN = 0.01
 MAX_ATTEMPTS = 3
@@ -71,6 +72,14 @@ class Evaluator:
         m = devmap.metrics(d, dc, self.band)
         return {"ok": True, "body": body, "cad": cad, "d": d, "dc": dc, "m": m, "log": log,
                 "faces": log["final"]["faces"], "seconds": round(time.time() - t0, 2)}
+
+    def local(self, tree: dict[str, Any], params: dict[str, Any], Q: np.ndarray) -> np.ndarray | None:
+        """Signed distances of a few points only (refit finite differences)."""
+        self.n_evals += 1
+        body, log, _ = build(tree, params)
+        if log["status"] != "OK" or body is None:
+            return None
+        return devmap.signed_s2c(Q, devmap.body_mesh(body), n_samp=150_000)
 
 
 def tree_profiles2d(tree: dict[str, Any], params: dict[str, Any]) -> list[tuple[str, Any, Any]]:
@@ -165,6 +174,36 @@ def make_pattern(hs: list[dict[str, Any]], tag: str, noise: float) -> tuple[dict
     return node, nm.params
 
 
+def make_repair(scan: devmap.ScanSample, ev: "Evaluator", thr: float, eps: float, min_pts: int, max_cands: int):
+    """Up to two rounds of cut features restricted to a region (used after a design-intent merge)."""
+    def repair(tree, params, cur, bbox, tag):
+        done, extra = [], {}
+        if not bbox:
+            return tree, params, cur, done, extra
+        lo, hi = np.array(bbox[0]) - 0.5, np.array(bbox[1]) + 0.5
+        for k in range(2):
+            cl = [c for c in devmap.clusters(scan.P, cur["d"], thr, eps, min_pts) if c["sign"] < 0 and
+                  np.all(np.array(c["bbox"][0]) < hi) and np.all(np.array(c["bbox"][1]) > lo)]
+            best = None
+            for c in cl[:2]:
+                H = [h for h in classify(scan.P[c["idx"]], scan.N[c["idx"]], -1, scan.noise, scan.spacing,
+                                         f"{tag}r{k}", f"repair after merge {tag}", cur["cad"]) if h["node"] is not None]
+                for j, h in enumerate(H[:max_cands]):
+                    node = dict(h["node"], id=f"{tag}r{k}{string.ascii_lowercase[j % 26]}")
+                    t2 = dict(tree, nodes=tree["nodes"] + [node])
+                    p2 = {**params, **h["params"]}
+                    r = ev(t2, p2)
+                    if r["ok"] and r["m"]["J"] < cur["m"]["J"] and (best is None or r["m"]["J"] < best[0]):
+                        best = (r["m"]["J"], t2, p2, r, node, h["params"])
+            if best is None:
+                break
+            _, tree, params, cur, node, hp = best
+            extra.update(hp)
+            done.append({"id": node["id"], "name": node.get("name"), "J": cur["m"]["J"]})
+        return tree, params, cur, done, extra
+    return repair
+
+
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description="Staged deviation refine loop (builder self-check).")
     ap.add_argument("--tree", type=Path, required=True)
@@ -177,7 +216,10 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--samples", type=int, default=150_000)
     ap.add_argument("--c2s-samples", type=int, default=80_000)
     ap.add_argument("--max-cands", type=int, default=14)
-    ap.add_argument("--min-gain", type=float, default=0.002, help="minimum relative J improvement")
+    ap.add_argument("--min-gain", type=float, default=0.002, help="minimum relative J improvement for a refit")
+    ap.add_argument("--min-feature-gain", type=float, default=0.01,
+                    help="minimum relative J improvement for a NEW feature; smaller gains get a low-gain card")
+    ap.add_argument("--no-refit", action="store_true")
     ap.add_argument("--min-area", type=float, default=1.0, help="minimum cluster area (mm^2)")
     ap.add_argument("--arbiter", choices=["auto", "agent"], default="auto")
     ap.add_argument("--seed", type=int, default=0)
@@ -199,6 +241,7 @@ def main(argv: list[str] | None = None) -> int:
     eps = 3 * scan.spacing
     min_pts = max(40, int(a.min_area / scan.area_per_pt))
     thr = max(a.band, 4 * scan.noise)
+    repair = make_repair(scan, ev, thr, eps, min_pts, 6)
     log: dict[str, Any] = {"band": a.band, "threshold_mm": thr, "noise": scan.noise, "spacing": scan.spacing,
                            "samples": a.samples, "rounds": [], "open_points": [], "cards": []}
     cur = ev(tree, params)
@@ -251,6 +294,22 @@ def main(argv: list[str] | None = None) -> int:
                     bases.append(base_key(h))
             cands = [h for h in H if base_key(h) in bases[:4]][:a.max_cands]
             results = []
+            if not a.no_refit:
+                rf = refit_candidate(tree, params, cur["log"], c, scan.P, ev.local, tag)
+                if rf is not None:
+                    r = ev(tree, {**params, **rf["params"]})
+                    item = {"cluster": key, "kind": "refit", "variant": rf["variant"], "name": rf["name"], "ok": r["ok"]}
+                    if r["ok"]:
+                        fixed = float((np.abs(r["d"][c["idx"]]) < thr).mean())
+                        item.update(J=r["m"]["J"], p95=r["m"]["s2c_p95"], faces=r["faces"], fixed=round(fixed, 3))
+                        if fixed >= MIN_FIXED:
+                            results.append((r["m"]["J"], rf, {"id": f"{tag}fit", "name": rf["name"]},
+                                            {**params, **rf["params"]}, tree, r))
+                        else:
+                            item["why"] = f"refit fixes only {fixed:.0%} of the cluster"
+                    else:
+                        item["why"] = str(r["why"])[:200]
+                    rec["tried"].append(item)
             for j, h in enumerate(cands):
                 node = dict(h["node"], id=f"{tag}{string.ascii_lowercase[j % 26]}")
                 ids = [n_["id"] for n_ in tree["nodes"]]
@@ -258,6 +317,12 @@ def main(argv: list[str] | None = None) -> int:
                 t2 = dict(tree, nodes=tree["nodes"][:at] + [node] + tree["nodes"][at:])
                 p2 = {**params, **h["params"]}
                 r = ev(t2, p2)
+                if r["ok"] and node.get("combine", "add") == "add":
+                    moved = move_before_cuts(t2, node["id"], r["log"]["nodes"])
+                    if moved is not None:            # an add after cuts it overlaps would refill them
+                        r_m = ev(moved, p2)
+                        if r_m["ok"] and r_m["m"]["J"] < r["m"]["J"]:
+                            t2, r = moved, r_m
                 item = {"cluster": key, "kind": h["kind"], "variant": h["variant"], "name": node.get("name"),
                         "ok": r["ok"]}
                 if r["ok"]:
@@ -272,12 +337,46 @@ def main(argv: list[str] | None = None) -> int:
                 else:
                     item["why"] = str(r["why"])[:200]
                 rec["tried"].append(item)
-            results.sort(key=lambda x: x[0])
+            # Occam: a refit (no new faces) wins when it is within OCCAM_TOL of the best feature
+            results.sort(key=lambda x: x[0] * (1 - OCCAM_TOL if x[1]["kind"] == "refit" else 1.0))
             # a candidate must fix a real part of its own cluster, not ride on a side effect
             expected = c["n"] / len(scan.P) * min(c["d_med"], 2.0) * min(1.0, max(
                 (h_["members"].mean() for h_ in cands if h_.get("members") is not None), default=1.0))
-            need = max(a.min_gain * cur["m"]["J"], 0.3 * expected)
-            gain_ok = bool(results) and cur["m"]["J"] - results[0][0] >= need
+            J0 = cur["m"]["J"]
+            need = max(a.min_gain * J0, 0.3 * expected)
+            gain_ok = bool(results) and J0 - results[0][0] >= need
+            if gain_ok and results[0][1]["kind"] != "refit" and J0 - results[0][0] < a.min_feature_gain * J0:
+                # diminishing returns: a new feature that buys < min_feature_gain of J is a question, not a default
+                n_card += 1
+                cpath = out / "cards" / f"{n_card:03d}.json"
+                old = json.loads(cpath.read_text()) if cpath.is_file() else None
+                gain = (J0 - results[0][0]) / J0
+                if old and old.get("cluster") == key and old.get("answer") is not None:
+                    card = old
+                else:
+                    card = {"card": n_card, "round": rnd, "cluster": key, "type": "low-gain",
+                            "question": f"Adding '{results[0][2].get('name')}' lowers J by only {gain:.2%}. "
+                                        "Add it (0) or leave the region as an open point (1)?",
+                            "candidates": [{"kind": results[0][1]["kind"], "variant": results[0][1]["variant"],
+                                            "name": results[0][2].get("name"), "J": results[0][0]},
+                                           {"kind": "skip", "variant": "open point", "name": "leave as open point",
+                                            "J": J0}],
+                            "answer": None, "answered_by": None}
+                    if a.arbiter == "auto":
+                        card["answer"], card["answered_by"] = 1, f"auto: gain {gain:.2%} < {a.min_feature_gain:.0%}"
+                    cpath.write_text(json.dumps(card, indent=2), encoding="utf-8")
+                log["cards"].append(card)
+                if card["answer"] is None:
+                    log["stopped"] = f"waiting for card {n_card}: python3 cards.py answer {cpath} <index> --by <who>"
+                    rec["accepted"] = None
+                    log["rounds"].append(rec)
+                    break
+                if int(card["answer"]) == 1:
+                    attempts[key] = MAX_ATTEMPTS
+                    log["open_points"].append({"cluster": key, "sign": c["sign"], "n": c["n"], "centroid": c["centroid"],
+                                               "bbox": c["bbox"], "why": f"small residual: best feature gains {gain:.2%} "
+                                                                         f"(card {n_card})"})
+                    continue
             if not gain_ok:
                 attempts[key] = attempts.get(key, 0) + 1
                 if attempts[key] >= MAX_ATTEMPTS:
@@ -315,6 +414,10 @@ def main(argv: list[str] | None = None) -> int:
                     break
             # pattern step
             J_b, h_b, node_b, p_b, t_b, r_b = best
+            if h_b["kind"] == "refit":
+                refine_params.update(h_b["params"])
+                accepted = best
+                break
             sib = []
             for c2 in cl:
                 if c2 is c or c2["sign"] != c["sign"]:
@@ -344,6 +447,18 @@ def main(argv: list[str] | None = None) -> int:
                     refine_params.update(h_b["params"])
             else:
                 refine_params.update(h_b["params"])
+            # design-intent merge: paired round ends -> one slot prism (Occam on near-ties)
+            if h_b["kind"].startswith("cyl-boss"):
+                cs = consolidate(best[4], best[3], ev, best[0], f"{tag}m", scan.noise, repair)
+                if cs is not None:
+                    t4, p4, info = cs
+                    rec["tried"].append({"cluster": key, "kind": "slot-merge", "replaced": info["replaced"],
+                                         "J": info["J"], "faces": info["faces"], "repairs": info["repairs"], "ok": True})
+                    if info["J"] <= best[0] * (1 + OCCAM_TOL):
+                        refine_params.update(info["params"])
+                        best = (info["J"], dict(h_b, kind="slot-merge"),
+                                {"id": f"{tag}m", "name": f"slot prism (merged {len(info['replaced'])} cylinder nodes)"},
+                                p4, t4, info["result"])
             accepted = best
             break
         if log.get("stopped"):
@@ -357,6 +472,8 @@ def main(argv: list[str] | None = None) -> int:
         tree, params, cur = t_new, p_new, r_new
         rec["accepted"] = {"id": node["id"], "name": node.get("name"), "kind": h["kind"], "J": J_new,
                            "after": cur["m"], "faces": cur["faces"]}
+        if h["kind"] == "refit":
+            rec["accepted"]["changes"] = h.get("changes")
         log["rounds"].append(rec)
         (out / "rounds" / f"{rnd:02d}_metrics.json").write_text(json.dumps(rec, indent=2, default=float))
         print(f"round {rnd}: + {node['id']} {node.get('name')}  J={J_new:.4f} p95={cur['m']['s2c_p95']:.3f} "
@@ -366,6 +483,14 @@ def main(argv: list[str] | None = None) -> int:
         if cur["m"]["s2c_p95"] <= a.band and not devmap.clusters(scan.P, cur["d"], thr, eps, min_pts):
             print("band met and no clusters left")
             break
+    cs = consolidate(tree, params, ev, cur["m"]["J"], "RFm", scan.noise, repair)
+    if cs is not None:
+        tree, params, info = cs
+        cur = info["result"]
+        refine_params.update(info["params"])
+        log["consolidated"] = {"replaced": info["replaced"], "J": info["J"], "faces": info["faces"],
+                               "repairs": info["repairs"]}
+        print(f"consolidate: slot prisms replace {info['replaced']}  J={info['J']:.4f} faces={info['faces']}")
     log["final"] = {"metrics": cur["m"], "faces": cur["faces"], "nodes": len(tree["nodes"]),
                     "builds": ev.n_evals, "seconds": round(time.time() - t_start, 1)}
     (out / "feature_tree.json").write_text(json.dumps(tree, indent=1), encoding="utf-8")

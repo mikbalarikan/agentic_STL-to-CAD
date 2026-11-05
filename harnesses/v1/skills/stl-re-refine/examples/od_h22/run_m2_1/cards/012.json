@@ -1,0 +1,23 @@
+{
+  "card": 12,
+  "round": 15,
+  "cluster": "-1@5,0,11",
+  "type": "low-gain",
+  "question": "Adding 'prism rect(4) along Z (up)' lowers J by only 0.35%. Add it (0) or leave the region as an open point (1)?",
+  "candidates": [
+    {
+      "kind": "prism-rect",
+      "variant": "up",
+      "name": "prism rect(4) along Z (up)",
+      "J": 0.23780419698631006
+    },
+    {
+      "kind": "skip",
+      "variant": "open point",
+      "name": "leave as open point",
+      "J": 0.2386388860261993
+    }
+  ],
+  "answer": 1,
+  "answered_by": "auto: gain 0.35% < 1%"
+}

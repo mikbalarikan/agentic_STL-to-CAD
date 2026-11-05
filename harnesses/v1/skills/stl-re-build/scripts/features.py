@@ -378,6 +378,12 @@ def run_node(body: Any, node: dict[str, Any], ctx: Ctx, flog: Any) -> tuple[Any,
             tool, n = build_tool(node, ctx, flog)
             rec["n_instances"] = n
             rec["tool_volume"] = round(volume_of(tool), 6)
+            try:
+                bb = tool.bounding_box()
+                rec["tool_bbox"] = [[round(bb.min.X, 4), round(bb.min.Y, 4), round(bb.min.Z, 4)],
+                                    [round(bb.max.X, 4), round(bb.max.Y, 4), round(bb.max.Z, 4)]]
+            except Exception:
+                rec["tool_bbox"] = None
             if body is None or comb == "new":
                 if body is not None and comb == "new":
                     raise TreeError("combine 'new' but a body already exists")

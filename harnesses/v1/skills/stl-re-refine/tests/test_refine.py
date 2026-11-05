@@ -110,6 +110,53 @@ def main() -> int:
         used |= {k for k in ref if k in json.dumps(n)}
     check("every accepted node is driven by named scan params", len(used) > 0 and all(
         ref[k]["source"] == "scan" for k in used))
+    # --- refit: the base box is 0.4 mm too low; the loop must fix H, not add a feature -------------
+    from build123d import Box as _Box
+    tall = _Box(30, 20, 8, align=(Align.CENTER, Align.CENTER, Align.MIN))
+    scan2, al2 = make_scan(tall, tmp, "tall")
+    bt2 = tmp / "base_low.json"
+    low = json.loads(json.dumps(base_tree))
+    low["params"]["H"]["value"] = 7.6
+    bt2.write_text(json.dumps(low))
+    out2 = tmp / "loop_refit"
+    rc = loop_main(["--tree", str(bt2), "--scan", str(scan2), "--alignment", str(al2), "--band", "0.1",
+                    "--out", str(out2), "--rounds", "4", "--samples", "60000", "--c2s-samples", "30000",
+                    "--min-area", "0.5"])
+    log2 = json.loads((out2 / "refine_log.json").read_text())
+    acc2 = [r["accepted"] for r in log2["rounds"] if r.get("accepted")]
+    pr2 = json.loads((out2 / "params_refine.json").read_text())["params"]
+    check("refit accepted instead of a new feature", bool(acc2) and acc2[0]["kind"] == "refit",
+          str([(x["kind"], x.get("changes")) for x in acc2]))
+    check("refit moved H to 8.0", "H" in pr2 and abs(pr2["H"]["value"] - 8.0) < 0.02,
+          str(pr2.get("H", {}).get("value")))
+    tree2 = json.loads((out2 / "feature_tree.json").read_text())
+    check("refit added no node", len(tree2["nodes"]) == 1)
+
+    # --- slot merge: two parallel equal-radius bosses become one stadium prism ---------------------
+    from refine_ops import slot_merge
+    rods_tree = {"nodes": [
+        {"id": "A", "op": "cylinder", "combine": "add", "r": "ra", "h": "ha", "at": [0, 0, 0],
+         "frame": {"origin": [0, -4, 10], "z_dir": [1, 0, 0], "x_dir": [0, 1, 0]}},
+        {"id": "B", "op": "cylinder", "combine": "add", "r": "ra", "h": "ha", "at": [0, 0, 0],
+         "frame": {"origin": [0, 4, 10], "z_dir": [1, 0, 0], "x_dir": [0, 1, 0]}}]}
+    prm = {"ra": {"value": 1.5, "source": "scan"}, "ha": {"value": 5.0, "source": "scan"}}
+    res = slot_merge(rods_tree, prm, "M", 0.01)
+    ok = res is not None and res[2] == {"A", "B"}
+    if ok:
+        sp = res[1]
+        Lv = next(v["value"] for k, v in sp.items() if k.endswith("_L"))
+        Wv = next(v["value"] for k, v in sp.items() if k.endswith("_W"))
+        ok = abs(Lv - 11.0) < 1e-6 and abs(Wv - 3.0) < 1e-6
+    check("slot merge: 2 rods r1.5, 8 apart -> slot L 11 W 3", ok, str(res[1] if res else None))
+    from build_tree import build as _build
+    t3 = {"nodes": [{"id": "S", **{k: v for k, v in res[0].items()}, "combine": "new"}]} if res else None
+    if t3:
+        body3, log3, _ = _build(t3, {**prm, **res[1]})
+        vol = body3.volume if body3 is not None else 0
+        exp = (8 * 3 + np.pi * 1.5 ** 2) * 5
+        check("slot prism builds with the stadium volume", log3["status"] == "OK" and abs(vol - exp) < 1e-3 * exp,
+              f"{vol:.3f} vs {exp:.3f}")
+
     if not a.keep:
         shutil.rmtree(tmp, ignore_errors=True)
     n_fail = sum(1 for _, ok, _ in RESULTS if not ok)

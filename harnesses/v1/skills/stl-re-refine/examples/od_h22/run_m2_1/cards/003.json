@@ -1,0 +1,22 @@
+{
+  "card": 3,
+  "round": 3,
+  "cluster": "-1@0,0,3",
+  "question": "Two feature types explain this region almost equally well. Which is the design intent?",
+  "candidates": [
+    {
+      "kind": "offset-pocket",
+      "variant": "outline",
+      "name": "pocket = outline offset -1.483, floor z 2.278",
+      "J": 0.39437534109622735
+    },
+    {
+      "kind": "offset-pocket+nb",
+      "variant": "outline",
+      "name": "pocket = outline offset -1.487, floor z 2.279",
+      "J": 0.3945151673932097
+    }
+  ],
+  "answer": 0,
+  "answered_by": "auto: lower J"
+}

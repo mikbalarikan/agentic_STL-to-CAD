@@ -1,0 +1,16 @@
+start J=1.2830 p95=13.996 faces=20
+round 1: + R01a revolve boss (3 steps) about skew axis  J=0.9757 p95=12.477 faces=29  (35s, 16 builds)
+round 2: + R02b revolve boss (4 steps) about skew axis  J=0.6820 p95=2.179 faces=39  (104s, 34 builds)
+round 3: + R03a pocket = outline offset -1.483, floor z 2.278  J=0.3944 p95=1.596 faces=54  (205s, 59 builds)
+round 4: + R04h hole r=4.530 along Z (down)  J=0.3335 p95=1.043 faces=56  (293s, 81 builds)
+round 5: + R05c hole r=4.326 along skew axis (down)  J=0.3077 p95=0.824 faces=58  (335s, 101 builds)
+round 6: + R06g hole r=4.306 along skew axis (down)  J=0.2966 p95=0.721 faces=60  (381s, 123 builds)
+round 7: + R07d boss r=1.885 along X (exact)  J=0.2867 p95=0.652 faces=64  (450s, 143 builds)
+round 8: + R08d boss r=1.862 along X (exact)  J=0.2765 p95=0.578 faces=68  (519s, 164 builds)
+round 9: + R09m slot prism (merged 2 cylinder nodes)  J=0.2657 p95=0.521 faces=80  (591s, 185 builds)
+round 10: + R10a revolve boss (1 steps) about Y  J=0.2587 p95=0.490 faces=83  (640s, 201 builds)
+round 11: + R11m slot prism (merged 2 cylinder nodes)  J=0.2498 p95=0.447 faces=95  (705s, 224 builds)
+round 12: + R12e prism chain(8) along eig0 (exact)  J=0.2458 p95=0.422 faces=105  (787s, 252 builds)
+round 13: + R13c hole r=1.931 along Z (down)  J=0.2418 p95=0.401 faces=107  (819s, 260 builds)
+round 14: + R14n hole r=1.941 along skew axis (up)  J=0.2386 p95=0.383 faces=109  (892s, 278 builds)
+round 15: no hypothesis lowered J; stop
