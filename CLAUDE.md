@@ -1,45 +1,45 @@
-# CLAUDE.md — agentic_STL-to-CAD
+# CLAUDE.md: standing instructions for this repo
 
-Standing instructions for every session in this repo. The owner (Ikbal) writes in Turkish;
-answer in Turkish.
+This repo holds the `stl-re-*` skills (STL scan → design-intent parametric STEP) and their
+evidence base. Read `README.md` for the skill index. The owner writes in Turkish; answer in Turkish.
 
-## An STL → CAD job
+## A new reverse-engineering job ("yeni bir STL tersine mühendislik görevi")
 
-- Entry point: `skills/stl-re-orchestrate/SKILL.md`. The six `skills/stl-re-*` skills can be
-  used in place from this repo (they call each other by relative path). Deps:
-  `python3 -m pip install numpy scipy trimesh build123d rtree shapely fast_simplification networkx matplotlib`,
-  then `python3 skills/stl-re-orchestrate/scripts/init_run.py doctor`.
-- Put the run folder outside the repo (cloud session: `<scratchpad>/jobs/<part>/`). Inputs are
-  copied read-only by `init_run.py init`.
-- Owner shorthand: "p95 plastik (parça toleransı)" = regime `baseline-skill`, class `plastic`
-  (p95 ≤ 0.30 / max ≤ 0.80 mm). Record it as the owner's `REGIME` decision.
-- No caliper sheet in the request = the owner wants a scan-only run: record the `MEASUREMENTS`
-  decision and carry the two scan-only limitations (Tier-1 not run, scale not caliper-verified).
-- Verify always runs in a fresh subagent (CHK-INDEP).
+1. Run the job with `skills/stl-re-orchestrate/SKILL.md` (intake → measure → rebuild → verify →
+   deliver). Install the deps first if `init_run.py doctor` reports them missing:
+   `python3 -m pip install numpy scipy trimesh build123d rtree shapely fast_simplification networkx matplotlib`.
+2. Put the run folder outside the repo: the session scratchpad, or the job folder the owner names.
+   Scans and run folders are never committed.
+3. An instruction like "p95 plastik parça toleransı" means regime `baseline-skill`, class `plastic`
+   (p95 ≤ 0.30 / max ≤ 0.80 mm); "machined/metal" means class `machined`. Record it as the owner's `REGIME` decision. Scan resolution and
+   calipers still need the owner's answer (orchestrate §6). No calipers supplied → scan-only run
+   (limitations: Tier-1 not run, scale not caliper-verified).
+4. Verify runs in a fresh subagent (CHK-INDEP), never in the builder's context.
 
-## Delivery format (standing owner decision, 2026-09-26; restated 2026-09-28)
+## Delivery format: standing owner decision, do NOT ask again
 
-Do not ask for it again. Every finished job is handed over as **one downloadable zip that holds
-the deliverables and all source files of the run**:
+Every job ends with **one downloadable zip that contains all deliverables AND all source files**:
 
-1. `stl-re-deliver` steps 0–5 (preflight, limitations, repro, README, manifest).
-2. `python3 skills/stl-re-deliver/scripts/package_zip.py --run <run>` →
-   `<part>_RE_<VERDICT>_<date>.zip` + `.sha256` next to the run folder. Layout
-   (`deliverables/`, `source/`, `PACKAGE_INDEX.md`) and exclusion rules:
-   `skills/stl-re-deliver/references/delivery-package.md`.
-3. Copy the zip and its `.sha256` into a folder the owner can open (cloud session: the
-   scratchpad or the working directory) and send both with `SendUserFile` (`display: attach`;
-   upload limit 30 MiB: if the zip is larger, re-package with `--max-source-mb 10`),
-   together with the verdict, regime, iteration (n of 3), limitations with re-run triggers,
-   and whether verify was independent.
-4. A `BAND_NOT_MET` verdict gets no zip until the owner's `ACCEPT-BAND` is recorded. A `HALT`
-   gets no zip unless the owner explicitly overrides; then record it (`OTHER` + a file under
-   `decisions/` citing the gate hash), keep the verdict word HALT in the zip name and README,
-   and state "no official grade" (precedent: `evals/real-runs/OD-G10.md`).
+- Build it with `skills/stl-re-deliver/scripts/package_zip.py --run <run>` after
+  `make_manifest.py`. The owner wants ONE `.zip` file, never parts.
+  The layout (`deliverables/` + `source/` + `PACKAGE_INDEX.md`) and the exclusion rules are in
+  `skills/stl-re-deliver/references/delivery-package.md`.
+- Send the zip to the owner with `SendUserFile` (display `attach`), together with its `.sha256`
+  and a short report: verdict, regime, the numbers read from `qa/gate.json`, loop count,
+  limitations with their re-run triggers, and whether verify was independent. Uploads are limited to 30 MiB per
+  file. `package_zip.py` keeps the zip under that by listing, not zipping, regenerable artefacts
+  (npz arrays, self-check renders, superseded tessellations). Byte parts are only a last resort, when
+  the script warns (`delivery-package.md`, "Size").
+- For `BAND_NOT_MET`, the zip exists only after a recorded `ACCEPT-BAND`. Ask the owner first,
+  showing the missed band and the options. A `HALT` gets no zip unless the owner explicitly
+  overrides; then record it (`OTHER` + a file under `decisions/` citing the gate hash), keep the
+  verdict word HALT in the zip name and README, and state "no official grade" (precedent:
+  `evals/real-runs/OD-G10.md`).
 
 ## After a real run
 
-Record it under `evals/real-runs/<part>.md` (inputs, decisions, result, skill defects found)
-with small copies of `DECISIONS.md`, `qa/gate.json`, `qa/VERDICT.md`, `deliver/README.md` and an
-overlay PNG in `evals/real-runs/<part>/` (see `evals/real-runs/OD-H22.md`). Never commit the
-scan, STEP files or the zip. Commit and push to the session's designated branch.
+Record it under `evals/real-runs/<PART>.md` (+ a folder with DECISIONS, VERDICT, gate.json and an
+overlay). Include inputs, decisions, the result and the skill defects found, following
+`evals/real-runs/OD-H22.md`. Commit that record, not the run folder: never commit scans,
+STEP files or zips. Fix skill defects you hit in `skills/` when the fix is small and backward
+compatible (document it in the skill), and add open owner questions to `QUESTIONS.md`.
