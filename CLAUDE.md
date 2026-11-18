@@ -1,34 +1,40 @@
-# CLAUDE.md — standing instructions for this repo
+# CLAUDE.md: standing instructions for this repo
 
-## STL → CAD jobs
+This repo holds the `stl-re-*` skills (STL scan → design-intent parametric STEP) and their
+evidence base. Read `README.md` for the skill index.
 
-When the owner hands over a scan (STL/mesh), optionally with photos or calipers, and asks for CAD/STEP,
-run the `stl-re-*` skills in `skills/` starting at `skills/stl-re-orchestrate/SKILL.md` (install steps
-and the skill index are in `README.md`). Put the run folder outside the repo (e.g. the session
-scratchpad); only the run record goes into the repo (below).
+## A new reverse-engineering job ("yeni bir STL tersine mühendislik görevi")
 
-## Delivery format (owner decision 2026-09-26, standing; do not ask again)
+1. Run the job with `skills/stl-re-orchestrate/SKILL.md` (intake → measure → rebuild → verify →
+   deliver). Install the deps first if `init_run.py doctor` reports them missing:
+   `python3 -m pip install numpy scipy trimesh build123d rtree shapely fast_simplification networkx matplotlib`.
+2. Put the run folder outside the repo: the session scratchpad, or the job folder the owner names.
+   Scans and run folders are never committed.
+3. An instruction like "p95 plastik parça toleransı" means regime `baseline-skill`, class `plastic`
+   (p95 ≤ 0.30 / max ≤ 0.80 mm). Record it as the owner's `REGIME` decision. Scan resolution and
+   calipers still need the owner's answer (orchestrate §6). No calipers supplied → scan-only run
+   (limitations: Tier-1 not run, scale not caliper-verified).
+4. Verify runs in a fresh subagent (CHK-INDEP), never in the builder's context.
 
-Every job is handed over as **one downloadable zip** that holds the deliverables **and** all source
-files of the run:
+## Delivery format: standing owner decision, do NOT ask again
 
-- Built by `skills/stl-re-deliver/scripts/package_zip.py --run <run>` after `make_manifest.py`
-  (layout, exclusions and naming: `skills/stl-re-deliver/references/delivery-package.md`).
-- Name: `<part>_RE_<VERDICT>_<YYYY-MM-DD>.zip`, next to the run folder, plus `<zip>.sha256`.
-- Send it to the owner with SendUserFile (`display: attach`) together with the verdict, the regime,
-  the key gate numbers (read from `qa/gate.json`), the limitations with re-run triggers and the loop
-  count.
-- Pass `--include-scan` only when the owner does not already have the scan.
-- A `BAND_NOT_MET` run is zipped only after a recorded `ACCEPT-BAND` (orchestrate §4).
+Every job ends with **one downloadable zip that contains all deliverables AND all source files**:
 
-## Record each real run
+- Build it with `skills/stl-re-deliver/scripts/package_zip.py --run <run>` after
+  `make_manifest.py`. The owner wants ONE `.zip` file, never parts.
+  The layout (`deliverables/` + `source/` + `PACKAGE_INDEX.md`) and the exclusion rules are in
+  `skills/stl-re-deliver/references/delivery-package.md`.
+- Send the zip to the owner with `SendUserFile` (display `attach`), together with its `.sha256`
+  and a short report: verdict, regime, the numbers read from `qa/gate.json`, loop count,
+  limitations with their re-run triggers, and whether verify was independent. Uploads are limited to 30 MiB per
+  file. `package_zip.py` keeps the zip under that by listing, not zipping, regenerable artefacts
+  (npz arrays, self-check renders, superseded tessellations). Byte parts are only a last resort, when
+  the script warns (`delivery-package.md`, "Size").
+- For `BAND_NOT_MET`, the zip exists only after a recorded `ACCEPT-BAND`. Ask the owner first,
+  showing the missed band and the options.
 
-After delivery, add `evals/real-runs/<part>.md` (inputs, decisions, result, skill defects found) and
-copy the small records (`DECISIONS.md`, `VERDICT.md`, `gate.json`, README, an overlay) under
-`evals/real-runs/<part>/`, as done for OD-H22. Commit on the session's designated branch.
+## After a real run
 
-## Owner shorthand seen so far
-
-- "p95 plastik parça toleransı" / "tolerans = p95" → regime `baseline-skill`, material class
-  `plastic` (p95 ≤ 0.30 / max ≤ 0.80 mm), declared at intake and recorded in `DECISIONS.md`.
-- No calipers supplied → scan-only run (limitations: Tier-1 not run, scale not caliper-verified).
+Record it under `evals/real-runs/<PART>.md` (+ a folder with DECISIONS, VERDICT, gate.json and an
+overlay). Include inputs, decisions, the result and the skill defects found, following
+`evals/real-runs/OD-H22.md`. Commit that record, not the run folder.

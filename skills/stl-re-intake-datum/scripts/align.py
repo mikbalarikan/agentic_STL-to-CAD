@@ -437,8 +437,24 @@ def run(spec: dict[str, Any], spec_path: Path) -> tuple[int, dict[str, Any]]:
         if not st:
             raise SpecError("origin.xy: no section circle matched r_hint/r_tol/rms_max/z_range. "
                             "No bbox fallback (dreame align.py:82 removed) - fix the spec.")
-        ox = float(np.median([s["cx"] for s in st]))
-        oy = float(np.median([s["cy"] for s in st]))
+        feat_centres = {}
+        for f in feats:
+            fs = [s for s in st if s["feature"] == f.get("desc", "")]
+            if fs:
+                feat_centres[f.get("desc", "")] = (float(np.mean([s["cx"] for s in fs])),
+                                                   float(np.mean([s["cy"] for s in fs])))
+        if O.get("combine", "median") == "midpoint":
+            # OD-W03 real run: the median over the pooled stations of TWO features is the
+            # centre of whichever feature has more surviving stations, not their midpoint.
+            # "midpoint" = mean of the per-feature mean centres (every feature must match).
+            missing = [f.get("desc", "") for f in feats if f.get("desc", "") not in feat_centres]
+            if missing:
+                raise SpecError(f"origin.combine=midpoint: no station matched for {missing}")
+            ox = float(np.mean([c[0] for c in feat_centres.values()]))
+            oy = float(np.mean([c[1] for c in feat_centres.values()]))
+        else:
+            ox = float(np.median([s["cx"] for s in st]))
+            oy = float(np.median([s["cy"] for s in st]))
         T3 = np.eye(4)
         T3[0, 3], T3[1, 3] = -ox, -oy
         T = T3 @ T
@@ -492,7 +508,24 @@ def run(spec: dict[str, Any], spec_path: Path) -> tuple[int, dict[str, Any]]:
 
     # ---- clock
     C = spec["clock"]
-    cdeg, cdet = clock_angle(mc, T, C, seed)
+    if C["rule"] == "feature_line":
+        # OD-W03 real run: clock a two-feature part (cup pair, boss pair) by the line through
+        # two origin-feature centres, A -> B onto +X. fourier_mass (n=2) was biased 0.7 deg by
+        # asymmetric mass (necks, ears) on that part. Centres are the per-feature station means
+        # re-expressed after the origin shift T3.
+        if "xy" not in O:
+            raise SpecError("clock feature_line needs origin.xy features")
+        try:
+            a = np.asarray(feat_centres[C["from"]]) - [ox, oy]
+            b = np.asarray(feat_centres[C["to"]]) - [ox, oy]
+        except KeyError as e:
+            raise SpecError(f"clock feature_line: {e} is not an origin.xy feature desc with stations")
+        v = b - a
+        cdeg = -math.degrees(math.atan2(v[1], v[0]))
+        cdet = {"from": C["from"], "to": C["to"], "centre_from": a.tolist(), "centre_to": b.tolist(),
+                "separation_mm": float(np.linalg.norm(v))}
+    else:
+        cdeg, cdet = clock_angle(mc, T, C, seed)
     Rz = rot_z(cdeg)
     T = Rz @ T
     mc = apply(Rz, mc)
