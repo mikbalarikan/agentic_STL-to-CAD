@@ -1,7 +1,7 @@
 # CLAUDE.md: standing instructions for this repo
 
 This repo holds the `stl-re-*` skills (STL scan → design-intent parametric STEP) and their
-evidence base. Read `README.md` for the skill index.
+evidence base. Read `README.md` for the skill index. The owner writes in Turkish; answer in Turkish.
 
 ## A new reverse-engineering job ("yeni bir STL tersine mühendislik görevi")
 
@@ -31,7 +31,10 @@ Every job ends with **one downloadable zip that contains all deliverables AND al
   (npz arrays, self-check renders, superseded tessellations). Byte parts are only a last resort, when
   the script warns (`delivery-package.md`, "Size").
 - For `BAND_NOT_MET`, the zip exists only after a recorded `ACCEPT-BAND`. Ask the owner first,
-  showing the missed band and the options.
+  showing the missed band and the options. A `HALT` gets no zip unless the owner explicitly
+  overrides; then record it (`OTHER` + a file under `decisions/` citing the gate hash), keep the
+  verdict word HALT in the zip name and README, and state "no official grade" (precedent:
+  `evals/real-runs/OD-G10.md`).
 
 ## After a real run
 
