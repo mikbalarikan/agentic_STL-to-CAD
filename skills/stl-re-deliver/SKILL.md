@@ -188,7 +188,7 @@ the golden `MANIFEST.json` shape (`golden-examples/*/MANIFEST.json`) and facet-f
 ### 5b. Package the delivery zip (standing owner decision, 2026-09-26)
 
 ```
-python scripts/package_zip.py --run <run> --max-source-mb 10 [--out-dir <job folder>] [--include-scan] [--max-zip-mib 29]
+python scripts/package_zip.py --run <run> [--out-dir <job folder>] [--include-scan] [--max-zip-mib 29]
 ```
 
 Every job is handed over as ONE zip with `deliverables/` (STEPs, CAD STL, README, VERDICT, gate,

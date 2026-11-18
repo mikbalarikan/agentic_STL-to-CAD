@@ -17,8 +17,8 @@ Rules (CHK-PUBLISH still applies: this runs only after make_manifest.py succeede
 - Refuses (exit 2) unless deliver/MANIFEST.json, deliver/README.md and qa/VERDICT.md exist.
 - Nothing is dropped silently: every file left out is listed in PACKAGE_INDEX.md with bytes,
   sha256 and the reason. Default exclusions: input/scan.stl (the owner's own scan; pass
-  --include-scan to ship it), files larger than --max-source-mb that are regenerable
-  intermediates (work/aligned meshes, point caches), __pycache__/ and *.pyc.
+  --include-scan to ship it), files larger than --max-source-mb (default 5) that are regenerable
+  intermediates (work/aligned meshes, point caches .npy/.npz/.pkl/.ply, wip/, qa/work/), __pycache__/, *.pyc.
 - ONE .zip the owner can download in the session (OD-S01 real run): the session upload limit is
   30 MiB per file, so when the zip is larger than --max-zip-mib, second-tier regenerable artefacts
   (QA/measure arrays *.npz, builder self-check renders, superseded CAD tessellations) are listed
@@ -44,8 +44,9 @@ DELIVERABLE_GLOBS = [
     "measure/PARAM_TABLE.md", "DECISIONS.md", "decisions/*",
 ]
 ALWAYS_SKIP = ["*/__pycache__/*", "__pycache__/*", "*.pyc"]
-REGENERABLE = ["intake/work.stl", "intake/aligned_work.stl", "*.npy", "*.ply", "*/wip/*.stl",
-               "measure/figures/*.stl", "intake/explore/*.stl", "_it*_SUPERSEDED/*.stl"]
+REGENERABLE = ["intake/work.stl", "intake/aligned_work.stl", "*.npy", "*.npz", "*.pkl", "*.ply",
+               "*/wip/*", "measure/figures/*.stl", "intake/explore/*.stl", "_it*_SUPERSEDED/*.stl",
+               "qa/work/*"]
 # second tier: regenerable artefacts dropped (listed) only when the zip exceeds --max-zip-mib
 REGENERABLE_TIER2 = [("*.npz", "QA/measure deviation arrays (re-run the script that wrote them, e.g. stl-re-verify deviation_gate.py)"),
                      ("*/selfcheck/*.png", "builder self-check render, NOT QA (re-run build/selfcheck/selfcheck.py)"),
@@ -69,7 +70,7 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--run", type=Path, required=True)
     ap.add_argument("--out-dir", type=Path, help="default: the run folder's parent")
     ap.add_argument("--include-scan", action="store_true", help="also ship input/scan.stl")
-    ap.add_argument("--max-source-mb", type=float, default=25.0,
+    ap.add_argument("--max-source-mb", type=float, default=5.0,
                     help="regenerable intermediates above this size are listed, not zipped")
     ap.add_argument("--max-zip-mib", type=float, default=29.0,
                     help="target zip size (session upload limit is 30 MiB); tier-2 regenerable artefacts are "

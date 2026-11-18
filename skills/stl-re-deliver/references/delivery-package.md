@@ -9,7 +9,7 @@ Last step of `stl-re-deliver`, after `make_manifest.py` succeeded (so CHK-PUBLIS
 hash freeze and repro are already enforced). A run without `deliver/MANIFEST.json` is never zipped.
 
 ```
-python scripts/package_zip.py --run <run> [--out-dir <dir>] [--include-scan] [--max-source-mb 25]
+python scripts/package_zip.py --run <run> [--out-dir <dir>] [--include-scan] [--max-source-mb 5]
 ```
 
 ## What the zip contains
@@ -35,8 +35,9 @@ Merging `deliverables/` and `source/` gives back the complete run tree, so the r
 
 - `input/scan.stl`: the owner's own raw scan, identified by its sha256 in `input/INPUT_HASHES.json`.
   Ship it with `--include-scan` when the recipient does not have it.
-- Regenerable intermediates larger than `--max-source-mb` (working / aligned meshes, point caches,
-  de-warped measurement copies, wip STLs). The stage script that writes each one is in `source/`.
+- Regenerable intermediates larger than `--max-source-mb` (default 5 MB): working / aligned meshes,
+  point and distance caches (`*.npy`, `*.npz`, `*.pkl`, `*.ply`), de-warped measurement copies, `wip/`,
+  `qa/work/`. First real run: without this the zip was 662 MB, mostly caches. The stage script that writes each one is in `source/`.
 - `__pycache__/`, `*.pyc`.
 
 ## Where it goes
@@ -56,8 +57,8 @@ pass is too big, it leaves out **second-tier regenerable artefacts**, largest fi
 - `_it*_SUPERSEDED/build/*_cad.stl`: a superseded iteration's CAD tessellation; its `model.py` rebuilds it.
 
 Each one is listed in PACKAGE_INDEX.md with bytes, sha256 and the reason, and the script that makes it
-stays in `source/`. On OD-S01, 72 MiB became 27.8 MiB this way. Use `--max-source-mb 10` so that the
-work/aligned meshes are listed too.
+stays in `source/`. On OD-S01, 72 MiB became 27.8 MiB this way. The default `--max-source-mb 5` already lists
+the work/aligned meshes.
 
 ### Last resort: byte parts
 
