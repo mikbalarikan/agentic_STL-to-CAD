@@ -17,13 +17,14 @@ Rules (CHK-PUBLISH still applies: this runs only after make_manifest.py succeede
 - Refuses (exit 2) unless deliver/MANIFEST.json, deliver/README.md and qa/VERDICT.md exist.
 - Nothing is dropped silently: every file left out is listed in PACKAGE_INDEX.md with bytes,
   sha256 and the reason. Default exclusions: input/scan.stl (the owner's own scan; pass
-  --include-scan to ship it), files larger than --max-source-mb that are regenerable
-  intermediates (work/aligned meshes, point caches, *.npy/*.npz arrays), __pycache__/ and *.pyc.
+  --include-scan to ship it), files larger than --max-source-mb (default 5) that are regenerable
+  intermediates (work/aligned meshes, point caches .npy/.npz/.pkl/.ply, wip/, qa/work/), __pycache__/, *.pyc.
+- ONE .zip the owner can download in the session (OD-S01 real run): the session upload limit is
+  30 MiB per file, so when the zip is larger than --max-zip-mib, second-tier regenerable artefacts
+  (QA/measure arrays *.npz, builder self-check renders, superseded CAD tessellations) are listed
+  instead of zipped, largest first, until it fits. Their generating scripts stay in source/. If it
+  still does not fit, the zip is kept and a WARNING says it must be sent in byte parts.
 - The zip is written next to the run folder (or --out-dir) with a sidecar <zip>.sha256.
-- The zip must fit the chat upload limit (--max-zip-mb, default 29; the SendUserFile limit is 30 MiB,
-  found on the OD-H21 real run where QA's dev_arrays.npz made a 55.5 MiB zip). Over the limit the zip
-  is deleted and the run refused: lower --max-source-mb so more regenerable intermediates are listed
-  instead of shipped. Deliverables are never dropped to make it fit.
 Exit codes: 0 written; 2 refused; 3 internal error.
 """
 from __future__ import annotations
@@ -43,8 +44,13 @@ DELIVERABLE_GLOBS = [
     "measure/PARAM_TABLE.md", "DECISIONS.md", "decisions/*",
 ]
 ALWAYS_SKIP = ["*/__pycache__/*", "__pycache__/*", "*.pyc"]
-REGENERABLE = ["intake/work.stl", "intake/aligned_work.stl", "*.npy", "*.npz", "*.ply", "*/wip/*.stl",
-               "measure/figures/*.stl", "intake/explore/*.stl", "_it*_SUPERSEDED/*.stl"]
+REGENERABLE = ["intake/work.stl", "intake/aligned_work.stl", "*.npy", "*.npz", "*.pkl", "*.ply",
+               "*/wip/*", "measure/figures/*.stl", "intake/explore/*.stl", "_it*_SUPERSEDED/*.stl",
+               "qa/work/*", "qa/_work/*.stl", "*/qa/_work/*.stl"]  # qa/_work: verify tessellations (OD-S02)
+# second tier: regenerable artefacts dropped (listed) only when the zip exceeds --max-zip-mib
+REGENERABLE_TIER2 = [("*.npz", "QA/measure deviation arrays (re-run the script that wrote them, e.g. stl-re-verify deviation_gate.py)"),
+                     ("*/selfcheck/*.png", "builder self-check render, NOT QA (re-run build/selfcheck/selfcheck.py)"),
+                     ("_it*_SUPERSEDED/build/*_cad.stl", "superseded iteration's CAD tessellation (re-run its build/model.py)")]
 
 
 def sha256(p: Path) -> str:
@@ -64,10 +70,11 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--run", type=Path, required=True)
     ap.add_argument("--out-dir", type=Path, help="default: the run folder's parent")
     ap.add_argument("--include-scan", action="store_true", help="also ship input/scan.stl")
-    ap.add_argument("--max-source-mb", type=float, default=25.0,
+    ap.add_argument("--max-source-mb", type=float, default=5.0,
                     help="regenerable intermediates above this size are listed, not zipped")
-    ap.add_argument("--max-zip-mb", type=float, default=29.0,
-                    help="refuse a zip larger than this (MiB); SendUserFile uploads at most 30 MiB")
+    ap.add_argument("--max-zip-mib", "--max-zip-mb", dest="max_zip_mib", type=float, default=29.0,
+                    help="target zip size (session upload limit is 30 MiB); tier-2 regenerable artefacts are "
+                         "listed instead of zipped, largest first, until the zip fits (0 = no target)")
     a = ap.parse_args(argv)
     run = a.run.resolve()
     for need in ("deliver/MANIFEST.json", "deliver/README.md", "qa/VERDICT.md"):
@@ -103,37 +110,49 @@ def main(argv: list[str] | None = None) -> int:
         else:
             source.append((p, rel))
 
-    lines = [f"# {root}", "",
-             f"Verdict **{verdict}** under regime **{regime}** (from qa/gate.json; read deliverables/qa/VERDICT.md "
-             f"and deliverables/deliver/README.md before using the CAD).", "",
-             "## Layout",
-             "- `deliverables/` - the files to use: STEP in the datum frame (`build/*_datum.step`) and in the scan "
-             "frame (`build/<part>.step`), CAD STL, README, VERDICT, gate.json, PARAM_TABLE, MANIFEST, repro.json, "
-             "DECISIONS, QA overlays. Paths keep their run-relative folders.",
-             "- `source/` - every other file of the run with its run-relative path (scripts, JSON, figures, logs, "
-             "superseded iterations). Put `deliverables/*` and `source/*` back into one folder to get the run tree.",
-             "", "## Excluded (listed, not shipped)", "",
-             "| file | bytes | sha256 | reason |", "|---|---|---|---|"]
-    for p, rel, why in excluded:
-        lines.append(f"| `{rel}` | {p.stat().st_size} | `{sha256(p)}` | {why} |")
-    if not excluded:
-        lines.append("| - | - | - | nothing excluded |")
-    lines += ["", f"Counts: {len(deliv)} deliverable files, {len(source)} source files, {len(excluded)} excluded.", ""]
-    index = "\n".join(lines)
+    def write_zip() -> str:
+        lines = [f"# {root}", "",
+                 f"Verdict **{verdict}** under regime **{regime}** (from qa/gate.json; read deliverables/qa/VERDICT.md "
+                 f"and deliverables/deliver/README.md before using the CAD).", "",
+                 "## Layout",
+                 "- `deliverables/` - the files to use: STEP in the datum frame (`build/*_datum.step`) and in the scan "
+                 "frame (`build/<part>.step`), CAD STL, README, VERDICT, gate.json, PARAM_TABLE, MANIFEST, repro.json, "
+                 "DECISIONS, QA overlays. Paths keep their run-relative folders.",
+                 "- `source/` - every other file of the run with its run-relative path (scripts, JSON, figures, logs, "
+                 "superseded iterations). Put `deliverables/*` and `source/*` back into one folder to get the run tree.",
+                 "", "## Excluded (listed, not shipped)", "",
+                 "| file | bytes | sha256 | reason |", "|---|---|---|---|"]
+        for p, rel, why in excluded:
+            lines.append(f"| `{rel}` | {p.stat().st_size} | `{sha256(p)}` | {why} |")
+        if not excluded:
+            lines.append("| - | - | - | nothing excluded |")
+        lines += ["", f"Counts: {len(deliv)} deliverable files, {len(source)} source files, {len(excluded)} excluded.", ""]
+        with zipfile.ZipFile(zpath, "w", compression=zipfile.ZIP_DEFLATED, compresslevel=6) as z:
+            z.writestr(f"{root}/PACKAGE_INDEX.md", "\n".join(lines))
+            for p, rel in deliv:
+                z.write(p, f"{root}/deliverables/{rel}")
+            for p, rel in source:
+                z.write(p, f"{root}/source/{rel}")
+        return "\n".join(lines)
 
-    with zipfile.ZipFile(zpath, "w", compression=zipfile.ZIP_DEFLATED, compresslevel=6) as z:
-        z.writestr(f"{root}/PACKAGE_INDEX.md", index)
-        for p, rel in deliv:
-            z.write(p, f"{root}/deliverables/{rel}")
-        for p, rel in source:
-            z.write(p, f"{root}/source/{rel}")
-    zip_mib = zpath.stat().st_size / 2**20
-    if zip_mib > a.max_zip_mb:
-        zpath.unlink()
-        print(f"REFUSED: zip is {zip_mib:.1f} MiB > --max-zip-mb {a.max_zip_mb:g} (chat upload limit). "
-              f"Re-run with a lower --max-source-mb (e.g. 5) so regenerable intermediates are listed "
-              f"in PACKAGE_INDEX.md instead of shipped.", file=sys.stderr)
-        return 2
+    write_zip()
+    limit = a.max_zip_mib * 2 ** 20
+    if a.max_zip_mib > 0 and zpath.stat().st_size > limit:
+        with zipfile.ZipFile(zpath) as z:
+            csize = {i.filename.split("/source/", 1)[1]: i.compress_size for i in z.infolist() if "/source/" in i.filename}
+        total = zpath.stat().st_size
+        cands = sorted(((csize.get(rel, 0), p, rel, why) for p, rel in source
+                        for g, why in REGENERABLE_TIER2 if fnmatch.fnmatch(rel, g)), key=lambda t: -t[0])
+        for cs, p, rel, why in cands:
+            if total <= limit * 0.98:
+                break
+            source.remove((p, rel))
+            excluded.append((p, rel, f"{why}; left out so the ONE zip stays under the {a.max_zip_mib:g} MiB upload target"))
+            total -= cs
+        write_zip()
+    if a.max_zip_mib > 0 and zpath.stat().st_size > limit:
+        print(f"WARNING: zip is {zpath.stat().st_size / 2 ** 20:.1f} MiB > {a.max_zip_mib:g} MiB even after tier-2 "
+              "exclusions: send it in byte parts (references/delivery-package.md, 'Size', last resort: byte parts)", file=sys.stderr)
     digest = sha256(zpath)
     zpath.with_suffix(".zip.sha256").write_text(f"{digest}  {zpath.name}\n")
     print(json.dumps({"zip": str(zpath), "sha256": digest, "bytes": zpath.stat().st_size,

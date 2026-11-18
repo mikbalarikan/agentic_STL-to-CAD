@@ -42,7 +42,8 @@ MEASUREMENTS.md"), and `stl-re-orchestrate` takes it from there.
 
 ## Repository layout
 
-- `CLAUDE.md`: standing rules every session reads (how to run a new job, the one-zip delivery format, where real runs are recorded).
+- `CLAUDE.md`: standing instructions for new jobs, including the delivery format (one zip with
+  deliverables + all source files; do not ask again).
 - `skills/`: the six skills (this is what you install).
 - `evals/`: per-skill eval cases (`evals/cases/`) and the blind replays against the baseline
   (`evals/replay/`). Read `evals/README.md` for how to run them and for the caveats.
