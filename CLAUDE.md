@@ -19,12 +19,13 @@ evidence base. Read `README.md` for the skill index.
 
 Every job ends with **one downloadable zip that contains all deliverables AND all source files**:
 
-- Build it with `skills/stl-re-deliver/scripts/package_zip.py --run <run> --max-source-mb 10` after
+- Build it with `skills/stl-re-deliver/scripts/package_zip.py --run <run>` after
   `make_manifest.py`. The owner wants ONE `.zip` file, never parts.
   The layout (`deliverables/` + `source/` + `PACKAGE_INDEX.md`) and the exclusion rules are in
   `skills/stl-re-deliver/references/delivery-package.md`.
 - Send the zip to the owner with `SendUserFile` (display `attach`), together with its `.sha256`
-  and a short report: verdict, regime, loop count, limitations. Uploads are limited to 30 MiB per
+  and a short report: verdict, regime, the numbers read from `qa/gate.json`, loop count,
+  limitations with their re-run triggers, and whether verify was independent. Uploads are limited to 30 MiB per
   file. `package_zip.py` keeps the zip under that by listing, not zipping, regenerable artefacts
   (npz arrays, self-check renders, superseded tessellations). Byte parts are only a last resort, when
   the script warns (`delivery-package.md`, "Size").

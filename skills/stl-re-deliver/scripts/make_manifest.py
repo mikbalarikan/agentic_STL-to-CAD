@@ -65,7 +65,8 @@ def role_of(rel: str, part: str) -> str:
     }
     if rel in fixed:
         return fixed[rel]
-    for prefix, r in (("input/photos/", "evidence: photo"), ("measure/figures/", "measure: figure"),
+    for prefix, r in (("decisions/", "record: owner decision evidence (ACCEPT-BAND etc.)"),
+                      ("input/photos/", "evidence: photo"), ("measure/figures/", "measure: figure"),
                       ("qa/overlays/", "qa: overlay image"), ("intake/", "intake: working file"),
                       ("measure/", "measure: working file"), ("build/", "build: working file"),
                       ("qa/", "qa: working file"), ("deliver/", "deliver: file"), ("input/", "evidence: other")):
