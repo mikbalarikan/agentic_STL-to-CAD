@@ -208,8 +208,23 @@ def export_frames(body: Any, alignment: Path, out_dir: Path, part: str,
     res: dict[str, Any] = header("export_check", "export_frames.py", inputs)
     res.update({"part": part, "alignment_matrix_4x4": [[r6(x) for x in row] for row in T.tolist()],
                 "inverse_rotation": tinfo})
+    stl_fail: list[str] = []
     if scale_rigid:
         res["stl"] = {"path": stl_scan.name, "frame": "scan", "tolerance": stl_tol, "angular_tolerance": stl_ang}
+        # the STEP can be one valid closed solid while its STL tessellation has holes (OD-S02 run:
+        # a revolved torus fused to tangent cylinders meshed with most of the torus missing, and
+        # every STEP check passed). The delivered STL is QA input too, so check it here.
+        try:
+            import trimesh
+            tm = trimesh.load(str(stl_scan), force="mesh")
+            nb = len(tm.split(only_watertight=False))
+            res["stl"].update({"faces": int(len(tm.faces)), "watertight": bool(tm.is_watertight), "bodies": nb,
+                               "volume_mm3": float(tm.volume) if tm.is_watertight else None})
+            if not tm.is_watertight or nb != 1:
+                stl_fail.append(f"stl: CAD STL not one watertight body (watertight={tm.is_watertight}, bodies={nb})")
+        except ImportError:
+            res["stl"]["watertight"] = None
+            res["stl"]["note"] = "trimesh not installed: STL watertightness not checked"
     back: dict[str, Any] = {}
     for key, p in paths.items():
         shp = import_step(str(p))
@@ -232,7 +247,7 @@ def export_frames(body: Any, alignment: Path, out_dir: Path, part: str,
         res["scan"] = {"skipped": f"scale_factor={scale} != 1 (run-contract.md section 11): the "
                                   "scan-frame STEP would need a similarity transform, not a rigid "
                                   "OCP transform; only the datum-frame STEP is delivered"}
-    fails = [f"{k}: {'; '.join(res[k]['failures'])}" for k in paths if not res[k]["pass"]]
+    fails = [f"{k}: {'; '.join(res[k]['failures'])}" for k in paths if not res[k]["pass"]] + stl_fail
     res["pass"] = not fails
     res["failures"] = fails
     write_json(out_dir / "export_check.json", res)

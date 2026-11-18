@@ -11,7 +11,7 @@ evidence base. Read `README.md` for the skill index.
 2. Put the run folder outside the repo: the session scratchpad, or the job folder the owner names.
    Scans and run folders are never committed.
 3. An instruction like "p95 plastik parça toleransı" means regime `baseline-skill`, class `plastic`
-   (p95 ≤ 0.30 / max ≤ 0.80 mm). Record it as the owner's `REGIME` decision. Scan resolution and
+   (p95 ≤ 0.30 / max ≤ 0.80 mm); "machined/metal" means class `machined`. Record it as the owner's `REGIME` decision. Scan resolution and
    calipers still need the owner's answer (orchestrate §6). No calipers supplied → scan-only run
    (limitations: Tier-1 not run, scale not caliper-verified).
 4. Verify runs in a fresh subagent (CHK-INDEP), never in the builder's context.
@@ -37,4 +37,6 @@ Every job ends with **one downloadable zip that contains all deliverables AND al
 
 Record it under `evals/real-runs/<PART>.md` (+ a folder with DECISIONS, VERDICT, gate.json and an
 overlay). Include inputs, decisions, the result and the skill defects found, following
-`evals/real-runs/OD-H22.md`. Commit that record, not the run folder.
+`evals/real-runs/OD-H22.md`. Commit that record, not the run folder: never commit scans,
+STEP files or zips. Fix skill defects you hit in `skills/` when the fix is small and backward
+compatible (document it in the skill), and add open owner questions to `QUESTIONS.md`.

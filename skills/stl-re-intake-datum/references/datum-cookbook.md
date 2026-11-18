@@ -162,6 +162,23 @@ a diagnostic, not gated. `eig_ratio` (smallest/second eigenvalue) near 0 means a
 axis. The `origin.xy` circle stations then give CHK-TILT as the angle between the normals-axis
 and the line through the section centres (two independent estimators).
 
+### 3.1 Long stepped rod / tapered spigot primary (OD-S02 real run, 2026-09-28)
+
+Heuristic, n=1 (OD-S02 steam rod). The functional axis was a 2.5° tapered spigot next to
+cylinders and O-ring seats. Three things were needed, now spec options:
+- `crop_axial` — without it the crop is an infinite cylinder about `crop_point` and mixes every
+  radius along the rod.
+- `surface: "cone"` — the gated residual is taken about a linear r(t), otherwise the taper itself
+  reads as residual.
+- `refine: "section_circles"` — normals-eigen alone was 0.44–0.58° / 0.16 mm off the
+  section-circle axis on the partly covered cone (residual 0.080 vs 0.025 after refining).
+With no functional flat for the clock (the lever face was noisier than the noise floor), the
+clock was the steel tube leaving the elbow (`axis_direction`), gated against a steel noise
+floor measured on a different stretch of the same tube (`clock.noise`). Plane-noise (RANSAC
+plane rms), one-loop IRLS circle noise and Kåsa station rms are three different estimators;
+comparing a Kåsa/face residual with the IRLS floor stopped the run on the cleanest surface of
+the part (same class as OD-H22 D1). The run took the self-referential path and recorded it.
+
 ## 4. Normal orientation (correction to SYNTHESIS A5)
 
 SYNTHESIS A5 flips normals when the signed volume is negative. On an open (non-watertight) scan
@@ -182,11 +199,11 @@ this. (This was found while testing this skill; it is listed as an open question
 | `chk_scale` | `{"ran", "result", "note"}` copied into `checks` |
 | `noise` | `{"value", "method"}` or `{"from": "<datum_fit noise JSON>"}` — **required** |
 | `noise_secondary` | same, measured on a clean circle; enables the STOP check on circle residuals |
-| `primary` | `plane`: `approx_normal`, `material_side` (`-z`: material behind the outward normal), `cone_deg` 10, `tol` 0.05, `bin_mm` 0.1, `halfwidth_mm` 0.15, `offset_range` · `axis`: `approx_axis`, `perp_max` 0.30, `crop_point`/`crop_radius` (required, review B1), `iters` 3 |
+| `primary` | `plane`: `approx_normal`, `material_side` (`-z`: material behind the outward normal), `cone_deg` 10, `tol` 0.05, `bin_mm` 0.1, `halfwidth_mm` 0.15, `offset_range` · `axis`: `approx_axis`, `perp_max` 0.30, `crop_point`/`crop_radius` (required, review B1), `crop_axial` [lo, hi] (optional: axial window in mm along `approx_axis` from `crop_point`; without it the crop is an infinite cylinder), `surface` `cylinder`\|`cone` (cone: residual about a linear r(t) along the axis, for a tapered spigot), `refine` `section_circles` (needs `crop_axial`; replaces the normals-eigen axis with a line through Kåsa section-circle centres, `refine_step` 0.5, `refine_halfw` 0.2), `iters` 3 |
 | `origin.xy` | one feature or a list: `method` `kasa`/`irls` (sections, `allow_open_arcs`) or `wall_faces` (`wall` inner/outer, `r_min`, `r_max`, `perp_max`); `r_hint`, `r_tol`, `rms_max`, `z_range`, `stations` |
 | `origin.z` | axis primary only: `plane` (`approx_normal_datum`, `offset_range`) or `extreme` (`which` min/max) |
 | `origin.definition` | the named intersection |
-| `clock` | `polygon_flat`/`polygon_corner` (`n`, `z`), `min_radius` (`z`), `fourier_mass` (`n`, `r_range`, `z_range`, `pick_nearest_deg`, `label_rule`), `plane_normal` (`approx_normal_raw`), `none` (needs `why`) |
+| `clock` | `polygon_flat`/`polygon_corner` (`n`, `z`), `min_radius` (`z`), `fourier_mass` (`n`, `r_range`, `z_range`, `pick_nearest_deg`, `label_rule`), `plane_normal` (`approx_normal_raw`), `axis_direction` (`approx_axis_raw`, `crop_point_raw`, `crop_radius`, optional `crop_axial`, `refine`, `target_deg`, `noise` = own noise floor measured on a disjoint stretch of the same material; a second, non-coaxial cylinder axis projected on XY is turned to `target_deg`), `none` (needs `why`) |
 | `landmarks` | `[{"name", "stat": "zmax|zmin|rmax|xmin…", "r_range", "z_range", "expected", "tol", "tol_source"}]` |
 | `tilt_reference_deg` | default 0.3 (RE_SPEC.md:241, report-only) |
 

@@ -37,7 +37,7 @@ Merging `deliverables/` and `source/` gives back the complete run tree, so the r
   Ship it with `--include-scan` when the recipient does not have it.
 - Regenerable intermediates larger than `--max-source-mb` (default 5 MB): working / aligned meshes,
   point and distance caches (`*.npy`, `*.npz`, `*.pkl`, `*.ply`), de-warped measurement copies, `wip/`,
-  `qa/work/`. First real run: without this the zip was 662 MB, mostly caches. The stage script that writes each one is in `source/`.
+  `qa/work/`, verify's `qa/_work/*.stl` tessellations. First real run: without this the zip was 662 MB, mostly caches. The stage script that writes each one is in `source/`.
 - `__pycache__/`, `*.pyc`.
 
 ## Where it goes

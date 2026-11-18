@@ -38,7 +38,7 @@ Scripts (all typed, argparse, JSON header per run-contract §2, provenance heade
 
 | Script | Job |
 |---|---|
-| `scripts/export_frames.py` | Datum STEP + scan STEP (inverse T, SVD re-orthonormalised) + CAD STL. Re-imports both STEPs, validates them, writes `export_check.json`, aborts on failure. |
+| `scripts/export_frames.py` | Datum STEP + scan STEP (inverse T, SVD re-orthonormalised) + CAD STL. Re-imports both STEPs, validates them, checks the CAD STL is one watertight body, writes `export_check.json`, aborts on failure. |
 | `scripts/validate_step.py` | Checks for exactly 1 solid and 1 shell, closed, 0 naked edges, BRepCheck valid and volume > 0. Optional self-intersection check. Exit 2 = abort. |
 | `scripts/fillet_log.py` | `FilletLog.apply()`: tries the target radius first, then the fallbacks. Logs target vs used radius and OK / REDUCED / FAILED / NO_EDGES. The `summarize` subcommand exits 2 on any non-OK entry. |
 | `scripts/face_stats.py` | Surface census: face count, count and area share per surface type, analytic share, ruled-like B-spline faces. Reported, never gated. |

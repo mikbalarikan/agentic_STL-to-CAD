@@ -46,7 +46,7 @@ DELIVERABLE_GLOBS = [
 ALWAYS_SKIP = ["*/__pycache__/*", "__pycache__/*", "*.pyc"]
 REGENERABLE = ["intake/work.stl", "intake/aligned_work.stl", "*.npy", "*.npz", "*.pkl", "*.ply",
                "*/wip/*", "measure/figures/*.stl", "intake/explore/*.stl", "_it*_SUPERSEDED/*.stl",
-               "qa/work/*"]
+               "qa/work/*", "qa/_work/*.stl", "*/qa/_work/*.stl"]  # qa/_work: verify tessellations (OD-S02)
 # second tier: regenerable artefacts dropped (listed) only when the zip exceeds --max-zip-mib
 REGENERABLE_TIER2 = [("*.npz", "QA/measure deviation arrays (re-run the script that wrote them, e.g. stl-re-verify deviation_gate.py)"),
                      ("*/selfcheck/*.png", "builder self-check render, NOT QA (re-run build/selfcheck/selfcheck.py)"),
