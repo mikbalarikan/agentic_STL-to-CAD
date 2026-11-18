@@ -72,7 +72,7 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--include-scan", action="store_true", help="also ship input/scan.stl")
     ap.add_argument("--max-source-mb", type=float, default=5.0,
                     help="regenerable intermediates above this size are listed, not zipped")
-    ap.add_argument("--max-zip-mib", type=float, default=29.0,
+    ap.add_argument("--max-zip-mib", "--max-zip-mb", dest="max_zip_mib", type=float, default=29.0,
                     help="target zip size (session upload limit is 30 MiB); tier-2 regenerable artefacts are "
                          "listed instead of zipped, largest first, until the zip fits (0 = no target)")
     a = ap.parse_args(argv)

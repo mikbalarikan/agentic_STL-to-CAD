@@ -31,7 +31,8 @@ Every job ends with **one downloadable zip that contains all deliverables AND al
   (npz arrays, self-check renders, superseded tessellations). Byte parts are only a last resort, when
   the script warns (`delivery-package.md`, "Size").
 - For `BAND_NOT_MET`, the zip exists only after a recorded `ACCEPT-BAND`. Ask the owner first,
-  showing the missed band and the options. A `HALT` gets no zip unless the owner explicitly
+  showing the missed band (numbers + heatmap) and the options; their answer becomes the
+  `ACCEPT-BAND` entry citing the gate sha256 prefix. A `HALT` gets no zip unless the owner explicitly
   overrides; then record it (`OTHER` + a file under `decisions/` citing the gate hash), keep the
   verdict word HALT in the zip name and README, and state "no official grade" (precedent:
   `evals/real-runs/OD-G10.md`).

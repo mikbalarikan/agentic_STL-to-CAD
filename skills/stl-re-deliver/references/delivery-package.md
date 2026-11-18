@@ -58,7 +58,8 @@ pass is too big, it leaves out **second-tier regenerable artefacts**, largest fi
 
 Each one is listed in PACKAGE_INDEX.md with bytes, sha256 and the reason, and the script that makes it
 stays in `source/`. On OD-S01, 72 MiB became 27.8 MiB this way (OD-E02, 3 iterations: 89 MiB with the
-old 25 MB default, mostly three ~18 MB `qa/dev_arrays.npz`). OD-G10: a 52.9 MiB zip was refused by the upload. The default `--max-source-mb 5` already lists
+old 25 MB default, mostly three ~18 MB `qa/dev_arrays.npz`). OD-G10: a 52.9 MiB zip was refused by the upload.
+OD-H21: QA's `dev_arrays.npz` made a 55.5 MiB zip; listing the regenerable arrays took it to 19 MiB. The default `--max-source-mb 5` already lists
 the work/aligned meshes.
 
 ### Last resort: byte parts
