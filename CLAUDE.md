@@ -12,7 +12,8 @@ evidence base. Read `README.md` for the skill index.
    Scans and run folders are never committed.
 3. An instruction like "p95 plastik parça toleransı" means regime `baseline-skill`, class `plastic`
    (p95 ≤ 0.30 / max ≤ 0.80 mm). Record it as the owner's `REGIME` decision. Scan resolution and
-   calipers still need the owner's answer (orchestrate §6).
+   calipers still need the owner's answer (orchestrate §6). No calipers supplied → scan-only run
+   (limitations: Tier-1 not run, scale not caliper-verified).
 4. Verify runs in a fresh subagent (CHK-INDEP), never in the builder's context.
 
 ## Delivery format: standing owner decision, do NOT ask again

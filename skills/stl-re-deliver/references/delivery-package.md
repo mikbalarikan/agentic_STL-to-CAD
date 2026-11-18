@@ -57,7 +57,8 @@ pass is too big, it leaves out **second-tier regenerable artefacts**, largest fi
 - `_it*_SUPERSEDED/build/*_cad.stl`: a superseded iteration's CAD tessellation; its `model.py` rebuilds it.
 
 Each one is listed in PACKAGE_INDEX.md with bytes, sha256 and the reason, and the script that makes it
-stays in `source/`. On OD-S01, 72 MiB became 27.8 MiB this way. The default `--max-source-mb 5` already lists
+stays in `source/`. On OD-S01, 72 MiB became 27.8 MiB this way (OD-E02, 3 iterations: 89 MiB with the
+old 25 MB default, mostly three ~18 MB `qa/dev_arrays.npz`). The default `--max-source-mb 5` already lists
 the work/aligned meshes.
 
 ### Last resort: byte parts
