@@ -1,39 +1,42 @@
-# CLAUDE.md — standing instructions for every session in this repo
+# CLAUDE.md: standing instructions for this repo
 
-## STL → CAD (STEP) reverse-engineering jobs
+This repo holds the `stl-re-*` skills (STL scan → design-intent parametric STEP) and their
+evidence base. Read `README.md` for the skill index.
 
-When the owner attaches an STL/scan (with or without photos) and asks for CAD/STEP:
+## A new reverse-engineering job ("yeni bir STL tersine mühendislik görevi")
 
-1. **Use the skills in `skills/`**, entry point `skills/stl-re-orchestrate/SKILL.md`. They sit side by
-   side and call each other by relative path, so they run from `skills/` directly (no copy to
-   `~/.claude/skills` needed). Install deps first if `init_run.py doctor` says so:
-   `python3 -m pip install numpy scipy trimesh build123d rtree shapely fast_simplification networkx matplotlib`
-   then `python3 skills/stl-re-orchestrate/scripts/init_run.py doctor`.
-2. **Run folder** in the session scratchpad (`<scratchpad>/jobs/<part>/`), created with
-   `init_run.py init`. Never write run folders into the repo.
-3. **Tolerance phrases.** "p95 plastik (parça) toleransı" / "p95 plastic" = regime `baseline-skill`,
-   `material_class plastic` (p95 ≤ 0.30 / max ≤ 0.80 mm). "machined/metal" = `baseline-skill machined`.
-   Record it as a `REGIME` line in `DECISIONS.md` citing the owner's message. No calipers in the
-   message = scan-only (`MEASUREMENTS` line, limitations "Tier-1 not run", "scale not caliper-verified").
-4. Ask only what the skills say must be asked (e.g. full-res scan? one fused solid vs multi-body?);
-   record every answer in `DECISIONS.md`.
-5. **Verify in a fresh subagent** (CHK-INDEP, orchestrate §5), never in the builder's context.
+1. Run the job with `skills/stl-re-orchestrate/SKILL.md` (intake → measure → rebuild → verify →
+   deliver). Install the deps first if `init_run.py doctor` reports them missing:
+   `python3 -m pip install numpy scipy trimesh build123d rtree shapely fast_simplification networkx matplotlib`.
+2. Put the run folder outside the repo: the session scratchpad, or the job folder the owner names.
+   Scans and run folders are never committed.
+3. An instruction like "p95 plastik parça toleransı" means regime `baseline-skill`, class `plastic`
+   (p95 ≤ 0.30 / max ≤ 0.80 mm); "machined/metal" means class `machined`. Record it as the owner's `REGIME` decision. Scan resolution and
+   calipers still need the owner's answer (orchestrate §6). No calipers supplied → scan-only run
+   (limitations: Tier-1 not run, scale not caliper-verified).
+4. Verify runs in a fresh subagent (CHK-INDEP), never in the builder's context.
 
-## Delivery format (owner decision 2026-09-26 — do not ask again)
+## Delivery format: standing owner decision, do NOT ask again
 
-Every job ends with **ONE downloadable zip** holding the deliverables **and all source files** of the
-run: `skills/stl-re-deliver/scripts/package_zip.py`, layout and exclusions in
-`skills/stl-re-deliver/references/delivery-package.md`. Send the zip to the owner with
-`SendUserFile` (`display: attach`) together with the verdict, regime, numbers read from
-`qa/gate.json`, limitations and the loop count. For `BAND_NOT_MET`, the zip is made only after a
-recorded `ACCEPT-BAND`.
+Every job ends with **one downloadable zip that contains all deliverables AND all source files**:
+
+- Build it with `skills/stl-re-deliver/scripts/package_zip.py --run <run>` after
+  `make_manifest.py`. The owner wants ONE `.zip` file, never parts.
+  The layout (`deliverables/` + `source/` + `PACKAGE_INDEX.md`) and the exclusion rules are in
+  `skills/stl-re-deliver/references/delivery-package.md`.
+- Send the zip to the owner with `SendUserFile` (display `attach`), together with its `.sha256`
+  and a short report: verdict, regime, the numbers read from `qa/gate.json`, loop count,
+  limitations with their re-run triggers, and whether verify was independent. Uploads are limited to 30 MiB per
+  file. `package_zip.py` keeps the zip under that by listing, not zipping, regenerable artefacts
+  (npz arrays, self-check renders, superseded tessellations). Byte parts are only a last resort, when
+  the script warns (`delivery-package.md`, "Size").
+- For `BAND_NOT_MET`, the zip exists only after a recorded `ACCEPT-BAND`. Ask the owner first,
+  showing the missed band and the options.
 
 ## After a real run
 
-- Record it under `evals/real-runs/<part>.md` (+ `evals/real-runs/<part>/` with DECISIONS.md,
-  VERDICT.md, gate.json, an overlay) the way `evals/real-runs/OD-H22.md` does, including the table of
-  skill defects found and their status.
-- Fix skill defects you hit in `skills/` (small, backward compatible, documented in the skill's
-  SKILL.md/references) and add open owner questions to `QUESTIONS.md`.
-- Never commit scans, STEP files or zips to the repo (they go to the owner in the zip).
-- Develop on the session's designated branch; commit and push when done.
+Record it under `evals/real-runs/<PART>.md` (+ a folder with DECISIONS, VERDICT, gate.json and an
+overlay). Include inputs, decisions, the result and the skill defects found, following
+`evals/real-runs/OD-H22.md`. Commit that record, not the run folder: never commit scans,
+STEP files or zips. Fix skill defects you hit in `skills/` when the fix is small and backward
+compatible (document it in the skill), and add open owner questions to `QUESTIONS.md`.

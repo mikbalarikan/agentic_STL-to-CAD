@@ -235,6 +235,10 @@ Worked specs and golden numbers are in `references/datum-cookbook.md`. Rules:
    - `min_radius`: e.g. a flat cut nearest a minimum radius (DRM snap; angle in the golden report).
    - `fourier_mass`: B02 arms. State the label rule, because the candidates are mod 360/n.
    - `plane_normal`: OD side plate.
+   - `feature_line`: the line through two `origin.xy` feature centres, `from` → `to` onto +X
+     (`"from"`/`"to"` = the features' `desc`). Use it on a two-feature part (cup pair, boss pair)
+     instead of `fourier_mass` n=2, which necks, ears and webs can bias (OD-W03 real run: 0.7°
+     off the cup line, 0.24 mm at the cup axes; `evals/real-runs/OD-W03.md`).
    - `axis_direction`: a second, non-coaxial cylinder (a tube leaving an elbow) turned to
      `target_deg`, with its own same-material noise floor (datum-cookbook §3.1; n=1: OD-S02).
    - `none`: only a fully axisymmetric part, with a `why`.
@@ -243,6 +247,9 @@ Worked specs and golden numbers are in `references/datum-cookbook.md`. Rules:
      the worked sensitivity).
    - P03 never recorded its clock (B6).
 4. **Origin.** A named intersection ("bore axis ∩ top face"), never "the centre".
+   With two or more `origin.xy` features, set `"combine": "midpoint"` to put the origin at the
+   mean of the per-feature centres. The default (`median`) pools every station, so with unequal
+   surviving station counts it lands on one feature's centre, not between them (OD-W03 real run).
 5. **CHK-TILT.**
    - `align.py` fits a COMMON slope with a PER-FEATURE intercept through the circle centres
      (so a constant offset between features is not read as tilt) and reports
